@@ -75,3 +75,6 @@ DerivedDataCache/*
 
 # Temp Files
 Config/DefaultEditorPerProjectUserSettings.ini
+
+/.idea/*
+AION2Server/.vs/*
