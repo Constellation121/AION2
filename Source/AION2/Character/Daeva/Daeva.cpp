@@ -16,7 +16,7 @@ ADaeva::ADaeva()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
-	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetVisibility(false);
@@ -24,8 +24,8 @@ ADaeva::ADaeva()
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 600.0f;
-	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
+	SpringArm->TargetArmLength = 500.0f;
+	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 75.0f));
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->bEnableCameraLag = true;
 	SpringArm->bEnableCameraRotationLag = true;
@@ -54,6 +54,25 @@ void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 	Parts.Add(PartType, PartMesh);
 }
 
+void ADaeva::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TargetZoomDistance = SpringArm->TargetArmLength;
+}
+
+void ADaeva::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	Tick_Camera(DeltaTime);
+}
+
+void ADaeva::Tick_Camera(float DeltaTime)
+{
+	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
+}
+
 void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -63,6 +82,7 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADaeva::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADaeva::Look);
+		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ADaeva::Zoom);
 	}
 }
 
@@ -93,4 +113,12 @@ void ADaeva::Look(const FInputActionValue& Value)
 
 	AddControllerYawInput(RotationValue.X);
 	AddControllerPitchInput(-RotationValue.Y);
+}
+
+void ADaeva::Zoom(const FInputActionValue& Value)
+{
+	const float AxisValue = Value.Get<float>();
+
+	TargetZoomDistance -= AxisValue * ZoomSpeed;
+	TargetZoomDistance = FMath::Clamp(TargetZoomDistance, MinZoomDistance, MaxZoomDistance);
 }
