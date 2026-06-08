@@ -44,16 +44,6 @@ ADaeva::ADaeva()
 	CreatePart(EDaevaPartType::Boots, TEXT("BootsPart"));
 }
 
-void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
-{
-	auto* PartMesh = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
-
-	PartMesh->SetupAttachment(GetMesh());
-	PartMesh->SetLeaderPoseComponent(GetMesh());
-
-	Parts.Add(PartType, PartMesh);
-}
-
 void ADaeva::BeginPlay()
 {
 	Super::BeginPlay();
@@ -68,11 +58,6 @@ void ADaeva::Tick(float DeltaTime)
 	Tick_Camera(DeltaTime);
 }
 
-void ADaeva::Tick_Camera(float DeltaTime)
-{
-	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
-}
-
 void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -84,6 +69,11 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADaeva::Look);
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ADaeva::Zoom);
 	}
+}
+
+void ADaeva::Tick_Camera(float DeltaTime)
+{
+	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
 }
 
 void ADaeva::Move(const FInputActionValue& Value)
@@ -121,4 +111,14 @@ void ADaeva::Zoom(const FInputActionValue& Value)
 
 	TargetZoomDistance -= AxisValue * ZoomSpeed;
 	TargetZoomDistance = FMath::Clamp(TargetZoomDistance, MinZoomDistance, MaxZoomDistance);
+}
+
+void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
+{
+	auto* PartMesh = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
+
+	PartMesh->SetupAttachment(GetMesh());
+	PartMesh->SetLeaderPoseComponent(GetMesh());
+
+	Parts.Add(PartType, PartMesh);
 }

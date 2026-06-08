@@ -30,23 +30,21 @@ class AION2_API ADaeva : public AAOCharacter
 public:
 	ADaeva();
 
-private:
-	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
 	void Tick_Camera(float DeltaTime);
 
 protected:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-protected:
 	virtual void Move(const FInputActionValue& Value);
 	virtual void Look(const FInputActionValue& Value);
 	virtual void Zoom(const FInputActionValue& Value);
+
+private:
+	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
 
 private:
 	bool bHasCurrentMoveInput = false;
