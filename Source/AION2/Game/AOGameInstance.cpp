@@ -9,7 +9,7 @@
 #include "Serialization/ArrayWriter.h"
 #include "SocketSubsystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "AONetworkSubsystem.h"
+#include "Network/AONetworkSubsystem.h"
 
 void UAOGameInstance::Init()
 {
