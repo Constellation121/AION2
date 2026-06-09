@@ -16,7 +16,9 @@ public class AION2 : ModuleRules
 			"CoreUObject",
 			"Engine",
 			"InputCore",
-			"EnhancedInput"
+			"EnhancedInput",
+			"Networking",
+			"Sockets"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
