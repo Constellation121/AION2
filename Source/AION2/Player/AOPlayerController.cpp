@@ -1,6 +1,7 @@
 #include "Player/AOPlayerController.h"
 
 #include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 
 AAOPlayerController::AAOPlayerController()
 {
@@ -15,6 +16,19 @@ void AAOPlayerController::BeginPlay()
 	SetInputMode(GameOnlyInputMode);
 
 	SetInputMappingContext(CurrentInputType);
+
+	bShowGASDebug = false;
+}
+
+void AAOPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+	if (EnhancedInputComponent)
+	{
+		EnhancedInputComponent->BindAction(GASDebugAction, ETriggerEvent::Started, this, &AAOPlayerController::ShowDebugGAS);
+	}
 }
 
 void AAOPlayerController::SetInputMappingContext(EInputType InNewInputType)
@@ -24,5 +38,19 @@ void AAOPlayerController::SetInputMappingContext(EInputType InNewInputType)
 	{
 		InputSystem->ClearAllMappings();
 		InputSystem->AddMappingContext(InputMappingContexts[InNewInputType], 0);
+	}
+}
+
+void AAOPlayerController::ShowDebugGAS()
+{
+	bShowGASDebug = !bShowGASDebug;
+
+	if (bShowGASDebug)
+	{
+		ConsoleCommand(TEXT("showdebug abilitysystem"));
+	}
+	else
+	{
+		ConsoleCommand(TEXT("showdebug none"));
 	}
 }

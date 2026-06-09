@@ -2,20 +2,24 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "AOCharacter.generated.h"
 
-UCLASS()
-class AION2_API AAOCharacter : public ACharacter
+UCLASS(Abstract)
+class AION2_API AAOCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	AAOCharacter();
 
-protected:
-	virtual void BeginPlay() override;
-
 public:
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+protected:
+	virtual void InitGAS();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAbilitySystemComponent> ASC;
 };
