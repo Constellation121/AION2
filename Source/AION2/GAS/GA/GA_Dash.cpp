@@ -2,10 +2,20 @@
 #include "Character/Daeva/Daeva.h"
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+    if (ACharacter* Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get()))
+    {
+        if (Character->GetMovementComponent()->IsFalling() || Character->GetMovementComponent()->IsFlying())
+        {
+            EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+            return;
+        }
+    }
 
     if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
     {

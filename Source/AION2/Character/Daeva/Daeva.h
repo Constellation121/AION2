@@ -25,7 +25,8 @@ enum class EDaevaPartType : uint8
 UENUM(BlueprintType)
 enum class EAbilityInputID : uint8
 {
-	Dash UMETA(DisplayName = "Dash")
+	Dash UMETA(DisplayName = "Dash"),
+	Jump UMETA(DisplayName = "Jump")
 };
 
 UCLASS()
@@ -98,6 +99,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> DashAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> JumpAction;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Montage", meta = (AllowPrivateAccess = "true"))
