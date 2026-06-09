@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package AION2Server;
+
+// 종족 정의
+enum FactionType {
+  FACTION_NONE = 0;
+  FACTION_ELYOS = 1;      // 천족
+  FACTION_ASMODIAN = 2;   // 마족
+}

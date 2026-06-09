@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package AION2Server;
+
+import "Enum.proto";
+import "Struct.proto";
+
+
+// ==========================================
+// [1. 이동 관련 서비스 및 패킷]
+// ==========================================
+message MoveRequest{
+	uint64 user_id = 1;
+	FactionType faction = 2;
+	Vector3D position = 3;
+}

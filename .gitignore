@@ -75,3 +75,15 @@ DerivedDataCache/*
 
 # Temp Files
 Config/DefaultEditorPerProjectUserSettings.ini
+
+# Visual Studio & JetBrains IDE
+.vs/
+.idea/
+*.VC.opendb
+*.VC.db
+
+# Server
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
