@@ -1,5 +1,7 @@
 #include "Character/Daeva/Daeva.h"
+#include "Player/AOPlayerState.h"
 
+#include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -58,6 +60,20 @@ void ADaeva::Tick(float DeltaTime)
 	Tick_Camera(DeltaTime);
 }
 
+void ADaeva::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	InitGAS();
+}
+
+void ADaeva::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	InitGAS();
+}
+
 void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -68,6 +84,7 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADaeva::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADaeva::Look);
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ADaeva::Zoom);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityInputID::Dash));
 	}
 }
 
@@ -111,6 +128,50 @@ void ADaeva::Zoom(const FInputActionValue& Value)
 
 	TargetZoomDistance -= AxisValue * ZoomSpeed;
 	TargetZoomDistance = FMath::Clamp(TargetZoomDistance, MinZoomDistance, MaxZoomDistance);
+}
+
+void ADaeva::InitGAS()
+{
+	AAOPlayerState* GASPS = GetPlayerState<AAOPlayerState>();
+	if (!GASPS)
+	{
+		return;
+	}
+
+	ASC = GASPS->GetAbilitySystemComponent();
+	ASC->InitAbilityActorInfo(GASPS, this);
+	if (HasAuthority())
+	{
+		GASPS->GiveCommonAbilities();
+	}
+}
+
+void ADaeva::GASInputPressed(int32 InputId)
+{
+	if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId))
+	{
+		Spec->InputPressed = true;
+		if (Spec->IsActive())
+		{
+			ASC->AbilitySpecInputPressed(*Spec);
+		}
+		else
+		{
+			ASC->TryActivateAbility(Spec->Handle);
+		}
+	}
+}
+
+void ADaeva::GASInputReleased(int32 InputId)
+{
+	if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId))
+	{
+		Spec->InputPressed = false;
+		if (Spec->IsActive())
+		{
+			ASC->AbilitySpecInputReleased(*Spec);
+		}
+	}
 }
 
 void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)

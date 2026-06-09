@@ -5,7 +5,7 @@
 #include "AbilitySystemInterface.h"
 #include "AOCharacter.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class AION2_API AAOCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
@@ -13,20 +13,13 @@ class AION2_API AAOCharacter : public ACharacter, public IAbilitySystemInterface
 public:
 	AAOCharacter();
 
-protected:
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-	virtual void PossessedBy(AController* NewController) override;
-	virtual void OnRep_PlayerState() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-private:
+protected:
 	virtual void InitGAS();
 
-private:
+protected:
 	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAbilitySystemComponent> ASC;
 };
