@@ -76,5 +76,14 @@ DerivedDataCache/*
 # Temp Files
 Config/DefaultEditorPerProjectUserSettings.ini
 
-/.idea/*
-AION2Server/.vs/*
+# Visual Studio & JetBrains IDE
+.vs/
+.idea/
+*.VC.opendb
+*.VC.db
+
+# Server
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
