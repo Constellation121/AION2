@@ -21,9 +21,14 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 
 private:
 	void SetInputMappingContext(EInputType InNewInputType);
+
+private:
+	void ShowDebugGAS();
+	bool bShowGASDebug = false;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -31,4 +36,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TMap<EInputType, TObjectPtr<class UInputMappingContext>> InputMappingContexts;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> GASDebugAction;
 };

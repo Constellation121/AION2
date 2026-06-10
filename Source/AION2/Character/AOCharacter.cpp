@@ -5,21 +5,11 @@ AAOCharacter::AAOCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AAOCharacter::BeginPlay()
+UAbilitySystemComponent* AAOCharacter::GetAbilitySystemComponent() const
 {
-	Super::BeginPlay();
-	
+	return ASC;
 }
 
-void AAOCharacter::Tick(float DeltaTime)
+void AAOCharacter::InitGAS()
 {
-	Super::Tick(DeltaTime);
-
 }
-
-void AAOCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-

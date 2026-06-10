@@ -18,7 +18,10 @@ public class AION2 : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"Networking",
-			"Sockets"
+			"Sockets",
+			"GameplayAbilities",
+			"GameplayTags",
+			"GameplayTasks"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
