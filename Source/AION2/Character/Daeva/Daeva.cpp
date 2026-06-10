@@ -48,6 +48,28 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	CreatePart(EDaevaPartType::Glove, TEXT("GlovePart"));
 	CreatePart(EDaevaPartType::Pants, TEXT("PantsPart"));
 	CreatePart(EDaevaPartType::Boots, TEXT("BootsPart"));
+
+	Wing = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Wing"));
+	Wing->SetupAttachment(GetMesh(), TEXT("Wing_Root"));
+	Wing->SetVisibility(false);
+}
+
+void ADaeva::Multicast_PlayWingMontage_Implementation(EMontageID MontageID, float PlayRate)
+{
+	if (!Wing || !WingMontages[MontageID])
+	{
+		return;
+	}
+
+	if (UAnimInstance* WingAnimInstance = Wing->GetAnimInstance())
+	{
+		WingAnimInstance->Montage_Play(WingMontages[MontageID], PlayRate);
+	}
+}
+
+void ADaeva::Multicast_SetWingVisibility_Implementation(bool NewVisible)
+{
+	SetWingVisibility(NewVisible);
 }
 
 void ADaeva::BeginPlay()
@@ -201,9 +223,17 @@ void ADaeva::InputSpacePressed()
 	GASInputPressed(static_cast<int32>(EAbilityInputID::Jump));
 }
 
+void ADaeva::SetWingVisibility(bool NewVisible)
+{
+	if (Wing)
+	{
+		Wing->SetVisibility(NewVisible);
+	}
+}
+
 void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 {
-	auto* PartMesh = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
+	USkeletalMeshComponent* PartMesh = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
 
 	PartMesh->SetupAttachment(GetMesh());
 	PartMesh->SetLeaderPoseComponent(GetMesh());

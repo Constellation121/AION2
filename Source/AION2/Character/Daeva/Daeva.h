@@ -48,6 +48,13 @@ class AION2_API ADaeva : public AAOCharacter
 public:
 	ADaeva(const FObjectInitializer& ObjectInitializer);
 
+public:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayWingMontage(EMontageID MontageID, float PlayRate);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_SetWingVisibility(bool NewVisible);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -73,10 +80,15 @@ private:
 	void InputSpacePressed();
 
 private:
+	void SetWingVisibility(bool NewVisible);
+
+private:
 	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
 
 public:
 	FORCEINLINE UAnimMontage* GetMontageByAbilityInputID(EMontageID Index) const { return Montages[Index]; }
+	FORCEINLINE USkeletalMeshComponent* GetWingMesh() const { return Wing; }
+	FORCEINLINE UAnimInstance* GetWingAnimInstance() const { return GetWingMesh()->GetAnimInstance(); }
 
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
@@ -120,7 +132,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TMap<EMontageID, TObjectPtr<UAnimMontage>> Montages;
 
+	UPROPERTY(EditAnywhere, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TMap<EMontageID, TObjectPtr<UAnimMontage>> WingMontages;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	TMap<EDaevaPartType, TObjectPtr<USkeletalMeshComponent>> Parts;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> Wing;
 };
