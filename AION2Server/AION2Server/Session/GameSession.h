@@ -11,5 +11,7 @@ public:
 	virtual void OnRecvPacket(BYTE* buffer, int32 len) override;
 	virtual void OnSend(int32 len) override;
 
+public:
+	shared_ptr<class Player> _currenyPlayer;
 };
 

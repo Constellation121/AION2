@@ -3,6 +3,8 @@
 #include "Service.h"
 #include "GameSession.h"
 #include "ThreadManager.h"
+#include "DB/DBConnectionPool.h"
+#include "PacketHandler.h"
 
 void DoWorkerJob(MMOServerServiceRef& service)
 {
@@ -20,6 +22,10 @@ void DoWorkerJob(MMOServerServiceRef& service)
 
 int main()
 {
+	PacketHandler::Init();
+
+	// DB 연결
+	//ASSERT_CRASH(GDBConnectionPool->Connect(10, L"Driver={SQLServer}; Server = (localdb)\\MSSQLLocalDB; Database = AION2_DB; Trusted_Connection=yes;"));
 	IocpCoreRef iocpCore = make_shared<IocpCore>();
 
 	MMOServerServiceRef service = make_shared<MMOServerService>(

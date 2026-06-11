@@ -17,6 +17,7 @@ using namespace std;
 #include <vector>
 #include <set>
 #include <queue>
+#include <functional>
 
 #include "JobQueue.h"
 #include "Session.h"
