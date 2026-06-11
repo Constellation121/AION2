@@ -10,6 +10,7 @@
 #include "SocketSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Network/AONetworkSubsystem.h"
+#include "../Common/Protocol.h"
 
 void UAOGameInstance::Init()
 {
@@ -98,4 +99,62 @@ bool UAOGameInstance::IsServerConnected()
 	}
 	else
 		return false;
+}
+
+void UAOGameInstance::SendSignUpPacket(const FString& Id, const FString& Password, int32 ClassType)
+{
+	UE_LOG(LogTemp, Display, TEXT("Send SignUp Packet: %s, %s, %d"), *Id, *Password, ClassType);
+
+	C_SignUpPacket SignUpPacket;
+	SignUpPacket.header.packetType = EPacketType::C_SignUp;
+	SignUpPacket.header.packetSize = sizeof(C_SignUpPacket);
+
+	FTCHARToUTF8 ConvertId(*Id);
+	FCStringAnsi::Strncpy(SignUpPacket.id, (const char*)ConvertId.Get(), sizeof(SignUpPacket.id) - 1);
+	SignUpPacket.id[sizeof(SignUpPacket.id) - 1] = '\0';
+
+	FTCHARToUTF8 ConvertPassword(*Password);
+	FCStringAnsi::Strncpy(SignUpPacket.password, (const char*)ConvertPassword.Get(), sizeof(SignUpPacket.password) - 1);
+	SignUpPacket.password[sizeof(SignUpPacket.password) - 1] = '\0';
+
+	SignUpPacket.classType = static_cast<EClassType>(ClassType);
+
+	SendPacket(&SignUpPacket, sizeof(C_SignUpPacket));
+}
+
+void UAOGameInstance::SendLoginPacket(const FString& Id, const FString& Password)
+{
+	UE_LOG(LogTemp, Display, TEXT("Send Login Packet: %s, %s"), *Id, *Password);
+	C_LoginPacket LoginPacket;
+	LoginPacket.header.packetType = EPacketType::C_Login;
+	LoginPacket.header.packetSize = sizeof(LoginPacket);
+
+	FTCHARToUTF8 ConvertId(*Id);
+	FCStringAnsi::Strncpy(LoginPacket.id, (const char*)ConvertId.Get(), sizeof(LoginPacket.id) - 1);
+	LoginPacket.id[sizeof(LoginPacket.id) - 1] = '\0';
+
+	FTCHARToUTF8 ConvertPassword(*Password);
+	FCStringAnsi::Strncpy(LoginPacket.password, (const char*)ConvertPassword.Get(), sizeof(LoginPacket.password) - 1);
+	LoginPacket.password[sizeof(LoginPacket.password) - 1] = '\0';
+
+	SendPacket(&LoginPacket, sizeof(C_LoginPacket));
+}
+
+void UAOGameInstance::SendPacket(void* Packet, int32 PacketSize)
+{
+	int32 bytesSent = 0;
+
+	if (!ClientSocket)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invaild Socket"));
+		return;
+	}
+	if (!ClientSocket->Send(reinterpret_cast<uint8*>(Packet), PacketSize, bytesSent))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Packet Send Fail"));
+	}
+	else
+	{
+
+	}
 }
