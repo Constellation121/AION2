@@ -199,9 +199,15 @@ void Session::ProcessRecv(int32 numBytes)
 	// TODO: Packet processing logic
 	// For now, just echo or print
 	std::cout << "Received " << numBytes << " bytes" << std::endl;
-	_recvBuffer.OnRead(dataSize);
+	//_recvBuffer.OnRead(dataSize);
 
-	RegisterRecv();
+	int32 processLen = OnRecv(_recvBuffer.ReadPos(), dataSize);
+	RegisterRecv(); 
+	if (processLen < 0 || dataSize < processLen || _recvBuffer.OnRead(processLen) == false)
+	{
+		Disconnect(L"OnReadError");
+		return;
+	}
 }
 
 void Session::ProcessSend(int32 numBytes)
@@ -261,13 +267,14 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 			break;
 		}
 		PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
-		if (dataSize < header.size)
+		cout << "Parsing Packet: ID=" << static_cast<uint16>(header.packetType) << ", Size=" << header.packetSize << endl;
+		if (dataSize < header.packetSize)
 		{
 			break;
 		}
 
-		OnRecvPacket(&buffer[processLen], header.size);
-		processLen += header.size;
+		OnRecvPacket(&buffer[processLen], header.packetSize);
+		processLen += header.packetSize;
 	}
 
 	return processLen;

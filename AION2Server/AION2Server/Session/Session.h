@@ -76,11 +76,7 @@ private:
 	SendEvent			_sendEvent;
 };
 
-struct PacketHeader
-{
-	uint16 size;
-	uint16 id;
-};
+#include "../../Common/Protocol.h"
 
 class PacketSession : public Session
 {

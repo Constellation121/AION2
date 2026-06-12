@@ -23,6 +23,14 @@ public:
 
 	bool IsServerConnected();
 
+	UFUNCTION(BlueprintCallable)
+	void SendSignUpPacket(const FString& Id, const FString& Password, int32 ClassType);
+
+	UFUNCTION(BlueprintCallable)
+	void SendLoginPacket(const FString& Id, const FString& Password);
+
+	void SendPacket(void* Packet, int32 PacketSize);
+	
 private:
 	//소켓을 담을 변수
 	FSocket* ClientSocket;
