@@ -17,7 +17,10 @@ Session::~Session()
 void Session::Send(SendBufferRef sendBuffer)
 {
 	if (IsConnected() == false)
+	{
+		std::cout << "IsConnected failed\n";
 		return;
+	}
 
 	bool registerSend = false;
 	{
@@ -31,6 +34,8 @@ void Session::Send(SendBufferRef sendBuffer)
 
 	if (registerSend)
 	{
+		std::cout << "registerSend true\n";
+
 		RegisterSend();
 	}
 }
@@ -73,8 +78,9 @@ void Session::Dispatch(IocpEvent* iocpEvent, int32 numBytes)
 	}
 }
 
-void Session::RegisterConnect()
+bool Session::RegisterConnect()
 {
+	return false;
 }
 
 void Session::RegisterDisConnect()
@@ -121,6 +127,7 @@ void Session::RegisterSend()
 {
 	if (IsConnected() == false)
 		return;
+	std::cout << "registerSend start\n";
 
 	_sendEvent.Init();
 	_sendEvent.owner = shared_from_this();
@@ -164,6 +171,7 @@ void Session::RegisterSend()
 
 void Session::ProcessConnect()
 {
+//	_connectEvent.owner = nullptr;
 	_connected.store(true);
 
 	GetService()->AddSession(GetSessionRef());
@@ -171,6 +179,7 @@ void Session::ProcessConnect()
 	// TODO: OnConnected override logic
 	std::cout << "Client Connected!" << std::endl;
 
+	OnConnected();
 	RegisterRecv();
 }
 

@@ -27,6 +27,7 @@ USING_SHARED_PTR(MMOServerService);
 
 USING_SHARED_PTR(Session);
 USING_SHARED_PTR(PacketSession);
+USING_SHARED_PTR(GameSession);
 USING_SHARED_PTR(SendBuffer);
 
 USING_SHARED_PTR(JobQueue);

@@ -100,7 +100,9 @@
     <ClCompile Include="Job\ThreadManager.cpp">
       <Filter>Job</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreGlobal\CoreGlobal.h">
@@ -181,6 +183,8 @@
     <ClInclude Include="Utils\pch.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -39,7 +39,7 @@ private:
 	virtual void Dispatch(class IocpEvent* iocpEvent, int32 numBytes = 0) override;
 
 private:
-	void RegisterConnect();
+	bool RegisterConnect();
 	void RegisterDisConnect();
 	void RegisterRecv();
 	void RegisterSend();

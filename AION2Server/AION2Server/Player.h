@@ -2,7 +2,9 @@
 
 class Player
 {
-
-	weak_ptr<GameSession>_ownerSession;
+public:
+	uint64 _playerId = 0;
+	string _name;
+	weak_ptr<class GameSession>_ownerSession;
 };
 

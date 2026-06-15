@@ -23,12 +23,6 @@ enum class EPacketType : uint8_t
 	C_Login,
 	S_LoginResult,
 };
-enum class ESignResultType : uint8_t
-{
-	Success = 1,
-	IdError,
-	PasswordErro
-};
 
 struct PacketHeader
 {
@@ -44,10 +38,10 @@ struct C_SignUpPacket
 	EClassType classType;
 };
 
-struct S_SignUpResult
+struct S_SignUpResultPacket
 {
 	PacketHeader header;
-	ESignResultType reultType;
+	uint8 seccess;
 };
 
 struct C_LoginPacket
@@ -60,7 +54,7 @@ struct C_LoginPacket
 struct S_LoginSuccesePacket
 {
 	PacketHeader header;
-	ESignResultType reultType;
+	uint8 seccess;
 	uint16_t playerId;
 };
 

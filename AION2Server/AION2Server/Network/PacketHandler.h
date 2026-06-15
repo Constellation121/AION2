@@ -1,4 +1,5 @@
 #pragma once
+#include "SendBuffer.h"
 
 using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GPacketHandler[256];
@@ -11,12 +12,12 @@ public:
 		for (int32 i = 0; i < 256; i++)
 			GPacketHandler[i] = [](PacketSessionRef& s, BYTE* b, int32 l) { return false; };
 
-		Register<C_LoginPacket>(EPacketType::C_Login, Handle_C_Login);
-		Register<C_SignUpPacket>(EPacketType::C_SignUp, Handle_C_SignUp);
+		Register<C_LoginPacket>(EPacketType::C_Login, HandleLogin);
+		Register<C_SignUpPacket>(EPacketType::C_SignUp, HandleSignUp);
 	}
 
-	static bool Handle_C_SignUp(PacketSessionRef& session, C_SignUpPacket& pkt);
-	static bool Handle_C_Login(PacketSessionRef& session, C_LoginPacket& pkt);
+	static bool HandleSignUp(PacketSessionRef& session, C_SignUpPacket& pkt);
+	static bool HandleLogin(PacketSessionRef& session, C_LoginPacket& pkt);
 
 	template<typename PacketTypeStruct, typename ProcessFunc>
 	static void Register(EPacketType id, ProcessFunc func)
