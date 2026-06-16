@@ -6,6 +6,10 @@
 #include "GameplayAbilitySpecHandle.h"
 #include "AOPlayerState.generated.h"
 
+class UAbilitySystemComponent;
+class UDA_AbilitySet;
+class UAOAttributeSet;
+
 UCLASS()
 class AION2_API AAOPlayerState : public APlayerState, public IAbilitySystemInterface
 {
@@ -16,11 +20,17 @@ public:
 
 public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UAOAttributeSet* GetAttributeSet() const;
+
 	void GiveCommonAbilities();
 
 private:
 	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAbilitySystemComponent> ASC;
+
+	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAOAttributeSet> AttributeSet;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UDA_AbilitySet> CommonAbilitySet;
