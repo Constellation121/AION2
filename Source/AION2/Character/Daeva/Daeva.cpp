@@ -169,6 +169,7 @@ void ADaeva::InitGAS()
 	if (HasAuthority())
 	{
 		GASPS->GiveCommonAbilities();
+		ApplyDashStaminaRegenEffect();
 	}
 }
 
@@ -197,6 +198,30 @@ void ADaeva::GASInputReleased(int32 InputId)
 		{
 			ASC->AbilitySpecInputReleased(*Spec);
 		}
+	}
+}
+
+void ADaeva::ApplyDashStaminaRegenEffect()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (!ASC || !DashStaminaRegenEffect)
+	{
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle SpecHandle =
+		ASC->MakeOutgoingSpec(DashStaminaRegenEffect, 1.0f, EffectContext);
+
+	if (SpecHandle.IsValid())
+	{
+		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	}
 }
 
