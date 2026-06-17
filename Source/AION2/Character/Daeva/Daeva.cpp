@@ -164,11 +164,15 @@ void ADaeva::InitGAS()
 		return;
 	}
 
+
 	ASC = GASPS->GetAbilitySystemComponent();
 	ASC->InitAbilityActorInfo(GASPS, this);
+
+
 	if (HasAuthority())
 	{
 		GASPS->GiveCommonAbilities();
+
 		ApplyDashStaminaRegenEffect();
 	}
 }
