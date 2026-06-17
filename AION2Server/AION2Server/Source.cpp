@@ -25,7 +25,7 @@ int main()
 	PacketHandler::Init();
 
 	// DB 연결
-	ASSERT_CRASH(GDBConnectionPool->Connect(10, L"Driver={ODBC Driver 17 for SQL Server}; Server=localhost\\SQLEXPRESS03; Database=AION2_DB; Trusted_Connection=yes;"));
+	ASSERT_CRASH(GDBConnectionPool->Connect(5, L"Driver={ODBC Driver 17 for SQL Server}; Server=localhost\\SQLEXPRESS03; Database=AION2_DB; Trusted_Connection=yes;"));
 	IocpCoreRef iocpCore = make_shared<IocpCore>();
 
 	MMOServerServiceRef service = make_shared<MMOServerService>(

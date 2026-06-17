@@ -3,6 +3,8 @@
 
 #include "AONetworkSubsystem.h"
 #include "Game/AOGameInstance.h"
+#include "../../Common/Protocol.h"
+#include "UI/AOLoginUserWidget.h"
 
 constexpr int BUFSIZE = 4096;
 
@@ -33,22 +35,22 @@ void UAONetworkSubsystem::ResetBuffer()
 
 void UAONetworkSubsystem::ReceiveData()
 {
-	if (!ClientSocket)	
+	if (!ClientSocket)
 		return;
-	
+
 	ClientSocket->SetNonBlocking(true);
 	uint32 DataSize;
 	while (ClientSocket->HasPendingData(DataSize))
 	{
 		uint8 TempData[BUFSIZE];
 		int32 BytesRead = 0;
-		
+
 		if (ClientSocket->Recv(TempData, FMath::Min(DataSize, (uint32)BUFSIZE), BytesRead))
 		{
 			//받은 데이터를 받은 사이즈만큼 버퍼에 넣음
 			ReceiverBuffer.Append(TempData, DataSize);
 			int32 ProcessedOffset = 0;
-			
+
 			//받은 크기가 헤더 사이즈를 넘을 때까지
 			while (ReceiverBuffer.Num() - ProcessedOffset >= sizeof(FPacketHeader))
 			{
@@ -99,9 +101,51 @@ void UAONetworkSubsystem::ProcessQueuePackets()
 			if (!ReceiveQueue.Dequeue(PacketData))
 				break;
 		}
+
 		if (PacketData.Num() < sizeof(FPacketHeader))
 			continue;
 
-		FPacketHeader* Header = reinterpret_cast<FPacketHeader*>(PacketData.GetData());
+		PacketHeader* Header = reinterpret_cast<PacketHeader*>(PacketData.GetData());
+
+		switch (Header->packetType)
+		{
+		case EPacketType::S_SignUpResult:
+		{
+			if (PacketData.Num() == sizeof(S_SignUpResultPacket))
+			{
+				S_SignUpResultPacket* Pkt = reinterpret_cast<S_SignUpResultPacket*>(PacketData.GetData());
+				UE_LOG(LogTemp, Log, TEXT("Result = %d"), Pkt->success);
+				if (Pkt->success == -1)
+				{
+					if (GameInst && GameInst->LoginWidget)
+					{
+						GameInst->LoginWidget->HandleRegisterError();
+					}
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("LoginWidget is not Valid."));
+					}
+				}
+				else
+				{
+					GameInst->LoginWidget->HandleRegisterResult();
+				}
+
+				// 로그인되면 마을 맵으로 넘어가기 (데디케이트 연결하기)
+
+			}
+			break;
+		}
+		case EPacketType::S_LoginResult:
+		{
+			if (PacketData.Num() == sizeof(S_LoginSuccesePacket))
+			{
+				S_LoginSuccesePacket* Pkt = reinterpret_cast<S_LoginSuccesePacket*>(PacketData.GetData());
+				UE_LOG(LogTemp, Log, TEXT("Result = %d"), Pkt->success);
+
+			}
+			break;
+		}
+		}
 	}
 }

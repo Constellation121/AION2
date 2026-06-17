@@ -8,7 +8,7 @@
 #include "AOGameInstance.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class AION2_API UAOGameInstance : public UGameInstance
@@ -30,8 +30,12 @@ public:
 	void SendLoginPacket(const FString& Id, const FString& Password);
 
 	void SendPacket(void* Packet, int32 PacketSize);
-	
-private:
+	class UAONetworkSubsystem* GetNetworkManager() { return UNetworkManager; }
+
+public:
+	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	TObjectPtr<class UAOLoginUserWidget> LoginWidget;
+
 	//소켓을 담을 변수
 	FSocket* ClientSocket;
 	class UAONetworkSubsystem* UNetworkManager;

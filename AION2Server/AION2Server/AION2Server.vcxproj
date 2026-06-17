@@ -25,6 +25,7 @@
     <ClCompile Include="DB\DBBind.cpp" />
     <ClCompile Include="DB\DBConnection.cpp" />
     <ClCompile Include="DB\DBConnectionPool.cpp" />
+    <ClCompile Include="ItemData.cpp" />
     <ClCompile Include="Job\Job.cpp" />
     <ClCompile Include="Job\JobQueue.cpp" />
     <ClCompile Include="Job\JobTimer.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="DB\DBBind.h" />
     <ClInclude Include="DB\DBConnection.h" />
     <ClInclude Include="DB\DBConnectionPool.h" />
+    <ClInclude Include="ItemData.h" />
     <ClInclude Include="Job\Job.h" />
     <ClInclude Include="Job\JobQueue.h" />
     <ClInclude Include="Job\JobTimer.h" />

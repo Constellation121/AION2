@@ -19,12 +19,28 @@ public:
 	static bool HandleSignUp(PacketSessionRef& session, C_SignUpPacket& pkt);
 	static bool HandleLogin(PacketSessionRef& session, C_LoginPacket& pkt);
 
+	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int len)
+	{
+		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+		return GPacketHandler[static_cast<uint8>(header->packetType)](session, buffer, len);
+	}
+
 	template<typename PacketTypeStruct, typename ProcessFunc>
+	//static void Register(EPacketType id, ProcessFunc func)
+	//{
+	//	GPacketHandler[static_cast<uint8>(id)] = [func](PacketSessionRef& session, BYTE* buffer, int32 len)
+	//	{
+	//		return HandlePacket<PacketTypeStruct>(func, session, buffer, len);
+	//	};
 	static void Register(EPacketType id, ProcessFunc func)
 	{
 		GPacketHandler[static_cast<uint8>(id)] = [func](PacketSessionRef& session, BYTE* buffer, int32 len)
 		{
-			return HandlePacket<PacketTypeStruct>(func, session, buffer, len);
+				T pkt;
+				// 헤더를 제외한 나머지 데이터를 ProtoBuf로 파싱
+				if (pkt.ParseFromArray(&buffer[sizeof(PacketHeader)], len - sizeof(PacketHeader)) == false)
+					return false;
+				return func(session, pkt);
 		};
 	}
 
@@ -46,16 +62,36 @@ private:
 	}
 
 public:
+	//template<typename T>
+	//static SendBufferRef MakeSendBuffer(T& packet, EPacketType packetId)
+	//{
+	//	const uint16 packetSize = sizeof(T);
+	//	SendBufferRef sendBuffer = make_shared<SendBuffer>(packetSize);
+
+	//	packet.header.packetSize = packetSize;
+	//	packet.header.packetType = packetId;
+
+	//	sendBuffer->CopyData(&packet, packetSize);
+	//	sendBuffer->Close(packetSize);
+
+	//	return sendBuffer;
+	//}
+
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& packet, EPacketType packetId)
 	{
-		const uint16 packetSize = sizeof(T);
+		// protoBuf 크기
+		const uint16 dataSize = static_cast<uint16>(pkt.ByteSizeLong()); 
+		// 전체 패킷 크기
+		const uint16 packetSize = dataSize + sizeof(PacketHeader);
+
 		SendBufferRef sendBuffer = make_shared<SendBuffer>(packetSize);
+		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
 
-		packet.header.packetSize = packetSize;
-		packet.header.packetType = packetId;
+		header->packetSize = packetSize;
+		header->packetType = packetId;
 
-		sendBuffer->CopyData(&packet, packetSize);
+		ASSERT_CRASH(pkt.SerializeToArray(&header[1], dataSize));
 		sendBuffer->Close(packetSize);
 
 		return sendBuffer;
