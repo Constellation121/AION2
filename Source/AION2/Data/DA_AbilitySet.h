@@ -10,13 +10,13 @@ struct FGAData
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, Category = "Ability")
     TSubclassOf<class UGameplayAbility> Ability = nullptr;
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, Category = "Ability")
     int32 AbilityLevel = 1;
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, Category = "Ability")
     int32 InputID = -1;
 };
 
@@ -26,7 +26,7 @@ class AION2_API UDA_AbilitySet : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(EditDefaultsOnly, Category = "Ability Set")
     TArray<FGAData> Abilities;
 
     void GiveToASC(class UAbilitySystemComponent* ASC, TArray<FGameplayAbilitySpecHandle>& OutHandles) const;

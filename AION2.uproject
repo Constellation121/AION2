@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{D718008F-423E-CBB6-F8C0-1BBA0CED1DBF}",
+	"EngineAssociation": "{47A59C3B-4B96-BF99-0D41-31B3F112338B}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -10,8 +10,7 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"GameplayAbilities",
-				"UMG"
+				"GameplayAbilities"
 			]
 		}
 	],
