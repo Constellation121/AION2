@@ -44,7 +44,7 @@ void UAOAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void UAOAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
-    Super::PreAttributeBaseChange(Attribute, NewValue);
+    Super::PreAttributeChange(Attribute, NewValue);
 
     if (Attribute == GetHealthAttribute())
     {
@@ -62,6 +62,26 @@ void UAOAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, fl
     }
 
 
+}
+
+void UAOAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+    Super::PostGameplayEffectExecute(Data);
+
+    if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+    {
+        SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+    }
+
+    if (Data.EvaluatedData.Attribute == GetManaAttribute())
+    {
+        SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+    }
+
+    if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
+    {
+        SetStamina(FMath::Clamp(GetStamina(), 0.0f, GetMaxStamina()));
+    }
 }
 
 void UAOAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)

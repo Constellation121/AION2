@@ -7,6 +7,7 @@
 
 class USkeletalMeshComponent;
 class UInputAction;
+class UGameplayEffect;
 
 UENUM(BlueprintType)
 enum class EDaevaPartType : uint8
@@ -61,6 +62,7 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 
 private:
 	void Tick_Camera(float DeltaTime);
@@ -74,6 +76,8 @@ protected:
 	virtual void InitGAS() override;
 	void GASInputPressed(int32 InputId);
 	void GASInputReleased(int32 InputId);
+
+	virtual void ApplyDashStaminaRegenEffect();
 
 private:
 	void InputShiftPressed();
@@ -141,4 +145,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> Wing;
+
+private :
+	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	TSubclassOf<UGameplayEffect> DashStaminaRegenEffect;
 };
