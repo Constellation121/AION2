@@ -19,6 +19,24 @@ class AION2_API UAOCharacterMovementComponent : public UCharacterMovementCompone
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+    float GlideForwardSpeed = 900.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+    float GlideTurnSpeed = 90.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+    float GlideFallSpeed = 120.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+    float GlideFastFallSpeed = 700.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+    float GlideAccelerationInterpSpeed = 4.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+    float GlideFallInterpSpeed = 5.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
     float GlideGravityScale = 0.2f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
