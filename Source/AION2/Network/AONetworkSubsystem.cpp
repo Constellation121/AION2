@@ -118,7 +118,7 @@ void UAONetworkSubsystem::ProcessQueuePackets()
 			{
 				bool bSuccess = Pkt.success();
 				UE_LOG(LogTemp, Log, TEXT("SignUp Result Received: %d"), bSuccess);
-				if (bSuccess == -1)
+				if (!bSuccess)
 				{
 					if (GameInst && GameInst->LoginWidget)
 					{
