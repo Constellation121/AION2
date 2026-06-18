@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package Protocol;
+
+import "Enum.proto";
+import "Struct.proto";
+
+message C_SignUpPacket 
+{
+  string id = 1;
+  string password = 2;
+  ClassType classType = 3;
+}
+
+message S_SignUpResultPacket
+{
+  bool success = 1;     
+}
+
+message C_LoginPacket 
+{
+  string id = 1;
+  string password = 2;
+}
+
+message S_LoginSuccessPacket 
+{
+  ClassType playerClass = 1;
+  int32 gold = 2;
+  int32 exp = 3;
+  int32 hp = 4;
+  bool success = 5;
+  uint32 playerId = 6;  
+}
+
+message S_ItemDataPacket
+{
+	ItemData  playerItem = 1;
+
+}
