@@ -3,8 +3,8 @@
 
 #include "AONetworkSubsystem.h"
 #include "Game/AOGameInstance.h"
-#include "../../Common/Protocol.h"
 #include "UI/AOLoginUserWidget.h"
+#include "Network/PacketHeader.h"
 
 constexpr int BUFSIZE = 4096;
 
@@ -105,17 +105,20 @@ void UAONetworkSubsystem::ProcessQueuePackets()
 		if (PacketData.Num() < sizeof(FPacketHeader))
 			continue;
 
-		PacketHeader* Header = reinterpret_cast<PacketHeader*>(PacketData.GetData());
+		FPacketHeader* Header = reinterpret_cast<FPacketHeader*>(PacketData.GetData());
 
-		switch (Header->packetType)
+		uint8* PayloadPtr = PacketData.GetData() + sizeof(FPacketHeader);
+		int32 PayloadSize = PacketData.Num() - sizeof(FPacketHeader);
+		switch (Header->PacketId)
 		{
-		case EPacketType::S_SignUpResult:
+		case PKT_S_SIGNUP:
 		{
-			if (PacketData.Num() == sizeof(S_SignUpResultPacket))
+			Protocol::S_SignUpResultPacket Pkt;
+			if (Pkt.ParseFromArray(PayloadPtr, PayloadSize))
 			{
-				S_SignUpResultPacket* Pkt = reinterpret_cast<S_SignUpResultPacket*>(PacketData.GetData());
-				UE_LOG(LogTemp, Log, TEXT("Result = %d"), Pkt->success);
-				if (Pkt->success == -1)
+				bool bSuccess = Pkt.success();
+				UE_LOG(LogTemp, Log, TEXT("SignUp Result Received: %d"), bSuccess);
+				if (bSuccess == -1)
 				{
 					if (GameInst && GameInst->LoginWidget)
 					{
@@ -130,22 +133,17 @@ void UAONetworkSubsystem::ProcessQueuePackets()
 				{
 					GameInst->LoginWidget->HandleRegisterResult();
 				}
-
-				// 로그인되면 마을 맵으로 넘어가기 (데디케이트 연결하기)
-
 			}
 			break;
 		}
-		case EPacketType::S_LoginResult:
+		case PKT_S_LOGIN:
 		{
-			if (PacketData.Num() == sizeof(S_LoginSuccesePacket))
-			{
-				S_LoginSuccesePacket* Pkt = reinterpret_cast<S_LoginSuccesePacket*>(PacketData.GetData());
-				UE_LOG(LogTemp, Log, TEXT("Result = %d"), Pkt->success);
-
-			}
 			break;
 		}
+
+
+		default:
+			break;
 		}
 	}
 }

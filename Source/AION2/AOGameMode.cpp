@@ -12,7 +12,7 @@ void AAOGameMode::BeginPlay()
 
 	GameInst = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
 	check(GameInst && "GameInstance is invalid!");
-	
+
 	if (GameInst->GetNetworkManager())
 	{
 		NetworkManager = GameInst->GetNetworkManager();
@@ -21,5 +21,8 @@ void AAOGameMode::BeginPlay()
 
 void AAOGameMode::Tick(float DeltaTime)
 {
-	NetworkManager->ProcessQueuePackets();
+	Super::Tick(DeltaTime);
+	NetworkManager = GameInst->GetNetworkManager();
+	if (NetworkManager)
+		NetworkManager->ProcessQueuePackets();
 }
