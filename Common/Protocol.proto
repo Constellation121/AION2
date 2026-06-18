@@ -23,18 +23,23 @@ message C_LoginPacket
   string password = 2;
 }
 
+message S_LoginFailPacket 
+{
+}
+
 message S_LoginSuccessPacket 
 {
   ClassType playerClass = 1;
   int32 gold = 2;
   int32 exp = 3;
   int32 hp = 4;
-  bool success = 5;
+  reserved 5;
+  reserved "success";
   uint32 playerId = 6;  
 }
 
 message S_ItemDataPacket
 {
-	ItemData  playerItem = 1;
+	repeated ItemData  playerItems = 1;
 
 }

@@ -5,6 +5,7 @@
 #include "DBBind.h"
 #include "ItemData.h"
 #include "Player.h"
+#include "ObjectUtils.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -92,7 +93,7 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 	dbBind.BindCol(7, slotIndex);
 	dbBind.BindCol(8, itemCount);
 
-	std::vector<ItemData> itemInfos;
+	Protocol::S_ItemDataPacket itemPkt;
 	bool isFirstRow = true;
 	bool loginSuccess = false;
 
@@ -108,19 +109,20 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 			loginSuccess = true;
 			if (isFirstRow)
 			{
-				PlayerRef player = std::make_shared<Player>(playerClass, exp, gold, hp);
+				
 				GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-				gameSession->_currentPlayer = player;
+				PlayerRef player = ObjectUtils::CreatePlayer(gameSession);
+				player->SetPlayerInfo(playerClass, exp, gold, hp);
 				isFirstRow = false;
 			}
 			if (itemInstanceId != 0)
 			{
-				ItemData item;
-				item._itemInstanceId = itemInstanceId;
-				item._itemTemplateId = itemTemplateId;
-				item._slotIndex = slotIndex;
-				item._count = itemCount;
-				itemInfos.emplace_back(item);
+				Protocol::ItemData* item = itemPkt.add_playeritems();
+
+				item->set_iteminstancedid(itemInstanceId);
+				item->set_itemtemplateid(itemTemplateId);
+				item->set_slotindex(slotIndex);
+				item->set_count(itemCount);
 			}
 		}
 	}
@@ -128,24 +130,32 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 	GDBConnectionPool->Push(dbConnect);
 
 	Protocol::S_LoginSuccessPacket loginPkt;
-	loginPkt.set_success(loginSuccess);
 
 	if (loginSuccess)
 	{
-		std::cout << " Login Success!Inventory Item Count : " << itemInfos.size() << std::endl;
+		std::cout << " Login Success!Inventory Item Count : " << itemPkt.playeritems_size() << std::endl;
 		
 		GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-		PlayerRef player = gameSession->_currentPlayer;
+		PlayerRef player = gameSession->_player;
 
-		//loginPkt.set_playerclass(static_cast<Protocol::ClassType>(player->_class));
-		//loginPkt.set_gold(player->_gold);
-		//loginPkt.set_exp(player->_exp);
-		//loginPkt.set_hp(player->_hp);
-		// loginPkt.set_playerid(...);
+		loginPkt.set_playerclass(static_cast<Protocol::ClassType>(player->_class));
+		loginPkt.set_gold(player->_gold);
+		loginPkt.set_exp(player->_exp);
+		loginPkt.set_hp(player->_hp);
+		loginPkt.set_playerid(player->_playerId);
+	}
+	else
+	{
+		Protocol::S_LoginFailPacket failPkt;
+		SendBufferRef failSendBuffer = PacketHandler::MakeSendBuffer(failPkt);
+		session->Send(failSendBuffer);
 	}
 
 	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(loginPkt);
 	session->Send(sendBuffer);
+
+	SendBufferRef itemSendBuffer = PacketHandler::MakeSendBuffer(itemPkt);
+	session->Send(itemSendBuffer);
 
 	return true;
 }

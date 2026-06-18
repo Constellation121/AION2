@@ -136,11 +136,27 @@ void UAONetworkSubsystem::ProcessQueuePackets()
 			}
 			break;
 		}
-		case PKT_S_LOGIN:
+
+		case PKT_S_FLOGIN:
 		{
+			Protocol::S_LoginFailPacket Pkt;
+			UE_LOG(LogTemp, Error, TEXT("Login Failed!"));
+			GameInst->LoginWidget->HandleLoginResult();
 			break;
 		}
 
+		case PKT_S_SLOGIN:
+		{
+			Protocol::S_LoginSuccessPacket Pkt;
+
+			break;
+		}
+
+		case PKT_S_ITEM:
+		{
+
+			break;
+		}
 
 		default:
 			break;

@@ -116,6 +116,9 @@
     <ClCompile Include="Struct.pb.cc">
       <Filter>Packet</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreGlobal\CoreGlobal.h">
@@ -208,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="Struct.pb.h">
       <Filter>Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectUtils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
