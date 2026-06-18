@@ -21,8 +21,12 @@ public class AION2 : ModuleRules
 			"Sockets",
 			"GameplayAbilities",
 			"GameplayTags",
-			"GameplayTasks"
-		});
+			"GameplayTasks",
+            "AIModule",
+			"StateTreeModule",
+            "GameplayStateTreeModule",
+            "Niagara"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -35,3 +39,10 @@ public class AION2 : ModuleRules
 		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 	}
 }
+
+
+
+//            "StateTreeModule",
+//            "GameplayStateTreeModule",
+//            "AIModule",
+//            "Niagara"
