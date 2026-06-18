@@ -63,7 +63,6 @@ protected:
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-
 private:
 	void Tick_Camera(float DeltaTime);
 
@@ -112,7 +111,7 @@ private:
 	float MinZoomDistance = 100.f;
 
 	UPROPERTY(EditAnywhere, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	float MaxZoomDistance = 1000.f;
+	float MaxZoomDistance = 1200.f;
 
 	float TargetZoomDistance;
 

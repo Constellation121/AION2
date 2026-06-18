@@ -42,14 +42,14 @@ void UGA_Glide::OnLandedCallback()
         Daeva->Multicast_PlayWingMontage(EMontageID::GlideLand, 2.f);
     }
 
-    MontageTask->OnCompleted.AddDynamic(this, &UGA_Glide::OnLandMontageFinished);
-    MontageTask->OnBlendOut.AddDynamic(this, &UGA_Glide::OnLandMontageFinished);
-    MontageTask->OnInterrupted.AddDynamic(this, &UGA_Glide::OnLandMontageCancelled);
-    MontageTask->OnCancelled.AddDynamic(this, &UGA_Glide::OnLandMontageCancelled);
+    MontageTask->OnCompleted.AddDynamic(this, &UGA_Glide::OnMontageTaskFinished);
+    MontageTask->OnBlendOut.AddDynamic(this, &UGA_Glide::OnMontageTaskFinished);
+    MontageTask->OnInterrupted.AddDynamic(this, &UGA_Glide::OnMontageTaskCancelled);
+    MontageTask->OnCancelled.AddDynamic(this, &UGA_Glide::OnMontageTaskCancelled);
     MontageTask->ReadyForActivation();
 }
 
-void UGA_Glide::OnLandMontageFinished()
+void UGA_Glide::OnMontageTaskFinished()
 {
     ADaeva* Daeva = Cast<ADaeva>(GetAvatarActorFromActorInfo());
     if (Daeva->HasAuthority())
@@ -60,7 +60,7 @@ void UGA_Glide::OnLandMontageFinished()
     EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void UGA_Glide::OnLandMontageCancelled()
+void UGA_Glide::OnMontageTaskCancelled()
 {
     ADaeva* Daeva = Cast<ADaeva>(GetAvatarActorFromActorInfo());
     if (Daeva->HasAuthority())
