@@ -7,15 +7,6 @@
 #include <Sockets.h>
 #include "AONetworkSubsystem.generated.h"
 
-USTRUCT()
-struct FPacketHeader
-{
-	GENERATED_BODY()
-	
-	uint16 PacketSize;
-	uint16 PacketId;
-};
-
 UCLASS()
 class AION2_API UAONetworkSubsystem : public UGameInstanceSubsystem
 {

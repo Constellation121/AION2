@@ -3,6 +3,8 @@
 
 #include "AONetworkSubsystem.h"
 #include "Game/AOGameInstance.h"
+#include "UI/AOLoginUserWidget.h"
+#include "Network/PacketHeader.h"
 
 constexpr int BUFSIZE = 4096;
 
@@ -33,22 +35,22 @@ void UAONetworkSubsystem::ResetBuffer()
 
 void UAONetworkSubsystem::ReceiveData()
 {
-	if (!ClientSocket)	
+	if (!ClientSocket)
 		return;
-	
+
 	ClientSocket->SetNonBlocking(true);
 	uint32 DataSize;
 	while (ClientSocket->HasPendingData(DataSize))
 	{
 		uint8 TempData[BUFSIZE];
 		int32 BytesRead = 0;
-		
+
 		if (ClientSocket->Recv(TempData, FMath::Min(DataSize, (uint32)BUFSIZE), BytesRead))
 		{
 			//받은 데이터를 받은 사이즈만큼 버퍼에 넣음
 			ReceiverBuffer.Append(TempData, DataSize);
 			int32 ProcessedOffset = 0;
-			
+
 			//받은 크기가 헤더 사이즈를 넘을 때까지
 			while (ReceiverBuffer.Num() - ProcessedOffset >= sizeof(FPacketHeader))
 			{
@@ -99,9 +101,49 @@ void UAONetworkSubsystem::ProcessQueuePackets()
 			if (!ReceiveQueue.Dequeue(PacketData))
 				break;
 		}
+
 		if (PacketData.Num() < sizeof(FPacketHeader))
 			continue;
 
 		FPacketHeader* Header = reinterpret_cast<FPacketHeader*>(PacketData.GetData());
+
+		uint8* PayloadPtr = PacketData.GetData() + sizeof(FPacketHeader);
+		int32 PayloadSize = PacketData.Num() - sizeof(FPacketHeader);
+		switch (Header->PacketId)
+		{
+		case PKT_S_SIGNUP:
+		{
+			Protocol::S_SignUpResultPacket Pkt;
+			if (Pkt.ParseFromArray(PayloadPtr, PayloadSize))
+			{
+				bool bSuccess = Pkt.success();
+				UE_LOG(LogTemp, Log, TEXT("SignUp Result Received: %d"), bSuccess);
+				if (bSuccess == -1)
+				{
+					if (GameInst && GameInst->LoginWidget)
+					{
+						GameInst->LoginWidget->HandleRegisterError();
+					}
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("LoginWidget is not Valid."));
+					}
+				}
+				else
+				{
+					GameInst->LoginWidget->HandleRegisterResult();
+				}
+			}
+			break;
+		}
+		case PKT_S_LOGIN:
+		{
+			break;
+		}
+
+
+		default:
+			break;
+		}
 	}
 }
