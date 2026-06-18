@@ -132,7 +132,7 @@ void Session::RegisterSend()
 	_sendEvent.Init();
 	_sendEvent.owner = shared_from_this();
 
-	vector<WSABUF> wsaBufs;
+	std::vector<WSABUF> wsaBufs;
 	{
 		std::lock_guard<std::mutex> lock(_sendLock);
 		int32 writeSize = 0;
@@ -250,7 +250,7 @@ void Session::HandleError(int32 errorCode)
 		break;
 	default:
 		// TODO : Log
-		cout << "Handle Error : " << errorCode << endl;
+		std::cout << "Handle Error : " << errorCode << std::endl;
 		break;
 	}
 }
@@ -276,14 +276,14 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 			break;
 		}
 		PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
-		cout << "Parsing Packet: ID=" << static_cast<uint16>(header.packetType) << ", Size=" << header.packetSize << endl;
-		if (dataSize < header.packetSize)
+		std::cout << "Parsing Packet: ID=" << static_cast<uint16>(header.id) << ", Size=" << header.size << std::endl;
+		if (dataSize < header.size)
 		{
 			break;
 		}
 
-		OnRecvPacket(&buffer[processLen], header.packetSize);
-		processLen += header.packetSize;
+		OnRecvPacket(&buffer[processLen], header.size);
+		processLen += header.size;
 	}
 
 	return processLen;

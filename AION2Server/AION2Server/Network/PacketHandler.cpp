@@ -6,70 +6,68 @@
 #include "ItemData.h"
 #include "Player.h"
 
-PacketHandlerFunc GPacketHandler[256];
+PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
-bool PacketHandler::HandleSignUp(PacketSessionRef& session, C_SignUpPacket& pkt)
+bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
-	cout << "SignUp Request: ID(" << pkt.id << ") PW(" << pkt.password << ") Class(" << static_cast<int32>(pkt.classType) << ")" << endl;
+	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+	// TODO : Log
+	return false;
+}
+
+bool PacketHandler::HandleSignUp(PacketSessionRef& session, Protocol::C_SignUpPacket& pkt)
+{
+	std::cout << "SignUp Request: ID(" << pkt.id() << ") PW(" << pkt.password() << ") Class(" << static_cast<int32>(pkt.classtype()) << ")" << std::endl;
 
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
 	DBBind<3, 1> dbBind(*dbConnect, L"{CALL sp_RegisterUser(?, ?, ?)}");
 
-	// 패킷의 char[]을 WCHAR[]로 변환하기 위한 버퍼 선언
 	WCHAR wId[51] = { 0, };
 	WCHAR wPassword[51] = { 0, };
 
-	// 안전한 복사를 위해 mbstowcs_s 사용
-	::mbstowcs_s(nullptr, wId, 51, pkt.id, _TRUNCATE);
-	::mbstowcs_s(nullptr, wPassword, 51, pkt.password, _TRUNCATE);
+	::mbstowcs_s(nullptr, wId, 51, pkt.id().c_str(), _TRUNCATE);
+	::mbstowcs_s(nullptr, wPassword, 51, pkt.password().c_str(), _TRUNCATE);
 
-	// DBBind의 래퍼 함수를 이용해 파라미터 바인딩
 	dbBind.BindParam(0, wId);
 	dbBind.BindParam(1, wPassword);
 
-	int32 classTypeInt = static_cast<int32>(pkt.classType);
+	int32 classTypeInt = static_cast<int32>(pkt.classtype());
 	dbBind.BindParam(2, classTypeInt);
 
-	// DB 실행
-	int resultCode = 0;
+	int32 resultCode = 0;
 	dbBind.BindCol(0, resultCode);
 
 	if (dbBind.Execute())
 	{
 		if (dbBind.Fetch())
 		{
-			cout << "ResultCode : " << resultCode << endl;
+			std::cout << "ResultCode : " << resultCode << std::endl;
 		}
 	}
 
-	// DB 연결 반납
 	GDBConnectionPool->Push(dbConnect);
 
-	//S_SignUpResultPacket sendPkt;
-	//sendPkt.header.packetType = EPacketType::S_SignUpResult;
-	//sendPkt.header.packetSize = sizeof(S_SignUpResultPacket);
-	//sendPkt.success = resultCode;
-	//SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(sendPkt, EPacketType::S_SignUpResult);
-	//session->Send(sendBuffer);
+	Protocol::S_SignUpResultPacket resultPkt;
+	resultPkt.set_success(resultCode == 0);
 
+	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(resultPkt);
+	session->Send(sendBuffer);
 
-		return true;
+	return true;
 }
 
-bool PacketHandler::HandleLogin(PacketSessionRef& session, C_LoginPacket& pkt)
+bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPacket& pkt)
 {
-	cout << "Login Request: ID(" << pkt.id << ") PW(" << pkt.password << ")" << endl;
+	std::cout << "Login Request: ID(" << pkt.id() << ") PW(" << pkt.password() << ")" << std::endl;
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
 	DBBind<2, 9> dbBind(*dbConnect, L"{CALL sp_LogIn(?, ?)}");
 
 	WCHAR wId[51] = { 0, };
 	WCHAR wPassword[51] = { 0, };
 
-	// 안전한 복사를 위해 mbstowcs_s 사용
-	::mbstowcs_s(nullptr, wId, 51, pkt.id, _TRUNCATE);
-	::mbstowcs_s(nullptr, wPassword, 51, pkt.password, _TRUNCATE);
+	::mbstowcs_s(nullptr, wId, 51, pkt.id().c_str(), _TRUNCATE);
+	::mbstowcs_s(nullptr, wPassword, 51, pkt.password().c_str(), _TRUNCATE);
 
-	// DBBind의 래퍼 함수를 이용해 파라미터 바인딩
 	dbBind.BindParam(0, wId);
 	dbBind.BindParam(1, wPassword);
 
@@ -83,7 +81,7 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, C_LoginPacket& pkt)
 	int32 slotIndex = 0;
 	int32 itemCount = 0;
 
-	wcout.imbue(locale("kor"));
+	std::wcout.imbue(std::locale("kor"));
 	dbBind.BindCol(0, errorCode);
 	dbBind.BindCol(1, playerClass);
 	dbBind.BindCol(2, exp);
@@ -104,7 +102,7 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, C_LoginPacket& pkt)
 		{
 			if (errorCode == 1)
 			{
-				cout << "로그인 실패: 아이디 또는 비밀번호 불일치" << endl;
+				std::cout << "Login Fail: Id or Password" << std::endl;
 				break;
 			}
 			loginSuccess = true;
@@ -124,26 +122,30 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, C_LoginPacket& pkt)
 				item._count = itemCount;
 				itemInfos.emplace_back(item);
 			}
-
 		}
 	}
 
 	GDBConnectionPool->Push(dbConnect);
 
+	Protocol::S_LoginSuccessPacket loginPkt;
+	loginPkt.set_success(loginSuccess);
+
 	if (loginSuccess)
 	{
-		// TODO: 수집 완료된 inventory 벡터를 플레이어 객체에 주입
-		// session->GetPlayer()->GetInventory()->InitItems(inventory);
-		cout << "로그인 성공! 로드된 아이템 개수: " << itemInfos.size() << endl;
-		S_LoginSuccesePacket sendPkt;
-		sendPkt.header.packetType = EPacketType::S_LoginResult;
-		sendPkt.header.packetSize = sizeof(S_LoginSuccesePacket);
-		sendPkt.success = loginSuccess;
-		SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(sendPkt, EPacketType::S_LoginResult);
-		session->Send(sendBuffer);
+		std::cout << " Login Success!Inventory Item Count : " << itemInfos.size() << std::endl;
+		
+		GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+		PlayerRef player = gameSession->_currentPlayer;
 
-		return true;
+		//loginPkt.set_playerclass(static_cast<Protocol::ClassType>(player->_class));
+		//loginPkt.set_gold(player->_gold);
+		//loginPkt.set_exp(player->_exp);
+		//loginPkt.set_hp(player->_hp);
+		// loginPkt.set_playerid(...);
 	}
 
-	return false;
+	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(loginPkt);
+	session->Send(sendBuffer);
+
+	return true;
 }
