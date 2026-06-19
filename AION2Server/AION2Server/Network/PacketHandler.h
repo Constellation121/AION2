@@ -9,8 +9,10 @@ enum : uint16
 {
 	PKT_C_SIGNUP = 1000,
 	PKT_S_SIGNUP = 1001,
-	PKT_C_LOGIN = 1002,
-	PKT_S_LOGIN = 1003,
+	PKT_C_LOGIN  = 1002,
+	PKT_S_SLOGIN  = 1003,
+	PKT_S_FLOGIN  = 1004,
+	PKT_S_ITEM   = 1005,
 };
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
@@ -60,8 +62,9 @@ private:
 	}
 
 	static SendBufferRef MakeSendBuffer(Protocol::S_SignUpResultPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SIGNUP); };
-	static SendBufferRef MakeSendBuffer(Protocol::S_LoginSuccessPacket pkt) { return MakeSendBuffer(pkt, PKT_S_LOGIN); };
-
+	static SendBufferRef MakeSendBuffer(Protocol::S_LoginSuccessPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SLOGIN); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_LoginFailPacket pkt) { return MakeSendBuffer(pkt, PKT_S_FLOGIN); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_ItemDataPacket pkt) { return MakeSendBuffer(pkt, PKT_S_ITEM); };
 
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& packet, uint16 packetId)
@@ -75,7 +78,7 @@ private:
 		header->size = packetSize;
 		header->id = packetId;
 		packet.SerializeToArray(&header[1], dataSize);
-	//	ASSERT_CRASH(packet.SerializeToArray(&header[1], dataSize));
+		//	ASSERT_CRASH(packet.SerializeToArray(&header[1], dataSize));
 		sendBuffer->Close(packetSize);
 
 		return sendBuffer;
