@@ -6,3 +6,6 @@
 #define STATE_DASHING FGameplayTag::RequestGameplayTag(TEXT("State.Dashing"))
 #define STATE_JUMPING FGameplayTag::RequestGameplayTag(TEXT("State.Jumping"))
 #define STATE_GLIDING FGameplayTag::RequestGameplayTag(TEXT("State.Gliding"))
+
+#define COMBO_AVAILABLE_LB2 FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.LB2"))
+#define COMBO_AVAILABLE_LB3 FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.LB3"))

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/DaevaAnimInstance.h"
+#include "Animation/Daeva/DaevaAnimInstance.h"
 #include "AssassinAnimInstance.generated.h"
 
 UCLASS()
