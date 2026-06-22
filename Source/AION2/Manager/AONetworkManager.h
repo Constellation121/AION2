@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include <Sockets.h>
-#include "AONetworkSubsystem.generated.h"
+#include "AONetworkManager.generated.h"
 
 UCLASS()
-class AION2_API UAONetworkSubsystem : public UGameInstanceSubsystem
+class AION2_API UAONetworkManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
@@ -17,8 +17,8 @@ public:
 	virtual void Deinitialize() override;
 	void OnWorldInitialized(UWorld* World, const UWorld::InitializationValues IValues);
 
-	void SetSocket(FSocket* Socket) { ClientSocket = Socket; }
-
+	void SetSocket(FSocket* Socket) ;
+	void SetPlayerManager();
 public:
 	void ReceiveData();
 	void ResetBuffer();
@@ -33,6 +33,6 @@ private:
 	TArray<uint8> ReceiverBuffer;
 
 	class UAOGameInstance* GameInst;
-	const int32 MAX_PACKET_SIZE = 65535;
-
+	class UAOPlayerManager* PlayerMng;
+	const int32 MAX_PACKET_SIZE = 65535;	
 };

@@ -1,6 +1,24 @@
 #pragma once
 #include "CoreMinimal.h"
 
+#if PLATFORM_WINDOWS
+#include "Windows/AllowWindowsPlatformTypes.h"
+#endif
+
+#pragma push_macro("check")
+#undef check
+#pragma push_macro("verify")
+#undef verify
+
+#include "Network/Protocol.pb.h"
+
+#pragma pop_macro("verify")
+#pragma pop_macro("check")
+
+#if PLATFORM_WINDOWS
+#include "Windows/HideWindowsPlatformTypes.h"
+#endif
+
 enum : uint16
 {
 	PKT_C_SIGNUP = 1000,
@@ -9,6 +27,9 @@ enum : uint16
 	PKT_S_SLOGIN = 1003,
 	PKT_S_FLOGIN = 1004,
 	PKT_S_ITEM = 1005,
+	PKT_C_MAPLOADCOMPLETE = 1006,
+	PKT_S_SPAWN = 1007,
+
 };
 
 

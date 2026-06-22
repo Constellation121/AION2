@@ -19,5 +19,5 @@ public:
 	
 private:
 	class UAOGameInstance* GameInst;
-	class UAONetworkSubsystem* NetworkManager;
+	class UAONetworkManager* NetworkManager;
 };

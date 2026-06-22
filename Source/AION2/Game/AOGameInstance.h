@@ -4,23 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#if PLATFORM_WINDOWS
-#include "Windows/AllowWindowsPlatformTypes.h"
-#endif
-
-#pragma push_macro("check")
-#undef check
-#pragma push_macro("verify")
-#undef verify
-
-#include "Network/Protocol.pb.h"
-
-#pragma pop_macro("verify")
-#pragma pop_macro("check")
-
-#if PLATFORM_WINDOWS
-#include "Windows/HideWindowsPlatformTypes.h"
-#endif
+#include "Network/PacketHeader.h"
 #include "AOGameInstance.generated.h"
 
 /**
@@ -44,17 +28,25 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SendLoginPacket(const FString& Id, const FString& Password);
-
+	
+	UFUNCTION(BlueprintCallable)
+	void SendMapLoadCompletePacket();
+	
 	void SendPacket(void* Packet, int32 PacketSize);
 	void SendPacket(google::protobuf::Message& Pkt, uint16 PacketId);
 	
-	class UAONetworkSubsystem* GetNetworkManager() { return UNetworkManager; }
+	class UAONetworkManager* GetNetworkManager() { return UNetworkManager; }
 
+public:
+	uint64 GetMyPlayerId(){return MyPlayerId;}
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
 	TObjectPtr<class UAOLoginUserWidget> LoginWidget;
-
-	//소켓을 담을 변수
+	
 	FSocket* ClientSocket;
-	class UAONetworkSubsystem* UNetworkManager;
+	class UAONetworkManager* UNetworkManager;
+
+private:
+	uint64 MyPlayerId = 0;
+	
 };

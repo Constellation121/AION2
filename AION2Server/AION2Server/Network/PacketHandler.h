@@ -13,6 +13,10 @@ enum : uint16
 	PKT_S_SLOGIN  = 1003,
 	PKT_S_FLOGIN  = 1004,
 	PKT_S_ITEM   = 1005,
+	PKT_C_MAPLOADCOMPLETE = 1006,
+	PKT_S_SPAWN = 1007,
+
+
 };
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
@@ -31,6 +35,7 @@ public:
 
 	static bool HandleSignUp(PacketSessionRef& session, Protocol::C_SignUpPacket& pkt);
 	static bool HandleLogin(PacketSessionRef& session, Protocol::C_LoginPacket& pkt);
+	static bool HandleMapComplete(PacketSessionRef& session, Protocol::C_MapLoadCompletePacket& pkt);
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
 	{
@@ -50,6 +55,12 @@ public:
 	//		};
 	//}
 
+	static SendBufferRef MakeSendBuffer(Protocol::S_SignUpResultPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SIGNUP); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_LoginSuccessPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SLOGIN); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_LoginFailPacket pkt) { return MakeSendBuffer(pkt, PKT_S_FLOGIN); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_ItemDataPacket pkt) { return MakeSendBuffer(pkt, PKT_S_ITEM); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_SpawnPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SPAWN); };
+
 private:
 	template<typename PacketType, typename ProcessFunc>
 	static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -60,11 +71,6 @@ private:
 
 		return func(session, pkt);
 	}
-
-	static SendBufferRef MakeSendBuffer(Protocol::S_SignUpResultPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SIGNUP); };
-	static SendBufferRef MakeSendBuffer(Protocol::S_LoginSuccessPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SLOGIN); };
-	static SendBufferRef MakeSendBuffer(Protocol::S_LoginFailPacket pkt) { return MakeSendBuffer(pkt, PKT_S_FLOGIN); };
-	static SendBufferRef MakeSendBuffer(Protocol::S_ItemDataPacket pkt) { return MakeSendBuffer(pkt, PKT_S_ITEM); };
 
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& packet, uint16 packetId)

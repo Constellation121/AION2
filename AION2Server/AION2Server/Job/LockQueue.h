@@ -12,7 +12,7 @@ public:
 
 	T Pop()
 	{
-		std::lock_guard<std::mutex>lock(_lock);
+		std::lock_guard<std::mutex>lock(_popLock);
 		if (_items.empty())
 			return T();
 
@@ -36,6 +36,7 @@ public:
 
 private:
 	std::mutex _lock;
+	std::mutex _popLock;
 	std::queue<T>_items;
 };
 

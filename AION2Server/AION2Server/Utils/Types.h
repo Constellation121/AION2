@@ -34,6 +34,8 @@ USING_SHARED_PTR(Player);
 USING_SHARED_PTR(JobQueue);
 USING_SHARED_PTR(Job);
 
+USING_SHARED_PTR(Room);
+
 
 const uint64 WORKER_TICK = 64;
 

@@ -1,24 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AONetworkSubsystem.h"
+#include "AONetworkManager.h"
 #include "Game/AOGameInstance.h"
 #include "UI/AOLoginUserWidget.h"
 #include "Network/PacketHeader.h"
+#include "Manager/AOPlayerManager.h"
 
 constexpr int BUFSIZE = 4096;
 
-void UAONetworkSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+void UAONetworkManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 }
 
-void UAONetworkSubsystem::Deinitialize()
+void UAONetworkManager::Deinitialize()
 {
 	Super::Deinitialize();
 }
 
-void UAONetworkSubsystem::OnWorldInitialized(UWorld* World, const UWorld::InitializationValues IValues)
+void UAONetworkManager::OnWorldInitialized(UWorld* World, const UWorld::InitializationValues IValues)
 {
 	if (World && World->IsGameWorld())
 	{
@@ -27,13 +28,28 @@ void UAONetworkSubsystem::OnWorldInitialized(UWorld* World, const UWorld::Initia
 	}
 }
 
-void UAONetworkSubsystem::ResetBuffer()
+void UAONetworkManager::SetSocket(FSocket* Socket)
+{
+	ClientSocket = Socket;
+	SetPlayerManager();
+}
+
+void UAONetworkManager::ResetBuffer()
 {
 	ReceiverBuffer.Empty();
 	UE_LOG(LogTemp, Warning, TEXT("Network Buffer Cleared for New Level"));
 }
 
-void UAONetworkSubsystem::ReceiveData()
+void UAONetworkManager::SetPlayerManager()
+{
+	GameInst = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst)
+	{
+		PlayerMng = GameInst->GetSubsystem<UAOPlayerManager>();
+	}
+}
+
+void UAONetworkManager::ReceiveData()
 {
 	if (!ClientSocket)
 		return;
@@ -84,10 +100,10 @@ void UAONetworkSubsystem::ReceiveData()
 	}
 }
 
-void UAONetworkSubsystem::ProcessQueuePackets()
+void UAONetworkManager::ProcessQueuePackets()
 {
 	ReceiveData();
-	GameInst = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
+
 
 	if (!GameInst) return;
 
@@ -112,49 +128,89 @@ void UAONetworkSubsystem::ProcessQueuePackets()
 		switch (Header->PacketId)
 		{
 		case PKT_S_SIGNUP:
-		{
-			Protocol::S_SignUpResultPacket Pkt;
-			if (Pkt.ParseFromArray(PayloadPtr, PayloadSize))
 			{
-				bool bSuccess = Pkt.success();
-				UE_LOG(LogTemp, Log, TEXT("SignUp Result Received: %d"), bSuccess);
-				if (!bSuccess)
+				Protocol::S_SignUpResultPacket Pkt;
+				if (Pkt.ParseFromArray(PayloadPtr, PayloadSize))
 				{
-					if (GameInst && GameInst->LoginWidget)
+					bool bSuccess = Pkt.success();
+					UE_LOG(LogTemp, Log, TEXT("SignUp Result Received: %d"), bSuccess);
+					if (!bSuccess)
 					{
-						GameInst->LoginWidget->HandleRegisterError();
+						if (GameInst && GameInst->LoginWidget)
+						{
+							GameInst->LoginWidget->HandleRegisterError();
+						}
+						else
+						{
+							UE_LOG(LogTemp, Warning, TEXT("LoginWidget is not Valid."));
+						}
 					}
 					else
 					{
-						UE_LOG(LogTemp, Warning, TEXT("LoginWidget is not Valid."));
+						GameInst->LoginWidget->HandleRegisterResult();
 					}
 				}
-				else
-				{
-					GameInst->LoginWidget->HandleRegisterResult();
-				}
+				break;
 			}
-			break;
-		}
 
 		case PKT_S_FLOGIN:
-		{
-			Protocol::S_LoginFailPacket Pkt;
-			UE_LOG(LogTemp, Error, TEXT("Login Failed!"));
-			GameInst->LoginWidget->HandleLoginResult();
-			break;
-		}
+			{
+				Protocol::S_LoginFailPacket Pkt;
+				UE_LOG(LogTemp, Error, TEXT("Login Failed!"));
+				GameInst->LoginWidget->HandleLoginResult();
+				break;
+			}
 
 		case PKT_S_SLOGIN:
-		{
-			Protocol::S_LoginSuccessPacket Pkt;
-
-			break;
-		}
+			{
+				Protocol::S_LoginSuccessPacket Pkt;
+				if (Pkt.ParseFromArray(PayloadPtr, PayloadSize))
+				{
+					UE_LOG(LogTemp, Error, TEXT("Login Success!"));
+					
+					if (PlayerMng)
+					{
+						PlayerMng->HandleLogin();
+					}
+				}
+				break;
+			}
 
 		case PKT_S_ITEM:
-		{
+			{
+				Protocol::S_ItemDataPacket Pkt;
+				if (Pkt.ParseFromArray(PayloadPtr, PayloadSize))
+				{
+					int32 ItemCount = Pkt.playeritems_size();
 
+					UE_LOG(LogTemp, Log, TEXT("Received Item Count: %d"), ItemCount);
+					for (int i = 0; i < ItemCount; i++)
+					{
+						const Protocol::ItemData& Item = Pkt.playeritems(i);
+
+						int32 InstanceId = Item.iteminstancedid();
+						int32 TemplateId = Item.itemtemplateid();
+						int32 SlotIndex = Item.slotindex();
+						int32 Count = Item.count();
+					}
+				}
+				break;
+			}
+
+		case PKT_S_SPAWN:
+		{
+			Protocol::S_SpawnPacket Pkt;
+			if (Pkt.ParseFromArray(PayloadPtr, PayloadSize))
+			{
+				int32 SpawnCount = Pkt.playerstates_size();
+
+				UE_LOG(LogTemp, Log, TEXT("Received Players Count: %d"), SpawnCount);
+				for (int i = 0; i < SpawnCount; ++i)
+				{
+					const Protocol::PlayerState& Info = Pkt.playerstates(i);
+					PlayerMng->HandleSpawn(Info);
+				}
+			}
 			break;
 		}
 
