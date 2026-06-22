@@ -119,6 +119,7 @@
     <ClCompile Include="ObjectUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Room.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreGlobal\CoreGlobal.h">
@@ -215,5 +216,6 @@
     <ClInclude Include="ObjectUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Room.h" />
   </ItemGroup>
 </Project>

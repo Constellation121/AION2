@@ -9,10 +9,14 @@ enum : uint16
 {
 	PKT_C_SIGNUP = 1000,
 	PKT_S_SIGNUP = 1001,
-	PKT_C_LOGIN  = 1002,
-	PKT_S_SLOGIN  = 1003,
-	PKT_S_FLOGIN  = 1004,
-	PKT_S_ITEM   = 1005,
+	PKT_C_LOGIN = 1002,
+	PKT_S_SLOGIN = 1003,
+	PKT_S_FLOGIN = 1004,
+	PKT_S_ITEM = 1005,
+	PKT_C_MAPLOADCOMPLETE = 1006,
+	PKT_S_SPAWN = 1007,
+
+
 };
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
@@ -27,10 +31,12 @@ public:
 
 		GPacketHandler[PKT_C_SIGNUP] = [](PacketSessionRef& session, BYTE* buffer, int len) { return HandlePacket<Protocol::C_SignUpPacket>(HandleSignUp, session, buffer, len); };
 		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_LoginPacket>(HandleLogin, session, buffer, len); };
+		GPacketHandler[PKT_C_MAPLOADCOMPLETE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_MapLoadCompletePacket>(HandleMapComplete, session, buffer, len); };
 	}
 
 	static bool HandleSignUp(PacketSessionRef& session, Protocol::C_SignUpPacket& pkt);
 	static bool HandleLogin(PacketSessionRef& session, Protocol::C_LoginPacket& pkt);
+	static bool HandleMapComplete(PacketSessionRef& session, Protocol::C_MapLoadCompletePacket& pkt);
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
 	{
@@ -50,8 +56,14 @@ public:
 	//		};
 	//}
 
+	static SendBufferRef MakeSendBuffer(Protocol::S_SignUpResultPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_SIGNUP); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_LoginSuccessPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_SLOGIN); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_LoginFailPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_FLOGIN); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_ItemDataPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_ITEM); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_SpawnPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_SPAWN); };
+
 private:
-	template<typename PacketType, typename ProcessFunc>
+	template<typename PacketType, typename ProcessFunc> 
 	static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
 	{
 		PacketType pkt;
@@ -60,11 +72,6 @@ private:
 
 		return func(session, pkt);
 	}
-
-	static SendBufferRef MakeSendBuffer(Protocol::S_SignUpResultPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SIGNUP); };
-	static SendBufferRef MakeSendBuffer(Protocol::S_LoginSuccessPacket pkt) { return MakeSendBuffer(pkt, PKT_S_SLOGIN); };
-	static SendBufferRef MakeSendBuffer(Protocol::S_LoginFailPacket pkt) { return MakeSendBuffer(pkt, PKT_S_FLOGIN); };
-	static SendBufferRef MakeSendBuffer(Protocol::S_ItemDataPacket pkt) { return MakeSendBuffer(pkt, PKT_S_ITEM); };
 
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& packet, uint16 packetId)
@@ -77,7 +84,9 @@ private:
 
 		header->size = packetSize;
 		header->id = packetId;
-		packet.SerializeToArray(&header[1], dataSize);
+
+		char* bufferPtr = reinterpret_cast<char*>(header);
+		packet.SerializeToArray(bufferPtr + sizeof(PacketHeader), dataSize);
 		//	ASSERT_CRASH(packet.SerializeToArray(&header[1], dataSize));
 		sendBuffer->Close(packetSize);
 

@@ -4,6 +4,7 @@
 #include "DBConnectionPool.h"
 #include "DBBind.h"
 #include "ItemData.h"
+#include "Room.h"
 #include "Player.h"
 #include "ObjectUtils.h"
 
@@ -109,7 +110,7 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 			loginSuccess = true;
 			if (isFirstRow)
 			{
-				
+
 				GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 				PlayerRef player = ObjectUtils::CreatePlayer(gameSession);
 				player->SetPlayerInfo(playerClass, exp, gold, hp);
@@ -134,16 +135,25 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 	if (loginSuccess)
 	{
 		std::cout << " Login Success!Inventory Item Count : " << itemPkt.playeritems_size() << std::endl;
-		
+
 		GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 		PlayerRef player = gameSession->_player;
-
-		loginPkt.set_playerclass(static_cast<Protocol::ClassType>(player->_class));
+		Protocol::PlayerInfo* playerInfo = loginPkt.mutable_playerinfo();
+		playerInfo->set_playerclass(static_cast<Protocol::ClassType>(player->_class));
+		playerInfo->set_playerid(player->_playerId);
 		loginPkt.set_gold(player->_gold);
 		loginPkt.set_exp(player->_exp);
 		loginPkt.set_hp(player->_hp);
-		loginPkt.set_playerid(player->_playerId);
+
+		SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(loginPkt);
+		session->Send(sendBuffer);
+
+		SendBufferRef itemSendBuffer = PacketHandler::MakeSendBuffer(itemPkt);
+		session->Send(itemSendBuffer);
+
+		GRoom->DoAsync(&Room::AddPlayer, player);
 	}
+
 	else
 	{
 		Protocol::S_LoginFailPacket failPkt;
@@ -151,11 +161,14 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 		session->Send(failSendBuffer);
 	}
 
-	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(loginPkt);
-	session->Send(sendBuffer);
-
-	SendBufferRef itemSendBuffer = PacketHandler::MakeSendBuffer(itemPkt);
-	session->Send(itemSendBuffer);
-
 	return true;
+}
+
+bool PacketHandler::HandleMapComplete(PacketSessionRef& session, Protocol::C_MapLoadCompletePacket& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+	GRoom->DoAsync(&Room::HandleEnterPlayer, player);
+
+	return false;
 }

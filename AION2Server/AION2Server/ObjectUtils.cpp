@@ -13,4 +13,5 @@ PlayerRef ObjectUtils::CreatePlayer(GameSessionRef session)
     player->_ownerSession = session;
     session->_player = player;
     return player;
+
 }

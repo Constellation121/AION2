@@ -76,11 +76,13 @@ private:
 	SendEvent			_sendEvent;
 };
 
+#pragma pack(push, 1)
 struct PacketHeader
 {
 	uint16 size;
 	uint16 id; // 프로토콜ID (ex. 1=로그인, 2=이동요청)
 };
+#pragma pack(pop)
 
 class PacketSession : public Session
 {

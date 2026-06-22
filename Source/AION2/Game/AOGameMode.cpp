@@ -3,7 +3,7 @@
 
 #include "AOGameMode.h"
 #include "Game/AOGameInstance.h"
-#include "Network/AONetworkSubsystem.h"
+#include "Manager/AONetworkManager.h"
 
 void AAOGameMode::BeginPlay()
 {
