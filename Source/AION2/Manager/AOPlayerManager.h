@@ -27,20 +27,23 @@ class AION2_API UAOPlayerManager : public UGameInstanceSubsystem
 private:
 	UAOPlayerManager();
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;	
-	
+
 public:
-	void HandleLogin();
-	void HandleSpawn(Protocol::PlayerState& Info);
+	void HandleLogin(uint64 PlayerId, uint8 ClassType);
+	void HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector SpawnLocation);
 	
 private:
 	FVector PlayerStartLocation = FVector(442.0f,-147.0f, 90.0f );
 
-private:
-	Protocol::PlayerInfo MyPlayerInfo;
-	std::unordered_map<uint64, std::shared_ptr<class Daeva>> PlayerInfos;
+private:	
+	class ADaeva* MyPlayer;		
+	std::unordered_map<uint64, std::shared_ptr<class ADaeva>> PlayerInfos;
+	
+	TSubclassOf <class ADaeva> PlayerClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
-	TMap<int32, TSubclassOf<APawn>> JobClassMap;
+	TMap<uint8, TSubclassOf<APawn>> JobClassMap;
 	
 	class UAOGameInstance* GameInstance;
+	UWorld* World;
 };

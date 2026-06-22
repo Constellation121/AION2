@@ -14,6 +14,7 @@ UCLASS()
 class AION2_API UAOGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+
 public:
 	virtual void Init() override;
 
@@ -28,25 +29,35 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SendLoginPacket(const FString& Id, const FString& Password);
-	
+
 	UFUNCTION(BlueprintCallable)
 	void SendMapLoadCompletePacket();
-	
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void OpenVillageLevel();
+
+	void OnReadyoOpenLevel();
+
 	void SendPacket(void* Packet, int32 PacketSize);
 	void SendPacket(google::protobuf::Message& Pkt, uint16 PacketId);
-	
+
 	class UAONetworkManager* GetNetworkManager() { return UNetworkManager; }
 
 public:
-	uint64 GetMyPlayerId(){return MyPlayerId;}
+	void SetMyPlayerId(uint64 playerId) { MyPlayerId = playerId; }
+	uint64 GetMyPlayerId() { return MyPlayerId; }
+	
+	void SetMyPlayerClass(uint8 ClassType) { MyPlayerClass = ClassType; }
+	int32 GetMyPlayerClass() { return MyPlayerClass; }
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
 	TObjectPtr<class UAOLoginUserWidget> LoginWidget;
-	
+
 	FSocket* ClientSocket;
 	class UAONetworkManager* UNetworkManager;
 
 private:
 	uint64 MyPlayerId = 0;
-	
+	uint8 MyPlayerClass = 0;
 };

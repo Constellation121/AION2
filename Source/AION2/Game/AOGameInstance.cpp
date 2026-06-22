@@ -6,6 +6,8 @@
 #include "Common/TcpSocketBuilder.h"
 #include "SocketSubsystem.h"
 #include "Manager/AONetworkManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 void UAOGameInstance::Init()
 {
@@ -122,6 +124,21 @@ void UAOGameInstance::SendMapLoadCompletePacket()
 	SendPacket(Pkt, PKT_C_MAPLOADCOMPLETE);
 }
 
+void UAOGameInstance::OpenVillageLevel()
+{
+	FString VillagePath = TEXT("/Game/Map/Village");
+	UGameplayStatics::OpenLevel(GetWorld(), *VillagePath, true);
+}
+
+void UAOGameInstance::OnReadyoOpenLevel()
+{
+	if (UWorld* World = GetWorld())
+	{
+		FTimerHandle Handle;
+		World->GetTimerManager().SetTimer(Handle, this, &UAOGameInstance::OpenVillageLevel, 1.0f, false);
+	}
+}
+
 void UAOGameInstance::SendPacket(void* Packet, int32 PacketSize)
 {
 	int32 bytesSent = 0;
@@ -148,4 +165,12 @@ void UAOGameInstance::SendPacket(google::protobuf::Message& Pkt, uint16 PacketId
 
 	TArray<uint8> Buffer; 
 	Buffer.AddUninitialized(PacketSize);
+	
+	FPacketHeader* Header = reinterpret_cast<FPacketHeader*>(Buffer.GetData());
+	Header->PacketSize = PacketSize;
+	Header->PacketId = PacketId;
+
+	Pkt.SerializeToArray(Buffer.GetData() + sizeof(FPacketHeader), DataSize);
+
+	SendPacket(Buffer.GetData(), PacketSize);
 }

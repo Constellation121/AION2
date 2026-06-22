@@ -32,7 +32,7 @@ private:
 
 	TArray<uint8> ReceiverBuffer;
 
-	class UAOGameInstance* GameInst;
+	class UAOGameInstance* GameInstance;
 	class UAOPlayerManager* PlayerMng;
 	const int32 MAX_PACKET_SIZE = 65535;	
 };

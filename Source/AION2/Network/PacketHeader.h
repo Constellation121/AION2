@@ -10,8 +10,10 @@
 #pragma push_macro("verify")
 #undef verify
 
+#pragma warning(push)
+#pragma warning(disable: 4702)
 #include "Network/Protocol.pb.h"
-
+#pragma warning(pop)
 #pragma pop_macro("verify")
 #pragma pop_macro("check")
 
@@ -32,9 +34,10 @@ enum : uint16
 
 };
 
-
+#pragma pack(push, 1)
 struct FPacketHeader
 {
 	uint16 PacketSize;
 	uint16 PacketId;
-};
+}; 
+#pragma pack(pop)

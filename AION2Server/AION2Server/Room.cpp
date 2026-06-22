@@ -78,7 +78,7 @@ void Room::LeaveRoom(PlayerRef player)
 
 bool Room::HandleEnterPlayer(PlayerRef player)
 {
-
+	EnterRoom(player);
 	return true;
 }
 
