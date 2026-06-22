@@ -126,7 +126,7 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ADaeva::Zoom);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &ADaeva::InputShiftPressed);
 		EnhancedInputComponent->BindAction(SpaceAction, ETriggerEvent::Started, this, &ADaeva::InputSpacePressed);
-		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::LB));
+		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Triggered, this, &ADaeva::InputLBPressed);
 	}
 }
 
@@ -283,6 +283,22 @@ void ADaeva::InputSpacePressed()
 	}
 
 	GASInputPressed(static_cast<int32>(EAbilityID::Jump));
+}
+
+void ADaeva::InputLBPressed()
+{
+	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB2))
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::LB_2));
+	}
+	else if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB3))
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::LB_3));
+	}
+	else
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::LB_1));
+	}
 }
 
 void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)

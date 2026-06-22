@@ -29,7 +29,7 @@ void UGA_Glide::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
     WaitLandingTask->ReadyForActivation();
 
     ADaeva* Daeva = Cast<ADaeva>(ActorInfo->AvatarActor.Get());
-    UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, Daeva->GetMontageByAbilityInputID(EMontageID::Glide), 1.0f);
+    UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, Daeva->GetMontageByID(EMontageID::Glide), 1.0f);
     if (Daeva->HasAuthority())
     {
         Daeva->Multicast_SetWingVisibility(true);
@@ -41,7 +41,7 @@ void UGA_Glide::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 void UGA_Glide::OnLandedCallback()
 {
     ADaeva* Daeva = Cast<ADaeva>(GetAvatarActorFromActorInfo());
-    UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, Daeva->GetMontageByAbilityInputID(EMontageID::GlideLand), 2.f);
+    UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, Daeva->GetMontageByID(EMontageID::GlideLand), 2.f);
     if (Daeva->HasAuthority())
     {
         Daeva->Multicast_PlayWingMontage(EMontageID::GlideLand, 2.f);

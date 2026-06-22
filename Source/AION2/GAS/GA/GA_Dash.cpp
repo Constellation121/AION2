@@ -61,11 +61,11 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
     UAbilityTask_PlayMontageAndWait* MontageTask;
     if (GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(STATE_COMBAT))
     {
-        MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, Daeva->GetMontageByAbilityInputID(EMontageID::CombatDash), 1.0f);
+        MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, Daeva->GetMontageByID(EMontageID::CombatDash), 1.0f);
     }
     else
     {
-        MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, Daeva->GetMontageByAbilityInputID(EMontageID::Dash), 1.0f);
+        MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, Daeva->GetMontageByID(EMontageID::Dash), 1.0f);
     }
 
     MontageTask->OnCompleted.AddDynamic(this, &UGA_Dash::OnDashFinished);

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/DaevaAnimInstance.h"
+#include "Animation/Daeva/DaevaAnimInstance.h"
 #include "DaevaFAnimInstance.generated.h"
 
 /**
