@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "Character/AOCharacter.h"
 #include "InputActionValue.h"
+#include "GameplayTagContainer.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "Daeva.generated.h"
 
 class USkeletalMeshComponent;
@@ -27,18 +29,21 @@ UENUM(BlueprintType)
 enum class EMontageID : uint8
 {
 	Dash UMETA(DisplayName = "Dash"),
+	CombatDash UMETA(DisplayName = "CombatDash"),
 	Glide UMETA(DisplayName = "Glide"),
 	GlideLand UMETA(DisplayName = "GlideLand"),
-	StopGlide UMETA(DisplayName = "StopGlide")
+	StopGlide UMETA(DisplayName = "StopGlide"),
+	LB UMETA(DisplayName = "LB")
 };
 
 UENUM(BlueprintType)
-enum class EAbilityInputID : uint8
+enum class EAbilityID : uint8
 {
 	Dash UMETA(DisplayName = "Dash"),
 	Jump UMETA(DisplayName = "Jump"),
 	Glide UMETA(DisplayName = "Glide"),
-	StopGlide UMETA(DisplayName = "StopGlide")
+	StopGlide UMETA(DisplayName = "StopGlide"),
+	LB UMETA(DisplayName = "LB")
 };
 
 UCLASS()
@@ -60,6 +65,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -73,6 +79,7 @@ protected:
 
 protected:
 	virtual void InitGAS() override;
+	virtual void ClearGAS() override;
 	void GASInputPressed(int32 InputId);
 	void GASInputReleased(int32 InputId);
 
@@ -82,7 +89,12 @@ private:
 	void InputShiftPressed();
 	void InputSpacePressed();
 
+protected:
+	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
+
 private:
+	void SetWeaponVisibility(bool NewVisible);
+	void SetSubWeaponVisibility(bool NewVisible);
 	void SetWingVisibility(bool NewVisible);
 
 private:
@@ -90,6 +102,8 @@ private:
 
 public:
 	FORCEINLINE UAnimMontage* GetMontageByAbilityInputID(EMontageID Index) const { return Montages[Index]; }
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return Weapon; }
+	FORCEINLINE USkeletalMeshComponent* GetSubWeaponMesh() const { return SubWeapon; }
 	FORCEINLINE USkeletalMeshComponent* GetWingMesh() const { return Wing; }
 	FORCEINLINE UAnimInstance* GetWingAnimInstance() const { return GetWingMesh()->GetAnimInstance(); }
 
@@ -131,6 +145,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> SpaceAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> LBAction;
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TMap<EMontageID, TObjectPtr<UAnimMontage>> Montages;
@@ -143,9 +160,23 @@ private:
 	TMap<EDaevaPartType, TObjectPtr<USkeletalMeshComponent>> Parts;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> Weapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> SubWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> Wing;
 
-private :
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UDA_AbilitySet> CombatAbilitySet;
+
+	UPROPERTY()
+	TArray<FGameplayAbilitySpecHandle> CombatAbilityHandles;
+
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
 	TSubclassOf<UGameplayEffect> DashStaminaRegenEffect;
+
+	bool bTagEventsRegistered = false;
 };

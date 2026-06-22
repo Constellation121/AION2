@@ -8,5 +8,11 @@ UCLASS()
 class AION2_API UDaevaAnimInstance : public UAOCharacterAnimInstance
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+private:
+	UPROPERTY(BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	bool bIsCombat = false;
 };
