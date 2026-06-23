@@ -56,5 +56,19 @@ bool Handle_S_ITEM(UAONetworkManager* NetworkMng, Protocol::S_ItemDataPacket& Pk
 
 bool Handle_S_SPAWN(UAONetworkManager* NetworkMng, Protocol::S_SpawnPacket& Pkt)
 {
+	if (Pkt.playerstates_size() > 0)
+	{
+		int32 SpawnCount = Pkt.playerstates_size();
+
+		UE_LOG(LogTemp, Log, TEXT("Received Players Count: %d"), SpawnCount);
+		for (int i = 0; i < SpawnCount; ++i)
+		{
+			const Protocol::PlayerState& Info = Pkt.playerstates(i);
+			uint64 PlayerId = Info.playerinfo().playerid();
+			FVector Location = FVector(Info.playerpos().x(), Info.playerpos().y(), Info.playerpos().z());
+			uint8 CalssType = static_cast<uint8>(Info.playerinfo().playerclass());
+			NetworkMng->PlayerMng->HandleSpawn(PlayerId, CalssType, Location);
+		}
+	}
 	return false;
 }

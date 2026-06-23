@@ -4,6 +4,7 @@
 #include "Common/TcpSocketBuilder.h"
 #include "Common/TcpSocketBuilder.h"
 #include "Protocol.pb.h"
+constexpr int BUFSIZE = 4096;
 
 AONetworkReceiverWorker::AONetworkReceiverWorker()
 {
@@ -29,7 +30,6 @@ uint32 AONetworkReceiverWorker::Run()
 		return 0;
 
 	TArray<uint8> ReceiverBuffer;
-	constexpr int32 BUFSIZE = 4096;
 	uint8 TempData[BUFSIZE];
 
 	// 소켓은 기본적으로 Non-Blocking으로 한 번만 세팅함임

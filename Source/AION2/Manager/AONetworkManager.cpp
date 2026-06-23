@@ -8,7 +8,6 @@
 #include "Manager/AOPlayerManager.h"
 #include "Manager/PacketHandlerManager.h"
 
-constexpr int BUFSIZE = 4096;
 
 void UAONetworkManager::Initialize(FSubsystemCollectionBase& Collection)
 {
