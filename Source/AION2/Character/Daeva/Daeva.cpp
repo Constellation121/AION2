@@ -182,9 +182,13 @@ void ADaeva::InitGAS()
 	ASC = GASPS->GetAbilitySystemComponent();
 	ASC->InitAbilityActorInfo(GASPS, this);
 
-	if (!bTagEventsRegistered)
+	if (!ASC->HasMatchingGameplayTag(TEAM_DAEVA))
 	{
 		ASC->AddLooseGameplayTag(TEAM_DAEVA);
+	}
+
+	if (!bTagEventsRegistered)
+	{
 		ASC->RegisterGameplayTagEvent(STATE_COMBAT, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ADaeva::OnCombatStateChanged);
 
 		bTagEventsRegistered = true;

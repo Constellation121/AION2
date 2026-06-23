@@ -26,8 +26,13 @@ protected:
 private:
 	void SetInputMappingContext(EInputType InNewInputType);
 
+public:
+	FORCEINLINE bool GetShowColliderDebug() const { return bShowColliderDebug; }
+
 private:
+	void ShowDebugCollider();
 	void ShowDebugGAS();
+	bool bShowColliderDebug = false;
 	bool bShowGASDebug = false;
 
 private:
@@ -36,6 +41,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TMap<EInputType, TObjectPtr<class UInputMappingContext>> InputMappingContexts;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ColliderDebugAction;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> GASDebugAction;

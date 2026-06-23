@@ -5,39 +5,6 @@
 #include "Character/Daeva/Daeva.h"
 #include "GA_Attack.generated.h"
 
-USTRUCT(BlueprintType)
-struct FTraceData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly)
-	float Range = 0.0f;
-
-	UPROPERTY(EditDefaultsOnly)
-	float Radius = 0.0f;
-
-	UPROPERTY(EditDefaultsOnly)
-	FVector StartOffset = FVector::ZeroVector;
-
-	UPROPERTY(EditDefaultsOnly)
-	FVector Direction = FVector::ZeroVector;
-};
-
-USTRUCT(BlueprintType)
-struct FAttackData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly)
-	float DamageMultiplier = 1.f;
-
-	//UPROPERTY(EditDefaultsOnly)
-	//FGameplayTag HitGameplayCueTag;
-
-	UPROPERTY(EditDefaultsOnly)
-	FTraceData TraceData;
-};
-
 UCLASS()
 class AION2_API UGA_Attack : public UGameplayAbility
 {
@@ -53,8 +20,11 @@ protected:
 	UFUNCTION()
 	void OnMontageTaskCancelled();
 
+	UFUNCTION()
+	void OnCheckAttackHitEvent(FGameplayEventData Payload);
+
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "AttackData", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
 	FAttackData AttackData;
 
 private:

@@ -27,6 +27,7 @@ void AAOPlayerController::SetupInputComponent()
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 	if (EnhancedInputComponent)
 	{
+		EnhancedInputComponent->BindAction(ColliderDebugAction, ETriggerEvent::Started, this, &AAOPlayerController::ShowDebugCollider);
 		EnhancedInputComponent->BindAction(GASDebugAction, ETriggerEvent::Started, this, &AAOPlayerController::ShowDebugGAS);
 	}
 }
@@ -39,6 +40,11 @@ void AAOPlayerController::SetInputMappingContext(EInputType InNewInputType)
 		InputSystem->ClearAllMappings();
 		InputSystem->AddMappingContext(InputMappingContexts[InNewInputType], 0);
 	}
+}
+
+void AAOPlayerController::ShowDebugCollider()
+{
+	bShowColliderDebug = !bShowColliderDebug;
 }
 
 void AAOPlayerController::ShowDebugGAS()

@@ -16,7 +16,7 @@
 #define COMBO_AVAILABLE_LB2 FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.LB2"))
 #define COMBO_AVAILABLE_LB3 FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.LB3"))
 
-
+#define EVENT_CHECKATTACKHIT FGameplayTag::RequestGameplayTag(TEXT("Event.CheckAttackHit"))
 
 // Monster Game Tag
 
