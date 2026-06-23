@@ -28,22 +28,24 @@ enum class EDaevaPartType : uint8
 UENUM(BlueprintType)
 enum class EMontageID : uint8
 {
-	Dash UMETA(DisplayName = "Dash"),
-	CombatDash UMETA(DisplayName = "CombatDash"),
-	Glide UMETA(DisplayName = "Glide"),
-	GlideLand UMETA(DisplayName = "GlideLand"),
-	StopGlide UMETA(DisplayName = "StopGlide"),
-	LB UMETA(DisplayName = "LB")
+	Dash,
+	CombatDash,
+	Glide,
+	GlideLand,
+	StopGlide,
+	LB
 };
 
 UENUM(BlueprintType)
 enum class EAbilityID : uint8
 {
-	Dash UMETA(DisplayName = "Dash"),
-	Jump UMETA(DisplayName = "Jump"),
-	Glide UMETA(DisplayName = "Glide"),
-	StopGlide UMETA(DisplayName = "StopGlide"),
-	LB UMETA(DisplayName = "LB")
+	Dash,
+	Jump,
+	Glide,
+	StopGlide,
+	LB_1,
+	LB_2,
+	LB_3
 };
 
 UCLASS()
@@ -88,6 +90,7 @@ protected:
 private:
 	void InputShiftPressed();
 	void InputSpacePressed();
+	void InputLBPressed();
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
@@ -101,7 +104,7 @@ private:
 	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
 
 public:
-	FORCEINLINE UAnimMontage* GetMontageByAbilityInputID(EMontageID Index) const { return Montages[Index]; }
+	FORCEINLINE UAnimMontage* GetMontageByID(EMontageID Index) const { return Montages[Index]; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return Weapon; }
 	FORCEINLINE USkeletalMeshComponent* GetSubWeaponMesh() const { return SubWeapon; }
 	FORCEINLINE USkeletalMeshComponent* GetWingMesh() const { return Wing; }
