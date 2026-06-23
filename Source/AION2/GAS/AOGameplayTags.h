@@ -2,6 +2,12 @@
 
 #include "GameplayTagContainer.h"
 
+#define TEAM_DAEVA FGameplayTag::RequestGameplayTag(TEXT("Team.Daeva"))
+#define TEAM_MONSTER FGameplayTag::RequestGameplayTag(TEXT("Team.Monster"))
+
+#define FACTION_ELYOS FGameplayTag::RequestGameplayTag(TEXT("Faction.Elyos"))
+#define FACTION_ASMODIAN FGameplayTag::RequestGameplayTag(TEXT("Faction.Asmodian"))
+
 #define STATE_COMBAT FGameplayTag::RequestGameplayTag(TEXT("State.Combat"))
 #define STATE_DASHING FGameplayTag::RequestGameplayTag(TEXT("State.Dashing"))
 #define STATE_JUMPING FGameplayTag::RequestGameplayTag(TEXT("State.Jumping"))

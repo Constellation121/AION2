@@ -184,6 +184,7 @@ void ADaeva::InitGAS()
 
 	if (!bTagEventsRegistered)
 	{
+		ASC->AddLooseGameplayTag(TEAM_DAEVA);
 		ASC->RegisterGameplayTagEvent(STATE_COMBAT, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ADaeva::OnCombatStateChanged);
 
 		bTagEventsRegistered = true;
