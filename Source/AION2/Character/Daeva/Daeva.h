@@ -33,7 +33,14 @@ enum class EMontageID : uint8
 	Glide,
 	GlideLand,
 	StopGlide,
-	LB
+	LB,
+	RB,
+	Key1,
+	Key2,
+	Key3,
+	Key4,
+	KeyQ,
+	KeyE
 };
 
 UENUM(BlueprintType)
@@ -46,6 +53,16 @@ enum class EAbilityID : uint8
 	LB_1,
 	LB_2,
 	LB_3
+	LB_3,
+	RB_1,
+	RB_2,
+	RB_3,
+	Key1,
+	Key2,
+	Key3,
+	Key4,
+	KeyQ,
+	KeyE
 };
 
 UCLASS()
@@ -91,6 +108,13 @@ private:
 	void InputShiftPressed();
 	void InputSpacePressed();
 	void InputLBPressed();
+	void InputRBPressed();
+	void InputKey1Pressed();
+	void InputKey2Pressed();
+	void InputKey3Pressed();
+	void InputKey4Pressed();
+	void InputKeyQPressed();
+	void InputKeyEPressed();
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
@@ -150,6 +174,27 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> LBAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> RBAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> Key1Action;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> Key2Action;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> Key3Action;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> Key4Action;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> KeyQAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> KeyEAction;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Montage", meta = (AllowPrivateAccess = "true"))
