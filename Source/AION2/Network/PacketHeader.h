@@ -34,6 +34,26 @@ enum : uint16
 
 };
 
+#include "PacketHeader.generated.h"
+
+USTRUCT(BlueprintType)
+struct FPlayerInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	uint64 PlayerId = 0;
+
+	UPROPERTY()
+	uint8 ClassType = 0;
+};
+
+struct FPacket
+{
+	uint16 PacketId = 0;
+	TArray<uint8> RawPayload;
+};
+
 #pragma pack(push, 1)
 struct FPacketHeader
 {

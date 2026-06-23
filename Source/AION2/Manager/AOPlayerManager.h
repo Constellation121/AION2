@@ -11,14 +11,6 @@
 /**
  * 
  */
-USTRUCT()
-struct FPlayerInfo
-{
-	GENERATED_BODY()
-public:
-	int32 ClassType;
-	FVector StartLocation;
-};
 
 UCLASS()
 class AION2_API UAOPlayerManager : public UGameInstanceSubsystem
