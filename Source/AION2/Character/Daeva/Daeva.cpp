@@ -11,6 +11,8 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 
+#include "Player/AOPlayerController.h"
+
 ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -112,6 +114,15 @@ void ADaeva::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitGAS();
+
+	/*
+	* 로컬 컨트롤러에게 "ASC 준비됨" 알림
+	* AAOPlayerController::CreateOrBindRaidHUD()
+	*/
+	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
+	{
+		AOController->HandlePawnASCReady();
+	}
 }
 
 void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
