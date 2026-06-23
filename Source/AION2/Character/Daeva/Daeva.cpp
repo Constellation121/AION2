@@ -138,6 +138,13 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &ADaeva::InputShiftPressed);
 		EnhancedInputComponent->BindAction(SpaceAction, ETriggerEvent::Started, this, &ADaeva::InputSpacePressed);
 		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Triggered, this, &ADaeva::InputLBPressed);
+		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Triggered, this, &ADaeva::InputRBPressed);
+		EnhancedInputComponent->BindAction(Key1Action, ETriggerEvent::Triggered, this, &ADaeva::InputKey1Pressed);
+		EnhancedInputComponent->BindAction(Key2Action, ETriggerEvent::Triggered, this, &ADaeva::InputKey2Pressed);
+		EnhancedInputComponent->BindAction(Key3Action, ETriggerEvent::Triggered, this, &ADaeva::InputKey3Pressed);
+		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Triggered, this, &ADaeva::InputKey4Pressed);
+		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::InputKeyQPressed);
+		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::InputKeyEPressed);
 	}
 }
 
@@ -310,6 +317,52 @@ void ADaeva::InputLBPressed()
 	{
 		GASInputPressed(static_cast<int32>(EAbilityID::LB_1));
 	}
+}
+
+void ADaeva::InputRBPressed()
+{
+	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB2))
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::RB_2));
+	}
+	else if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB3))
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::RB_3));
+	}
+	else
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::RB_1));
+	}
+}
+
+void ADaeva::InputKey1Pressed()
+{
+	GASInputPressed(static_cast<int32>(EAbilityID::Key1));
+}
+
+void ADaeva::InputKey2Pressed()
+{
+	GASInputPressed(static_cast<int32>(EAbilityID::Key2));
+}
+
+void ADaeva::InputKey3Pressed()
+{
+	GASInputPressed(static_cast<int32>(EAbilityID::Key3));
+}
+
+void ADaeva::InputKey4Pressed()
+{
+	GASInputPressed(static_cast<int32>(EAbilityID::Key4));
+}
+
+void ADaeva::InputKeyQPressed()
+{
+	GASInputPressed(static_cast<int32>(EAbilityID::KeyQ));
+}
+
+void ADaeva::InputKeyEPressed()
+{
+	GASInputPressed(static_cast<int32>(EAbilityID::KeyE));
 }
 
 void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)
