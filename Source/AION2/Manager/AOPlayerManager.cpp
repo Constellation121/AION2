@@ -5,10 +5,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Game/AOGameInstance.h"
 #include "Character/Daeva/Daeva.h"
+#include "Player/AOPlayerController.h"
 
-UAOPlayerManager::UAOPlayerManager()
+UAOPlayerManager::UAOPlayerManager() 
 {
-	static ConstructorHelpers::FClassFinder<APawn> AssassinClassRef(TEXT(""));
+	static ConstructorHelpers::FClassFinder<APawn> AssassinClassRef(TEXT("/Game/Blueprint/Daeva/Assassin/BP_Assassin"));
 	if (AssassinClassRef.Succeeded())
 	{
 		JobClassMap.Add(1, AssassinClassRef.Class);
@@ -20,13 +21,13 @@ UAOPlayerManager::UAOPlayerManager()
 		JobClassMap.Add(2, ClericClassRef.Class);
 	}
 
-	static ConstructorHelpers::FClassFinder<APawn> RangerClassRef(TEXT(""));
+	static ConstructorHelpers::FClassFinder<APawn> RangerClassRef(TEXT("/Game/Blueprint/Daeva/Ranger/BP_Ranger"));
 	if (RangerClassRef.Succeeded())
 	{
 		JobClassMap.Add(3, RangerClassRef.Class);
 	}
 
-	static ConstructorHelpers::FClassFinder<APawn> TemplarClassRef(TEXT(""));
+	static ConstructorHelpers::FClassFinder<APawn> TemplarClassRef(TEXT("/Game/Blueprint/Daeva/Templar/BP_Templar"));
 	if (TemplarClassRef.Succeeded())
 	{
 		JobClassMap.Add(4, TemplarClassRef.Class);
@@ -61,7 +62,15 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector Spa
 		UClass* SpawnClass = JobClassMap[ClassType].Get();
 		if (GameInstance->GetMyPlayerId() == PlayerId)
 		{
-			MyPlayer = World->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+			MyPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+			if (MyPlayer != nullptr)
+			{
+				AAOPlayerController* PlayerController = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
+				if (PlayerController != nullptr)
+				{
+					PlayerController->Possess(MyPlayer);
+				}
+			}
 		}
 
 		else

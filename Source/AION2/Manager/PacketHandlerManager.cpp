@@ -19,6 +19,7 @@ void InitPacketHandler()
 	GAOPacketHandler[PKT_S_SLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_LoginSuccessPacket>(Handle_S_SLOGIN, Mng, Buf, Len);};
 	GAOPacketHandler[PKT_S_ITEM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_ItemDataPacket>(Handle_S_ITEM, Mng, Buf, Len);};
 	GAOPacketHandler[PKT_S_SPAWN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_SpawnPacket>(Handle_S_SPAWN, Mng, Buf, Len);};
+	GAOPacketHandler[PKT_S_MOVE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_MovePacket>(Handle_S_MOVE, Mng, Buf, Len);};
 }
 
 bool Handle_INVALID(UAONetworkManager* NetworkMng, uint8* Buffer, int32 Len)
@@ -63,12 +64,17 @@ bool Handle_S_SPAWN(UAONetworkManager* NetworkMng, Protocol::S_SpawnPacket& Pkt)
 		UE_LOG(LogTemp, Log, TEXT("Received Players Count: %d"), SpawnCount);
 		for (int i = 0; i < SpawnCount; ++i)
 		{
-			const Protocol::PlayerState& Info = Pkt.playerstates(i);
-			uint64 PlayerId = Info.playerinfo().playerid();
-			FVector Location = FVector(Info.playerpos().x(), Info.playerpos().y(), Info.playerpos().z());
-			uint8 CalssType = static_cast<uint8>(Info.playerinfo().playerclass());
+			const Protocol::PlayerState& State = Pkt.playerstates(i);
+			uint64 PlayerId = State.playerinfo().playerid();
+			FVector Location = FVector(State.playerlocation().x(), State.playerlocation().y(), State.playerlocation().z());
+			uint8 CalssType = static_cast<uint8>(State.playerinfo().playerclass());
 			NetworkMng->PlayerMng->HandleSpawn(PlayerId, CalssType, Location);
 		}
 	}
+	return false;
+}
+
+bool Handle_S_MOVE(UAONetworkManager* NetworkMng, Protocol::S_MovePacket& Pkt)
+{
 	return false;
 }

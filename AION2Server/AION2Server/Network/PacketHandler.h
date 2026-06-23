@@ -15,8 +15,8 @@ enum : uint16
 	PKT_S_ITEM = 1005,
 	PKT_C_MAPLOADCOMPLETE = 1006,
 	PKT_S_SPAWN = 1007,
-
-
+	PKT_C_MOVE = 1008,
+	PKT_S_MOVE = 1009,
 };
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);

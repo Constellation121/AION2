@@ -110,7 +110,6 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 			loginSuccess = true;
 			if (isFirstRow)
 			{
-
 				GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 				PlayerRef player = ObjectUtils::CreatePlayer(gameSession);
 				player->SetPlayerInfo(playerClass, exp, gold, hp);

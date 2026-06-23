@@ -29,12 +29,12 @@ void Room::EnterRoom(PlayerRef player)
 		playerInfo->set_playerid(player->_playerId);
 		playerInfo->set_playerclass(static_cast<Protocol::ClassType>(player->_class));
 
-		Protocol::Vector3* pos = playerState->mutable_playerpos();
+		Protocol::Vector3* pos = playerState->mutable_playerlocation();
 		pos->set_x(100.0f);
 		pos->set_y(200.0f);
 		pos->set_z(300.0f);
 
-		Protocol::Rotator3* rot = playerState->mutable_playerrot();
+		Protocol::Rotator3* rot = playerState->mutable_playerrotation();
 		rot->set_pitch(player->_playerRot.pitch());
 		rot->set_yaw(player->_playerRot.yaw());
 		rot->set_roll(player->_playerRot.roll());
@@ -55,12 +55,12 @@ void Room::EnterRoom(PlayerRef player)
 			playerInfo->set_playerid(user->_playerId);
 			playerInfo->set_playerclass(static_cast<Protocol::ClassType>(user->_class));
 
-			Protocol::Vector3* pos = playerState->mutable_playerpos();
+			Protocol::Vector3* pos = playerState->mutable_playerlocation();
 			pos->set_x(100.0f);
 			pos->set_y(200.0f);
 			pos->set_z(300.0f);
 
-			Protocol::Rotator3* rot = playerState->mutable_playerrot();
+			Protocol::Rotator3* rot = playerState->mutable_playerrotation();
 			rot->set_pitch(user->_playerRot.pitch());
 			rot->set_yaw(user->_playerRot.yaw());
 			rot->set_roll(user->_playerRot.roll());
