@@ -52,7 +52,6 @@ enum class EAbilityID : uint8
 	StopGlide,
 	LB_1,
 	LB_2,
-	LB_3
 	LB_3,
 	RB_1,
 	RB_2,
