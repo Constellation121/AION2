@@ -3,9 +3,25 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
+TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
+
 AAOPlayerController::AAOPlayerController()
 {
 	CurrentInputType = EInputType::Game;
+}
+
+void AAOPlayerController::Server_SetShowColliderDebug_Implementation()
+{
+	bShowColliderDebug = !bShowColliderDebug;
+
+	if (bShowColliderDebug)
+	{
+		ConsoleCommand(TEXT("ao.Debug.DrawAttackTrace 1"));
+	}
+	else
+	{
+		ConsoleCommand(TEXT("ao.Debug.DrawAttackTrace 0"));
+	}
 }
 
 void AAOPlayerController::BeginPlay()
@@ -44,7 +60,7 @@ void AAOPlayerController::SetInputMappingContext(EInputType InNewInputType)
 
 void AAOPlayerController::ShowDebugCollider()
 {
-	bShowColliderDebug = !bShowColliderDebug;
+	Server_SetShowColliderDebug();
 }
 
 void AAOPlayerController::ShowDebugGAS()

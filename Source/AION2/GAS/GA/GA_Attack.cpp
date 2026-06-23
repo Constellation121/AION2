@@ -61,5 +61,5 @@ void UGA_Attack::OnCheckAttackHitEvent(FGameplayEventData Payload)
         return;
     }
 
-    //AOCharacter->CheckAttackHit(AttackData);
+    AOCharacter->CheckAttackHit(AttackData);
 }

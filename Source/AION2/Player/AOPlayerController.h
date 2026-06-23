@@ -4,6 +4,8 @@
 #include "GameFramework/PlayerController.h"
 #include "AOPlayerController.generated.h"
 
+extern TAutoConsoleVariable<int32> CVarDrawAttackTrace;
+
 UENUM()
 enum class EInputType : uint8
 {
@@ -19,6 +21,10 @@ class AION2_API AAOPlayerController : public APlayerController
 public:
 	AAOPlayerController();
 
+public:
+	UFUNCTION(Server, Reliable)
+	void Server_SetShowColliderDebug();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -26,12 +32,11 @@ protected:
 private:
 	void SetInputMappingContext(EInputType InNewInputType);
 
-public:
-	FORCEINLINE bool GetShowColliderDebug() const { return bShowColliderDebug; }
-
 private:
 	void ShowDebugCollider();
 	void ShowDebugGAS();
+
+private:
 	bool bShowColliderDebug = false;
 	bool bShowGASDebug = false;
 

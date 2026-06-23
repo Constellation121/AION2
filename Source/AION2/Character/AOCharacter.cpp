@@ -32,25 +32,22 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);
 
 	FVector OriginalStart = GetActorTransform().TransformPosition(AttackData.TraceData.StartOffset);
-	FVector OriginalEnd = OriginalStart + AttackData.TraceData.Direction * AttackRange;
+	FVector OriginalEnd = OriginalStart + AttackData.TraceData.Direction.GetSafeNormal() * AttackRange;
 	FVector CapsuleOrigin = OriginalStart + (OriginalEnd - OriginalStart) * 0.5f;
-
-	//float SweepHalfLength = FMath::Max(0.0f, (AttackRange * 0.5f) - AttackRadius);
-	//FVector SweepStart = CapsuleOrigin - (GetActorForwardVector() * SweepHalfLength);
-	//FVector SweepEnd = CapsuleOrigin + (GetActorForwardVector() * SweepHalfLength);
 
 	bool bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, OriginalStart, OriginalEnd, FQuat::Identity, CCHANNEL_ATTACK, FCollisionShape::MakeSphere(AttackRadius), Params);
 
-	if (!bHitDetected)
-	{
-		return;
-	}
-
-	if (Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController())->GetShowColliderDebug())
+	if (CVarDrawAttackTrace.GetValueOnGameThread())
 	{
 		const float CapsuleHalfHeight = AttackRange * 0.5f;
 		FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
 		Multicast_DrawDebugCapsuleCollider(CapsuleOrigin, CapsuleHalfHeight, AttackRadius, DrawColor);
+		UE_LOG(LogTemp, Log, TEXT("%f"), AttackRadius);
+	}
+
+	if (!bHitDetected)
+	{
+		return;
 	}
 
 	bool bDidShakeCamera = false;
@@ -89,8 +86,14 @@ void AAOCharacter::ClearGAS()
 
 bool AAOCharacter::IsEnemy(AActor* TargetActor)
 {
+	AAOCharacter* AOCharacter = Cast<AAOCharacter>(TargetActor);
+	if (!AOCharacter)
+	{
+		return false;
+	}
+
 	UAbilitySystemComponent* MyASC = GetAbilitySystemComponent();
-	UAbilitySystemComponent* TargetASC = Cast<AAOCharacter>(TargetActor)->GetAbilitySystemComponent();
+	UAbilitySystemComponent* TargetASC = AOCharacter->GetAbilitySystemComponent();
 	if (!MyASC || !TargetASC)
 	{
 		return false;
