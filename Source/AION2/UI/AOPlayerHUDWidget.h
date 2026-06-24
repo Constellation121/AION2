@@ -11,13 +11,19 @@
 /**
  * 
  */
+
+class UProgressBar;
+class UTextBlock;
+
 UCLASS()
 class AION2_API UAOPlayerHUDWidget : public UAOUserWidgetBase
 {
 	GENERATED_BODY()
-	
+
 public:
-    virtual void BindToPlayerState(AAOPlayerState* InPlayerState) override;
+    virtual void BindToASC(UAbilitySystemComponent* InASC) override;
+    virtual void UnbindFromASC() override;
+
 
 protected:
     // UI 소멸자.
@@ -39,25 +45,11 @@ private:
     
     void BroadcastInitialAttributes();
 
-protected:
-    // BlueprintImplementableEvent: C++ Body 구현 불가능, Blueprint에서 구현.
-    UFUNCTION(BlueprintImplementableEvent)
-    void OnHealthChanged(float NewValue, float MaxValue);
-
-    UFUNCTION(BlueprintImplementableEvent)
-    void OnMaxHealthChanged(float NewValue, float MaxValue);
-
-    UFUNCTION(BlueprintImplementableEvent)
-    void OnManaChanged(float NewValue, float MaxValue);
-
-    UFUNCTION(BlueprintImplementableEvent)
-    void OnMaxManaChanged(float NewValue, float MaxValue);
-
-    UFUNCTION(BlueprintImplementableEvent)
-    void OnStaminaChanged(float NewValue, float MaxValue);
-
-    UFUNCTION(BlueprintImplementableEvent)
-    void OnMaxStaminaChanged(float NewValue, float MaxValue);
+private:
+    // 내부 UI 업데이트
+    void UpdateHpBar(float CurrentValue, float MaxValue);
+    void UpdateManaBar(float CurrentValue, float MaxValue);
+    void UpdateStaminaBar(float CurrentValue, float MaxValue);
 
 private:
     ///
@@ -73,5 +65,20 @@ private:
     FDelegateHandle StaminaChangedHandle;
     FDelegateHandle MaxStaminaChangedHandle;
 	
+protected:
+    UPROPERTY(meta = (BindWidget), BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UProgressBar> Pb_HpBar;
+
+    UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UTextBlock> TB_HpText;
+
+    UPROPERTY(meta = (BindWidget), BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UProgressBar> Pb_MpBar;
+
+    UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UTextBlock> TB_MpText;
+
+    UPROPERTY(meta = (BindWidgetOptional), BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UProgressBar> Pb_StaminaBar;
 
 };

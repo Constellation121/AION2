@@ -24,12 +24,22 @@ public:
 	* 공통 Bind/Unbind 흐름 제공
 	* Server에서는 절대 생성되지 않도록 함.
 	*/
+	virtual void BindToASC(UAbilitySystemComponent* InASC);
+	virtual void UnbindFromASC();
+
+	// 기존 Player 코드 호환용. 내부에서 BindToASC 호출. 
 	virtual void BindToPlayerState(AAOPlayerState* InPlayerState);
 
+	virtual void BindToAbilitySystemActor(AActor* InActor);
+
 protected:
-	// Playeer State 저장
+	// Player State 저장 (Player 전용 보조 참조로, Monster Binding 시 null).
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AAOPlayerState> BoundPlayerState;
+
+	// Ability System의 Owning Actor.
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AActor> BoundAbilitySystemActor;
 
 	// ASC 저장
 	UPROPERTY(BlueprintReadOnly)

@@ -11,6 +11,11 @@ class USkeletalMeshComponent;
 class UInputAction;
 class UGameplayEffect;
 
+class UWidgetComponent;
+class UAOWidgetComponentBase;
+class USceneComponent;
+class UMaterialInterface;
+
 UENUM(BlueprintType)
 enum class EDaevaPartType : uint8
 {
@@ -133,6 +138,10 @@ private:
 	bool IsFrontOfCamera(AActor* Other);
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
 
+private:
+	// UI
+	void BindOverheadStatusWidget();
+
 public:
 	void SetMyId(uint64 Id) { MyId = Id; }
 
@@ -244,6 +253,7 @@ private:
 
 	bool bTagEventsRegistered = false;
 
+
 private:
 	FTimerHandle SendMoveHandle;
 
@@ -269,4 +279,13 @@ private:
 private:
 	FTimerHandle TargetSearchTimer;
 
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> BillboardComponent;
+
+	TObjectPtr<UMaterialInterface> WidgetMaterial;
 };

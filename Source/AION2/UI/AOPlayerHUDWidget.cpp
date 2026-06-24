@@ -7,12 +7,13 @@
 #include "GAS/AttributeSet/AOAttributeSet.h"
 #include "Player/AOPlayerState.h"
 
+#include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 
-void UAOPlayerHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
+
+void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 {
-    UnbindASCDelegates();
-
-    Super::BindToPlayerState(InPlayerState);
+    Super::BindToASC(InASC);
 
     if (!BoundASC)
     {
@@ -20,9 +21,13 @@ void UAOPlayerHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
     }
 
     BindASCDelegates();
-
-    // Bind된 delegate들이 변경될 때만 호출되므로, 초기값 Push.
     BroadcastInitialAttributes();
+}
+
+void UAOPlayerHUDWidget::UnbindFromASC()
+{
+    UnbindASCDelegates();
+    Super::UnbindFromASC();
 }
 
 void UAOPlayerHUDWidget::NativeDestruct()
@@ -39,7 +44,7 @@ void UAOPlayerHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)
         return;
     }
 
-    OnHealthChanged(Data.NewValue, AttributeSet->GetMaxHealth());
+    UpdateHpBar(Data.NewValue, AttributeSet->GetMaxHealth());
 }
 
 void UAOPlayerHUDWidget::HandleMaxHealthChanged(const FOnAttributeChangeData& Data)
@@ -50,7 +55,7 @@ void UAOPlayerHUDWidget::HandleMaxHealthChanged(const FOnAttributeChangeData& Da
         return;
     }
 
-    OnMaxHealthChanged(AttributeSet->GetHealth(), Data.NewValue);
+    UpdateHpBar(AttributeSet->GetHealth(), Data.NewValue);
 }
 
 void UAOPlayerHUDWidget::HandleManaChanged(const FOnAttributeChangeData& Data)
@@ -61,7 +66,7 @@ void UAOPlayerHUDWidget::HandleManaChanged(const FOnAttributeChangeData& Data)
         return;
     }
 
-    OnManaChanged(Data.NewValue, AttributeSet->GetMaxMana());
+    UpdateManaBar(Data.NewValue, AttributeSet->GetMaxMana());
 }
 
 void UAOPlayerHUDWidget::HandleMaxManaChanged(const FOnAttributeChangeData& Data)
@@ -72,7 +77,7 @@ void UAOPlayerHUDWidget::HandleMaxManaChanged(const FOnAttributeChangeData& Data
         return;
     }
 
-    OnMaxManaChanged(AttributeSet->GetMana(), Data.NewValue);
+    UpdateManaBar(AttributeSet->GetMana(), Data.NewValue);
 }
 
 void UAOPlayerHUDWidget::HandleStaminaChanged(const FOnAttributeChangeData& Data)
@@ -83,7 +88,7 @@ void UAOPlayerHUDWidget::HandleStaminaChanged(const FOnAttributeChangeData& Data
         return;
     }
 
-    OnStaminaChanged(Data.NewValue, AttributeSet->GetMaxStamina());
+    UpdateStaminaBar(Data.NewValue, AttributeSet->GetMaxStamina());
 }
 
 void UAOPlayerHUDWidget::HandleMaxStaminaChanged(const FOnAttributeChangeData& Data)
@@ -94,7 +99,7 @@ void UAOPlayerHUDWidget::HandleMaxStaminaChanged(const FOnAttributeChangeData& D
         return;
     }
 
-    OnMaxStaminaChanged(AttributeSet->GetStamina(), Data.NewValue);
+    UpdateStaminaBar(AttributeSet->GetStamina(), Data.NewValue);
 }
 
 void UAOPlayerHUDWidget::BindASCDelegates()
@@ -205,7 +210,50 @@ void UAOPlayerHUDWidget::BroadcastInitialAttributes()
         return;
     }
 
-    OnHealthChanged(AttributeSet->GetHealth(), AttributeSet->GetMaxHealth());
-    OnManaChanged(AttributeSet->GetMana(), AttributeSet->GetMaxMana());
-    OnStaminaChanged(AttributeSet->GetStamina(), AttributeSet->GetMaxStamina());
+    UpdateHpBar(AttributeSet->GetHealth(), AttributeSet->GetMaxHealth());
+    UpdateManaBar(AttributeSet->GetMana(), AttributeSet->GetMaxMana());
+    UpdateStaminaBar(AttributeSet->GetStamina(), AttributeSet->GetMaxStamina());
+}
+
+void UAOPlayerHUDWidget::UpdateHpBar(float CurrentValue, float MaxValue)
+{
+    if (Pb_HpBar)
+    {
+        Pb_HpBar->SetPercent(MaxValue > 0.0f ? CurrentValue / MaxValue : 0.0f);
+    }
+
+    if (TB_HpText)
+    {
+        TB_HpText->SetText(FText::FromString(FString::Printf(TEXT("%d / %d"), static_cast<int>(CurrentValue), static_cast<int>(MaxValue))));
+    }
+}
+
+void UAOPlayerHUDWidget::UpdateManaBar(float CurrentValue, float MaxValue)
+{
+    if (Pb_MpBar)
+    {
+        Pb_MpBar->SetPercent(MaxValue > 0.0f ? CurrentValue / MaxValue : 0.0f);
+    }
+
+
+    if (TB_MpText)
+    {
+        TB_MpText->SetText(FText::FromString(FString::Printf(TEXT("%d / %d"), static_cast<int>(CurrentValue), static_cast<int>(MaxValue))));
+    }
+}
+
+void UAOPlayerHUDWidget::UpdateStaminaBar(float CurrentValue, float MaxValue)
+{
+    if (Pb_StaminaBar)
+    {
+        Pb_StaminaBar->SetPercent(MaxValue > 0.0f ? CurrentValue / MaxValue : 0.0f);
+        if (Pb_StaminaBar->GetPercent() == 1.0f)
+        {
+            Pb_StaminaBar->SetVisibility(ESlateVisibility::Hidden);
+        }
+        else
+        {
+            Pb_StaminaBar->SetVisibility(ESlateVisibility::Visible);
+        }
+    }
 }

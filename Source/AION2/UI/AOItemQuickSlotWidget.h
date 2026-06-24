@@ -23,9 +23,6 @@ protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 	TObjectPtr<UTextBlock> TextBlock_ItemCount;
 
-	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
-	TObjectPtr<UTextBlock> TextBlock_QuickKey;
-
 protected:
 	ESlotType slotType = ESlotType::Item_Quick;
 };

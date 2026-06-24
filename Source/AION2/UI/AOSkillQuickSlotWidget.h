@@ -21,9 +21,6 @@ protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 	TObjectPtr<UTextBlock> TextBlock_SkillLevel;
 
-	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
-	TObjectPtr<UTextBlock> TextBlock_QuickKey;
-
 protected:
 	ESlotType slotType = ESlotType::Skill_Quick;
 	

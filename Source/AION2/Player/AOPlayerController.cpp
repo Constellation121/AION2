@@ -3,6 +3,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
+#include "UI/AOMainHUDWidget.h"
+#include "Components/Widget.h"
+#include "Player/AOPlayerState.h"
+#include "Game/AORaidGameState.h"
+
 TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
 
 AAOPlayerController::AAOPlayerController()
@@ -24,9 +29,25 @@ void AAOPlayerController::Server_SetShowColliderDebug_Implementation()
 	}
 }
 
+void AAOPlayerController::HandlePawnASCReady()
+{
+	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
+	{
+		return;
+	}
+
+	CreateOrBindMainHUD();
+}
+
 void AAOPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// 클라이언트일 때만 지정
+	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
+	{
+		return;
+	}
 
 	FInputModeGameOnly GameOnlyInputMode;
 	SetInputMode(GameOnlyInputMode);
@@ -50,12 +71,27 @@ void AAOPlayerController::SetupInputComponent()
 
 void AAOPlayerController::SetInputMappingContext(EInputType InNewInputType)
 {
-	UEnhancedInputLocalPlayerSubsystem* InputSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	if (InputSystem)
+	ULocalPlayer* LocalPlayer = GetLocalPlayer();
+	if (!LocalPlayer)
 	{
-		InputSystem->ClearAllMappings();
-		InputSystem->AddMappingContext(InputMappingContexts[InNewInputType], 0);
+		return;
 	}
+
+	UEnhancedInputLocalPlayerSubsystem* InputSystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+
+	if (!InputSystem)
+	{
+		return;
+	}
+
+	if (!InputMappingContexts.Contains(InNewInputType))
+	{
+		return;
+	}
+
+	InputSystem->ClearAllMappings();
+	InputSystem->AddMappingContext(InputMappingContexts[InNewInputType], 0);
 }
 
 void AAOPlayerController::ShowDebugCollider()
@@ -75,4 +111,45 @@ void AAOPlayerController::ShowDebugGAS()
 	{
 		ConsoleCommand(TEXT("showdebug none"));
 	}
+}
+
+void AAOPlayerController::CreateOrBindMainHUD()
+{
+	// Exception Handling
+	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
+	{
+		return;
+	}
+
+	if (!MainHUDClass)
+	{
+		return;
+	}
+
+	if (!MainHUD)
+	{
+		MainHUD = CreateWidget<UAOMainHUDWidget>(this, MainHUDClass);
+		if (!MainHUD)
+		{
+			return;
+		}
+
+		MainHUD->AddToViewport();
+	}
+
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	MainHUD->BindToPlayerState(AOPlayerState);
+}
+
+void AAOPlayerController::RefreshRaidHUDVisibility()
+{
+	if (!MainHUD)
+	{
+		return;
+	}
+
+	const bool bIsRaidLevel =
+		GetWorld() && GetWorld()->GetGameState<AAORaidGameState>() != nullptr;
+
+	MainHUD->SetRaidHUDVisible(bIsRaidLevel);
 }
