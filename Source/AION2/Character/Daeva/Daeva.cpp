@@ -79,6 +79,17 @@ void ADaeva::Multicast_SetWingVisibility_Implementation(bool NewVisible)
 	SetWingVisibility(NewVisible);
 }
 
+void ADaeva::Client_PlayCameraShake_Implementation()
+{
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC || !CameraShakeClass)
+	{
+		return;
+	}
+
+	PC->ClientStartCameraShake(CameraShakeClass);
+}
+
 void ADaeva::BeginPlay()
 {
 	Super::BeginPlay();
@@ -274,6 +285,23 @@ void ADaeva::ApplyDashStaminaRegenEffect()
 	}
 }
 
+void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
+{
+	Super::OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
+
+	PlayCameraShake(bDidShakeCamera);
+}
+
+void ADaeva::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser)
+{
+	// Todo: 회피 & 리턴 처리
+	
+	Super::TakeDamageAO(AttackData, DamageCauser);
+
+	bool bDidShakeCamera = false;
+	PlayCameraShake(bDidShakeCamera);
+}
+
 void ADaeva::InputShiftPressed()
 {
 	GASInputPressed(static_cast<int32>(EAbilityID::Dash));
@@ -369,4 +397,14 @@ void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 	PartMesh->SetLeaderPoseComponent(GetMesh());
 
 	Parts.Add(PartType, PartMesh);
+}
+
+void ADaeva::PlayCameraShake(bool& bDidShakeCamera)
+{
+	if (!bDidShakeCamera)
+	{
+		Client_PlayCameraShake();
+
+		bDidShakeCamera = true;
+	}
 }

@@ -21,23 +21,19 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor);
 
-	UFUNCTION(Client, Unreliable)
-	void Client_PlayCameraShake();
-
 public:
 	virtual void CheckAttackHit(const FAttackData& AttackData) override;
-	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera);
 
 protected:
 	virtual void InitGAS();
 	virtual void ClearGAS();
 
 protected:
+	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera);
 	virtual void TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser);
 
 private:
 	bool IsEnemy(AActor* TargetActor);
-	void PlayCameraShake(bool& bDidShakeCamera);
 	void DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor);
 
 protected:
@@ -47,8 +43,4 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayEffect> DamageEffect;
-
-private:
-	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 };

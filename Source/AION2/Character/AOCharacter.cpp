@@ -23,17 +23,6 @@ void AAOCharacter::Multicast_DrawDebugCapsuleCollider_Implementation(const FVect
 	DrawDebugCapsuleCollider(CapsuleOrigin, CapsuleHalfHeight, AttackRadius, DrawColor);
 }
 
-void AAOCharacter::Client_PlayCameraShake_Implementation()
-{
-	APlayerController* PC = Cast<APlayerController>(GetController());
-	if (!PC || !CameraShakeClass)
-	{
-		return;
-	}
-
-	PC->ClientStartCameraShake(CameraShakeClass);
-}
-
 void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 {
 	TArray<FHitResult> OutHitResults;
@@ -43,17 +32,17 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);
 
-	FVector OriginalStart = GetActorTransform().TransformPosition(AttackData.TraceData.StartOffset);
-	FVector OriginalEnd = OriginalStart + AttackData.TraceData.Direction.GetSafeNormal() * AttackRange;
-	FVector CapsuleOrigin = OriginalStart + (OriginalEnd - OriginalStart) * 0.5f;
+	FVector SweepStart = GetActorTransform().TransformPosition(AttackData.TraceData.StartOffset);
+	FVector SweepEnd = SweepStart + AttackData.TraceData.Direction.GetSafeNormal() * AttackRange;
+	FVector CapsuleCenter = SweepStart + (SweepEnd - SweepStart) * 0.5f;
 
-	bool bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, OriginalStart, OriginalEnd, FQuat::Identity, CCHANNEL_ATTACK, FCollisionShape::MakeSphere(AttackRadius), Params);
+	bool bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, SweepStart, SweepEnd, FQuat::Identity, CCHANNEL_ATTACK, FCollisionShape::MakeSphere(AttackRadius), Params);
 
 	if (CVarDrawAttackTrace.GetValueOnGameThread())
 	{
 		const float CapsuleHalfHeight = AttackRange * 0.5f;
 		FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
-		Multicast_DrawDebugCapsuleCollider(CapsuleOrigin, CapsuleHalfHeight, AttackRadius, DrawColor);
+		Multicast_DrawDebugCapsuleCollider(CapsuleCenter, CapsuleHalfHeight, AttackRadius, DrawColor);
 		UE_LOG(LogTemp, Log, TEXT("%f"), AttackRadius);
 	}
 
@@ -81,6 +70,14 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 	}
 }
 
+void AAOCharacter::InitGAS()
+{
+}
+
+void AAOCharacter::ClearGAS()
+{
+}
+
 void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
 {
 	AAOCharacter* Target = Cast<AAOCharacter>(HitActor);
@@ -91,15 +88,6 @@ void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitA
 
 	//Target->TakeDamageAO(AttackData, this);
 	// gc
-	PlayCameraShake(bDidShakeCamera);
-}
-
-void AAOCharacter::InitGAS()
-{
-}
-
-void AAOCharacter::ClearGAS()
-{
 }
 
 void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser)
@@ -142,16 +130,6 @@ bool AAOCharacter::IsEnemy(AActor* TargetActor)
 	}
 
 	return false;
-}
-
-void AAOCharacter::PlayCameraShake(bool& bDidShakeCamera)
-{
-	if (!bDidShakeCamera)
-	{
-		Client_PlayCameraShake();
-
-		bDidShakeCamera = true;
-	}
 }
 
 void AAOCharacter::DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor)
