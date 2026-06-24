@@ -4,7 +4,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AOPlayerController.generated.h"
 
-class UAOMainHUDWidget;
+extern TAutoConsoleVariable<int32> CVarDrawAttackTrace;
 
 UENUM()
 enum class EInputType : uint8
@@ -22,8 +22,8 @@ public:
 	AAOPlayerController();
 
 public:
-	// PlayerBase(Daeva)가 준비됐음을 알리면(OnRep_PlayerState) 실행될 함수.
-	void HandlePawnASCReady();
+	UFUNCTION(Server, Reliable)
+	void Server_SetShowColliderDebug();
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,14 +33,12 @@ private:
 	void SetInputMappingContext(EInputType InNewInputType);
 
 private:
+	void ShowDebugCollider();
 	void ShowDebugGAS();
-	bool bShowGASDebug = false;
 
 private:
-	// UI 관련
-	void CreateOrBindMainHUD();
-	// RaidLevel에 있으면 (RaidGameState가 있으면) RaidHUD 보이기.
-	void RefreshRaidHUDVisibility();
+	bool bShowColliderDebug = false;
+	bool bShowGASDebug = false;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -50,14 +48,8 @@ private:
 	TMap<EInputType, TObjectPtr<class UInputMappingContext>> InputMappingContexts;
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ColliderDebugAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> GASDebugAction;
-
-
-protected:
-	// UI 관련
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RaidHUD)
-	TSubclassOf<UAOMainHUDWidget> MainHUDClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RaidHUD)
-	TObjectPtr<UAOMainHUDWidget> MainHUD;
 };
