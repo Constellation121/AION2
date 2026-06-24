@@ -70,20 +70,15 @@ void ADaeva::BeginPlay()
 	Super::BeginPlay();
 
 	TargetZoomDistance = SpringArm->TargetArmLength;
+	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 1.0f, true);
 }
 
 void ADaeva::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//ValidateTarget();
-	//if (!CurrentTarget)
-	//{
-	//	SearchTarget();
-	//	//GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 1.0f, true);
-	//}
-
 	Tick_Camera(DeltaTime);
+	Tick_Combat(DeltaTime);
 }
 
 void ADaeva::PossessedBy(AController* NewController)
@@ -135,6 +130,19 @@ void ADaeva::Tick_Camera(float DeltaTime)
 	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
 }
 
+void ADaeva::Tick_Combat(float DeltaTime)
+{
+	if (!HasAuthority() && IsLocallyControlled())
+	{
+		SearchTarget();
+		if (IsValid(CurrentTarget) && PreviousTarget != CurrentTarget)
+		{
+			Server_SetCurrentTarget(CurrentTarget);
+			UE_LOG(LogTemp, Log, TEXT("%s"), *GetNameSafe(CurrentTarget));
+		}
+	}
+}
+
 void ADaeva::Multicast_PlayWingMontage_Implementation(EMontageID MontageID, float PlayRate)
 {
 	if (!Wing || !WingMontages[MontageID])
@@ -164,8 +172,15 @@ void ADaeva::Client_PlayCameraShake_Implementation()
 	PC->ClientStartCameraShake(CameraShakeClass);
 }
 
-bool ADaeva::SearchTarget()
+void ADaeva::Server_SetCurrentTarget_Implementation(AAOCharacter* NewTarget)
 {
+	SetCurrentTarget(NewTarget);
+}
+
+void ADaeva::SearchTarget()
+{
+	PreviousTarget = CurrentTarget;
+
 	TArray<FHitResult> OutHitResults;
 
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(TargetingTrace), false, this);
@@ -176,7 +191,8 @@ bool ADaeva::SearchTarget()
 
 	if (!bHitDetected)
 	{
-		return false;
+		CurrentTarget = nullptr;
+		return;
 	}
 
 	struct FTargetCandidate
@@ -210,7 +226,8 @@ bool ADaeva::SearchTarget()
 
 	if (Candidates.IsEmpty())
 	{
-		return false;
+		CurrentTarget = nullptr;
+		return;
 	}
 
 	Candidates.Sort(
@@ -226,8 +243,6 @@ bool ADaeva::SearchTarget()
 	);
 
 	CurrentTarget = Candidates[0].Target;
-
-	return true;
 }
 
 void ADaeva::Move(const FInputActionValue& Value)
@@ -483,26 +498,6 @@ void ADaeva::PlayCameraShake(bool& bDidShakeCamera)
 		Client_PlayCameraShake();
 
 		bDidShakeCamera = true;
-	}
-}
-
-void ADaeva::ValidateTarget()
-{
-	if (!IsValid(CurrentTarget))
-	{
-		CurrentTarget = nullptr;
-		return;
-	}
-
-	//if (CurrentTarget->IsDead())
-	//{
-	//	CurrentTarget = nullptr;
-	//	return;
-	//}
-
-	if (FVector::DistSquared(GetActorLocation(), CurrentTarget->GetActorLocation()) > FMath::Square(TargetTraceRadius))
-	{
-		CurrentTarget = nullptr;
 	}
 }
 
