@@ -101,12 +101,14 @@ void ADaeva::Tick(float DeltaTime)
 void ADaeva::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	if (!IsLocallyControlled()) return;
-	{
-		UE_LOG(LogTemp, Log, TEXT(" ADaeva::BeginPlay() - SetTimer"));
-		GetWorldTimerManager().SetTimer(SendMoveHandle, this, &ADaeva::SendMovePacket, SendMoveTimer, true);
-	}
+
 	InitGAS();
+
+	//if (!IsLocallyControlled()) return;
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT(" ADaeva::BeginPlay() - SetTimer"));
+	//	GetWorldTimerManager().SetTimer(SendMoveHandle, this, &ADaeva::SendMovePacket, SendMoveTimer, true);
+	//}
 }
 
 void ADaeva::UnPossessed()
