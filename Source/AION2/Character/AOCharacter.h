@@ -15,25 +15,40 @@ public:
 	AAOCharacter(const FObjectInitializer& ObjectInitializer);
 
 public:
-	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor);
 
 public:
+	virtual bool SearchTarget();
+
+public:
 	virtual void CheckAttackHit(const FAttackData& AttackData) override;
-	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera);
 
 protected:
 	virtual void InitGAS();
 	virtual void ClearGAS();
 
-private:
-	bool IsEnemy(AActor* TargetActor);
-	void PlayCameraShake(bool& bDidShakeCamera);
-	void DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor);
+protected:
+	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera);
+	virtual void TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser);
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	bool IsEnemy(AActor* TargetActor);
+	void DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor);
+
+public:
+	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	FORCEINLINE AAOCharacter* GetCurrentTarget() const { return CurrentTarget; }
+
+protected:
+	UPROPERTY()
+	TObjectPtr<AAOCharacter> CurrentTarget;
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAbilitySystemComponent> ASC;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> DamageEffect;
 };
