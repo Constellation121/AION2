@@ -5,6 +5,7 @@
 #include "AbilitySystemInterface.h"
 #include "AOCharacter.generated.h"
 
+
 UCLASS(Abstract)
 class AION2_API AAOCharacter : public ACharacter, public IAbilitySystemInterface
 {
