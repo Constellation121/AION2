@@ -72,16 +72,6 @@ class AION2_API ADaeva : public AAOCharacter
 public:
 	ADaeva(const FObjectInitializer& ObjectInitializer);
 
-public:
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_PlayWingMontage(EMontageID MontageID, float PlayRate);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_SetWingVisibility(bool NewVisible);
-
-	UFUNCTION(Client, Unreliable)
-	void Client_PlayCameraShake();
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -92,6 +82,19 @@ protected:
 	
 private:
 	void Tick_Camera(float DeltaTime);
+
+public:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayWingMontage(EMontageID MontageID, float PlayRate);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_SetWingVisibility(bool NewVisible);
+
+	UFUNCTION(Client, Unreliable)
+	void Client_PlayCameraShake();
+
+public:
+	virtual bool SearchTarget() override;
 
 protected:
 	virtual void Move(const FInputActionValue& Value);
@@ -111,7 +114,6 @@ protected:
 	virtual void TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser) override;
 
 private:
-	void InputShiftPressed();
 	void InputSpacePressed();
 	void InputLBPressed();
 	void InputRBPressed();
@@ -127,6 +129,9 @@ private:
 private:
 	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
 	void PlayCameraShake(bool& bDidShakeCamera);
+	void ValidateTarget();
+	bool IsFrontOfCamera(AActor* Other);
+	float CalcDistanceSquaredToScreenCenter(AActor* Other);
 
 public:
 	FORCEINLINE UAnimMontage* GetMontageByID(EMontageID Index) const { return Montages[Index]; }
@@ -232,4 +237,7 @@ private:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
+
+private:
+	FTimerHandle TargetSearchTimer;
 };

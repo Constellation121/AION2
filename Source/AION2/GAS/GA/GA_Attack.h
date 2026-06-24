@@ -23,7 +23,7 @@ protected:
 	UFUNCTION()
 	void OnCheckAttackHitEvent(FGameplayEventData Payload);
 
-private:
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
 	FAttackData AttackData;
 

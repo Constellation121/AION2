@@ -35,7 +35,10 @@ struct FAttackData
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-	float DamageMultiplier = 1.f;
+	float DamageMultiplier = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AvailableRange = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag HitGameplayCueTag;

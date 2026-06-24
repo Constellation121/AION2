@@ -13,14 +13,14 @@ AAOCharacter::AAOCharacter(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-UAbilitySystemComponent* AAOCharacter::GetAbilitySystemComponent() const
-{
-	return ASC;
-}
-
 void AAOCharacter::Multicast_DrawDebugCapsuleCollider_Implementation(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor)
 {
 	DrawDebugCapsuleCollider(CapsuleOrigin, CapsuleHalfHeight, AttackRadius, DrawColor);
+}
+
+bool AAOCharacter::SearchTarget()
+{
+	return false;
 }
 
 void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
@@ -30,7 +30,7 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 	const float AttackRange = AttackData.TraceData.Range;
 	const float AttackRadius = AttackData.TraceData.Radius;
 
-	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(AttackTrace), false, this);
 
 	FVector SweepStart = GetActorTransform().TransformPosition(AttackData.TraceData.StartOffset);
 	FVector SweepEnd = SweepStart + AttackData.TraceData.Direction.GetSafeNormal() * AttackRange;
@@ -43,7 +43,6 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 		const float CapsuleHalfHeight = AttackRange * 0.5f;
 		FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
 		Multicast_DrawDebugCapsuleCollider(CapsuleCenter, CapsuleHalfHeight, AttackRadius, DrawColor);
-		UE_LOG(LogTemp, Log, TEXT("%f"), AttackRadius);
 	}
 
 	if (!bHitDetected)
@@ -86,7 +85,7 @@ void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitA
 		return;
 	}
 
-	//Target->TakeDamageAO(AttackData, this);
+	// Target->TakeDamageAO(AttackData, this);
 	// gc
 }
 
@@ -137,4 +136,9 @@ void AAOCharacter::DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const 
 #if ENABLE_DRAW_DEBUG
 	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
 #endif
+}
+
+UAbilitySystemComponent* AAOCharacter::GetAbilitySystemComponent() const
+{
+	return ASC;
 }
