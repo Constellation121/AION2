@@ -882,29 +882,12 @@ class PlayerState final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayerInfoFieldNumber = 1,
-    kPlayerLocationFieldNumber = 2,
-    kPlayerRotationFieldNumber = 3,
+    kPlayerLocationFieldNumber = 3,
+    kPlayerRotationFieldNumber = 4,
+    kPlayerIdFieldNumber = 1,
+    kPlayerClassFieldNumber = 2,
   };
-  // .Protocol.PlayerInfo playerInfo = 1;
-  bool has_playerinfo() const;
-  private:
-  bool _internal_has_playerinfo() const;
-  public:
-  void clear_playerinfo();
-  const ::Protocol::PlayerInfo& playerinfo() const;
-  PROTOBUF_NODISCARD ::Protocol::PlayerInfo* release_playerinfo();
-  ::Protocol::PlayerInfo* mutable_playerinfo();
-  void set_allocated_playerinfo(::Protocol::PlayerInfo* playerinfo);
-  private:
-  const ::Protocol::PlayerInfo& _internal_playerinfo() const;
-  ::Protocol::PlayerInfo* _internal_mutable_playerinfo();
-  public:
-  void unsafe_arena_set_allocated_playerinfo(
-      ::Protocol::PlayerInfo* playerinfo);
-  ::Protocol::PlayerInfo* unsafe_arena_release_playerinfo();
-
-  // .Protocol.Vector3 playerLocation = 2;
+  // .Protocol.Vector3 playerLocation = 3;
   bool has_playerlocation() const;
   private:
   bool _internal_has_playerlocation() const;
@@ -922,7 +905,7 @@ class PlayerState final :
       ::Protocol::Vector3* playerlocation);
   ::Protocol::Vector3* unsafe_arena_release_playerlocation();
 
-  // .Protocol.Rotator3 playerRotation = 3;
+  // .Protocol.Rotator3 playerRotation = 4;
   bool has_playerrotation() const;
   private:
   bool _internal_has_playerrotation() const;
@@ -940,6 +923,24 @@ class PlayerState final :
       ::Protocol::Rotator3* playerrotation);
   ::Protocol::Rotator3* unsafe_arena_release_playerrotation();
 
+  // uint64 playerId = 1;
+  void clear_playerid();
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
+  private:
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
+  public:
+
+  // .Protocol.ClassType playerClass = 2;
+  void clear_playerclass();
+  ::Protocol::ClassType playerclass() const;
+  void set_playerclass(::Protocol::ClassType value);
+  private:
+  ::Protocol::ClassType _internal_playerclass() const;
+  void _internal_set_playerclass(::Protocol::ClassType value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.PlayerState)
  private:
   class _Internal;
@@ -948,9 +949,10 @@ class PlayerState final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::PlayerInfo* playerinfo_;
     ::Protocol::Vector3* playerlocation_;
     ::Protocol::Rotator3* playerrotation_;
+    uint64_t playerid_;
+    int playerclass_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1223,97 +1225,47 @@ inline void PlayerInfo::set_playerclass(::Protocol::ClassType value) {
 
 // PlayerState
 
-// .Protocol.PlayerInfo playerInfo = 1;
-inline bool PlayerState::_internal_has_playerinfo() const {
-  return this != internal_default_instance() && _impl_.playerinfo_ != nullptr;
+// uint64 playerId = 1;
+inline void PlayerState::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
 }
-inline bool PlayerState::has_playerinfo() const {
-  return _internal_has_playerinfo();
+inline uint64_t PlayerState::_internal_playerid() const {
+  return _impl_.playerid_;
 }
-inline void PlayerState::clear_playerinfo() {
-  if (GetArenaForAllocation() == nullptr && _impl_.playerinfo_ != nullptr) {
-    delete _impl_.playerinfo_;
-  }
-  _impl_.playerinfo_ = nullptr;
+inline uint64_t PlayerState::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerState.playerId)
+  return _internal_playerid();
 }
-inline const ::Protocol::PlayerInfo& PlayerState::_internal_playerinfo() const {
-  const ::Protocol::PlayerInfo* p = _impl_.playerinfo_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PlayerInfo&>(
-      ::Protocol::_PlayerInfo_default_instance_);
-}
-inline const ::Protocol::PlayerInfo& PlayerState::playerinfo() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerState.playerInfo)
-  return _internal_playerinfo();
-}
-inline void PlayerState::unsafe_arena_set_allocated_playerinfo(
-    ::Protocol::PlayerInfo* playerinfo) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerinfo_);
-  }
-  _impl_.playerinfo_ = playerinfo;
-  if (playerinfo) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.PlayerState.playerInfo)
-}
-inline ::Protocol::PlayerInfo* PlayerState::release_playerinfo() {
+inline void PlayerState::_internal_set_playerid(uint64_t value) {
   
-  ::Protocol::PlayerInfo* temp = _impl_.playerinfo_;
-  _impl_.playerinfo_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.playerid_ = value;
 }
-inline ::Protocol::PlayerInfo* PlayerState::unsafe_arena_release_playerinfo() {
-  // @@protoc_insertion_point(field_release:Protocol.PlayerState.playerInfo)
-  
-  ::Protocol::PlayerInfo* temp = _impl_.playerinfo_;
-  _impl_.playerinfo_ = nullptr;
-  return temp;
-}
-inline ::Protocol::PlayerInfo* PlayerState::_internal_mutable_playerinfo() {
-  
-  if (_impl_.playerinfo_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::PlayerInfo>(GetArenaForAllocation());
-    _impl_.playerinfo_ = p;
-  }
-  return _impl_.playerinfo_;
-}
-inline ::Protocol::PlayerInfo* PlayerState::mutable_playerinfo() {
-  ::Protocol::PlayerInfo* _msg = _internal_mutable_playerinfo();
-  // @@protoc_insertion_point(field_mutable:Protocol.PlayerState.playerInfo)
-  return _msg;
-}
-inline void PlayerState::set_allocated_playerinfo(::Protocol::PlayerInfo* playerinfo) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.playerinfo_;
-  }
-  if (playerinfo) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(playerinfo);
-    if (message_arena != submessage_arena) {
-      playerinfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, playerinfo, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.playerinfo_ = playerinfo;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.PlayerState.playerInfo)
+inline void PlayerState::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerState.playerId)
 }
 
-// .Protocol.Vector3 playerLocation = 2;
+// .Protocol.ClassType playerClass = 2;
+inline void PlayerState::clear_playerclass() {
+  _impl_.playerclass_ = 0;
+}
+inline ::Protocol::ClassType PlayerState::_internal_playerclass() const {
+  return static_cast< ::Protocol::ClassType >(_impl_.playerclass_);
+}
+inline ::Protocol::ClassType PlayerState::playerclass() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerState.playerClass)
+  return _internal_playerclass();
+}
+inline void PlayerState::_internal_set_playerclass(::Protocol::ClassType value) {
+  
+  _impl_.playerclass_ = value;
+}
+inline void PlayerState::set_playerclass(::Protocol::ClassType value) {
+  _internal_set_playerclass(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerState.playerClass)
+}
+
+// .Protocol.Vector3 playerLocation = 3;
 inline bool PlayerState::_internal_has_playerlocation() const {
   return this != internal_default_instance() && _impl_.playerlocation_ != nullptr;
 }
@@ -1403,7 +1355,7 @@ inline void PlayerState::set_allocated_playerlocation(::Protocol::Vector3* playe
   // @@protoc_insertion_point(field_set_allocated:Protocol.PlayerState.playerLocation)
 }
 
-// .Protocol.Rotator3 playerRotation = 3;
+// .Protocol.Rotator3 playerRotation = 4;
 inline bool PlayerState::_internal_has_playerrotation() const {
   return this != internal_default_instance() && _impl_.playerrotation_ != nullptr;
 }

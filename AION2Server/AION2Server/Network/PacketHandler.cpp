@@ -172,3 +172,16 @@ bool PacketHandler::HandleMapComplete(PacketSessionRef& session, Protocol::C_Map
 
 	return false;
 }
+
+bool PacketHandler::HandleMove(PacketSessionRef& session, Protocol::C_MovePacket& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->_player;
+	if (player == nullptr)
+		return false;
+
+	GRoom->DoAsync(&Room::HandleMove, pkt, player);
+
+	return true;
+}

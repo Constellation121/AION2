@@ -58,10 +58,23 @@ void UAONetworkManager::ResetBuffer()
 
 void UAONetworkManager::SetPlayerManager()
 {
-	GameInstance = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
+	if (GetWorld() == nullptr)
+	{
+		GameInstance = Cast<UAOGameInstance>(GetOuter());
+	}
+
+	else
+	{
+		GameInstance = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
+	}
+
 	if (GameInstance)
 	{
 		PlayerMng = GameInstance->GetSubsystem<UAOPlayerManager>();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("SetPlayerManager: GameInstance is null"));
 	}
 }
 

@@ -134,7 +134,10 @@ struct S_SpawnPacketDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_SpawnPacketDefaultTypeInternal _S_SpawnPacket_default_instance_;
 PROTOBUF_CONSTEXPR C_MovePacket::C_MovePacket(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.playerstates_)*/nullptr
+    /*decltype(_impl_.playerlocation_)*/nullptr
+  , /*decltype(_impl_.playervelocity_)*/nullptr
+  , /*decltype(_impl_.playerrotation_)*/nullptr
+  , /*decltype(_impl_.playerid_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct C_MovePacketDefaultTypeInternal {
   PROTOBUF_CONSTEXPR C_MovePacketDefaultTypeInternal()
@@ -147,7 +150,10 @@ struct C_MovePacketDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_MovePacketDefaultTypeInternal _C_MovePacket_default_instance_;
 PROTOBUF_CONSTEXPR S_MovePacket::S_MovePacket(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.playerstates_)*/nullptr
+    /*decltype(_impl_.playerlocation_)*/nullptr
+  , /*decltype(_impl_.playervelocity_)*/nullptr
+  , /*decltype(_impl_.playerrotation_)*/nullptr
+  , /*decltype(_impl_.playerid_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_MovePacketDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_MovePacketDefaultTypeInternal()
@@ -230,14 +236,20 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_MovePacket, _impl_.playerstates_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_MovePacket, _impl_.playerid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_MovePacket, _impl_.playerlocation_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_MovePacket, _impl_.playervelocity_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_MovePacket, _impl_.playerrotation_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _impl_.playerstates_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _impl_.playerid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _impl_.playerlocation_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _impl_.playervelocity_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _impl_.playerrotation_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::C_SignUpPacket)},
@@ -249,7 +261,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 46, -1, -1, sizeof(::Protocol::S_ItemDataPacket)},
   { 53, -1, -1, sizeof(::Protocol::S_SpawnPacket)},
   { 60, -1, -1, sizeof(::Protocol::C_MovePacket)},
-  { 67, -1, -1, sizeof(::Protocol::S_MovePacket)},
+  { 70, -1, -1, sizeof(::Protocol::S_MovePacket)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -278,10 +290,16 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "MapLoadCompletePacket\";\n\020S_ItemDataPacke"
   "t\022\'\n\013playerItems\030\001 \003(\0132\022.Protocol.ItemDa"
   "ta\"<\n\rS_SpawnPacket\022+\n\014playerStates\030\001 \003("
-  "\0132\025.Protocol.PlayerState\";\n\014C_MovePacket"
-  "\022+\n\014playerStates\030\001 \001(\0132\025.Protocol.Player"
-  "State\";\n\014S_MovePacket\022+\n\014playerStates\030\001 "
-  "\001(\0132\025.Protocol.PlayerStateb\006proto3"
+  "\0132\025.Protocol.PlayerState\"\242\001\n\014C_MovePacke"
+  "t\022\020\n\010playerId\030\001 \001(\004\022)\n\016PlayerLocation\030\002 "
+  "\001(\0132\021.Protocol.Vector3\022)\n\016PlayerVelocity"
+  "\030\003 \001(\0132\021.Protocol.Vector3\022*\n\016PlayerRotat"
+  "ion\030\004 \001(\0132\022.Protocol.Rotator3\"\242\001\n\014S_Move"
+  "Packet\022\020\n\010playerId\030\001 \001(\004\022)\n\016PlayerLocati"
+  "on\030\002 \001(\0132\021.Protocol.Vector3\022)\n\016PlayerVel"
+  "ocity\030\003 \001(\0132\021.Protocol.Vector3\022*\n\016Player"
+  "Rotation\030\004 \001(\0132\022.Protocol.Rotator3b\006prot"
+  "o3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -289,7 +307,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 634, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 842, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 10,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -1760,18 +1778,40 @@ void S_SpawnPacket::InternalSwap(S_SpawnPacket* other) {
 
 class C_MovePacket::_Internal {
  public:
-  static const ::Protocol::PlayerState& playerstates(const C_MovePacket* msg);
+  static const ::Protocol::Vector3& playerlocation(const C_MovePacket* msg);
+  static const ::Protocol::Vector3& playervelocity(const C_MovePacket* msg);
+  static const ::Protocol::Rotator3& playerrotation(const C_MovePacket* msg);
 };
 
-const ::Protocol::PlayerState&
-C_MovePacket::_Internal::playerstates(const C_MovePacket* msg) {
-  return *msg->_impl_.playerstates_;
+const ::Protocol::Vector3&
+C_MovePacket::_Internal::playerlocation(const C_MovePacket* msg) {
+  return *msg->_impl_.playerlocation_;
 }
-void C_MovePacket::clear_playerstates() {
-  if (GetArenaForAllocation() == nullptr && _impl_.playerstates_ != nullptr) {
-    delete _impl_.playerstates_;
+const ::Protocol::Vector3&
+C_MovePacket::_Internal::playervelocity(const C_MovePacket* msg) {
+  return *msg->_impl_.playervelocity_;
+}
+const ::Protocol::Rotator3&
+C_MovePacket::_Internal::playerrotation(const C_MovePacket* msg) {
+  return *msg->_impl_.playerrotation_;
+}
+void C_MovePacket::clear_playerlocation() {
+  if (GetArenaForAllocation() == nullptr && _impl_.playerlocation_ != nullptr) {
+    delete _impl_.playerlocation_;
   }
-  _impl_.playerstates_ = nullptr;
+  _impl_.playerlocation_ = nullptr;
+}
+void C_MovePacket::clear_playervelocity() {
+  if (GetArenaForAllocation() == nullptr && _impl_.playervelocity_ != nullptr) {
+    delete _impl_.playervelocity_;
+  }
+  _impl_.playervelocity_ = nullptr;
+}
+void C_MovePacket::clear_playerrotation() {
+  if (GetArenaForAllocation() == nullptr && _impl_.playerrotation_ != nullptr) {
+    delete _impl_.playerrotation_;
+  }
+  _impl_.playerrotation_ = nullptr;
 }
 C_MovePacket::C_MovePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -1783,13 +1823,23 @@ C_MovePacket::C_MovePacket(const C_MovePacket& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   C_MovePacket* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.playerstates_){nullptr}
+      decltype(_impl_.playerlocation_){nullptr}
+    , decltype(_impl_.playervelocity_){nullptr}
+    , decltype(_impl_.playerrotation_){nullptr}
+    , decltype(_impl_.playerid_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_playerstates()) {
-    _this->_impl_.playerstates_ = new ::Protocol::PlayerState(*from._impl_.playerstates_);
+  if (from._internal_has_playerlocation()) {
+    _this->_impl_.playerlocation_ = new ::Protocol::Vector3(*from._impl_.playerlocation_);
   }
+  if (from._internal_has_playervelocity()) {
+    _this->_impl_.playervelocity_ = new ::Protocol::Vector3(*from._impl_.playervelocity_);
+  }
+  if (from._internal_has_playerrotation()) {
+    _this->_impl_.playerrotation_ = new ::Protocol::Rotator3(*from._impl_.playerrotation_);
+  }
+  _this->_impl_.playerid_ = from._impl_.playerid_;
   // @@protoc_insertion_point(copy_constructor:Protocol.C_MovePacket)
 }
 
@@ -1798,7 +1848,10 @@ inline void C_MovePacket::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.playerstates_){nullptr}
+      decltype(_impl_.playerlocation_){nullptr}
+    , decltype(_impl_.playervelocity_){nullptr}
+    , decltype(_impl_.playerrotation_){nullptr}
+    , decltype(_impl_.playerid_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1814,7 +1867,9 @@ C_MovePacket::~C_MovePacket() {
 
 inline void C_MovePacket::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.playerstates_;
+  if (this != internal_default_instance()) delete _impl_.playerlocation_;
+  if (this != internal_default_instance()) delete _impl_.playervelocity_;
+  if (this != internal_default_instance()) delete _impl_.playerrotation_;
 }
 
 void C_MovePacket::SetCachedSize(int size) const {
@@ -1827,10 +1882,19 @@ void C_MovePacket::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaForAllocation() == nullptr && _impl_.playerstates_ != nullptr) {
-    delete _impl_.playerstates_;
+  if (GetArenaForAllocation() == nullptr && _impl_.playerlocation_ != nullptr) {
+    delete _impl_.playerlocation_;
   }
-  _impl_.playerstates_ = nullptr;
+  _impl_.playerlocation_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && _impl_.playervelocity_ != nullptr) {
+    delete _impl_.playervelocity_;
+  }
+  _impl_.playervelocity_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && _impl_.playerrotation_ != nullptr) {
+    delete _impl_.playerrotation_;
+  }
+  _impl_.playerrotation_ = nullptr;
+  _impl_.playerid_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1840,10 +1904,34 @@ const char* C_MovePacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* 
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .Protocol.PlayerState playerStates = 1;
+      // uint64 playerId = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_playerstates(), ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.playerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.Vector3 PlayerLocation = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_playerlocation(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.Vector3 PlayerVelocity = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_playervelocity(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.Rotator3 PlayerRotation = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          ptr = ctx->ParseMessage(_internal_mutable_playerrotation(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1877,11 +1965,31 @@ uint8_t* C_MovePacket::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .Protocol.PlayerState playerStates = 1;
-  if (this->_internal_has_playerstates()) {
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_playerid(), target);
+  }
+
+  // .Protocol.Vector3 PlayerLocation = 2;
+  if (this->_internal_has_playerlocation()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::playerstates(this),
-        _Internal::playerstates(this).GetCachedSize(), target, stream);
+      InternalWriteMessage(2, _Internal::playerlocation(this),
+        _Internal::playerlocation(this).GetCachedSize(), target, stream);
+  }
+
+  // .Protocol.Vector3 PlayerVelocity = 3;
+  if (this->_internal_has_playervelocity()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(3, _Internal::playervelocity(this),
+        _Internal::playervelocity(this).GetCachedSize(), target, stream);
+  }
+
+  // .Protocol.Rotator3 PlayerRotation = 4;
+  if (this->_internal_has_playerrotation()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(4, _Internal::playerrotation(this),
+        _Internal::playerrotation(this).GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1900,11 +2008,30 @@ size_t C_MovePacket::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .Protocol.PlayerState playerStates = 1;
-  if (this->_internal_has_playerstates()) {
+  // .Protocol.Vector3 PlayerLocation = 2;
+  if (this->_internal_has_playerlocation()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.playerstates_);
+        *_impl_.playerlocation_);
+  }
+
+  // .Protocol.Vector3 PlayerVelocity = 3;
+  if (this->_internal_has_playervelocity()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.playervelocity_);
+  }
+
+  // .Protocol.Rotator3 PlayerRotation = 4;
+  if (this->_internal_has_playerrotation()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.playerrotation_);
+  }
+
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_playerid());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -1925,9 +2052,20 @@ void C_MovePacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::P
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_playerstates()) {
-    _this->_internal_mutable_playerstates()->::Protocol::PlayerState::MergeFrom(
-        from._internal_playerstates());
+  if (from._internal_has_playerlocation()) {
+    _this->_internal_mutable_playerlocation()->::Protocol::Vector3::MergeFrom(
+        from._internal_playerlocation());
+  }
+  if (from._internal_has_playervelocity()) {
+    _this->_internal_mutable_playervelocity()->::Protocol::Vector3::MergeFrom(
+        from._internal_playervelocity());
+  }
+  if (from._internal_has_playerrotation()) {
+    _this->_internal_mutable_playerrotation()->::Protocol::Rotator3::MergeFrom(
+        from._internal_playerrotation());
+  }
+  if (from._internal_playerid() != 0) {
+    _this->_internal_set_playerid(from._internal_playerid());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1946,7 +2084,12 @@ bool C_MovePacket::IsInitialized() const {
 void C_MovePacket::InternalSwap(C_MovePacket* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_.playerstates_, other->_impl_.playerstates_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(C_MovePacket, _impl_.playerid_)
+      + sizeof(C_MovePacket::_impl_.playerid_)
+      - PROTOBUF_FIELD_OFFSET(C_MovePacket, _impl_.playerlocation_)>(
+          reinterpret_cast<char*>(&_impl_.playerlocation_),
+          reinterpret_cast<char*>(&other->_impl_.playerlocation_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata C_MovePacket::GetMetadata() const {
@@ -1959,18 +2102,40 @@ void C_MovePacket::InternalSwap(C_MovePacket* other) {
 
 class S_MovePacket::_Internal {
  public:
-  static const ::Protocol::PlayerState& playerstates(const S_MovePacket* msg);
+  static const ::Protocol::Vector3& playerlocation(const S_MovePacket* msg);
+  static const ::Protocol::Vector3& playervelocity(const S_MovePacket* msg);
+  static const ::Protocol::Rotator3& playerrotation(const S_MovePacket* msg);
 };
 
-const ::Protocol::PlayerState&
-S_MovePacket::_Internal::playerstates(const S_MovePacket* msg) {
-  return *msg->_impl_.playerstates_;
+const ::Protocol::Vector3&
+S_MovePacket::_Internal::playerlocation(const S_MovePacket* msg) {
+  return *msg->_impl_.playerlocation_;
 }
-void S_MovePacket::clear_playerstates() {
-  if (GetArenaForAllocation() == nullptr && _impl_.playerstates_ != nullptr) {
-    delete _impl_.playerstates_;
+const ::Protocol::Vector3&
+S_MovePacket::_Internal::playervelocity(const S_MovePacket* msg) {
+  return *msg->_impl_.playervelocity_;
+}
+const ::Protocol::Rotator3&
+S_MovePacket::_Internal::playerrotation(const S_MovePacket* msg) {
+  return *msg->_impl_.playerrotation_;
+}
+void S_MovePacket::clear_playerlocation() {
+  if (GetArenaForAllocation() == nullptr && _impl_.playerlocation_ != nullptr) {
+    delete _impl_.playerlocation_;
   }
-  _impl_.playerstates_ = nullptr;
+  _impl_.playerlocation_ = nullptr;
+}
+void S_MovePacket::clear_playervelocity() {
+  if (GetArenaForAllocation() == nullptr && _impl_.playervelocity_ != nullptr) {
+    delete _impl_.playervelocity_;
+  }
+  _impl_.playervelocity_ = nullptr;
+}
+void S_MovePacket::clear_playerrotation() {
+  if (GetArenaForAllocation() == nullptr && _impl_.playerrotation_ != nullptr) {
+    delete _impl_.playerrotation_;
+  }
+  _impl_.playerrotation_ = nullptr;
 }
 S_MovePacket::S_MovePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -1982,13 +2147,23 @@ S_MovePacket::S_MovePacket(const S_MovePacket& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_MovePacket* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.playerstates_){nullptr}
+      decltype(_impl_.playerlocation_){nullptr}
+    , decltype(_impl_.playervelocity_){nullptr}
+    , decltype(_impl_.playerrotation_){nullptr}
+    , decltype(_impl_.playerid_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_playerstates()) {
-    _this->_impl_.playerstates_ = new ::Protocol::PlayerState(*from._impl_.playerstates_);
+  if (from._internal_has_playerlocation()) {
+    _this->_impl_.playerlocation_ = new ::Protocol::Vector3(*from._impl_.playerlocation_);
   }
+  if (from._internal_has_playervelocity()) {
+    _this->_impl_.playervelocity_ = new ::Protocol::Vector3(*from._impl_.playervelocity_);
+  }
+  if (from._internal_has_playerrotation()) {
+    _this->_impl_.playerrotation_ = new ::Protocol::Rotator3(*from._impl_.playerrotation_);
+  }
+  _this->_impl_.playerid_ = from._impl_.playerid_;
   // @@protoc_insertion_point(copy_constructor:Protocol.S_MovePacket)
 }
 
@@ -1997,7 +2172,10 @@ inline void S_MovePacket::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.playerstates_){nullptr}
+      decltype(_impl_.playerlocation_){nullptr}
+    , decltype(_impl_.playervelocity_){nullptr}
+    , decltype(_impl_.playerrotation_){nullptr}
+    , decltype(_impl_.playerid_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2013,7 +2191,9 @@ S_MovePacket::~S_MovePacket() {
 
 inline void S_MovePacket::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.playerstates_;
+  if (this != internal_default_instance()) delete _impl_.playerlocation_;
+  if (this != internal_default_instance()) delete _impl_.playervelocity_;
+  if (this != internal_default_instance()) delete _impl_.playerrotation_;
 }
 
 void S_MovePacket::SetCachedSize(int size) const {
@@ -2026,10 +2206,19 @@ void S_MovePacket::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaForAllocation() == nullptr && _impl_.playerstates_ != nullptr) {
-    delete _impl_.playerstates_;
+  if (GetArenaForAllocation() == nullptr && _impl_.playerlocation_ != nullptr) {
+    delete _impl_.playerlocation_;
   }
-  _impl_.playerstates_ = nullptr;
+  _impl_.playerlocation_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && _impl_.playervelocity_ != nullptr) {
+    delete _impl_.playervelocity_;
+  }
+  _impl_.playervelocity_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && _impl_.playerrotation_ != nullptr) {
+    delete _impl_.playerrotation_;
+  }
+  _impl_.playerrotation_ = nullptr;
+  _impl_.playerid_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2039,10 +2228,34 @@ const char* S_MovePacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* 
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .Protocol.PlayerState playerStates = 1;
+      // uint64 playerId = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_playerstates(), ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.playerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.Vector3 PlayerLocation = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_playerlocation(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.Vector3 PlayerVelocity = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_playervelocity(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.Rotator3 PlayerRotation = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          ptr = ctx->ParseMessage(_internal_mutable_playerrotation(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2076,11 +2289,31 @@ uint8_t* S_MovePacket::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .Protocol.PlayerState playerStates = 1;
-  if (this->_internal_has_playerstates()) {
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_playerid(), target);
+  }
+
+  // .Protocol.Vector3 PlayerLocation = 2;
+  if (this->_internal_has_playerlocation()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::playerstates(this),
-        _Internal::playerstates(this).GetCachedSize(), target, stream);
+      InternalWriteMessage(2, _Internal::playerlocation(this),
+        _Internal::playerlocation(this).GetCachedSize(), target, stream);
+  }
+
+  // .Protocol.Vector3 PlayerVelocity = 3;
+  if (this->_internal_has_playervelocity()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(3, _Internal::playervelocity(this),
+        _Internal::playervelocity(this).GetCachedSize(), target, stream);
+  }
+
+  // .Protocol.Rotator3 PlayerRotation = 4;
+  if (this->_internal_has_playerrotation()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(4, _Internal::playerrotation(this),
+        _Internal::playerrotation(this).GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2099,11 +2332,30 @@ size_t S_MovePacket::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .Protocol.PlayerState playerStates = 1;
-  if (this->_internal_has_playerstates()) {
+  // .Protocol.Vector3 PlayerLocation = 2;
+  if (this->_internal_has_playerlocation()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.playerstates_);
+        *_impl_.playerlocation_);
+  }
+
+  // .Protocol.Vector3 PlayerVelocity = 3;
+  if (this->_internal_has_playervelocity()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.playervelocity_);
+  }
+
+  // .Protocol.Rotator3 PlayerRotation = 4;
+  if (this->_internal_has_playerrotation()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.playerrotation_);
+  }
+
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_playerid());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2124,9 +2376,20 @@ void S_MovePacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::P
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_playerstates()) {
-    _this->_internal_mutable_playerstates()->::Protocol::PlayerState::MergeFrom(
-        from._internal_playerstates());
+  if (from._internal_has_playerlocation()) {
+    _this->_internal_mutable_playerlocation()->::Protocol::Vector3::MergeFrom(
+        from._internal_playerlocation());
+  }
+  if (from._internal_has_playervelocity()) {
+    _this->_internal_mutable_playervelocity()->::Protocol::Vector3::MergeFrom(
+        from._internal_playervelocity());
+  }
+  if (from._internal_has_playerrotation()) {
+    _this->_internal_mutable_playerrotation()->::Protocol::Rotator3::MergeFrom(
+        from._internal_playerrotation());
+  }
+  if (from._internal_playerid() != 0) {
+    _this->_internal_set_playerid(from._internal_playerid());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2145,7 +2408,12 @@ bool S_MovePacket::IsInitialized() const {
 void S_MovePacket::InternalSwap(S_MovePacket* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_.playerstates_, other->_impl_.playerstates_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(S_MovePacket, _impl_.playerid_)
+      + sizeof(S_MovePacket::_impl_.playerid_)
+      - PROTOBUF_FIELD_OFFSET(S_MovePacket, _impl_.playerlocation_)>(
+          reinterpret_cast<char*>(&_impl_.playerlocation_),
+          reinterpret_cast<char*>(&other->_impl_.playerlocation_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata S_MovePacket::GetMetadata() const {

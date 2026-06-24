@@ -29,6 +29,10 @@ bool Handle_INVALID(UAONetworkManager* NetworkMng, uint8* Buffer, int32 Len)
 
 bool Handle_S_SIGNUP(UAONetworkManager* NetworkMng, Protocol::S_SignUpResultPacket& Pkt)
 {
+	bool bIsSuccess = Pkt.success();
+	if (bIsSuccess)
+		return true;
+	//	NetworkMng->GameInstance->LoginWidget->HandleRegisterError();
 	return false;
 }
 
@@ -47,6 +51,7 @@ bool Handle_S_SLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginSuccessPack
 
 bool Handle_S_FLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginFailPacket& Pkt)
 {
+
 	return false;
 }
 
@@ -65,10 +70,11 @@ bool Handle_S_SPAWN(UAONetworkManager* NetworkMng, Protocol::S_SpawnPacket& Pkt)
 		for (int i = 0; i < SpawnCount; ++i)
 		{
 			const Protocol::PlayerState& State = Pkt.playerstates(i);
-			uint64 PlayerId = State.playerinfo().playerid();
+			uint64 PlayerId = State.playerid();
 			FVector Location = FVector(State.playerlocation().x(), State.playerlocation().y(), State.playerlocation().z());
-			uint8 CalssType = static_cast<uint8>(State.playerinfo().playerclass());
-			NetworkMng->PlayerMng->HandleSpawn(PlayerId, CalssType, Location);
+			FRotator Rotation = FRotator(State.playerrotation().pitch(), State.playerrotation().yaw(), State.playerrotation().roll());
+			uint8 CalssType = static_cast<uint8>(State.playerclass());
+			NetworkMng->PlayerMng->HandleSpawn(PlayerId, CalssType, Location, Rotation);
 		}
 	}
 	return false;
@@ -76,5 +82,20 @@ bool Handle_S_SPAWN(UAONetworkManager* NetworkMng, Protocol::S_SpawnPacket& Pkt)
 
 bool Handle_S_MOVE(UAONetworkManager* NetworkMng, Protocol::S_MovePacket& Pkt)
 {
+	uint64 PlayerId = Pkt.playerid();
+
+	Protocol::Vector3* Loc = Pkt.mutable_playerlocation();
+	FVector TargetLoc = FVector(Loc->x(), Loc->y(), Loc->z());
+
+	Protocol::Vector3* Vel = Pkt.mutable_playervelocity();
+	FVector TargetVel = FVector(Vel->x(), Vel->y(), Vel->z());
+
+	Protocol::Rotator3* Rot = Pkt.mutable_playerrotation();
+	FRotator TargetRot = FRotator(Rot->pitch(), Rot->yaw(), Rot->roll());
+
+	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_MOVE: %d, Location (%f, %f, %f)"), PlayerId, TargetLoc.X, TargetLoc.Y, TargetLoc.Z);
+
+	NetworkMng->PlayerMng->HnadleMove(PlayerId, TargetLoc, TargetRot, TargetVel);
+
 	return false;
 }

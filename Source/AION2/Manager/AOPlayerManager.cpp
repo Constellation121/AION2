@@ -15,11 +15,11 @@ UAOPlayerManager::UAOPlayerManager()
 		JobClassMap.Add(1, AssassinClassRef.Class);
 	}
 
-	static ConstructorHelpers::FClassFinder<APawn> ClericClassRef(TEXT(""));
-	if (ClericClassRef.Succeeded())
-	{
-		JobClassMap.Add(2, ClericClassRef.Class);
-	}
+	//static ConstructorHelpers::FClassFinder<APawn> ClericClassRef(TEXT(""));
+	//if (ClericClassRef.Succeeded())
+	//{
+	//	JobClassMap.Add(2, ClericClassRef.Class);
+	//}
 
 	static ConstructorHelpers::FClassFinder<APawn> RangerClassRef(TEXT("/Game/Blueprint/Daeva/Ranger/BP_Ranger"));
 	if (RangerClassRef.Succeeded())
@@ -38,7 +38,6 @@ void UAOPlayerManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	GameInstance = Cast<UAOGameInstance>(GetGameInstance());
-	World = GetWorld();
 	PlayerClass = ADaeva::StaticClass();
 }
 
@@ -49,12 +48,12 @@ void UAOPlayerManager::HandleLogin(uint64 PlayerId, uint8 ClassType)
 	GameInstance->SetMyPlayerClass(ClassType);
 }
 
-void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector SpawnLocation)
+void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation)
 {
 	if (!GameInstance)
 		return;
 
-	FActorSpawnParameters SpawnParams;
+	FActorSpawnParameters SpawnParams; 
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	if (JobClassMap.Contains(ClassType))
@@ -62,9 +61,12 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector Spa
 		UClass* SpawnClass = JobClassMap[ClassType].Get();
 		if (GameInstance->GetMyPlayerId() == PlayerId)
 		{
-			MyPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+			MyPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 			if (MyPlayer != nullptr)
 			{
+				MyPlayer->SetMyId(PlayerId);
+				UE_LOG(LogTemp, Log, TEXT("HandleSpawn - SetMyId: %d"), PlayerId);
+
 				AAOPlayerController* PlayerController = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
 				if (PlayerController != nullptr)
 				{
@@ -75,8 +77,31 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector Spa
 
 		else
 		{
-			ADaeva* NewPlayer = World->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-			PlayerInfos.try_emplace(PlayerId, NewPlayer);
+			ADaeva* NewPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
+			UE_LOG(LogTemp, Log, TEXT("Create NewPlayer: %d"), PlayerId);
+			PlayerInfos.Add(PlayerId, NewPlayer);
 		}
+	}
+
+	for (auto& player : PlayerInfos)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Stored Players: %d"), player.Key);
+	}
+
+}
+
+void UAOPlayerManager::HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel)
+{
+	if (!GameInstance)
+		return;
+	UE_LOG(LogTemp, Log, TEXT("Handle_S_Move: %d"), PlayerId);
+
+	if (GameInstance->GetMyPlayerId() == PlayerId) return;
+	auto PlayerRef = PlayerInfos.Find(PlayerId);
+	if (PlayerRef == nullptr)return;
+	auto Player = PlayerRef->Get();
+	if (Player)
+	{
+		Player->ReceiveMovePacket(NewLocation, NewRotation, NewVel);
 	}
 }

@@ -11,6 +11,8 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 
+#include "AION2.h"
+
 ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -83,6 +85,10 @@ void ADaeva::BeginPlay()
 {
 	Super::BeginPlay();
 
+	LastLoc = GetActorLocation();
+	LastRot = GetActorRotation();
+	bWasMovingLastSend = false;
+
 	TargetZoomDistance = SpringArm->TargetArmLength;
 }
 
@@ -91,12 +97,28 @@ void ADaeva::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Tick_Camera(DeltaTime);
+
+	if (!IsLocallyControlled())
+	{
+		FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetLoc, DeltaTime, 10.f);
+		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRot, DeltaTime, 10.f);
+
+		SetActorLocation(NewLocation);
+		SetActorRotation(NewRotation);
+
+		GetCharacterMovement()->Velocity = TargetVel;
+
+	}
 }
 
 void ADaeva::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
+	if (!IsLocallyControlled()) return;
+	{
+		UE_LOG(LogTemp, Log, TEXT(" ADaeva::BeginPlay() - SetTimer"));
+		GetWorldTimerManager().SetTimer(SendMoveHandle, this, &ADaeva::SendMovePacket, SendMoveTimer, true);
+	}
 	InitGAS();
 }
 
@@ -341,4 +363,100 @@ void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 	PartMesh->SetLeaderPoseComponent(GetMesh());
 
 	Parts.Add(PartType, PartMesh);
+}
+
+void ADaeva::SendMovePacket()
+{
+	bool bCurrentMovement = HasMovement();
+
+	bool bShouldSend = false;
+
+	if (bCurrentMovement)
+	{
+		bShouldSend = true;
+
+		bWasMovingLastSend = true;
+	}
+
+	else
+	{
+		// 정지 상태
+		if (bWasMovingLastSend)
+		{
+			// 패킷 보내기
+			bShouldSend = true;
+			bWasMovingLastSend = false;
+		}
+		else
+		{
+			// 계속 정지 상태
+			return;
+		}
+	}
+
+	if (bShouldSend) 
+	{
+		FVector CurrLoc = GetActorLocation();
+		FRotator CurrRot = GetActorRotation();
+
+		Protocol::C_MovePacket MovePacket;
+		MovePacket.set_playerid(MyId);
+
+		Protocol::Vector3* Location = MovePacket.mutable_playerlocation();
+		Location->set_x(CurrLoc.X);
+		Location->set_y(CurrLoc.Y);
+		Location->set_z(CurrLoc.Z);
+
+		FVector CurrVelocity = GetCharacterMovement()->Velocity;
+
+		Protocol::Vector3* Velocity = MovePacket.mutable_playervelocity();
+		Velocity->set_x(CurrVelocity.X);
+		Velocity->set_y(CurrVelocity.Y);
+		Velocity->set_z(CurrVelocity.Z);
+
+		Protocol::Rotator3* Rotation = MovePacket.mutable_playerrotation();
+		Rotation->set_pitch(CurrRot.Pitch);
+		Rotation->set_yaw(CurrRot.Yaw);
+		Rotation->set_roll(CurrRot.Roll);
+
+		SEND_PACKET(MovePacket, PKT_C_MOVE);
+
+		LastLoc = CurrLoc;
+		LastRot = CurrRot;
+	}
+}
+
+bool ADaeva::HasMovement()
+{
+	FVector CurrentLoc = GetActorLocation();
+	FRotator CurrentRot = GetActorRotation();
+
+	// 캐릭터 위치가 일정 거리 이상 움직였는지
+	float Distance = FVector::DistSquared(CurrentLoc, LastLoc);
+
+	// 캐릭터 각도가 일정 각도 움직였는지
+	float YawDiff = FRotator::NormalizeAxis(CurrentRot.Yaw - LastRot.Yaw);
+	bool bRotated = FMath::Abs(YawDiff) >= 10.0f;
+
+	// 캐릭터무브먼트에 변화가 있었는지
+	bool bIsMoving = GetCharacterMovement()->Velocity.SizeSquared() > 0.f;
+
+	return (Distance > 25.f) || bRotated || bIsMoving;
+}
+
+bool ADaeva::IsCurrentMoving()
+{
+	if (!GetCharacterMovement()) return false;
+	bool bHasVelocity = GetCharacterMovement()->Velocity.SizeSquared() > 100.f;
+
+	bool bHasInput = !GetPendingMovementInputVector().IsNearlyZero();
+
+	return bHasVelocity || bHasInput;
+}
+
+void ADaeva::ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel)
+{
+	TargetLoc = NewLoc;
+	TargetRot = NewRot;
+	TargetVel = NewVel;
 }

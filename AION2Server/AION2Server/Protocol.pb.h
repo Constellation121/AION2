@@ -1461,25 +1461,73 @@ class C_MovePacket final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayerStatesFieldNumber = 1,
+    kPlayerLocationFieldNumber = 2,
+    kPlayerVelocityFieldNumber = 3,
+    kPlayerRotationFieldNumber = 4,
+    kPlayerIdFieldNumber = 1,
   };
-  // .Protocol.PlayerState playerStates = 1;
-  bool has_playerstates() const;
+  // .Protocol.Vector3 PlayerLocation = 2;
+  bool has_playerlocation() const;
   private:
-  bool _internal_has_playerstates() const;
+  bool _internal_has_playerlocation() const;
   public:
-  void clear_playerstates();
-  const ::Protocol::PlayerState& playerstates() const;
-  PROTOBUF_NODISCARD ::Protocol::PlayerState* release_playerstates();
-  ::Protocol::PlayerState* mutable_playerstates();
-  void set_allocated_playerstates(::Protocol::PlayerState* playerstates);
+  void clear_playerlocation();
+  const ::Protocol::Vector3& playerlocation() const;
+  PROTOBUF_NODISCARD ::Protocol::Vector3* release_playerlocation();
+  ::Protocol::Vector3* mutable_playerlocation();
+  void set_allocated_playerlocation(::Protocol::Vector3* playerlocation);
   private:
-  const ::Protocol::PlayerState& _internal_playerstates() const;
-  ::Protocol::PlayerState* _internal_mutable_playerstates();
+  const ::Protocol::Vector3& _internal_playerlocation() const;
+  ::Protocol::Vector3* _internal_mutable_playerlocation();
   public:
-  void unsafe_arena_set_allocated_playerstates(
-      ::Protocol::PlayerState* playerstates);
-  ::Protocol::PlayerState* unsafe_arena_release_playerstates();
+  void unsafe_arena_set_allocated_playerlocation(
+      ::Protocol::Vector3* playerlocation);
+  ::Protocol::Vector3* unsafe_arena_release_playerlocation();
+
+  // .Protocol.Vector3 PlayerVelocity = 3;
+  bool has_playervelocity() const;
+  private:
+  bool _internal_has_playervelocity() const;
+  public:
+  void clear_playervelocity();
+  const ::Protocol::Vector3& playervelocity() const;
+  PROTOBUF_NODISCARD ::Protocol::Vector3* release_playervelocity();
+  ::Protocol::Vector3* mutable_playervelocity();
+  void set_allocated_playervelocity(::Protocol::Vector3* playervelocity);
+  private:
+  const ::Protocol::Vector3& _internal_playervelocity() const;
+  ::Protocol::Vector3* _internal_mutable_playervelocity();
+  public:
+  void unsafe_arena_set_allocated_playervelocity(
+      ::Protocol::Vector3* playervelocity);
+  ::Protocol::Vector3* unsafe_arena_release_playervelocity();
+
+  // .Protocol.Rotator3 PlayerRotation = 4;
+  bool has_playerrotation() const;
+  private:
+  bool _internal_has_playerrotation() const;
+  public:
+  void clear_playerrotation();
+  const ::Protocol::Rotator3& playerrotation() const;
+  PROTOBUF_NODISCARD ::Protocol::Rotator3* release_playerrotation();
+  ::Protocol::Rotator3* mutable_playerrotation();
+  void set_allocated_playerrotation(::Protocol::Rotator3* playerrotation);
+  private:
+  const ::Protocol::Rotator3& _internal_playerrotation() const;
+  ::Protocol::Rotator3* _internal_mutable_playerrotation();
+  public:
+  void unsafe_arena_set_allocated_playerrotation(
+      ::Protocol::Rotator3* playerrotation);
+  ::Protocol::Rotator3* unsafe_arena_release_playerrotation();
+
+  // uint64 playerId = 1;
+  void clear_playerid();
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
+  private:
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
+  public:
 
   // @@protoc_insertion_point(class_scope:Protocol.C_MovePacket)
  private:
@@ -1489,7 +1537,10 @@ class C_MovePacket final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::PlayerState* playerstates_;
+    ::Protocol::Vector3* playerlocation_;
+    ::Protocol::Vector3* playervelocity_;
+    ::Protocol::Rotator3* playerrotation_;
+    uint64_t playerid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1618,25 +1669,73 @@ class S_MovePacket final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayerStatesFieldNumber = 1,
+    kPlayerLocationFieldNumber = 2,
+    kPlayerVelocityFieldNumber = 3,
+    kPlayerRotationFieldNumber = 4,
+    kPlayerIdFieldNumber = 1,
   };
-  // .Protocol.PlayerState playerStates = 1;
-  bool has_playerstates() const;
+  // .Protocol.Vector3 PlayerLocation = 2;
+  bool has_playerlocation() const;
   private:
-  bool _internal_has_playerstates() const;
+  bool _internal_has_playerlocation() const;
   public:
-  void clear_playerstates();
-  const ::Protocol::PlayerState& playerstates() const;
-  PROTOBUF_NODISCARD ::Protocol::PlayerState* release_playerstates();
-  ::Protocol::PlayerState* mutable_playerstates();
-  void set_allocated_playerstates(::Protocol::PlayerState* playerstates);
+  void clear_playerlocation();
+  const ::Protocol::Vector3& playerlocation() const;
+  PROTOBUF_NODISCARD ::Protocol::Vector3* release_playerlocation();
+  ::Protocol::Vector3* mutable_playerlocation();
+  void set_allocated_playerlocation(::Protocol::Vector3* playerlocation);
   private:
-  const ::Protocol::PlayerState& _internal_playerstates() const;
-  ::Protocol::PlayerState* _internal_mutable_playerstates();
+  const ::Protocol::Vector3& _internal_playerlocation() const;
+  ::Protocol::Vector3* _internal_mutable_playerlocation();
   public:
-  void unsafe_arena_set_allocated_playerstates(
-      ::Protocol::PlayerState* playerstates);
-  ::Protocol::PlayerState* unsafe_arena_release_playerstates();
+  void unsafe_arena_set_allocated_playerlocation(
+      ::Protocol::Vector3* playerlocation);
+  ::Protocol::Vector3* unsafe_arena_release_playerlocation();
+
+  // .Protocol.Vector3 PlayerVelocity = 3;
+  bool has_playervelocity() const;
+  private:
+  bool _internal_has_playervelocity() const;
+  public:
+  void clear_playervelocity();
+  const ::Protocol::Vector3& playervelocity() const;
+  PROTOBUF_NODISCARD ::Protocol::Vector3* release_playervelocity();
+  ::Protocol::Vector3* mutable_playervelocity();
+  void set_allocated_playervelocity(::Protocol::Vector3* playervelocity);
+  private:
+  const ::Protocol::Vector3& _internal_playervelocity() const;
+  ::Protocol::Vector3* _internal_mutable_playervelocity();
+  public:
+  void unsafe_arena_set_allocated_playervelocity(
+      ::Protocol::Vector3* playervelocity);
+  ::Protocol::Vector3* unsafe_arena_release_playervelocity();
+
+  // .Protocol.Rotator3 PlayerRotation = 4;
+  bool has_playerrotation() const;
+  private:
+  bool _internal_has_playerrotation() const;
+  public:
+  void clear_playerrotation();
+  const ::Protocol::Rotator3& playerrotation() const;
+  PROTOBUF_NODISCARD ::Protocol::Rotator3* release_playerrotation();
+  ::Protocol::Rotator3* mutable_playerrotation();
+  void set_allocated_playerrotation(::Protocol::Rotator3* playerrotation);
+  private:
+  const ::Protocol::Rotator3& _internal_playerrotation() const;
+  ::Protocol::Rotator3* _internal_mutable_playerrotation();
+  public:
+  void unsafe_arena_set_allocated_playerrotation(
+      ::Protocol::Rotator3* playerrotation);
+  ::Protocol::Rotator3* unsafe_arena_release_playerrotation();
+
+  // uint64 playerId = 1;
+  void clear_playerid();
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
+  private:
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
+  public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_MovePacket)
  private:
@@ -1646,7 +1745,10 @@ class S_MovePacket final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::PlayerState* playerstates_;
+    ::Protocol::Vector3* playerlocation_;
+    ::Protocol::Vector3* playervelocity_;
+    ::Protocol::Rotator3* playerrotation_;
+    uint64_t playerid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2154,39 +2256,59 @@ S_SpawnPacket::playerstates() const {
 
 // C_MovePacket
 
-// .Protocol.PlayerState playerStates = 1;
-inline bool C_MovePacket::_internal_has_playerstates() const {
-  return this != internal_default_instance() && _impl_.playerstates_ != nullptr;
+// uint64 playerId = 1;
+inline void C_MovePacket::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
 }
-inline bool C_MovePacket::has_playerstates() const {
-  return _internal_has_playerstates();
+inline uint64_t C_MovePacket::_internal_playerid() const {
+  return _impl_.playerid_;
 }
-inline const ::Protocol::PlayerState& C_MovePacket::_internal_playerstates() const {
-  const ::Protocol::PlayerState* p = _impl_.playerstates_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PlayerState&>(
-      ::Protocol::_PlayerState_default_instance_);
+inline uint64_t C_MovePacket::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_MovePacket.playerId)
+  return _internal_playerid();
 }
-inline const ::Protocol::PlayerState& C_MovePacket::playerstates() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_MovePacket.playerStates)
-  return _internal_playerstates();
+inline void C_MovePacket::_internal_set_playerid(uint64_t value) {
+  
+  _impl_.playerid_ = value;
 }
-inline void C_MovePacket::unsafe_arena_set_allocated_playerstates(
-    ::Protocol::PlayerState* playerstates) {
+inline void C_MovePacket::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_MovePacket.playerId)
+}
+
+// .Protocol.Vector3 PlayerLocation = 2;
+inline bool C_MovePacket::_internal_has_playerlocation() const {
+  return this != internal_default_instance() && _impl_.playerlocation_ != nullptr;
+}
+inline bool C_MovePacket::has_playerlocation() const {
+  return _internal_has_playerlocation();
+}
+inline const ::Protocol::Vector3& C_MovePacket::_internal_playerlocation() const {
+  const ::Protocol::Vector3* p = _impl_.playerlocation_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Vector3&>(
+      ::Protocol::_Vector3_default_instance_);
+}
+inline const ::Protocol::Vector3& C_MovePacket::playerlocation() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_MovePacket.PlayerLocation)
+  return _internal_playerlocation();
+}
+inline void C_MovePacket::unsafe_arena_set_allocated_playerlocation(
+    ::Protocol::Vector3* playerlocation) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerstates_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerlocation_);
   }
-  _impl_.playerstates_ = playerstates;
-  if (playerstates) {
+  _impl_.playerlocation_ = playerlocation;
+  if (playerlocation) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_MovePacket.playerStates)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_MovePacket.PlayerLocation)
 }
-inline ::Protocol::PlayerState* C_MovePacket::release_playerstates() {
+inline ::Protocol::Vector3* C_MovePacket::release_playerlocation() {
   
-  ::Protocol::PlayerState* temp = _impl_.playerstates_;
-  _impl_.playerstates_ = nullptr;
+  ::Protocol::Vector3* temp = _impl_.playerlocation_;
+  _impl_.playerlocation_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -2198,84 +2320,274 @@ inline ::Protocol::PlayerState* C_MovePacket::release_playerstates() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::PlayerState* C_MovePacket::unsafe_arena_release_playerstates() {
-  // @@protoc_insertion_point(field_release:Protocol.C_MovePacket.playerStates)
+inline ::Protocol::Vector3* C_MovePacket::unsafe_arena_release_playerlocation() {
+  // @@protoc_insertion_point(field_release:Protocol.C_MovePacket.PlayerLocation)
   
-  ::Protocol::PlayerState* temp = _impl_.playerstates_;
-  _impl_.playerstates_ = nullptr;
+  ::Protocol::Vector3* temp = _impl_.playerlocation_;
+  _impl_.playerlocation_ = nullptr;
   return temp;
 }
-inline ::Protocol::PlayerState* C_MovePacket::_internal_mutable_playerstates() {
+inline ::Protocol::Vector3* C_MovePacket::_internal_mutable_playerlocation() {
   
-  if (_impl_.playerstates_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::PlayerState>(GetArenaForAllocation());
-    _impl_.playerstates_ = p;
+  if (_impl_.playerlocation_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::Vector3>(GetArenaForAllocation());
+    _impl_.playerlocation_ = p;
   }
-  return _impl_.playerstates_;
+  return _impl_.playerlocation_;
 }
-inline ::Protocol::PlayerState* C_MovePacket::mutable_playerstates() {
-  ::Protocol::PlayerState* _msg = _internal_mutable_playerstates();
-  // @@protoc_insertion_point(field_mutable:Protocol.C_MovePacket.playerStates)
+inline ::Protocol::Vector3* C_MovePacket::mutable_playerlocation() {
+  ::Protocol::Vector3* _msg = _internal_mutable_playerlocation();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_MovePacket.PlayerLocation)
   return _msg;
 }
-inline void C_MovePacket::set_allocated_playerstates(::Protocol::PlayerState* playerstates) {
+inline void C_MovePacket::set_allocated_playerlocation(::Protocol::Vector3* playerlocation) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerstates_);
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerlocation_);
   }
-  if (playerstates) {
+  if (playerlocation) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
         ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(playerstates));
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(playerlocation));
     if (message_arena != submessage_arena) {
-      playerstates = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, playerstates, submessage_arena);
+      playerlocation = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, playerlocation, submessage_arena);
     }
     
   } else {
     
   }
-  _impl_.playerstates_ = playerstates;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.C_MovePacket.playerStates)
+  _impl_.playerlocation_ = playerlocation;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_MovePacket.PlayerLocation)
+}
+
+// .Protocol.Vector3 PlayerVelocity = 3;
+inline bool C_MovePacket::_internal_has_playervelocity() const {
+  return this != internal_default_instance() && _impl_.playervelocity_ != nullptr;
+}
+inline bool C_MovePacket::has_playervelocity() const {
+  return _internal_has_playervelocity();
+}
+inline const ::Protocol::Vector3& C_MovePacket::_internal_playervelocity() const {
+  const ::Protocol::Vector3* p = _impl_.playervelocity_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Vector3&>(
+      ::Protocol::_Vector3_default_instance_);
+}
+inline const ::Protocol::Vector3& C_MovePacket::playervelocity() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_MovePacket.PlayerVelocity)
+  return _internal_playervelocity();
+}
+inline void C_MovePacket::unsafe_arena_set_allocated_playervelocity(
+    ::Protocol::Vector3* playervelocity) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playervelocity_);
+  }
+  _impl_.playervelocity_ = playervelocity;
+  if (playervelocity) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_MovePacket.PlayerVelocity)
+}
+inline ::Protocol::Vector3* C_MovePacket::release_playervelocity() {
+  
+  ::Protocol::Vector3* temp = _impl_.playervelocity_;
+  _impl_.playervelocity_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::Vector3* C_MovePacket::unsafe_arena_release_playervelocity() {
+  // @@protoc_insertion_point(field_release:Protocol.C_MovePacket.PlayerVelocity)
+  
+  ::Protocol::Vector3* temp = _impl_.playervelocity_;
+  _impl_.playervelocity_ = nullptr;
+  return temp;
+}
+inline ::Protocol::Vector3* C_MovePacket::_internal_mutable_playervelocity() {
+  
+  if (_impl_.playervelocity_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::Vector3>(GetArenaForAllocation());
+    _impl_.playervelocity_ = p;
+  }
+  return _impl_.playervelocity_;
+}
+inline ::Protocol::Vector3* C_MovePacket::mutable_playervelocity() {
+  ::Protocol::Vector3* _msg = _internal_mutable_playervelocity();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_MovePacket.PlayerVelocity)
+  return _msg;
+}
+inline void C_MovePacket::set_allocated_playervelocity(::Protocol::Vector3* playervelocity) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playervelocity_);
+  }
+  if (playervelocity) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(playervelocity));
+    if (message_arena != submessage_arena) {
+      playervelocity = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, playervelocity, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.playervelocity_ = playervelocity;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_MovePacket.PlayerVelocity)
+}
+
+// .Protocol.Rotator3 PlayerRotation = 4;
+inline bool C_MovePacket::_internal_has_playerrotation() const {
+  return this != internal_default_instance() && _impl_.playerrotation_ != nullptr;
+}
+inline bool C_MovePacket::has_playerrotation() const {
+  return _internal_has_playerrotation();
+}
+inline const ::Protocol::Rotator3& C_MovePacket::_internal_playerrotation() const {
+  const ::Protocol::Rotator3* p = _impl_.playerrotation_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Rotator3&>(
+      ::Protocol::_Rotator3_default_instance_);
+}
+inline const ::Protocol::Rotator3& C_MovePacket::playerrotation() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_MovePacket.PlayerRotation)
+  return _internal_playerrotation();
+}
+inline void C_MovePacket::unsafe_arena_set_allocated_playerrotation(
+    ::Protocol::Rotator3* playerrotation) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerrotation_);
+  }
+  _impl_.playerrotation_ = playerrotation;
+  if (playerrotation) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_MovePacket.PlayerRotation)
+}
+inline ::Protocol::Rotator3* C_MovePacket::release_playerrotation() {
+  
+  ::Protocol::Rotator3* temp = _impl_.playerrotation_;
+  _impl_.playerrotation_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::Rotator3* C_MovePacket::unsafe_arena_release_playerrotation() {
+  // @@protoc_insertion_point(field_release:Protocol.C_MovePacket.PlayerRotation)
+  
+  ::Protocol::Rotator3* temp = _impl_.playerrotation_;
+  _impl_.playerrotation_ = nullptr;
+  return temp;
+}
+inline ::Protocol::Rotator3* C_MovePacket::_internal_mutable_playerrotation() {
+  
+  if (_impl_.playerrotation_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::Rotator3>(GetArenaForAllocation());
+    _impl_.playerrotation_ = p;
+  }
+  return _impl_.playerrotation_;
+}
+inline ::Protocol::Rotator3* C_MovePacket::mutable_playerrotation() {
+  ::Protocol::Rotator3* _msg = _internal_mutable_playerrotation();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_MovePacket.PlayerRotation)
+  return _msg;
+}
+inline void C_MovePacket::set_allocated_playerrotation(::Protocol::Rotator3* playerrotation) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerrotation_);
+  }
+  if (playerrotation) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(playerrotation));
+    if (message_arena != submessage_arena) {
+      playerrotation = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, playerrotation, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.playerrotation_ = playerrotation;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_MovePacket.PlayerRotation)
 }
 
 // -------------------------------------------------------------------
 
 // S_MovePacket
 
-// .Protocol.PlayerState playerStates = 1;
-inline bool S_MovePacket::_internal_has_playerstates() const {
-  return this != internal_default_instance() && _impl_.playerstates_ != nullptr;
+// uint64 playerId = 1;
+inline void S_MovePacket::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
 }
-inline bool S_MovePacket::has_playerstates() const {
-  return _internal_has_playerstates();
+inline uint64_t S_MovePacket::_internal_playerid() const {
+  return _impl_.playerid_;
 }
-inline const ::Protocol::PlayerState& S_MovePacket::_internal_playerstates() const {
-  const ::Protocol::PlayerState* p = _impl_.playerstates_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PlayerState&>(
-      ::Protocol::_PlayerState_default_instance_);
+inline uint64_t S_MovePacket::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MovePacket.playerId)
+  return _internal_playerid();
 }
-inline const ::Protocol::PlayerState& S_MovePacket::playerstates() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_MovePacket.playerStates)
-  return _internal_playerstates();
+inline void S_MovePacket::_internal_set_playerid(uint64_t value) {
+  
+  _impl_.playerid_ = value;
 }
-inline void S_MovePacket::unsafe_arena_set_allocated_playerstates(
-    ::Protocol::PlayerState* playerstates) {
+inline void S_MovePacket::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_MovePacket.playerId)
+}
+
+// .Protocol.Vector3 PlayerLocation = 2;
+inline bool S_MovePacket::_internal_has_playerlocation() const {
+  return this != internal_default_instance() && _impl_.playerlocation_ != nullptr;
+}
+inline bool S_MovePacket::has_playerlocation() const {
+  return _internal_has_playerlocation();
+}
+inline const ::Protocol::Vector3& S_MovePacket::_internal_playerlocation() const {
+  const ::Protocol::Vector3* p = _impl_.playerlocation_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Vector3&>(
+      ::Protocol::_Vector3_default_instance_);
+}
+inline const ::Protocol::Vector3& S_MovePacket::playerlocation() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MovePacket.PlayerLocation)
+  return _internal_playerlocation();
+}
+inline void S_MovePacket::unsafe_arena_set_allocated_playerlocation(
+    ::Protocol::Vector3* playerlocation) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerstates_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerlocation_);
   }
-  _impl_.playerstates_ = playerstates;
-  if (playerstates) {
+  _impl_.playerlocation_ = playerlocation;
+  if (playerlocation) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_MovePacket.playerStates)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_MovePacket.PlayerLocation)
 }
-inline ::Protocol::PlayerState* S_MovePacket::release_playerstates() {
+inline ::Protocol::Vector3* S_MovePacket::release_playerlocation() {
   
-  ::Protocol::PlayerState* temp = _impl_.playerstates_;
-  _impl_.playerstates_ = nullptr;
+  ::Protocol::Vector3* temp = _impl_.playerlocation_;
+  _impl_.playerlocation_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -2287,45 +2599,215 @@ inline ::Protocol::PlayerState* S_MovePacket::release_playerstates() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::PlayerState* S_MovePacket::unsafe_arena_release_playerstates() {
-  // @@protoc_insertion_point(field_release:Protocol.S_MovePacket.playerStates)
+inline ::Protocol::Vector3* S_MovePacket::unsafe_arena_release_playerlocation() {
+  // @@protoc_insertion_point(field_release:Protocol.S_MovePacket.PlayerLocation)
   
-  ::Protocol::PlayerState* temp = _impl_.playerstates_;
-  _impl_.playerstates_ = nullptr;
+  ::Protocol::Vector3* temp = _impl_.playerlocation_;
+  _impl_.playerlocation_ = nullptr;
   return temp;
 }
-inline ::Protocol::PlayerState* S_MovePacket::_internal_mutable_playerstates() {
+inline ::Protocol::Vector3* S_MovePacket::_internal_mutable_playerlocation() {
   
-  if (_impl_.playerstates_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::PlayerState>(GetArenaForAllocation());
-    _impl_.playerstates_ = p;
+  if (_impl_.playerlocation_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::Vector3>(GetArenaForAllocation());
+    _impl_.playerlocation_ = p;
   }
-  return _impl_.playerstates_;
+  return _impl_.playerlocation_;
 }
-inline ::Protocol::PlayerState* S_MovePacket::mutable_playerstates() {
-  ::Protocol::PlayerState* _msg = _internal_mutable_playerstates();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_MovePacket.playerStates)
+inline ::Protocol::Vector3* S_MovePacket::mutable_playerlocation() {
+  ::Protocol::Vector3* _msg = _internal_mutable_playerlocation();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_MovePacket.PlayerLocation)
   return _msg;
 }
-inline void S_MovePacket::set_allocated_playerstates(::Protocol::PlayerState* playerstates) {
+inline void S_MovePacket::set_allocated_playerlocation(::Protocol::Vector3* playerlocation) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerstates_);
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerlocation_);
   }
-  if (playerstates) {
+  if (playerlocation) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
         ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(playerstates));
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(playerlocation));
     if (message_arena != submessage_arena) {
-      playerstates = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, playerstates, submessage_arena);
+      playerlocation = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, playerlocation, submessage_arena);
     }
     
   } else {
     
   }
-  _impl_.playerstates_ = playerstates;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_MovePacket.playerStates)
+  _impl_.playerlocation_ = playerlocation;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_MovePacket.PlayerLocation)
+}
+
+// .Protocol.Vector3 PlayerVelocity = 3;
+inline bool S_MovePacket::_internal_has_playervelocity() const {
+  return this != internal_default_instance() && _impl_.playervelocity_ != nullptr;
+}
+inline bool S_MovePacket::has_playervelocity() const {
+  return _internal_has_playervelocity();
+}
+inline const ::Protocol::Vector3& S_MovePacket::_internal_playervelocity() const {
+  const ::Protocol::Vector3* p = _impl_.playervelocity_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Vector3&>(
+      ::Protocol::_Vector3_default_instance_);
+}
+inline const ::Protocol::Vector3& S_MovePacket::playervelocity() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MovePacket.PlayerVelocity)
+  return _internal_playervelocity();
+}
+inline void S_MovePacket::unsafe_arena_set_allocated_playervelocity(
+    ::Protocol::Vector3* playervelocity) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playervelocity_);
+  }
+  _impl_.playervelocity_ = playervelocity;
+  if (playervelocity) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_MovePacket.PlayerVelocity)
+}
+inline ::Protocol::Vector3* S_MovePacket::release_playervelocity() {
+  
+  ::Protocol::Vector3* temp = _impl_.playervelocity_;
+  _impl_.playervelocity_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::Vector3* S_MovePacket::unsafe_arena_release_playervelocity() {
+  // @@protoc_insertion_point(field_release:Protocol.S_MovePacket.PlayerVelocity)
+  
+  ::Protocol::Vector3* temp = _impl_.playervelocity_;
+  _impl_.playervelocity_ = nullptr;
+  return temp;
+}
+inline ::Protocol::Vector3* S_MovePacket::_internal_mutable_playervelocity() {
+  
+  if (_impl_.playervelocity_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::Vector3>(GetArenaForAllocation());
+    _impl_.playervelocity_ = p;
+  }
+  return _impl_.playervelocity_;
+}
+inline ::Protocol::Vector3* S_MovePacket::mutable_playervelocity() {
+  ::Protocol::Vector3* _msg = _internal_mutable_playervelocity();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_MovePacket.PlayerVelocity)
+  return _msg;
+}
+inline void S_MovePacket::set_allocated_playervelocity(::Protocol::Vector3* playervelocity) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playervelocity_);
+  }
+  if (playervelocity) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(playervelocity));
+    if (message_arena != submessage_arena) {
+      playervelocity = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, playervelocity, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.playervelocity_ = playervelocity;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_MovePacket.PlayerVelocity)
+}
+
+// .Protocol.Rotator3 PlayerRotation = 4;
+inline bool S_MovePacket::_internal_has_playerrotation() const {
+  return this != internal_default_instance() && _impl_.playerrotation_ != nullptr;
+}
+inline bool S_MovePacket::has_playerrotation() const {
+  return _internal_has_playerrotation();
+}
+inline const ::Protocol::Rotator3& S_MovePacket::_internal_playerrotation() const {
+  const ::Protocol::Rotator3* p = _impl_.playerrotation_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Rotator3&>(
+      ::Protocol::_Rotator3_default_instance_);
+}
+inline const ::Protocol::Rotator3& S_MovePacket::playerrotation() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MovePacket.PlayerRotation)
+  return _internal_playerrotation();
+}
+inline void S_MovePacket::unsafe_arena_set_allocated_playerrotation(
+    ::Protocol::Rotator3* playerrotation) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerrotation_);
+  }
+  _impl_.playerrotation_ = playerrotation;
+  if (playerrotation) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_MovePacket.PlayerRotation)
+}
+inline ::Protocol::Rotator3* S_MovePacket::release_playerrotation() {
+  
+  ::Protocol::Rotator3* temp = _impl_.playerrotation_;
+  _impl_.playerrotation_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::Rotator3* S_MovePacket::unsafe_arena_release_playerrotation() {
+  // @@protoc_insertion_point(field_release:Protocol.S_MovePacket.PlayerRotation)
+  
+  ::Protocol::Rotator3* temp = _impl_.playerrotation_;
+  _impl_.playerrotation_ = nullptr;
+  return temp;
+}
+inline ::Protocol::Rotator3* S_MovePacket::_internal_mutable_playerrotation() {
+  
+  if (_impl_.playerrotation_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::Rotator3>(GetArenaForAllocation());
+    _impl_.playerrotation_ = p;
+  }
+  return _impl_.playerrotation_;
+}
+inline ::Protocol::Rotator3* S_MovePacket::mutable_playerrotation() {
+  ::Protocol::Rotator3* _msg = _internal_mutable_playerrotation();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_MovePacket.PlayerRotation)
+  return _msg;
+}
+inline void S_MovePacket::set_allocated_playerrotation(::Protocol::Rotator3* playerrotation) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.playerrotation_);
+  }
+  if (playerrotation) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(playerrotation));
+    if (message_arena != submessage_arena) {
+      playerrotation = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, playerrotation, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.playerrotation_ = playerrotation;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_MovePacket.PlayerRotation)
 }
 
 #ifdef __GNUC__
