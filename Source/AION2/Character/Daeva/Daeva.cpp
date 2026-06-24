@@ -128,12 +128,12 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(SpaceAction, ETriggerEvent::Started, this, &ADaeva::InputSpacePressed);
 		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Triggered, this, &ADaeva::InputLBPressed);
 		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Triggered, this, &ADaeva::InputRBPressed);
-		EnhancedInputComponent->BindAction(Key1Action, ETriggerEvent::Triggered, this, &ADaeva::InputKey1Pressed);
-		EnhancedInputComponent->BindAction(Key2Action, ETriggerEvent::Triggered, this, &ADaeva::InputKey2Pressed);
-		EnhancedInputComponent->BindAction(Key3Action, ETriggerEvent::Triggered, this, &ADaeva::InputKey3Pressed);
-		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Triggered, this, &ADaeva::InputKey4Pressed);
-		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::InputKeyQPressed);
-		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::InputKeyEPressed);
+		EnhancedInputComponent->BindAction(Key1Action, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Key1));
+		EnhancedInputComponent->BindAction(Key2Action, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Key2));
+		EnhancedInputComponent->BindAction(Key3Action, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Key3));
+		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Key4));
+		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyQ));
+		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
 	}
 }
 
@@ -188,6 +188,11 @@ void ADaeva::InitGAS()
 
 	ASC = GASPS->GetAbilitySystemComponent();
 	ASC->InitAbilityActorInfo(GASPS, this);
+
+	if (!ASC->HasMatchingGameplayTag(TEAM_DAEVA))
+	{
+		ASC->AddLooseGameplayTag(TEAM_DAEVA);
+	}
 
 	if (!bTagEventsRegistered)
 	{
@@ -322,36 +327,6 @@ void ADaeva::InputRBPressed()
 	{
 		GASInputPressed(static_cast<int32>(EAbilityID::RB_1));
 	}
-}
-
-void ADaeva::InputKey1Pressed()
-{
-	GASInputPressed(static_cast<int32>(EAbilityID::Key1));
-}
-
-void ADaeva::InputKey2Pressed()
-{
-	GASInputPressed(static_cast<int32>(EAbilityID::Key2));
-}
-
-void ADaeva::InputKey3Pressed()
-{
-	GASInputPressed(static_cast<int32>(EAbilityID::Key3));
-}
-
-void ADaeva::InputKey4Pressed()
-{
-	GASInputPressed(static_cast<int32>(EAbilityID::Key4));
-}
-
-void ADaeva::InputKeyQPressed()
-{
-	GASInputPressed(static_cast<int32>(EAbilityID::KeyQ));
-}
-
-void ADaeva::InputKeyEPressed()
-{
-	GASInputPressed(static_cast<int32>(EAbilityID::KeyE));
 }
 
 void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)

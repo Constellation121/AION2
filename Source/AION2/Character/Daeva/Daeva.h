@@ -108,12 +108,6 @@ private:
 	void InputSpacePressed();
 	void InputLBPressed();
 	void InputRBPressed();
-	void InputKey1Pressed();
-	void InputKey2Pressed();
-	void InputKey3Pressed();
-	void InputKey4Pressed();
-	void InputKeyQPressed();
-	void InputKeyEPressed();
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);

@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
+#include "GAS/AOGameplayTags.h"
 
 
 // Sets default values
@@ -73,6 +74,11 @@ void ATalythra::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	// Owner Actor와 AvatarActor 설정 
 	ASC->InitAbilityActorInfo(this, this);
+
+	if (!ASC->HasMatchingGameplayTag(TEAM_MONSTER))
+	{
+		ASC->AddLooseGameplayTag(TEAM_MONSTER);
+	}
 
 	// Owner Actor란? : ASC를 논리적으로 소유한 주체 ( 해당 주체가 죽어도 유지되며, 레벨 및 스텟 보존 )
 	// Avatar Actor란? : Character  (죽으면 바뀌는 물체, 실제로 데이터를 처리하지 않지만 비주얼만 수행해주는 엑터) 
