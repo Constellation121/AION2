@@ -14,6 +14,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "AI/AITalythraAIController.h"
 #include "GAS/AOGameplayTags.h"
+#include "NavigationSystem.h"
 
 
 // Sets default values
@@ -161,6 +162,35 @@ void ATalythra::Tick(float DeltaTime)
 
 	if (bChargeAttack)
 	{
+		// ★ ChargeDirection으로 통일
+		const FVector Start = GetActorLocation();
+		const FVector NextLoc = Start + ChargeDirection * GetCharacterMovement()->MaxWalkSpeed * DeltaTime;
+
+		// 한 프레임만 보지 말고 살짝 여유분(예: 2~3프레임치)을 미리 본다
+		const FVector LookAhead = Start + ChargeDirection * GetCharacterMovement()->MaxWalkSpeed * (DeltaTime * 3.f);
+
+		UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+		if (NavSys)
+		{
+			FVector HitLocation;
+			const bool bHitEdge = NavSys->NavigationRaycast(
+				GetWorld(),
+				Start,
+				LookAhead,
+				HitLocation             // NavMesh 경계에 닿은 지점
+				/* , nullptr, GetController() */
+			);
+
+			if (bHitEdge)
+			{
+				// 경계에 닿기 직전에서 멈춤
+				GetCharacterMovement()->StopMovementImmediately();
+				EndChargeMove();        // ← 파라미터 원복도 같이
+				return;
+			}
+		}
+
+
 		AddMovementInput(ChargeDirection, 1.0f, false);
 	}
 
