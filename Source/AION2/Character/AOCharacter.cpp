@@ -5,6 +5,7 @@
 #include "Player/AOPlayerController.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 AAOCharacter::AAOCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UAOCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -20,6 +21,17 @@ UAbilitySystemComponent* AAOCharacter::GetAbilitySystemComponent() const
 void AAOCharacter::Multicast_DrawDebugCapsuleCollider_Implementation(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor)
 {
 	DrawDebugCapsuleCollider(CapsuleOrigin, CapsuleHalfHeight, AttackRadius, DrawColor);
+}
+
+void AAOCharacter::Client_PlayCameraShake_Implementation()
+{
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC || !CameraShakeClass)
+	{
+		return;
+	}
+
+	PC->ClientStartCameraShake(CameraShakeClass);
 }
 
 void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
@@ -71,7 +83,13 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 
 void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
 {
-	// ge
+	AAOCharacter* Target = Cast<AAOCharacter>(HitActor);
+	if (!Target)
+	{
+		return;
+	}
+
+	//Target->TakeDamageAO(AttackData, this);
 	// gc
 	PlayCameraShake(bDidShakeCamera);
 }
@@ -82,6 +100,20 @@ void AAOCharacter::InitGAS()
 
 void AAOCharacter::ClearGAS()
 {
+}
+
+void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser)
+{
+	UAbilitySystemComponent* SourceASC = DamageCauser->GetAbilitySystemComponent();
+	UAbilitySystemComponent* TargetASC = GetAbilitySystemComponent();
+	if (!SourceASC || !TargetASC)
+	{
+		return;
+	}
+
+	FGameplayEffectContextHandle Context = SourceASC->MakeEffectContext();
+	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffect, 1, Context);
+	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
 }
 
 bool AAOCharacter::IsEnemy(AActor* TargetActor)
@@ -116,14 +148,9 @@ void AAOCharacter::PlayCameraShake(bool& bDidShakeCamera)
 {
 	if (!bDidShakeCamera)
 	{
-		// gc
+		Client_PlayCameraShake();
 
-		//APlayerController* PC = GetWorld()->GetFirstPlayerController();
-		//if (PC && CameraShakeClass)
-		//{
-		//	bDidShakeCamera = true;
-		//	PC->ClientStartCameraShake(CameraShakeClass);
-		//}
+		bDidShakeCamera = true;
 	}
 }
 

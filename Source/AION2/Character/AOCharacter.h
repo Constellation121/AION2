@@ -17,8 +17,12 @@ public:
 public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor);
+
+	UFUNCTION(Client, Unreliable)
+	void Client_PlayCameraShake();
 
 public:
 	virtual void CheckAttackHit(const FAttackData& AttackData) override;
@@ -28,12 +32,23 @@ protected:
 	virtual void InitGAS();
 	virtual void ClearGAS();
 
+protected:
+	virtual void TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser);
+
 private:
 	bool IsEnemy(AActor* TargetActor);
 	void PlayCameraShake(bool& bDidShakeCamera);
 	void DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor);
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAbilitySystemComponent> ASC;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> DamageEffect;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 };
