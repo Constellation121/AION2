@@ -3,6 +3,7 @@
 #include "Physics/Collision.h"
 #include "GAS/AOGameplayTags.h"
 #include "Player/AOPlayerController.h"
+#include "GAS/AttributeSet/AOAttributeSet.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
@@ -96,9 +97,55 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 		return;
 	}
 
-	//FGameplayEffectContextHandle Context = SourceASC->MakeEffectContext();
-	//FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffect, 1, Context);
-	//SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
+	const float AttackPower = SourceASC->GetNumericAttribute(UAOAttributeSet::GetAttackPowerAttribute());
+	const float Defense = TargetASC->GetNumericAttribute(UAOAttributeSet::GetDefenseAttribute());
+
+	const float Multiplier = AttackData.DamageMultiplier;
+	const float BaseDamage = AttackPower * Multiplier;
+
+	const float FinalDamage = FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
+
+	FGameplayEffectContextHandle Context = SourceASC->MakeEffectContext();
+	Context.AddSourceObject(DamageCauser);
+
+	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffect, 1.0f, Context);
+
+	if (!SpecHandle.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Damage]"));
+		return;
+	}
+
+	SpecHandle.Data->SetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(TEXT("Data.Damage")),
+		-FinalDamage
+	);
+
+	const float OldHealth =
+		TargetASC->GetNumericAttribute(
+			UAOAttributeSet::GetHealthAttribute()
+		);
+
+	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
+
+	const float NewHealth =
+		TargetASC->GetNumericAttribute(
+			UAOAttributeSet::GetHealthAttribute()
+		);
+
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[Damage] %s -> %s | ATK: %.1f | DEF: %.1f | Mult: %.2f | Final: %.2f | HP: %.1f -> %.1f"),
+		*GetNameSafe(DamageCauser),
+		*GetNameSafe(this),
+		AttackPower,
+		Defense,
+		Multiplier,
+		FinalDamage,
+		OldHealth,
+		NewHealth
+	);
 
 	if (AttackData.HitGameplayCueTag.IsValid())
 	{
