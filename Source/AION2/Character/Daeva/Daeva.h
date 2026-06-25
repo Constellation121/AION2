@@ -42,7 +42,9 @@ enum class EMontageID : uint8
 	Key3,
 	Key4,
 	KeyQ,
-	KeyE
+	KeyE,
+	Die,
+	Rebirth
 };
 
 UENUM(BlueprintType)
