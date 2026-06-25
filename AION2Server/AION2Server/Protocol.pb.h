@@ -56,6 +56,18 @@ struct TableStruct_Protocol_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Protocol_2eproto;
 namespace Protocol {
+class C_DunzeonCreatePacket;
+struct C_DunzeonCreatePacketDefaultTypeInternal;
+extern C_DunzeonCreatePacketDefaultTypeInternal _C_DunzeonCreatePacket_default_instance_;
+class C_DunzeonEnteracket;
+struct C_DunzeonEnteracketDefaultTypeInternal;
+extern C_DunzeonEnteracketDefaultTypeInternal _C_DunzeonEnteracket_default_instance_;
+class C_DunzeonReadyacket;
+struct C_DunzeonReadyacketDefaultTypeInternal;
+extern C_DunzeonReadyacketDefaultTypeInternal _C_DunzeonReadyacket_default_instance_;
+class C_DunzeonStartacket;
+struct C_DunzeonStartacketDefaultTypeInternal;
+extern C_DunzeonStartacketDefaultTypeInternal _C_DunzeonStartacket_default_instance_;
 class C_LoginPacket;
 struct C_LoginPacketDefaultTypeInternal;
 extern C_LoginPacketDefaultTypeInternal _C_LoginPacket_default_instance_;
@@ -68,6 +80,18 @@ extern C_MovePacketDefaultTypeInternal _C_MovePacket_default_instance_;
 class C_SignUpPacket;
 struct C_SignUpPacketDefaultTypeInternal;
 extern C_SignUpPacketDefaultTypeInternal _C_SignUpPacket_default_instance_;
+class S_DunzeonCreatePacket;
+struct S_DunzeonCreatePacketDefaultTypeInternal;
+extern S_DunzeonCreatePacketDefaultTypeInternal _S_DunzeonCreatePacket_default_instance_;
+class S_DunzeonEnterPacket;
+struct S_DunzeonEnterPacketDefaultTypeInternal;
+extern S_DunzeonEnterPacketDefaultTypeInternal _S_DunzeonEnterPacket_default_instance_;
+class S_DunzeonReadyPacket;
+struct S_DunzeonReadyPacketDefaultTypeInternal;
+extern S_DunzeonReadyPacketDefaultTypeInternal _S_DunzeonReadyPacket_default_instance_;
+class S_DunzeonStartPacket;
+struct S_DunzeonStartPacketDefaultTypeInternal;
+extern S_DunzeonStartPacketDefaultTypeInternal _S_DunzeonStartPacket_default_instance_;
 class S_ItemDataPacket;
 struct S_ItemDataPacketDefaultTypeInternal;
 extern S_ItemDataPacketDefaultTypeInternal _S_ItemDataPacket_default_instance_;
@@ -88,10 +112,18 @@ struct S_SpawnPacketDefaultTypeInternal;
 extern S_SpawnPacketDefaultTypeInternal _S_SpawnPacket_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
+template<> ::Protocol::C_DunzeonCreatePacket* Arena::CreateMaybeMessage<::Protocol::C_DunzeonCreatePacket>(Arena*);
+template<> ::Protocol::C_DunzeonEnteracket* Arena::CreateMaybeMessage<::Protocol::C_DunzeonEnteracket>(Arena*);
+template<> ::Protocol::C_DunzeonReadyacket* Arena::CreateMaybeMessage<::Protocol::C_DunzeonReadyacket>(Arena*);
+template<> ::Protocol::C_DunzeonStartacket* Arena::CreateMaybeMessage<::Protocol::C_DunzeonStartacket>(Arena*);
 template<> ::Protocol::C_LoginPacket* Arena::CreateMaybeMessage<::Protocol::C_LoginPacket>(Arena*);
 template<> ::Protocol::C_MapLoadCompletePacket* Arena::CreateMaybeMessage<::Protocol::C_MapLoadCompletePacket>(Arena*);
 template<> ::Protocol::C_MovePacket* Arena::CreateMaybeMessage<::Protocol::C_MovePacket>(Arena*);
 template<> ::Protocol::C_SignUpPacket* Arena::CreateMaybeMessage<::Protocol::C_SignUpPacket>(Arena*);
+template<> ::Protocol::S_DunzeonCreatePacket* Arena::CreateMaybeMessage<::Protocol::S_DunzeonCreatePacket>(Arena*);
+template<> ::Protocol::S_DunzeonEnterPacket* Arena::CreateMaybeMessage<::Protocol::S_DunzeonEnterPacket>(Arena*);
+template<> ::Protocol::S_DunzeonReadyPacket* Arena::CreateMaybeMessage<::Protocol::S_DunzeonReadyPacket>(Arena*);
+template<> ::Protocol::S_DunzeonStartPacket* Arena::CreateMaybeMessage<::Protocol::S_DunzeonStartPacket>(Arena*);
 template<> ::Protocol::S_ItemDataPacket* Arena::CreateMaybeMessage<::Protocol::S_ItemDataPacket>(Arena*);
 template<> ::Protocol::S_LoginFailPacket* Arena::CreateMaybeMessage<::Protocol::S_LoginFailPacket>(Arena*);
 template<> ::Protocol::S_LoginSuccessPacket* Arena::CreateMaybeMessage<::Protocol::S_LoginSuccessPacket>(Arena*);
@@ -1754,6 +1786,1215 @@ class S_MovePacket final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class C_DunzeonCreatePacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DunzeonCreatePacket) */ {
+ public:
+  inline C_DunzeonCreatePacket() : C_DunzeonCreatePacket(nullptr) {}
+  ~C_DunzeonCreatePacket() override;
+  explicit PROTOBUF_CONSTEXPR C_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_DunzeonCreatePacket(const C_DunzeonCreatePacket& from);
+  C_DunzeonCreatePacket(C_DunzeonCreatePacket&& from) noexcept
+    : C_DunzeonCreatePacket() {
+    *this = ::std::move(from);
+  }
+
+  inline C_DunzeonCreatePacket& operator=(const C_DunzeonCreatePacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_DunzeonCreatePacket& operator=(C_DunzeonCreatePacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_DunzeonCreatePacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_DunzeonCreatePacket* internal_default_instance() {
+    return reinterpret_cast<const C_DunzeonCreatePacket*>(
+               &_C_DunzeonCreatePacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(C_DunzeonCreatePacket& a, C_DunzeonCreatePacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_DunzeonCreatePacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_DunzeonCreatePacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_DunzeonCreatePacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DunzeonCreatePacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_DunzeonCreatePacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_DunzeonCreatePacket& from) {
+    C_DunzeonCreatePacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_DunzeonCreatePacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_DunzeonCreatePacket";
+  }
+  protected:
+  explicit C_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPlayerIdFieldNumber = 1,
+  };
+  // uint64 playerId = 1;
+  void clear_playerid();
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
+  private:
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_DunzeonCreatePacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t playerid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_DunzeonCreatePacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DunzeonCreatePacket) */ {
+ public:
+  inline S_DunzeonCreatePacket() : S_DunzeonCreatePacket(nullptr) {}
+  ~S_DunzeonCreatePacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_DunzeonCreatePacket(const S_DunzeonCreatePacket& from);
+  S_DunzeonCreatePacket(S_DunzeonCreatePacket&& from) noexcept
+    : S_DunzeonCreatePacket() {
+    *this = ::std::move(from);
+  }
+
+  inline S_DunzeonCreatePacket& operator=(const S_DunzeonCreatePacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_DunzeonCreatePacket& operator=(S_DunzeonCreatePacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_DunzeonCreatePacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_DunzeonCreatePacket* internal_default_instance() {
+    return reinterpret_cast<const S_DunzeonCreatePacket*>(
+               &_S_DunzeonCreatePacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(S_DunzeonCreatePacket& a, S_DunzeonCreatePacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_DunzeonCreatePacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_DunzeonCreatePacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_DunzeonCreatePacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DunzeonCreatePacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_DunzeonCreatePacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_DunzeonCreatePacket& from) {
+    S_DunzeonCreatePacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_DunzeonCreatePacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_DunzeonCreatePacket";
+  }
+  protected:
+  explicit S_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPlayerIdFieldNumber = 1,
+  };
+  // uint64 playerId = 1;
+  void clear_playerid();
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
+  private:
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_DunzeonCreatePacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t playerid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class C_DunzeonEnteracket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DunzeonEnteracket) */ {
+ public:
+  inline C_DunzeonEnteracket() : C_DunzeonEnteracket(nullptr) {}
+  ~C_DunzeonEnteracket() override;
+  explicit PROTOBUF_CONSTEXPR C_DunzeonEnteracket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_DunzeonEnteracket(const C_DunzeonEnteracket& from);
+  C_DunzeonEnteracket(C_DunzeonEnteracket&& from) noexcept
+    : C_DunzeonEnteracket() {
+    *this = ::std::move(from);
+  }
+
+  inline C_DunzeonEnteracket& operator=(const C_DunzeonEnteracket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_DunzeonEnteracket& operator=(C_DunzeonEnteracket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_DunzeonEnteracket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_DunzeonEnteracket* internal_default_instance() {
+    return reinterpret_cast<const C_DunzeonEnteracket*>(
+               &_C_DunzeonEnteracket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  friend void swap(C_DunzeonEnteracket& a, C_DunzeonEnteracket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_DunzeonEnteracket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_DunzeonEnteracket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_DunzeonEnteracket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DunzeonEnteracket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_DunzeonEnteracket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_DunzeonEnteracket& from) {
+    C_DunzeonEnteracket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_DunzeonEnteracket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_DunzeonEnteracket";
+  }
+  protected:
+  explicit C_DunzeonEnteracket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPlayerIdFieldNumber = 1,
+  };
+  // uint64 playerId = 1;
+  void clear_playerid();
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
+  private:
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_DunzeonEnteracket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t playerid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_DunzeonEnterPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DunzeonEnterPacket) */ {
+ public:
+  inline S_DunzeonEnterPacket() : S_DunzeonEnterPacket(nullptr) {}
+  ~S_DunzeonEnterPacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DunzeonEnterPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_DunzeonEnterPacket(const S_DunzeonEnterPacket& from);
+  S_DunzeonEnterPacket(S_DunzeonEnterPacket&& from) noexcept
+    : S_DunzeonEnterPacket() {
+    *this = ::std::move(from);
+  }
+
+  inline S_DunzeonEnterPacket& operator=(const S_DunzeonEnterPacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_DunzeonEnterPacket& operator=(S_DunzeonEnterPacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_DunzeonEnterPacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_DunzeonEnterPacket* internal_default_instance() {
+    return reinterpret_cast<const S_DunzeonEnterPacket*>(
+               &_S_DunzeonEnterPacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(S_DunzeonEnterPacket& a, S_DunzeonEnterPacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_DunzeonEnterPacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_DunzeonEnterPacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_DunzeonEnterPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DunzeonEnterPacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_DunzeonEnterPacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_DunzeonEnterPacket& from) {
+    S_DunzeonEnterPacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_DunzeonEnterPacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_DunzeonEnterPacket";
+  }
+  protected:
+  explicit S_DunzeonEnterPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDunzeonPlayerInfoFieldNumber = 1,
+  };
+  // repeated .Protocol.DunzeonPlayerInfo dunzeonPlayerInfo = 1;
+  int dunzeonplayerinfo_size() const;
+  private:
+  int _internal_dunzeonplayerinfo_size() const;
+  public:
+  void clear_dunzeonplayerinfo();
+  ::Protocol::DunzeonPlayerInfo* mutable_dunzeonplayerinfo(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo >*
+      mutable_dunzeonplayerinfo();
+  private:
+  const ::Protocol::DunzeonPlayerInfo& _internal_dunzeonplayerinfo(int index) const;
+  ::Protocol::DunzeonPlayerInfo* _internal_add_dunzeonplayerinfo();
+  public:
+  const ::Protocol::DunzeonPlayerInfo& dunzeonplayerinfo(int index) const;
+  ::Protocol::DunzeonPlayerInfo* add_dunzeonplayerinfo();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo >&
+      dunzeonplayerinfo() const;
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_DunzeonEnterPacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo > dunzeonplayerinfo_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class C_DunzeonReadyacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DunzeonReadyacket) */ {
+ public:
+  inline C_DunzeonReadyacket() : C_DunzeonReadyacket(nullptr) {}
+  ~C_DunzeonReadyacket() override;
+  explicit PROTOBUF_CONSTEXPR C_DunzeonReadyacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_DunzeonReadyacket(const C_DunzeonReadyacket& from);
+  C_DunzeonReadyacket(C_DunzeonReadyacket&& from) noexcept
+    : C_DunzeonReadyacket() {
+    *this = ::std::move(from);
+  }
+
+  inline C_DunzeonReadyacket& operator=(const C_DunzeonReadyacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_DunzeonReadyacket& operator=(C_DunzeonReadyacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_DunzeonReadyacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_DunzeonReadyacket* internal_default_instance() {
+    return reinterpret_cast<const C_DunzeonReadyacket*>(
+               &_C_DunzeonReadyacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    14;
+
+  friend void swap(C_DunzeonReadyacket& a, C_DunzeonReadyacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_DunzeonReadyacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_DunzeonReadyacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_DunzeonReadyacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DunzeonReadyacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_DunzeonReadyacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_DunzeonReadyacket& from) {
+    C_DunzeonReadyacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_DunzeonReadyacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_DunzeonReadyacket";
+  }
+  protected:
+  explicit C_DunzeonReadyacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDunzeonIdFieldNumber = 1,
+  };
+  // int32 dunzeonId = 1;
+  void clear_dunzeonid();
+  int32_t dunzeonid() const;
+  void set_dunzeonid(int32_t value);
+  private:
+  int32_t _internal_dunzeonid() const;
+  void _internal_set_dunzeonid(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_DunzeonReadyacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int32_t dunzeonid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_DunzeonReadyPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DunzeonReadyPacket) */ {
+ public:
+  inline S_DunzeonReadyPacket() : S_DunzeonReadyPacket(nullptr) {}
+  ~S_DunzeonReadyPacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DunzeonReadyPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_DunzeonReadyPacket(const S_DunzeonReadyPacket& from);
+  S_DunzeonReadyPacket(S_DunzeonReadyPacket&& from) noexcept
+    : S_DunzeonReadyPacket() {
+    *this = ::std::move(from);
+  }
+
+  inline S_DunzeonReadyPacket& operator=(const S_DunzeonReadyPacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_DunzeonReadyPacket& operator=(S_DunzeonReadyPacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_DunzeonReadyPacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_DunzeonReadyPacket* internal_default_instance() {
+    return reinterpret_cast<const S_DunzeonReadyPacket*>(
+               &_S_DunzeonReadyPacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    15;
+
+  friend void swap(S_DunzeonReadyPacket& a, S_DunzeonReadyPacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_DunzeonReadyPacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_DunzeonReadyPacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_DunzeonReadyPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DunzeonReadyPacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_DunzeonReadyPacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_DunzeonReadyPacket& from) {
+    S_DunzeonReadyPacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_DunzeonReadyPacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_DunzeonReadyPacket";
+  }
+  protected:
+  explicit S_DunzeonReadyPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDunzeonIdFieldNumber = 1,
+  };
+  // int32 dunzeonId = 1;
+  void clear_dunzeonid();
+  int32_t dunzeonid() const;
+  void set_dunzeonid(int32_t value);
+  private:
+  int32_t _internal_dunzeonid() const;
+  void _internal_set_dunzeonid(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_DunzeonReadyPacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int32_t dunzeonid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class C_DunzeonStartacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DunzeonStartacket) */ {
+ public:
+  inline C_DunzeonStartacket() : C_DunzeonStartacket(nullptr) {}
+  ~C_DunzeonStartacket() override;
+  explicit PROTOBUF_CONSTEXPR C_DunzeonStartacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_DunzeonStartacket(const C_DunzeonStartacket& from);
+  C_DunzeonStartacket(C_DunzeonStartacket&& from) noexcept
+    : C_DunzeonStartacket() {
+    *this = ::std::move(from);
+  }
+
+  inline C_DunzeonStartacket& operator=(const C_DunzeonStartacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_DunzeonStartacket& operator=(C_DunzeonStartacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_DunzeonStartacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_DunzeonStartacket* internal_default_instance() {
+    return reinterpret_cast<const C_DunzeonStartacket*>(
+               &_C_DunzeonStartacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    16;
+
+  friend void swap(C_DunzeonStartacket& a, C_DunzeonStartacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_DunzeonStartacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_DunzeonStartacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_DunzeonStartacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DunzeonStartacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_DunzeonStartacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_DunzeonStartacket& from) {
+    C_DunzeonStartacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_DunzeonStartacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_DunzeonStartacket";
+  }
+  protected:
+  explicit C_DunzeonStartacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDunzeonIdFieldNumber = 1,
+  };
+  // int32 dunzeonId = 1;
+  void clear_dunzeonid();
+  int32_t dunzeonid() const;
+  void set_dunzeonid(int32_t value);
+  private:
+  int32_t _internal_dunzeonid() const;
+  void _internal_set_dunzeonid(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_DunzeonStartacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int32_t dunzeonid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_DunzeonStartPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DunzeonStartPacket) */ {
+ public:
+  inline S_DunzeonStartPacket() : S_DunzeonStartPacket(nullptr) {}
+  ~S_DunzeonStartPacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DunzeonStartPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_DunzeonStartPacket(const S_DunzeonStartPacket& from);
+  S_DunzeonStartPacket(S_DunzeonStartPacket&& from) noexcept
+    : S_DunzeonStartPacket() {
+    *this = ::std::move(from);
+  }
+
+  inline S_DunzeonStartPacket& operator=(const S_DunzeonStartPacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_DunzeonStartPacket& operator=(S_DunzeonStartPacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_DunzeonStartPacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_DunzeonStartPacket* internal_default_instance() {
+    return reinterpret_cast<const S_DunzeonStartPacket*>(
+               &_S_DunzeonStartPacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    17;
+
+  friend void swap(S_DunzeonStartPacket& a, S_DunzeonStartPacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_DunzeonStartPacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_DunzeonStartPacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_DunzeonStartPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DunzeonStartPacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_DunzeonStartPacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_DunzeonStartPacket& from) {
+    S_DunzeonStartPacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_DunzeonStartPacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_DunzeonStartPacket";
+  }
+  protected:
+  explicit S_DunzeonStartPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDunzeonIPFieldNumber = 2,
+    kDunjeonIdFieldNumber = 1,
+  };
+  // string dunzeonIP = 2;
+  void clear_dunzeonip();
+  const std::string& dunzeonip() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_dunzeonip(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_dunzeonip();
+  PROTOBUF_NODISCARD std::string* release_dunzeonip();
+  void set_allocated_dunzeonip(std::string* dunzeonip);
+  private:
+  const std::string& _internal_dunzeonip() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_dunzeonip(const std::string& value);
+  std::string* _internal_mutable_dunzeonip();
+  public:
+
+  // int32 dunjeonId = 1;
+  void clear_dunjeonid();
+  int32_t dunjeonid() const;
+  void set_dunjeonid(int32_t value);
+  private:
+  int32_t _internal_dunjeonid() const;
+  void _internal_set_dunjeonid(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_DunzeonStartPacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dunzeonip_;
+    int32_t dunjeonid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -2810,9 +4051,284 @@ inline void S_MovePacket::set_allocated_playerrotation(::Protocol::Rotator3* pla
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_MovePacket.PlayerRotation)
 }
 
+// -------------------------------------------------------------------
+
+// C_DunzeonCreatePacket
+
+// uint64 playerId = 1;
+inline void C_DunzeonCreatePacket::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
+}
+inline uint64_t C_DunzeonCreatePacket::_internal_playerid() const {
+  return _impl_.playerid_;
+}
+inline uint64_t C_DunzeonCreatePacket::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DunzeonCreatePacket.playerId)
+  return _internal_playerid();
+}
+inline void C_DunzeonCreatePacket::_internal_set_playerid(uint64_t value) {
+  
+  _impl_.playerid_ = value;
+}
+inline void C_DunzeonCreatePacket::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DunzeonCreatePacket.playerId)
+}
+
+// -------------------------------------------------------------------
+
+// S_DunzeonCreatePacket
+
+// uint64 playerId = 1;
+inline void S_DunzeonCreatePacket::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
+}
+inline uint64_t S_DunzeonCreatePacket::_internal_playerid() const {
+  return _impl_.playerid_;
+}
+inline uint64_t S_DunzeonCreatePacket::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonCreatePacket.playerId)
+  return _internal_playerid();
+}
+inline void S_DunzeonCreatePacket::_internal_set_playerid(uint64_t value) {
+  
+  _impl_.playerid_ = value;
+}
+inline void S_DunzeonCreatePacket::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DunzeonCreatePacket.playerId)
+}
+
+// -------------------------------------------------------------------
+
+// C_DunzeonEnteracket
+
+// uint64 playerId = 1;
+inline void C_DunzeonEnteracket::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
+}
+inline uint64_t C_DunzeonEnteracket::_internal_playerid() const {
+  return _impl_.playerid_;
+}
+inline uint64_t C_DunzeonEnteracket::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DunzeonEnteracket.playerId)
+  return _internal_playerid();
+}
+inline void C_DunzeonEnteracket::_internal_set_playerid(uint64_t value) {
+  
+  _impl_.playerid_ = value;
+}
+inline void C_DunzeonEnteracket::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DunzeonEnteracket.playerId)
+}
+
+// -------------------------------------------------------------------
+
+// S_DunzeonEnterPacket
+
+// repeated .Protocol.DunzeonPlayerInfo dunzeonPlayerInfo = 1;
+inline int S_DunzeonEnterPacket::_internal_dunzeonplayerinfo_size() const {
+  return _impl_.dunzeonplayerinfo_.size();
+}
+inline int S_DunzeonEnterPacket::dunzeonplayerinfo_size() const {
+  return _internal_dunzeonplayerinfo_size();
+}
+inline ::Protocol::DunzeonPlayerInfo* S_DunzeonEnterPacket::mutable_dunzeonplayerinfo(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
+  return _impl_.dunzeonplayerinfo_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo >*
+S_DunzeonEnterPacket::mutable_dunzeonplayerinfo() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
+  return &_impl_.dunzeonplayerinfo_;
+}
+inline const ::Protocol::DunzeonPlayerInfo& S_DunzeonEnterPacket::_internal_dunzeonplayerinfo(int index) const {
+  return _impl_.dunzeonplayerinfo_.Get(index);
+}
+inline const ::Protocol::DunzeonPlayerInfo& S_DunzeonEnterPacket::dunzeonplayerinfo(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
+  return _internal_dunzeonplayerinfo(index);
+}
+inline ::Protocol::DunzeonPlayerInfo* S_DunzeonEnterPacket::_internal_add_dunzeonplayerinfo() {
+  return _impl_.dunzeonplayerinfo_.Add();
+}
+inline ::Protocol::DunzeonPlayerInfo* S_DunzeonEnterPacket::add_dunzeonplayerinfo() {
+  ::Protocol::DunzeonPlayerInfo* _add = _internal_add_dunzeonplayerinfo();
+  // @@protoc_insertion_point(field_add:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo >&
+S_DunzeonEnterPacket::dunzeonplayerinfo() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
+  return _impl_.dunzeonplayerinfo_;
+}
+
+// -------------------------------------------------------------------
+
+// C_DunzeonReadyacket
+
+// int32 dunzeonId = 1;
+inline void C_DunzeonReadyacket::clear_dunzeonid() {
+  _impl_.dunzeonid_ = 0;
+}
+inline int32_t C_DunzeonReadyacket::_internal_dunzeonid() const {
+  return _impl_.dunzeonid_;
+}
+inline int32_t C_DunzeonReadyacket::dunzeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DunzeonReadyacket.dunzeonId)
+  return _internal_dunzeonid();
+}
+inline void C_DunzeonReadyacket::_internal_set_dunzeonid(int32_t value) {
+  
+  _impl_.dunzeonid_ = value;
+}
+inline void C_DunzeonReadyacket::set_dunzeonid(int32_t value) {
+  _internal_set_dunzeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DunzeonReadyacket.dunzeonId)
+}
+
+// -------------------------------------------------------------------
+
+// S_DunzeonReadyPacket
+
+// int32 dunzeonId = 1;
+inline void S_DunzeonReadyPacket::clear_dunzeonid() {
+  _impl_.dunzeonid_ = 0;
+}
+inline int32_t S_DunzeonReadyPacket::_internal_dunzeonid() const {
+  return _impl_.dunzeonid_;
+}
+inline int32_t S_DunzeonReadyPacket::dunzeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonReadyPacket.dunzeonId)
+  return _internal_dunzeonid();
+}
+inline void S_DunzeonReadyPacket::_internal_set_dunzeonid(int32_t value) {
+  
+  _impl_.dunzeonid_ = value;
+}
+inline void S_DunzeonReadyPacket::set_dunzeonid(int32_t value) {
+  _internal_set_dunzeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DunzeonReadyPacket.dunzeonId)
+}
+
+// -------------------------------------------------------------------
+
+// C_DunzeonStartacket
+
+// int32 dunzeonId = 1;
+inline void C_DunzeonStartacket::clear_dunzeonid() {
+  _impl_.dunzeonid_ = 0;
+}
+inline int32_t C_DunzeonStartacket::_internal_dunzeonid() const {
+  return _impl_.dunzeonid_;
+}
+inline int32_t C_DunzeonStartacket::dunzeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DunzeonStartacket.dunzeonId)
+  return _internal_dunzeonid();
+}
+inline void C_DunzeonStartacket::_internal_set_dunzeonid(int32_t value) {
+  
+  _impl_.dunzeonid_ = value;
+}
+inline void C_DunzeonStartacket::set_dunzeonid(int32_t value) {
+  _internal_set_dunzeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DunzeonStartacket.dunzeonId)
+}
+
+// -------------------------------------------------------------------
+
+// S_DunzeonStartPacket
+
+// int32 dunjeonId = 1;
+inline void S_DunzeonStartPacket::clear_dunjeonid() {
+  _impl_.dunjeonid_ = 0;
+}
+inline int32_t S_DunzeonStartPacket::_internal_dunjeonid() const {
+  return _impl_.dunjeonid_;
+}
+inline int32_t S_DunzeonStartPacket::dunjeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonStartPacket.dunjeonId)
+  return _internal_dunjeonid();
+}
+inline void S_DunzeonStartPacket::_internal_set_dunjeonid(int32_t value) {
+  
+  _impl_.dunjeonid_ = value;
+}
+inline void S_DunzeonStartPacket::set_dunjeonid(int32_t value) {
+  _internal_set_dunjeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DunzeonStartPacket.dunjeonId)
+}
+
+// string dunzeonIP = 2;
+inline void S_DunzeonStartPacket::clear_dunzeonip() {
+  _impl_.dunzeonip_.ClearToEmpty();
+}
+inline const std::string& S_DunzeonStartPacket::dunzeonip() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonStartPacket.dunzeonIP)
+  return _internal_dunzeonip();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void S_DunzeonStartPacket::set_dunzeonip(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.dunzeonip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.S_DunzeonStartPacket.dunzeonIP)
+}
+inline std::string* S_DunzeonStartPacket::mutable_dunzeonip() {
+  std::string* _s = _internal_mutable_dunzeonip();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_DunzeonStartPacket.dunzeonIP)
+  return _s;
+}
+inline const std::string& S_DunzeonStartPacket::_internal_dunzeonip() const {
+  return _impl_.dunzeonip_.Get();
+}
+inline void S_DunzeonStartPacket::_internal_set_dunzeonip(const std::string& value) {
+  
+  _impl_.dunzeonip_.Set(value, GetArenaForAllocation());
+}
+inline std::string* S_DunzeonStartPacket::_internal_mutable_dunzeonip() {
+  
+  return _impl_.dunzeonip_.Mutable(GetArenaForAllocation());
+}
+inline std::string* S_DunzeonStartPacket::release_dunzeonip() {
+  // @@protoc_insertion_point(field_release:Protocol.S_DunzeonStartPacket.dunzeonIP)
+  return _impl_.dunzeonip_.Release();
+}
+inline void S_DunzeonStartPacket::set_allocated_dunzeonip(std::string* dunzeonip) {
+  if (dunzeonip != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.dunzeonip_.SetAllocated(dunzeonip, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.dunzeonip_.IsDefault()) {
+    _impl_.dunzeonip_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_DunzeonStartPacket.dunzeonIP)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
