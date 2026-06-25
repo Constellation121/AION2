@@ -3,6 +3,7 @@
 #include "Physics/Collision.h"
 #include "GAS/AOGameplayTags.h"
 #include "Player/AOPlayerController.h"
+#include "GAS/AttributeSet/AOAttributeSet.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
@@ -18,9 +19,8 @@ void AAOCharacter::Multicast_DrawDebugCapsuleCollider_Implementation(const FVect
 	DrawDebugCapsuleCollider(CapsuleOrigin, CapsuleHalfHeight, AttackRadius, DrawColor);
 }
 
-bool AAOCharacter::SearchTarget()
+void AAOCharacter::SearchTarget()
 {
-	return false;
 }
 
 void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
@@ -60,10 +60,10 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 			continue;
 		}
 		
-		if (!IsEnemy(HitActor))
-		{
-			continue;
-		}
+		//if (!IsEnemy(HitActor))
+		//{
+		//	continue;
+		//}
 
 		OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
 	}
@@ -85,11 +85,10 @@ void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitA
 		return;
 	}
 
-	// Target->TakeDamageAO(AttackData, this);
-	// gc
+	Target->TakeDamageAO(AttackData, HitResult, this);
 }
 
-void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser)
+void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
 {
 	UAbilitySystemComponent* SourceASC = DamageCauser->GetAbilitySystemComponent();
 	UAbilitySystemComponent* TargetASC = GetAbilitySystemComponent();
@@ -98,9 +97,65 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* Dam
 		return;
 	}
 
+	const float AttackPower = SourceASC->GetNumericAttribute(UAOAttributeSet::GetAttackPowerAttribute());
+	const float Defense = TargetASC->GetNumericAttribute(UAOAttributeSet::GetDefenseAttribute());
+
+	const float Multiplier = AttackData.DamageMultiplier;
+	const float BaseDamage = AttackPower * Multiplier;
+
+	const float FinalDamage = FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
+
 	FGameplayEffectContextHandle Context = SourceASC->MakeEffectContext();
-	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffect, 1, Context);
+	Context.AddSourceObject(DamageCauser);
+
+	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffect, 1.0f, Context);
+
+	if (!SpecHandle.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Damage]"));
+		return;
+	}
+
+	SpecHandle.Data->SetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(TEXT("Data.Damage")),
+		-FinalDamage
+	);
+
+	const float OldHealth =
+		TargetASC->GetNumericAttribute(
+			UAOAttributeSet::GetHealthAttribute()
+		);
+
 	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
+
+	const float NewHealth =
+		TargetASC->GetNumericAttribute(
+			UAOAttributeSet::GetHealthAttribute()
+		);
+
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[Damage] %s -> %s | ATK: %.1f | DEF: %.1f | Mult: %.2f | Final: %.2f | HP: %.1f -> %.1f"),
+		*GetNameSafe(DamageCauser),
+		*GetNameSafe(this),
+		AttackPower,
+		Defense,
+		Multiplier,
+		FinalDamage,
+		OldHealth,
+		NewHealth
+	);
+
+	if (AttackData.HitGameplayCueTag.IsValid())
+	{
+		FGameplayCueParameters CueParams;
+		CueParams.Location = HitResult.ImpactPoint;
+		CueParams.Normal = HitResult.ImpactNormal;
+		CueParams.Instigator = this;
+		CueParams.EffectCauser = this;
+		TargetASC->ExecuteGameplayCue(AttackData.HitGameplayCueTag, CueParams);
+	}
 }
 
 bool AAOCharacter::IsEnemy(AActor* TargetActor)

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/Daeva/DaevaAnimInstance.h"
-#include "DaevaFAnimInstance.generated.h"
+#include "Blueprint/UserWidget.h"
+#include "AODunzeonEntranceWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AION2_API UDaevaFAnimInstance : public UDaevaAnimInstance
+class AION2_API UAODunzeonEntranceWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	

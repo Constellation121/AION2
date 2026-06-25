@@ -164,8 +164,113 @@ struct S_MovePacketDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_MovePacketDefaultTypeInternal _S_MovePacket_default_instance_;
+PROTOBUF_CONSTEXPR C_DunzeonCreatePacket::C_DunzeonCreatePacket(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.playerid_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct C_DunzeonCreatePacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_DunzeonCreatePacketDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_DunzeonCreatePacketDefaultTypeInternal() {}
+  union {
+    C_DunzeonCreatePacket _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_DunzeonCreatePacketDefaultTypeInternal _C_DunzeonCreatePacket_default_instance_;
+PROTOBUF_CONSTEXPR S_DunzeonCreatePacket::S_DunzeonCreatePacket(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.playerid_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct S_DunzeonCreatePacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR S_DunzeonCreatePacketDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~S_DunzeonCreatePacketDefaultTypeInternal() {}
+  union {
+    S_DunzeonCreatePacket _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_DunzeonCreatePacketDefaultTypeInternal _S_DunzeonCreatePacket_default_instance_;
+PROTOBUF_CONSTEXPR C_DunzeonEnteracket::C_DunzeonEnteracket(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.playerid_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct C_DunzeonEnteracketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_DunzeonEnteracketDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_DunzeonEnteracketDefaultTypeInternal() {}
+  union {
+    C_DunzeonEnteracket _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_DunzeonEnteracketDefaultTypeInternal _C_DunzeonEnteracket_default_instance_;
+PROTOBUF_CONSTEXPR S_DunzeonEnterPacket::S_DunzeonEnterPacket(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.dunzeonplayerinfo_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct S_DunzeonEnterPacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR S_DunzeonEnterPacketDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~S_DunzeonEnterPacketDefaultTypeInternal() {}
+  union {
+    S_DunzeonEnterPacket _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_DunzeonEnterPacketDefaultTypeInternal _S_DunzeonEnterPacket_default_instance_;
+PROTOBUF_CONSTEXPR C_DunzeonReadyacket::C_DunzeonReadyacket(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.dunzeonid_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct C_DunzeonReadyacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_DunzeonReadyacketDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_DunzeonReadyacketDefaultTypeInternal() {}
+  union {
+    C_DunzeonReadyacket _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_DunzeonReadyacketDefaultTypeInternal _C_DunzeonReadyacket_default_instance_;
+PROTOBUF_CONSTEXPR S_DunzeonReadyPacket::S_DunzeonReadyPacket(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.dunzeonid_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct S_DunzeonReadyPacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR S_DunzeonReadyPacketDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~S_DunzeonReadyPacketDefaultTypeInternal() {}
+  union {
+    S_DunzeonReadyPacket _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_DunzeonReadyPacketDefaultTypeInternal _S_DunzeonReadyPacket_default_instance_;
+PROTOBUF_CONSTEXPR C_DunzeonStartacket::C_DunzeonStartacket(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.dunzeonid_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct C_DunzeonStartacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_DunzeonStartacketDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_DunzeonStartacketDefaultTypeInternal() {}
+  union {
+    C_DunzeonStartacket _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_DunzeonStartacketDefaultTypeInternal _C_DunzeonStartacket_default_instance_;
+PROTOBUF_CONSTEXPR S_DunzeonStartPacket::S_DunzeonStartPacket(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.dunzeonip_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.dunjeonid_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct S_DunzeonStartPacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR S_DunzeonStartPacketDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~S_DunzeonStartPacketDefaultTypeInternal() {}
+  union {
+    S_DunzeonStartPacket _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_DunzeonStartPacketDefaultTypeInternal _S_DunzeonStartPacket_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[10];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[18];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -250,6 +355,63 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _impl_.playerlocation_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _impl_.playervelocity_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MovePacket, _impl_.playerrotation_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_DunzeonCreatePacket, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_DunzeonCreatePacket, _impl_.playerid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonCreatePacket, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonCreatePacket, _impl_.playerid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_DunzeonEnteracket, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_DunzeonEnteracket, _impl_.playerid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonEnterPacket, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonEnterPacket, _impl_.dunzeonplayerinfo_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_DunzeonReadyacket, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_DunzeonReadyacket, _impl_.dunzeonid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonReadyPacket, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonReadyPacket, _impl_.dunzeonid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_DunzeonStartacket, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_DunzeonStartacket, _impl_.dunzeonid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonStartPacket, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonStartPacket, _impl_.dunjeonid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DunzeonStartPacket, _impl_.dunzeonip_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::C_SignUpPacket)},
@@ -262,6 +424,14 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 53, -1, -1, sizeof(::Protocol::S_SpawnPacket)},
   { 60, -1, -1, sizeof(::Protocol::C_MovePacket)},
   { 70, -1, -1, sizeof(::Protocol::S_MovePacket)},
+  { 80, -1, -1, sizeof(::Protocol::C_DunzeonCreatePacket)},
+  { 87, -1, -1, sizeof(::Protocol::S_DunzeonCreatePacket)},
+  { 94, -1, -1, sizeof(::Protocol::C_DunzeonEnteracket)},
+  { 101, -1, -1, sizeof(::Protocol::S_DunzeonEnterPacket)},
+  { 108, -1, -1, sizeof(::Protocol::C_DunzeonReadyacket)},
+  { 115, -1, -1, sizeof(::Protocol::S_DunzeonReadyPacket)},
+  { 122, -1, -1, sizeof(::Protocol::C_DunzeonStartacket)},
+  { 129, -1, -1, sizeof(::Protocol::S_DunzeonStartPacket)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -275,6 +445,14 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_S_SpawnPacket_default_instance_._instance,
   &::Protocol::_C_MovePacket_default_instance_._instance,
   &::Protocol::_S_MovePacket_default_instance_._instance,
+  &::Protocol::_C_DunzeonCreatePacket_default_instance_._instance,
+  &::Protocol::_S_DunzeonCreatePacket_default_instance_._instance,
+  &::Protocol::_C_DunzeonEnteracket_default_instance_._instance,
+  &::Protocol::_S_DunzeonEnterPacket_default_instance_._instance,
+  &::Protocol::_C_DunzeonReadyacket_default_instance_._instance,
+  &::Protocol::_S_DunzeonReadyPacket_default_instance_._instance,
+  &::Protocol::_C_DunzeonStartacket_default_instance_._instance,
+  &::Protocol::_S_DunzeonStartPacket_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -298,8 +476,17 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "Packet\022\020\n\010playerId\030\001 \001(\004\022)\n\016PlayerLocati"
   "on\030\002 \001(\0132\021.Protocol.Vector3\022)\n\016PlayerVel"
   "ocity\030\003 \001(\0132\021.Protocol.Vector3\022*\n\016Player"
-  "Rotation\030\004 \001(\0132\022.Protocol.Rotator3b\006prot"
-  "o3"
+  "Rotation\030\004 \001(\0132\022.Protocol.Rotator3\")\n\025C_"
+  "DunzeonCreatePacket\022\020\n\010playerId\030\001 \001(\004\")\n"
+  "\025S_DunzeonCreatePacket\022\020\n\010playerId\030\001 \001(\004"
+  "\"\'\n\023C_DunzeonEnteracket\022\020\n\010playerId\030\001 \001("
+  "\004\"N\n\024S_DunzeonEnterPacket\0226\n\021dunzeonPlay"
+  "erInfo\030\001 \003(\0132\033.Protocol.DunzeonPlayerInf"
+  "o\"(\n\023C_DunzeonReadyacket\022\021\n\tdunzeonId\030\001 "
+  "\001(\005\")\n\024S_DunzeonReadyPacket\022\021\n\tdunzeonId"
+  "\030\001 \001(\005\"(\n\023C_DunzeonStartacket\022\021\n\tdunzeon"
+  "Id\030\001 \001(\005\"<\n\024S_DunzeonStartPacket\022\021\n\tdunj"
+  "eonId\030\001 \001(\005\022\021\n\tdunzeonIP\030\002 \001(\tb\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -307,9 +494,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 842, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1238, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 10,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 18,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -2422,6 +2609,1492 @@ void S_MovePacket::InternalSwap(S_MovePacket* other) {
       file_level_metadata_Protocol_2eproto[9]);
 }
 
+// ===================================================================
+
+class C_DunzeonCreatePacket::_Internal {
+ public:
+};
+
+C_DunzeonCreatePacket::C_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_DunzeonCreatePacket)
+}
+C_DunzeonCreatePacket::C_DunzeonCreatePacket(const C_DunzeonCreatePacket& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  C_DunzeonCreatePacket* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.playerid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.playerid_ = from._impl_.playerid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_DunzeonCreatePacket)
+}
+
+inline void C_DunzeonCreatePacket::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.playerid_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+C_DunzeonCreatePacket::~C_DunzeonCreatePacket() {
+  // @@protoc_insertion_point(destructor:Protocol.C_DunzeonCreatePacket)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void C_DunzeonCreatePacket::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C_DunzeonCreatePacket::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void C_DunzeonCreatePacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_DunzeonCreatePacket)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.playerid_ = uint64_t{0u};
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C_DunzeonCreatePacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 playerId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.playerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* C_DunzeonCreatePacket::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_DunzeonCreatePacket)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_playerid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_DunzeonCreatePacket)
+  return target;
+}
+
+size_t C_DunzeonCreatePacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_DunzeonCreatePacket)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_playerid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_DunzeonCreatePacket::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    C_DunzeonCreatePacket::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_DunzeonCreatePacket::GetClassData() const { return &_class_data_; }
+
+
+void C_DunzeonCreatePacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_DunzeonCreatePacket*>(&to_msg);
+  auto& from = static_cast<const C_DunzeonCreatePacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_DunzeonCreatePacket)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_playerid() != 0) {
+    _this->_internal_set_playerid(from._internal_playerid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void C_DunzeonCreatePacket::CopyFrom(const C_DunzeonCreatePacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_DunzeonCreatePacket)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C_DunzeonCreatePacket::IsInitialized() const {
+  return true;
+}
+
+void C_DunzeonCreatePacket::InternalSwap(C_DunzeonCreatePacket* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.playerid_, other->_impl_.playerid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_DunzeonCreatePacket::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[10]);
+}
+
+// ===================================================================
+
+class S_DunzeonCreatePacket::_Internal {
+ public:
+};
+
+S_DunzeonCreatePacket::S_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_DunzeonCreatePacket)
+}
+S_DunzeonCreatePacket::S_DunzeonCreatePacket(const S_DunzeonCreatePacket& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  S_DunzeonCreatePacket* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.playerid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.playerid_ = from._impl_.playerid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_DunzeonCreatePacket)
+}
+
+inline void S_DunzeonCreatePacket::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.playerid_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+S_DunzeonCreatePacket::~S_DunzeonCreatePacket() {
+  // @@protoc_insertion_point(destructor:Protocol.S_DunzeonCreatePacket)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void S_DunzeonCreatePacket::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void S_DunzeonCreatePacket::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void S_DunzeonCreatePacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_DunzeonCreatePacket)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.playerid_ = uint64_t{0u};
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_DunzeonCreatePacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 playerId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.playerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* S_DunzeonCreatePacket::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_DunzeonCreatePacket)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_playerid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_DunzeonCreatePacket)
+  return target;
+}
+
+size_t S_DunzeonCreatePacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_DunzeonCreatePacket)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_playerid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_DunzeonCreatePacket::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    S_DunzeonCreatePacket::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_DunzeonCreatePacket::GetClassData() const { return &_class_data_; }
+
+
+void S_DunzeonCreatePacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<S_DunzeonCreatePacket*>(&to_msg);
+  auto& from = static_cast<const S_DunzeonCreatePacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_DunzeonCreatePacket)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_playerid() != 0) {
+    _this->_internal_set_playerid(from._internal_playerid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void S_DunzeonCreatePacket::CopyFrom(const S_DunzeonCreatePacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_DunzeonCreatePacket)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_DunzeonCreatePacket::IsInitialized() const {
+  return true;
+}
+
+void S_DunzeonCreatePacket::InternalSwap(S_DunzeonCreatePacket* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.playerid_, other->_impl_.playerid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_DunzeonCreatePacket::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[11]);
+}
+
+// ===================================================================
+
+class C_DunzeonEnteracket::_Internal {
+ public:
+};
+
+C_DunzeonEnteracket::C_DunzeonEnteracket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_DunzeonEnteracket)
+}
+C_DunzeonEnteracket::C_DunzeonEnteracket(const C_DunzeonEnteracket& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  C_DunzeonEnteracket* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.playerid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.playerid_ = from._impl_.playerid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_DunzeonEnteracket)
+}
+
+inline void C_DunzeonEnteracket::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.playerid_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+C_DunzeonEnteracket::~C_DunzeonEnteracket() {
+  // @@protoc_insertion_point(destructor:Protocol.C_DunzeonEnteracket)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void C_DunzeonEnteracket::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C_DunzeonEnteracket::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void C_DunzeonEnteracket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_DunzeonEnteracket)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.playerid_ = uint64_t{0u};
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C_DunzeonEnteracket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 playerId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.playerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* C_DunzeonEnteracket::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_DunzeonEnteracket)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_playerid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_DunzeonEnteracket)
+  return target;
+}
+
+size_t C_DunzeonEnteracket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_DunzeonEnteracket)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 playerId = 1;
+  if (this->_internal_playerid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_playerid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_DunzeonEnteracket::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    C_DunzeonEnteracket::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_DunzeonEnteracket::GetClassData() const { return &_class_data_; }
+
+
+void C_DunzeonEnteracket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_DunzeonEnteracket*>(&to_msg);
+  auto& from = static_cast<const C_DunzeonEnteracket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_DunzeonEnteracket)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_playerid() != 0) {
+    _this->_internal_set_playerid(from._internal_playerid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void C_DunzeonEnteracket::CopyFrom(const C_DunzeonEnteracket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_DunzeonEnteracket)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C_DunzeonEnteracket::IsInitialized() const {
+  return true;
+}
+
+void C_DunzeonEnteracket::InternalSwap(C_DunzeonEnteracket* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.playerid_, other->_impl_.playerid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_DunzeonEnteracket::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[12]);
+}
+
+// ===================================================================
+
+class S_DunzeonEnterPacket::_Internal {
+ public:
+};
+
+void S_DunzeonEnterPacket::clear_dunzeonplayerinfo() {
+  _impl_.dunzeonplayerinfo_.Clear();
+}
+S_DunzeonEnterPacket::S_DunzeonEnterPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_DunzeonEnterPacket)
+}
+S_DunzeonEnterPacket::S_DunzeonEnterPacket(const S_DunzeonEnterPacket& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  S_DunzeonEnterPacket* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonplayerinfo_){from._impl_.dunzeonplayerinfo_}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_DunzeonEnterPacket)
+}
+
+inline void S_DunzeonEnterPacket::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonplayerinfo_){arena}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+S_DunzeonEnterPacket::~S_DunzeonEnterPacket() {
+  // @@protoc_insertion_point(destructor:Protocol.S_DunzeonEnterPacket)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void S_DunzeonEnterPacket::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.dunzeonplayerinfo_.~RepeatedPtrField();
+}
+
+void S_DunzeonEnterPacket::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void S_DunzeonEnterPacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_DunzeonEnterPacket)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.dunzeonplayerinfo_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_DunzeonEnterPacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated .Protocol.DunzeonPlayerInfo dunzeonPlayerInfo = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_dunzeonplayerinfo(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* S_DunzeonEnterPacket::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_DunzeonEnterPacket)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .Protocol.DunzeonPlayerInfo dunzeonPlayerInfo = 1;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_dunzeonplayerinfo_size()); i < n; i++) {
+    const auto& repfield = this->_internal_dunzeonplayerinfo(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_DunzeonEnterPacket)
+  return target;
+}
+
+size_t S_DunzeonEnterPacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_DunzeonEnterPacket)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .Protocol.DunzeonPlayerInfo dunzeonPlayerInfo = 1;
+  total_size += 1UL * this->_internal_dunzeonplayerinfo_size();
+  for (const auto& msg : this->_impl_.dunzeonplayerinfo_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_DunzeonEnterPacket::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    S_DunzeonEnterPacket::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_DunzeonEnterPacket::GetClassData() const { return &_class_data_; }
+
+
+void S_DunzeonEnterPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<S_DunzeonEnterPacket*>(&to_msg);
+  auto& from = static_cast<const S_DunzeonEnterPacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_DunzeonEnterPacket)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.dunzeonplayerinfo_.MergeFrom(from._impl_.dunzeonplayerinfo_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void S_DunzeonEnterPacket::CopyFrom(const S_DunzeonEnterPacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_DunzeonEnterPacket)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_DunzeonEnterPacket::IsInitialized() const {
+  return true;
+}
+
+void S_DunzeonEnterPacket::InternalSwap(S_DunzeonEnterPacket* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.dunzeonplayerinfo_.InternalSwap(&other->_impl_.dunzeonplayerinfo_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_DunzeonEnterPacket::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[13]);
+}
+
+// ===================================================================
+
+class C_DunzeonReadyacket::_Internal {
+ public:
+};
+
+C_DunzeonReadyacket::C_DunzeonReadyacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_DunzeonReadyacket)
+}
+C_DunzeonReadyacket::C_DunzeonReadyacket(const C_DunzeonReadyacket& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  C_DunzeonReadyacket* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.dunzeonid_ = from._impl_.dunzeonid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_DunzeonReadyacket)
+}
+
+inline void C_DunzeonReadyacket::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonid_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+C_DunzeonReadyacket::~C_DunzeonReadyacket() {
+  // @@protoc_insertion_point(destructor:Protocol.C_DunzeonReadyacket)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void C_DunzeonReadyacket::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C_DunzeonReadyacket::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void C_DunzeonReadyacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_DunzeonReadyacket)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.dunzeonid_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C_DunzeonReadyacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 dunzeonId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.dunzeonid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* C_DunzeonReadyacket::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_DunzeonReadyacket)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 dunzeonId = 1;
+  if (this->_internal_dunzeonid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_dunzeonid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_DunzeonReadyacket)
+  return target;
+}
+
+size_t C_DunzeonReadyacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_DunzeonReadyacket)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 dunzeonId = 1;
+  if (this->_internal_dunzeonid() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_dunzeonid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_DunzeonReadyacket::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    C_DunzeonReadyacket::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_DunzeonReadyacket::GetClassData() const { return &_class_data_; }
+
+
+void C_DunzeonReadyacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_DunzeonReadyacket*>(&to_msg);
+  auto& from = static_cast<const C_DunzeonReadyacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_DunzeonReadyacket)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_dunzeonid() != 0) {
+    _this->_internal_set_dunzeonid(from._internal_dunzeonid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void C_DunzeonReadyacket::CopyFrom(const C_DunzeonReadyacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_DunzeonReadyacket)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C_DunzeonReadyacket::IsInitialized() const {
+  return true;
+}
+
+void C_DunzeonReadyacket::InternalSwap(C_DunzeonReadyacket* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.dunzeonid_, other->_impl_.dunzeonid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_DunzeonReadyacket::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[14]);
+}
+
+// ===================================================================
+
+class S_DunzeonReadyPacket::_Internal {
+ public:
+};
+
+S_DunzeonReadyPacket::S_DunzeonReadyPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_DunzeonReadyPacket)
+}
+S_DunzeonReadyPacket::S_DunzeonReadyPacket(const S_DunzeonReadyPacket& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  S_DunzeonReadyPacket* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.dunzeonid_ = from._impl_.dunzeonid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_DunzeonReadyPacket)
+}
+
+inline void S_DunzeonReadyPacket::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonid_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+S_DunzeonReadyPacket::~S_DunzeonReadyPacket() {
+  // @@protoc_insertion_point(destructor:Protocol.S_DunzeonReadyPacket)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void S_DunzeonReadyPacket::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void S_DunzeonReadyPacket::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void S_DunzeonReadyPacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_DunzeonReadyPacket)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.dunzeonid_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_DunzeonReadyPacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 dunzeonId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.dunzeonid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* S_DunzeonReadyPacket::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_DunzeonReadyPacket)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 dunzeonId = 1;
+  if (this->_internal_dunzeonid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_dunzeonid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_DunzeonReadyPacket)
+  return target;
+}
+
+size_t S_DunzeonReadyPacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_DunzeonReadyPacket)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 dunzeonId = 1;
+  if (this->_internal_dunzeonid() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_dunzeonid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_DunzeonReadyPacket::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    S_DunzeonReadyPacket::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_DunzeonReadyPacket::GetClassData() const { return &_class_data_; }
+
+
+void S_DunzeonReadyPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<S_DunzeonReadyPacket*>(&to_msg);
+  auto& from = static_cast<const S_DunzeonReadyPacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_DunzeonReadyPacket)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_dunzeonid() != 0) {
+    _this->_internal_set_dunzeonid(from._internal_dunzeonid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void S_DunzeonReadyPacket::CopyFrom(const S_DunzeonReadyPacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_DunzeonReadyPacket)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_DunzeonReadyPacket::IsInitialized() const {
+  return true;
+}
+
+void S_DunzeonReadyPacket::InternalSwap(S_DunzeonReadyPacket* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.dunzeonid_, other->_impl_.dunzeonid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_DunzeonReadyPacket::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[15]);
+}
+
+// ===================================================================
+
+class C_DunzeonStartacket::_Internal {
+ public:
+};
+
+C_DunzeonStartacket::C_DunzeonStartacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_DunzeonStartacket)
+}
+C_DunzeonStartacket::C_DunzeonStartacket(const C_DunzeonStartacket& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  C_DunzeonStartacket* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.dunzeonid_ = from._impl_.dunzeonid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_DunzeonStartacket)
+}
+
+inline void C_DunzeonStartacket::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonid_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+C_DunzeonStartacket::~C_DunzeonStartacket() {
+  // @@protoc_insertion_point(destructor:Protocol.C_DunzeonStartacket)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void C_DunzeonStartacket::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C_DunzeonStartacket::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void C_DunzeonStartacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_DunzeonStartacket)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.dunzeonid_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C_DunzeonStartacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 dunzeonId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.dunzeonid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* C_DunzeonStartacket::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_DunzeonStartacket)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 dunzeonId = 1;
+  if (this->_internal_dunzeonid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_dunzeonid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_DunzeonStartacket)
+  return target;
+}
+
+size_t C_DunzeonStartacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_DunzeonStartacket)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 dunzeonId = 1;
+  if (this->_internal_dunzeonid() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_dunzeonid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_DunzeonStartacket::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    C_DunzeonStartacket::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_DunzeonStartacket::GetClassData() const { return &_class_data_; }
+
+
+void C_DunzeonStartacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_DunzeonStartacket*>(&to_msg);
+  auto& from = static_cast<const C_DunzeonStartacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_DunzeonStartacket)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_dunzeonid() != 0) {
+    _this->_internal_set_dunzeonid(from._internal_dunzeonid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void C_DunzeonStartacket::CopyFrom(const C_DunzeonStartacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_DunzeonStartacket)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C_DunzeonStartacket::IsInitialized() const {
+  return true;
+}
+
+void C_DunzeonStartacket::InternalSwap(C_DunzeonStartacket* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.dunzeonid_, other->_impl_.dunzeonid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_DunzeonStartacket::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[16]);
+}
+
+// ===================================================================
+
+class S_DunzeonStartPacket::_Internal {
+ public:
+};
+
+S_DunzeonStartPacket::S_DunzeonStartPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_DunzeonStartPacket)
+}
+S_DunzeonStartPacket::S_DunzeonStartPacket(const S_DunzeonStartPacket& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  S_DunzeonStartPacket* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonip_){}
+    , decltype(_impl_.dunjeonid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.dunzeonip_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.dunzeonip_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_dunzeonip().empty()) {
+    _this->_impl_.dunzeonip_.Set(from._internal_dunzeonip(), 
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.dunjeonid_ = from._impl_.dunjeonid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_DunzeonStartPacket)
+}
+
+inline void S_DunzeonStartPacket::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.dunzeonip_){}
+    , decltype(_impl_.dunjeonid_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.dunzeonip_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.dunzeonip_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+S_DunzeonStartPacket::~S_DunzeonStartPacket() {
+  // @@protoc_insertion_point(destructor:Protocol.S_DunzeonStartPacket)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void S_DunzeonStartPacket::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.dunzeonip_.Destroy();
+}
+
+void S_DunzeonStartPacket::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void S_DunzeonStartPacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_DunzeonStartPacket)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.dunzeonip_.ClearToEmpty();
+  _impl_.dunjeonid_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_DunzeonStartPacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 dunjeonId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.dunjeonid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string dunzeonIP = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_dunzeonip();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "Protocol.S_DunzeonStartPacket.dunzeonIP"));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* S_DunzeonStartPacket::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_DunzeonStartPacket)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 dunjeonId = 1;
+  if (this->_internal_dunjeonid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_dunjeonid(), target);
+  }
+
+  // string dunzeonIP = 2;
+  if (!this->_internal_dunzeonip().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_dunzeonip().data(), static_cast<int>(this->_internal_dunzeonip().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "Protocol.S_DunzeonStartPacket.dunzeonIP");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_dunzeonip(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_DunzeonStartPacket)
+  return target;
+}
+
+size_t S_DunzeonStartPacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_DunzeonStartPacket)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string dunzeonIP = 2;
+  if (!this->_internal_dunzeonip().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_dunzeonip());
+  }
+
+  // int32 dunjeonId = 1;
+  if (this->_internal_dunjeonid() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_dunjeonid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_DunzeonStartPacket::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    S_DunzeonStartPacket::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_DunzeonStartPacket::GetClassData() const { return &_class_data_; }
+
+
+void S_DunzeonStartPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<S_DunzeonStartPacket*>(&to_msg);
+  auto& from = static_cast<const S_DunzeonStartPacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_DunzeonStartPacket)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_dunzeonip().empty()) {
+    _this->_internal_set_dunzeonip(from._internal_dunzeonip());
+  }
+  if (from._internal_dunjeonid() != 0) {
+    _this->_internal_set_dunjeonid(from._internal_dunjeonid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void S_DunzeonStartPacket::CopyFrom(const S_DunzeonStartPacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_DunzeonStartPacket)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_DunzeonStartPacket::IsInitialized() const {
+  return true;
+}
+
+void S_DunzeonStartPacket::InternalSwap(S_DunzeonStartPacket* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.dunzeonip_, lhs_arena,
+      &other->_impl_.dunzeonip_, rhs_arena
+  );
+  swap(_impl_.dunjeonid_, other->_impl_.dunjeonid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_DunzeonStartPacket::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[17]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
@@ -2464,6 +4137,38 @@ Arena::CreateMaybeMessage< ::Protocol::C_MovePacket >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::S_MovePacket*
 Arena::CreateMaybeMessage< ::Protocol::S_MovePacket >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_MovePacket >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_DunzeonCreatePacket*
+Arena::CreateMaybeMessage< ::Protocol::C_DunzeonCreatePacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_DunzeonCreatePacket >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_DunzeonCreatePacket*
+Arena::CreateMaybeMessage< ::Protocol::S_DunzeonCreatePacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_DunzeonCreatePacket >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_DunzeonEnteracket*
+Arena::CreateMaybeMessage< ::Protocol::C_DunzeonEnteracket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_DunzeonEnteracket >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_DunzeonEnterPacket*
+Arena::CreateMaybeMessage< ::Protocol::S_DunzeonEnterPacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_DunzeonEnterPacket >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_DunzeonReadyacket*
+Arena::CreateMaybeMessage< ::Protocol::C_DunzeonReadyacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_DunzeonReadyacket >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_DunzeonReadyPacket*
+Arena::CreateMaybeMessage< ::Protocol::S_DunzeonReadyPacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_DunzeonReadyPacket >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_DunzeonStartacket*
+Arena::CreateMaybeMessage< ::Protocol::C_DunzeonStartacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_DunzeonStartacket >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_DunzeonStartPacket*
+Arena::CreateMaybeMessage< ::Protocol::S_DunzeonStartPacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_DunzeonStartPacket >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 
