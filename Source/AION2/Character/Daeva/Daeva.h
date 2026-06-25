@@ -4,6 +4,8 @@
 #include "Character/AOCharacter.h"
 #include "InputActionValue.h"
 #include "GameplayTagContainer.h"
+#include "GAS/AttributeSet/AOAttributeSet.h"
+#include "AbilitySystemComponent.h"
 #include "GameplayAbilitySpecHandle.h"
 #include "Daeva.generated.h"
 
@@ -82,6 +84,7 @@ protected:
 
 private:
 	void Tick_Camera(float DeltaTime);
+	void Tick_Combat(float DeltaTime);
 
 public:
 	UFUNCTION(NetMulticast, Reliable)
@@ -90,11 +93,14 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_SetWingVisibility(bool NewVisible);
 
+	UFUNCTION(Server, Reliable)
+	void Server_SetCurrentTarget(AAOCharacter* NewTarget);
+
 	UFUNCTION(Client, Unreliable)
 	void Client_PlayCameraShake();
 
 public:
-	virtual bool SearchTarget() override;
+	virtual void SearchTarget() override;
 
 protected:
 	virtual void Move(const FInputActionValue& Value);
@@ -110,6 +116,13 @@ protected:
 	virtual void ApplyDashStaminaRegenEffect();
 
 protected:
+	void BindMoveSpeedAttribute();
+	void OnMoveSpeedChanged(const FOnAttributeChangeData& Data);
+
+	FDelegateHandle MoveSpeedChangedDelegateHandle;
+	bool bMoveSpeedDelegateRegistered = false;
+
+protected:
 	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera) override;
 	virtual void TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser) override;
 
@@ -118,8 +131,42 @@ private:
 	void InputLBPressed();
 	void InputRBPressed();
 
+	void InputMoveReleased();
+
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
+
+
+protected:
+	void StartSprint();
+	void StopSprint();
+	void OnStaminaChangedForSprint(const FOnAttributeChangeData& Data);
+	void InputShiftReleased();
+	void InputShiftPressed();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
+	TSubclassOf<UGameplayEffect> SprintEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
+	TSubclassOf<UGameplayEffect> SprintDrainEffect;
+
+	UFUNCTION(Server, Reliable)
+	void ServerStartSprint();
+
+	UFUNCTION(Server, Reliable)
+	void ServerStopSprint();
+
+	void RequestStartSprint();
+	void RequestStopSprint();
+
+	FActiveGameplayEffectHandle SprintEffectHandle;
+	FActiveGameplayEffectHandle SprintDrainEffectHandle;
+
+	FDelegateHandle SprintStaminaChangedDelegateHandle;
+
+	//bool bSprintInputHeld = false;
+	bool IsSprinting() const;
+	bool bHasMoveInput = false;
 
 private:
 	void SetWeaponVisibility(bool NewVisible);
@@ -129,7 +176,6 @@ private:
 private:
 	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
 	void PlayCameraShake(bool& bDidShakeCamera);
-	void ValidateTarget();
 	bool IsFrontOfCamera(AActor* Other);
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
 
@@ -267,6 +313,7 @@ private:
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
 private:
+	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
 
 };
