@@ -176,35 +176,8 @@ void UGA_Attack::ActivateAbility(
 		WaitHitCheckTask->ReadyForActivation();
 	}
 
-	// 타겟 바라보기
-	AAOCharacter* Target = Daeva->GetCurrentTarget();
-
-	if (IsValid(Target))
-	{
-		FVector Direction =
-			Target->GetActorLocation() -
-			Daeva->GetActorLocation();
-
-		Direction.Z = 0.0f;
-
-		if (!Direction.IsNearlyZero())
-		{
-			Daeva->SetActorRotation(Direction.Rotation());
-		}
-	}
-
-	// 공격 사거리 안의 타겟을 향해 회전
-	UAT_RotateToTarget* RotateTask =
-		UAT_RotateToTarget::RotateToTarget(
-			this,
-			AttackData.AvailableRange,
-			15.0f
-		);
-
-	if (RotateTask)
-	{
-		RotateTask->ReadyForActivation();
-	}
+    UAT_RotateToTarget* RotateTask = UAT_RotateToTarget::RotateToTarget(this, AttackData.AvailableRange, 15.0f);
+    RotateTask->ReadyForActivation();
 }
 
 void UGA_Attack::OnMontageTaskFinished()

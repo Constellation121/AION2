@@ -42,7 +42,9 @@ enum class EMontageID : uint8
 	Key3,
 	Key4,
 	KeyQ,
-	KeyE
+	KeyE,
+	Die,
+	Rebirth
 };
 
 UENUM(BlueprintType)
@@ -88,9 +90,11 @@ protected:
 
 private:
 	void Tick_Camera(float DeltaTime);
-	void Tick_Combat(float DeltaTime);
 
 public:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayMontage(EMontageID MontageID, float PlayRate);
+
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayWingMontage(EMontageID MontageID, float PlayRate);
 
@@ -196,6 +200,7 @@ private:
 	void PlayCameraShake(bool& bDidShakeCamera);
 	bool IsFrontOfCamera(AActor* Other);
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
+	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
 public:
 	void SetMyId(uint64 Id) { MyId = Id; }
