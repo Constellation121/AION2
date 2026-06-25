@@ -84,7 +84,6 @@ protected:
 
 private:
 	void Tick_Camera(float DeltaTime);
-	void Tick_Combat(float DeltaTime);
 
 public:
 	UFUNCTION(NetMulticast, Reliable)
@@ -180,6 +179,7 @@ private:
 	void PlayCameraShake(bool& bDidShakeCamera);
 	bool IsFrontOfCamera(AActor* Other);
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
+	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
 public:
 	void SetMyId(uint64 Id) { MyId = Id; }

@@ -86,18 +86,6 @@ void ADaeva::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Tick_Camera(DeltaTime);
-	Tick_Combat(DeltaTime);
-
-	//if (!IsLocallyControlled())
-	//{
-	//	FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetLoc, DeltaTime, 10.f);
-	//	FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRot, DeltaTime, 10.f);
-
-	//	SetActorLocation(NewLocation);
-	//	SetActorRotation(NewRotation);
-
-	//	GetCharacterMovement()->Velocity = TargetVel;
-	//}
 }
 
 void ADaeva::PossessedBy(AController* NewController)
@@ -105,12 +93,6 @@ void ADaeva::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	InitGAS();
-
-	//if (!IsLocallyControlled()) return;
-	//{
-	//	UE_LOG(LogTemp, Log, TEXT(" ADaeva::BeginPlay() - SetTimer"));
-	//	GetWorldTimerManager().SetTimer(SendMoveHandle, this, &ADaeva::SendMovePacket, SendMoveTimer, true);
-	//}
 }
 
 void ADaeva::UnPossessed()
@@ -176,19 +158,6 @@ void ADaeva::Tick_Camera(float DeltaTime)
 	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
 }
 
-void ADaeva::Tick_Combat(float DeltaTime)
-{
-	/*if (!HasAuthority() && IsLocallyControlled())
-	{
-		SearchTarget();
-		if (IsValid(CurrentTarget) && PreviousTarget != CurrentTarget)
-		{
-			Server_SetCurrentTarget(CurrentTarget);
-			UE_LOG(LogTemp, Log, TEXT("%s"), *GetNameSafe(CurrentTarget));
-		}
-	}*/
-}
-
 void ADaeva::Multicast_PlayWingMontage_Implementation(EMontageID MontageID, float PlayRate)
 {
 	if (!Wing || !WingMontages[MontageID])
@@ -225,6 +194,11 @@ void ADaeva::Server_SetCurrentTarget_Implementation(AAOCharacter* NewTarget)
 
 void ADaeva::SearchTarget()
 {
+	if (!IsLocallyControlled())
+	{
+		return;
+	}
+
 	PreviousTarget = CurrentTarget;
 
 	TArray<FHitResult> OutHitResults;
@@ -237,7 +211,7 @@ void ADaeva::SearchTarget()
 
 	if (!bHitDetected)
 	{
-		CurrentTarget = nullptr;
+		ChangeCurrentTargetInClient(nullptr);
 		return;
 	}
 
@@ -272,7 +246,7 @@ void ADaeva::SearchTarget()
 
 	if (Candidates.IsEmpty())
 	{
-		CurrentTarget = nullptr;
+		ChangeCurrentTargetInClient(nullptr);
 		return;
 	}
 
@@ -288,7 +262,7 @@ void ADaeva::SearchTarget()
 		}
 	);
 
-	CurrentTarget = Candidates[0].Target;
+	ChangeCurrentTargetInClient(Candidates[0].Target);
 }
 
 void ADaeva::Move(const FInputActionValue& Value)
@@ -914,4 +888,13 @@ float ADaeva::CalcDistanceSquaredToScreenCenter(AActor* Other)
 	FVector2D ScreenCenter(ViewportX * 0.5f, ViewportY * 0.5f);
 
 	return FVector2D::DistSquared(ScreenPosition, ScreenCenter);
+}
+
+void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
+{
+	CurrentTarget = NewTarget;
+	if (PreviousTarget != CurrentTarget)
+	{
+		Server_SetCurrentTarget(CurrentTarget);
+	}
 }
