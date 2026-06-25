@@ -85,11 +85,10 @@ void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitA
 		return;
 	}
 
-	Target->TakeDamageAO(AttackData, this);
-	// gc
+	Target->TakeDamageAO(AttackData, HitResult, this);
 }
 
-void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser)
+void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
 {
 	UAbilitySystemComponent* SourceASC = DamageCauser->GetAbilitySystemComponent();
 	UAbilitySystemComponent* TargetASC = GetAbilitySystemComponent();
@@ -147,6 +146,16 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* Dam
 		OldHealth,
 		NewHealth
 	);
+
+	if (AttackData.HitGameplayCueTag.IsValid())
+	{
+		FGameplayCueParameters CueParams;
+		CueParams.Location = HitResult.ImpactPoint;
+		CueParams.Normal = HitResult.ImpactNormal;
+		CueParams.Instigator = this;
+		CueParams.EffectCauser = this;
+		TargetASC->ExecuteGameplayCue(AttackData.HitGameplayCueTag, CueParams);
+	}
 }
 
 bool AAOCharacter::IsEnemy(AActor* TargetActor)

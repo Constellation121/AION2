@@ -501,11 +501,11 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 	PlayCameraShake(bDidShakeCamera);
 }
 
-void ADaeva::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser)
+void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
 {
 	// Todo: 회피 & 리턴 처리
-
-	Super::TakeDamageAO(AttackData, DamageCauser);
+	
+	Super::TakeDamageAO(AttackData, HitResult, DamageCauser);
 
 	bool bDidShakeCamera = false;
 	PlayCameraShake(bDidShakeCamera);
