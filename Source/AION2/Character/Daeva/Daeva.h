@@ -82,6 +82,10 @@ protected:
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void GetLifetimeReplicatedProps(
+		TArray<FLifetimeProperty>& OutLifetimeProps
+	) const override;
+
 private:
 	void Tick_Camera(float DeltaTime);
 	void Tick_Combat(float DeltaTime);
@@ -136,6 +140,19 @@ private:
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
 
+protected :
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "State")
+	bool bIsDead = false;
+
+public :
+	bool IsDead() const { return bIsDead; }
+
+	virtual void HandleDeath();
+	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
+
+protected :
+	FDelegateHandle HealthChangedDelegateHandle;
+	
 
 protected:
 	void StartSprint();
