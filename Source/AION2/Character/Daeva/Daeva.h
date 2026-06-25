@@ -81,9 +81,10 @@ protected:
 	virtual void UnPossessed() override;
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
 private:
 	void Tick_Camera(float DeltaTime);
+	void Tick_Combat(float DeltaTime);
 
 public:
 	UFUNCTION(NetMulticast, Reliable)
@@ -92,11 +93,14 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_SetWingVisibility(bool NewVisible);
 
+	UFUNCTION(Server, Reliable)
+	void Server_SetCurrentTarget(AAOCharacter* NewTarget);
+
 	UFUNCTION(Client, Unreliable)
 	void Client_PlayCameraShake();
 
 public:
-	virtual bool SearchTarget() override;
+	virtual void SearchTarget() override;
 
 protected:
 	virtual void Move(const FInputActionValue& Value);
@@ -172,9 +176,18 @@ private:
 private:
 	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
 	void PlayCameraShake(bool& bDidShakeCamera);
-	void ValidateTarget();
 	bool IsFrontOfCamera(AActor* Other);
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
+
+public:
+	void SetMyId(uint64 Id) { MyId = Id; }
+
+	void SendMovePacket();
+	void ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel);
+
+	bool HasMovement();
+	bool IsCurrentMoving();
+
 
 public:
 	FORCEINLINE UAnimMontage* GetMontageByID(EMontageID Index) const { return Montages[Index]; }
@@ -278,9 +291,29 @@ private:
 	bool bTagEventsRegistered = false;
 
 private:
+	FTimerHandle SendMoveHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Network")
+	float SendMoveTimer = 0.1f;
+
+	// �ֱٿ� ���´� ��ġ, ȸ��
+	FVector LastLoc = FVector::ZeroVector;
+	FRotator LastRot = FRotator::ZeroRotator;
+
+	// ���� ��ġ, ȸ��
+	FVector TargetLoc = FVector::ZeroVector;
+	FRotator TargetRot = FRotator::ZeroRotator;
+	FVector TargetVel = FVector::ZeroVector;
+
+	bool bWasMovingLastSend = false;
+
+	uint64 MyId = -1;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
 private:
+	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
+
 };

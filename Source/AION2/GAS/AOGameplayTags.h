@@ -25,6 +25,8 @@
 
 // Action 
 #define ABILITY_MONSTER_CHARGEATTACK FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.ChargeAttack"))
+#define ABILITY_MONSTER_TELEPORT FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.Teleport"))
 
 // Cooldown 
 #define COOLDOWN_MONSTER_CHARGEATTACK FGameplayTag::RequestGameplayTag(TEXT("Cooldown.Monster.ChargeAttack"))
+#define COOLDOWN_MONSTER_TELEPORT FGameplayTag::RequestGameplayTag(TEXT("Cooldown.Monster.Teleport"))
