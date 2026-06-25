@@ -38,14 +38,6 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
     WaitHitCheckTask->EventReceived.AddDynamic(this, &UGA_Attack::OnCheckAttackHitEvent);
     WaitHitCheckTask->ReadyForActivation();
 
-    AAOCharacter* Target = Daeva->GetCurrentTarget();
-    if (IsValid(Target))
-    {
-        FVector Direction = Target->GetActorLocation() - Daeva->GetActorLocation();
-        Direction.Z = 0.f;
-        Daeva->SetActorRotation(Direction.Rotation());
-    }
-
     UAT_RotateToTarget* RotateTask = UAT_RotateToTarget::RotateToTarget(this, AttackData.AvailableRange, 15.f);
     RotateTask->ReadyForActivation();
 }
