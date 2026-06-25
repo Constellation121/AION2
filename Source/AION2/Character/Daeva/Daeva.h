@@ -187,7 +187,7 @@ private:
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
 
 private:
-	// UI
+	// UI 관련. Local Player일 때만 Head-up UI를 추가한다.
 	void BindOverheadStatusWidget();
 
 public:
