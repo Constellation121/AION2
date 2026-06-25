@@ -6,6 +6,9 @@
 #include "Physics/Collision.h"
 #include "Player/AOPlayerController.h"
 
+#include "Components/CapsuleComponent.h"
+#include "Net/UnrealNetwork.h"
+
 #include "GameplayTagContainer.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -109,6 +112,15 @@ void ADaeva::OnRep_PlayerState()
 	InitGAS();
 }
 
+void ADaeva::GetLifetimeReplicatedProps(
+	TArray<FLifetimeProperty>& OutLifetimeProps
+) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ADaeva, bIsDead);
+}
+
 void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -119,7 +131,7 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADaeva::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADaeva::Look);
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ADaeva::Zoom);
-		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Dash));
+		//EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Dash));
 		EnhancedInputComponent->BindAction(SpaceAction, ETriggerEvent::Started, this, &ADaeva::InputSpacePressed);
 		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Triggered, this, &ADaeva::InputLBPressed);
 		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Triggered, this, &ADaeva::InputRBPressed);
@@ -267,6 +279,12 @@ void ADaeva::SearchTarget()
 
 void ADaeva::Move(const FInputActionValue& Value)
 {
+	if (IsDead())
+	{
+		return;
+	}
+
+
 	FVector2D Movement = Value.Get<FVector2D>();
 
 	FRotator Rotation = GetControlRotation();
@@ -323,6 +341,15 @@ void ADaeva::InitGAS()
 	ASC = GASPS->GetAbilitySystemComponent();
 	ASC->InitAbilityActorInfo(GASPS, this);
 
+	if (!HealthChangedDelegateHandle.IsValid())
+	{
+		HealthChangedDelegateHandle =
+			ASC->GetGameplayAttributeValueChangeDelegate(
+				UAOAttributeSet::GetHealthAttribute()
+			).AddUObject(this, &ADaeva::OnHealthChanged);
+	}
+
+
 	if (!ASC->HasMatchingGameplayTag(TEAM_DAEVA))
 	{
 		ASC->AddLooseGameplayTag(TEAM_DAEVA);
@@ -363,6 +390,15 @@ void ADaeva::ClearGAS()
 
 		MoveSpeedChangedDelegateHandle.Reset();
 		bMoveSpeedDelegateRegistered = false;
+	}
+
+	if (ASC && HealthChangedDelegateHandle.IsValid())
+	{
+		ASC->GetGameplayAttributeValueChangeDelegate(
+			UAOAttributeSet::GetHealthAttribute()
+		).Remove(HealthChangedDelegateHandle);
+
+		HealthChangedDelegateHandle.Reset();
 	}
 
 	if (HasAuthority())
@@ -520,6 +556,11 @@ void ADaeva::InputSpacePressed()
 
 void ADaeva::InputLBPressed()
 {
+	if (IsDead())
+	{
+		return;
+	}
+
 	GASInputReleased(static_cast<int32>(EAbilityID::Dash));
 
 	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB2))
@@ -564,6 +605,57 @@ void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)
 
 	SetWeaponVisibility(bIsCombat);
 	SetSubWeaponVisibility(bIsCombat);
+}
+
+void ADaeva::HandleDeath()
+{
+	if (bIsDead)
+	{
+		return;
+	}
+
+	bIsDead = true;
+
+	UE_LOG(LogTemp, Warning, TEXT("[Death] %s Died"), *GetName());
+
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (ASC)
+	{
+		ASC->CancelAllAbilities();
+
+		const FGameplayTag DeadTag =
+			FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+
+		ASC->AddLooseGameplayTag(DeadTag);
+	}
+	if (HasAuthority())
+	{
+		DetachFromControllerPendingDestroy();
+	}
+
+	// Dead AM
+	// PlayAnimMontage(DeathMontage);
+}
+
+void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[Health] %s : %.1f -> %.1f"),
+		*GetName(),
+		Data.OldValue,
+		Data.NewValue
+	);
+
+	if (Data.NewValue <= 0.0f && !bIsDead)
+	{
+		HandleDeath();
+	}
 }
 
 void ADaeva::StartSprint()
