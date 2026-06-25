@@ -156,7 +156,6 @@ public :
 
 protected :
 	FDelegateHandle HealthChangedDelegateHandle;
-	
 
 protected:
 	void StartSprint();

@@ -560,6 +560,8 @@ void ADaeva::InputSpacePressed()
 
 	if (GetCharacterMovement()->IsFalling())
 	{
+		RequestStopSprint();
+
 		GASInputPressed(static_cast<int32>(EAbilityID::Glide));
 		return;
 	}
@@ -574,7 +576,7 @@ void ADaeva::InputLBPressed()
 		return;
 	}
 
-	GASInputReleased(static_cast<int32>(EAbilityID::Dash));
+	RequestStopSprint();
 
 	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB2))
 	{
@@ -592,6 +594,13 @@ void ADaeva::InputLBPressed()
 
 void ADaeva::InputRBPressed()
 {
+	if (IsDead())
+	{
+		return;
+	}
+
+	RequestStopSprint();
+
 	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB2))
 	{
 		GASInputPressed(static_cast<int32>(EAbilityID::RB_2));
