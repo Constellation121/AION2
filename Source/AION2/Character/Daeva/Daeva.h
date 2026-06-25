@@ -150,11 +150,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
 	TSubclassOf<UGameplayEffect> SprintDrainEffect;
 
-	//---------Test-----------
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	TObjectPtr<class UInputAction> TestDamageAction;
-	//------------------------
-
 
 	UFUNCTION(Server, Reliable)
 	void ServerStartSprint();
@@ -165,13 +160,6 @@ protected:
 	void RequestStartSprint();
 	void RequestStopSprint();
 
-	//---------Test-----------
-	void TestDamage();
-	
-	UFUNCTION(Server, Reliable)
-	void Server_TestDamage(AAOCharacter* Target);
-	//------------------------
-
 
 	FActiveGameplayEffectHandle SprintEffectHandle;
 	FActiveGameplayEffectHandle SprintDrainEffectHandle;
@@ -181,16 +169,6 @@ protected:
 	//bool bSprintInputHeld = false;
 	bool IsSprinting() const;
 	bool bHasMoveInput = false;
-
-//--------------Test--------------
-protected:
-	UFUNCTION(Server, Reliable)
-	void Server_ApplyAttackTestDamage(AAOCharacter* Target);
-
-	void ApplyAttackTestDamage(AAOCharacter* Target);
-//--------------------------------
-
-
 
 private:
 	void SetWeaponVisibility(bool NewVisible);

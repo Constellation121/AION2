@@ -169,14 +169,6 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			&ADaeva::InputShiftPressed
 		);
 	}
-	//--------------Test-----------------
-	EnhancedInputComponent->BindAction(
-		TestDamageAction,
-		ETriggerEvent::Started,
-		this,
-		&ADaeva::TestDamage
-	);
-	//-----------------------------------
 }
 
 void ADaeva::Tick_Camera(float DeltaTime)
@@ -195,20 +187,6 @@ void ADaeva::Tick_Combat(float DeltaTime)
 			UE_LOG(LogTemp, Log, TEXT("%s"), *GetNameSafe(CurrentTarget));
 		}
 	}*/
-
-	//----------------TEST------------------
-	if (!IsLocallyControlled())
-	{
-		return;
-	}
-
-	SearchTarget();
-
-	if (!HasAuthority() && PreviousTarget != CurrentTarget)
-	{
-		Server_SetCurrentTarget(CurrentTarget);
-	}
-	//--------------------------------------
 }
 
 void ADaeva::Multicast_PlayWingMontage_Implementation(EMontageID MontageID, float PlayRate)
@@ -521,24 +499,6 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 	Super::OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
 
 	PlayCameraShake(bDidShakeCamera);
-
-	//------------------Test------------------
-	AAOCharacter* Target = Cast<AAOCharacter>(HitActor);
-	if (!IsValid(Target))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AttackDamage]"));
-		return;
-	}
-
-	if (HasAuthority())
-	{
-		ApplyAttackTestDamage(Target);
-	}
-	else
-	{
-		Server_ApplyAttackTestDamage(Target);
-	}
-	//----------------------------------------
 }
 
 void ADaeva::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser)
@@ -737,68 +697,6 @@ bool ADaeva::IsSprinting() const
 	return ASC->HasMatchingGameplayTag(SprintTag);
 }
 
-void ADaeva::Server_ApplyAttackTestDamage_Implementation(AAOCharacter* Target)
-{
-	ApplyAttackTestDamage(Target);
-}
-
-void ADaeva::ApplyAttackTestDamage(AAOCharacter* Target)
-{
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (!IsValid(Target))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AttackDamage] Target invalid"));
-		return;
-	}
-
-	UAbilitySystemComponent* TargetASC =
-		Target->GetAbilitySystemComponent();
-
-	if (!TargetASC)
-	{
-		UE_LOG(
-			LogTemp,
-			Error,
-			TEXT("[AttackDamage] Target ASC 없음 / Target=%s"),
-			*GetNameSafe(Target)
-		);
-		return;
-	}
-
-	const float OldHealth =
-		TargetASC->GetNumericAttribute(
-			UAOAttributeSet::GetHealthAttribute()
-		);
-
-	constexpr float TestDamage = 10.0f;
-
-	TargetASC->ApplyModToAttribute(
-		UAOAttributeSet::GetHealthAttribute(),
-		EGameplayModOp::Additive,
-		-TestDamage
-	);
-
-	const float NewHealth =
-		TargetASC->GetNumericAttribute(
-			UAOAttributeSet::GetHealthAttribute()
-		);
-
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[AttackDamage] %s -> %s / HP: %.1f -> %.1f / Damage: %.1f"),
-		*GetNameSafe(this),
-		*GetNameSafe(Target),
-		OldHealth,
-		NewHealth,
-		TestDamage
-	);
-}
-
 void ADaeva::OnStaminaChangedForSprint(const FOnAttributeChangeData& Data)
 {
 	if (Data.NewValue > 0.0f)
@@ -847,61 +745,6 @@ void ADaeva::RequestStopSprint()
 	{
 		ServerStopSprint();
 	}
-}
-
-void ADaeva::TestDamage()
-{
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[TestDamage] H Pressed / Target=%s / Authority=%d"),
-		*GetNameSafe(CurrentTarget),
-		HasAuthority()
-	);
-
-	if (!IsValid(CurrentTarget))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[TestDamage] CurrentTarget 없음"));
-		return;
-	}
-
-	Server_TestDamage(CurrentTarget);
-}
-
-void ADaeva::Server_TestDamage_Implementation(AAOCharacter* Target)
-{
-	if (!IsValid(Target))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[TestDamage] Target invalid"));
-		return;
-	}
-
-	UAbilitySystemComponent* TargetASC = Target->GetAbilitySystemComponent();
-	if (!TargetASC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[TestDamage] Target ASC 없음"));
-		return;
-	}
-
-	const float OldHealth = TargetASC->GetNumericAttribute(UAOAttributeSet::GetHealthAttribute());
-
-	const float Damage = 10.0f;
-	const float NewHealth = FMath::Max(0.0f, OldHealth - Damage);
-
-	TargetASC->SetNumericAttributeBase(
-		UAOAttributeSet::GetHealthAttribute(),
-		NewHealth
-	);
-	
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[TestDamage] %s -> %s / Health: %.1f -> %.1f"),
-		*GetName(),
-		*Target->GetName(),
-		OldHealth,
-		NewHealth
-	);
 }
 
 void ADaeva::SetWeaponVisibility(bool NewVisible)
