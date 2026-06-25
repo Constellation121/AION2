@@ -470,11 +470,8 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCau
 
 void ADaeva::InputShiftPressed()
 {
-	//bSprintInputHeld = true;
-
 	if (IsSprinting())
 	{
-		RequestStopSprint();
 		return;
 	}
 

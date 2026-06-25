@@ -138,6 +138,7 @@ protected:
 	void StopSprint();
 	void OnStaminaChangedForSprint(const FOnAttributeChangeData& Data);
 	void InputShiftReleased();
+	void InputShiftPressed();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
 	TSubclassOf<UGameplayEffect> SprintEffect;
