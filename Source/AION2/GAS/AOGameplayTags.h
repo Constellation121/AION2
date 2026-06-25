@@ -21,6 +21,10 @@
 
 #define EVENT_CHECKATTACKHIT FGameplayTag::RequestGameplayTag(TEXT("Event.CheckAttackHit"))
 
+// GameplayCue
+
+#define CUE_HIT_ASSASSIN_LB FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.Hit.Assassin.LB"))
+
 // Monster Game Tag
 
 // Action 
