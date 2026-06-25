@@ -170,6 +170,19 @@ void ADaeva::Tick_Camera(float DeltaTime)
 	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
 }
 
+void ADaeva::Multicast_PlayMontage_Implementation(EMontageID MontageID, float PlayRate)
+{
+	if (!GetMesh() || !Montages[MontageID])
+	{
+		return;
+	}
+
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	{
+		AnimInstance->Montage_Play(Montages[MontageID], PlayRate);
+	}
+}
+
 void ADaeva::Multicast_PlayWingMontage_Implementation(EMontageID MontageID, float PlayRate)
 {
 	if (!Wing || !WingMontages[MontageID])
@@ -632,13 +645,14 @@ void ADaeva::HandleDeath()
 
 		ASC->AddLooseGameplayTag(DeadTag);
 	}
+
 	if (HasAuthority())
 	{
 		DetachFromControllerPendingDestroy();
+		Multicast_PlayMontage(EMontageID::Die, 1.0f);
+		Multicast_PlayWingMontage(EMontageID::Die, 1.0f);
+		Multicast_SetWingVisibility(true);
 	}
-
-	// Dead AM
-	// PlayAnimMontage(DeathMontage);
 }
 
 void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)

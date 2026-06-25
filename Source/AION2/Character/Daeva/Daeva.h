@@ -93,6 +93,9 @@ private:
 
 public:
 	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayMontage(EMontageID MontageID, float PlayRate);
+
+	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayWingMontage(EMontageID MontageID, float PlayRate);
 
 	UFUNCTION(NetMulticast, Reliable)
