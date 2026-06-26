@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Character/Monster/AOMonsterBase.h"
+#include "Types/TalythraTypes.h"
 #include "Talythra.generated.h"
+
+
+
 
 
 
@@ -36,7 +40,6 @@ public:
 	// State Tree에서 몽타주를 실행하기 위해 만든 함수
 	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
 	void Multicast_PlayAttackMontage(class UAnimMontage* MontageToPlay);
-
 
 
 #pragma region Projectile
@@ -84,6 +87,10 @@ public:
 #pragma endregion 
 
 
+#pragma region Attribute Setting 
+	virtual void InitAttributeSet() override;
+#pragma endregion 
+
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -101,13 +108,11 @@ protected:
 	void Multicast_AttackLine_Pattern_1_Off();
 
 
-
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_AttackLine_Pattern_2();
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_AttackLine_Pattern_2_Off();
-
 
 
 	UFUNCTION(NetMulticast, Unreliable)
@@ -205,4 +210,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	float AttackWarningElapsedTime = 0.0f;
+
+
 };

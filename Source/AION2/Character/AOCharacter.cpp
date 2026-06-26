@@ -4,14 +4,23 @@
 #include "GAS/AOGameplayTags.h"
 #include "Player/AOPlayerController.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
+#include "Actor/AOProjectile.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 AAOCharacter::AAOCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UAOCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AAOCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AAOCharacter, bIsDead);
 }
 
 void AAOCharacter::Multicast_DrawDebugCapsuleCollider_Implementation(const FVector& CapsuleOrigin, const float CapsuleHalfHeight, const float AttackRadius, const FColor DrawColor)
@@ -25,6 +34,11 @@ void AAOCharacter::SearchTarget()
 
 void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	TArray<FHitResult> OutHitResults;
 
 	const float AttackRange = AttackData.TraceData.Range;
@@ -69,14 +83,6 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 	}
 }
 
-void AAOCharacter::InitGAS()
-{
-}
-
-void AAOCharacter::ClearGAS()
-{
-}
-
 void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
 {
 	AAOCharacter* Target = Cast<AAOCharacter>(HitActor);
@@ -103,7 +109,7 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 	const float Multiplier = AttackData.DamageMultiplier;
 	const float BaseDamage = AttackPower * Multiplier;
 
-	const float FinalDamage = FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
+	const float FinalDamage = 1.0f; // FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
 
 	FGameplayEffectContextHandle Context = SourceASC->MakeEffectContext();
 	Context.AddSourceObject(DamageCauser);
@@ -158,6 +164,39 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 	}
 }
 
+void AAOCharacter::SpawnAttackProjectile(const FAttackData& AttackData, TSubclassOf<class AAOProjectile> ProjectileClass, const FName& SpawnSocket)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (!ProjectileClass)
+	{
+		return;
+	}
+
+	const FTransform SocketTransform = GetMesh()->GetSocketTransform(SpawnSocket);
+
+	FVector Direction = GetActorForwardVector();
+	if (IsValid(CurrentTarget))
+	{
+		Direction = (CurrentTarget->GetActorLocation() - SocketTransform.GetLocation()).GetSafeNormal();
+	}
+
+	FTransform SpawnTransform = SocketTransform;
+	SpawnTransform.SetRotation(Direction.Rotation().Quaternion());
+
+	AAOProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAOProjectile>(ProjectileClass, SpawnTransform, this, this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	if (!Projectile)
+	{
+		return;
+	}
+
+	Projectile->InitProjectile(AttackData, this, CurrentTarget, Direction);
+	Projectile->FinishSpawning(SpawnTransform);
+}
+
 bool AAOCharacter::IsEnemy(AActor* TargetActor)
 {
 	AAOCharacter* AOCharacter = Cast<AAOCharacter>(TargetActor);
@@ -191,6 +230,14 @@ void AAOCharacter::DrawDebugCapsuleCollider(const FVector& CapsuleOrigin, const 
 #if ENABLE_DRAW_DEBUG
 	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
 #endif
+}
+
+void AAOCharacter::InitGAS()
+{
+}
+
+void AAOCharacter::ClearGAS()
+{
 }
 
 UAbilitySystemComponent* AAOCharacter::GetAbilitySystemComponent() const

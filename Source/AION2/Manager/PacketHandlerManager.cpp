@@ -4,6 +4,8 @@
 #include "Manager/AOPlayerManager.h"
 #include "Game/AOGameInstance.h"
 #include "UI/AOLoginUserWidget.h"
+#include "UI/AODungeonEntranceWidget.h"
+#include "Manager/AOUIManager.h"
 #include "AONetworkManager.h"
 
 PacketHandlerFunc GAOPacketHandler[UINT16_MAX];
@@ -141,6 +143,15 @@ bool Handle_S_CREATE(UAONetworkManager* NetworkMng, Protocol::S_DungeonCreatePac
 	Protocol::ClassType LeaderClass = LeaderInfo.memberclass();
 
 	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_CREATE /LeaderName: %s"), *LeaderName);
+	UAOUIManager* UIManager = NetworkMng->GameInstance->GetSubsystem<UAOUIManager>();
+	if (UIManager)
+	{
+		if (UAODungeonEntranceWidget* DungeonWidget = UIManager->GetWidget<UAODungeonEntranceWidget>())
+		{
+			DungeonWidget->SetLeaderName(LeaderName);
+			DungeonWidget->SetLeaderClass(LeaderClass);
+		}
+	}
 
 	return false;
 }
@@ -152,6 +163,7 @@ bool Handle_S_ENTER(UAONetworkManager* NetworkMng, Protocol::S_DungeonEnterPacke
 	FString NewPlayerName = UTF8_TO_TCHAR(NewPlayer.membername().c_str());
 	Protocol::ClassType NewPlayerClass = NewPlayer.memberclass();
 	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_CREATE /LeaderName: %s"), *NewPlayerName);
+
 
 	return false;
 }
