@@ -15,10 +15,12 @@
 class UProgressBar;
 class UTextBlock;
 
+
+
 UCLASS()
 class AION2_API UAOPlayerHUDWidget : public UAOUserWidgetBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
     virtual void BindToASC(UAbilitySystemComponent* InASC) override;
@@ -64,7 +66,7 @@ private:
 
     FDelegateHandle StaminaChangedHandle;
     FDelegateHandle MaxStaminaChangedHandle;
-	
+    
 protected:
     UPROPERTY(meta = (BindWidget), BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UProgressBar> Pb_HpBar;

@@ -5,6 +5,7 @@
 
 #include "UI/AOPlayerHUDWidget.h"
 #include "UI/AORaidHUDWidget.h"
+#include "Game/AORaidGameState.h"
 
 void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 {
@@ -21,8 +22,10 @@ void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 	}
 }
 
-void UAOMainHUDWidget::SetRaidHUDVisible(bool bIsRaidLevel)
+void UAOMainHUDWidget::SetRaidHUDVisible()
 {
+	const bool bIsRaidLevel =
+		GetWorld() && GetWorld()->GetGameState<AAORaidGameState>() != nullptr;
 	if (RaidHUDWidget)
 	{
 		RaidHUDWidget->SetVisibility(bIsRaidLevel? ESlateVisibility::Visible : ESlateVisibility::Collapsed);

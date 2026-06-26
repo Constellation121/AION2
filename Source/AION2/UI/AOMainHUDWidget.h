@@ -15,6 +15,7 @@
 
 class UAOPlayerHUDWidget;
 class UAORaidHUDWidget;
+class ADaeva;
 
 UCLASS()
 class AION2_API UAOMainHUDWidget : public UAOUserWidgetBase
@@ -25,7 +26,7 @@ public:
     void BindToPlayerState(AAOPlayerState* InPlayerState) override;
 
 public:
-    void SetRaidHUDVisible(bool bIsRaidLevel);
+    void SetRaidHUDVisible();
 
 protected:
     UPROPERTY(meta = (BindWidget), BlueprintReadOnly)

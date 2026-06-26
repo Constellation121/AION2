@@ -29,16 +29,6 @@ void AAOPlayerController::Server_SetShowColliderDebug_Implementation()
 	}
 }
 
-void AAOPlayerController::HandlePawnASCReady()
-{
-	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
-	{
-		return;
-	}
-
-	CreateOrBindMainHUD();
-}
-
 void AAOPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -94,6 +84,7 @@ void AAOPlayerController::SetInputMappingContext(EInputType InNewInputType)
 	InputSystem->AddMappingContext(InputMappingContexts[InNewInputType], 0);
 }
 
+
 void AAOPlayerController::ShowDebugCollider()
 {
 	Server_SetShowColliderDebug();
@@ -113,8 +104,19 @@ void AAOPlayerController::ShowDebugGAS()
 	}
 }
 
+void AAOPlayerController::HandlePawnASCReady()
+{
+	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
+	{
+		return;
+	}
+
+	CreateOrBindMainHUD();
+}
+
 void AAOPlayerController::CreateOrBindMainHUD()
 {
+
 	// Exception Handling
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
 	{
@@ -139,17 +141,4 @@ void AAOPlayerController::CreateOrBindMainHUD()
 
 	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
 	MainHUD->BindToPlayerState(AOPlayerState);
-}
-
-void AAOPlayerController::RefreshRaidHUDVisibility()
-{
-	if (!MainHUD)
-	{
-		return;
-	}
-
-	const bool bIsRaidLevel =
-		GetWorld() && GetWorld()->GetGameState<AAORaidGameState>() != nullptr;
-
-	MainHUD->SetRaidHUDVisible(bIsRaidLevel);
 }

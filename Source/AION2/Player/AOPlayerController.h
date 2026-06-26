@@ -27,11 +27,6 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_SetShowColliderDebug();
 
-public:
-	// UI
-	// PlayerBase(Daeva)가 준비됐음을 알리면(OnRep_PlayerState) 실행될 함수.
-	void HandlePawnASCReady();
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -39,14 +34,19 @@ protected:
 private:
 	void SetInputMappingContext(EInputType InNewInputType);
 
+
 private:
 	void ShowDebugCollider();
 	void ShowDebugGAS();
-	
+
+
+public:
+	// UI
+	void HandlePawnASCReady();
+
 private:
 	// UI
 	void CreateOrBindMainHUD();
-	void RefreshRaidHUDVisibility();
 
 private:
 	bool bShowColliderDebug = false;
