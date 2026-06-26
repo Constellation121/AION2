@@ -7,7 +7,7 @@
 #include "MMODaeva.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class AION2_API AMMODaeva : public ADaeva
@@ -30,6 +30,7 @@ public:
 	bool IsCurrentMoving();
 
 	void SendDungeonWait();
+	void SetDungeonId(int32 NewDungeonId) { DungeonId = NewDungeonId; }
 
 	bool bHasMoveInput = false;
 
@@ -49,6 +50,11 @@ private:
 	FVector TargetVel = FVector::ZeroVector;
 
 	bool bWasMovingLastSend = false;
+public:
+
+
+private:
+	int32 DungeonId;
 
 	uint64 MyId = -1;
 	uint8 MyClassType;

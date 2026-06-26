@@ -6,6 +6,8 @@
 
 extern TAutoConsoleVariable<int32> CVarDrawAttackTrace;
 
+class UAOMainHUDWidget;
+
 UENUM()
 enum class EInputType : uint8
 {
@@ -32,10 +34,20 @@ protected:
 private:
 	void SetInputMappingContext(EInputType InNewInputType);
 
+
 private:
 	void ShowDebugCollider();
 	void ShowDebugGAS();
-	
+
+
+public:
+	// UI
+	void HandlePawnASCReady();
+
+private:
+	// UI
+	void CreateOrBindMainHUD();
+
 private:
 	bool bShowColliderDebug = false;
 	bool bShowGASDebug = false;
@@ -52,4 +64,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> GASDebugAction;
+
+protected:
+	// UI ฐüทร
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RaidHUD)
+	TSubclassOf<UAOMainHUDWidget> MainHUDClass;
+
+	TObjectPtr<UAOMainHUDWidget> MainHUD;
 };

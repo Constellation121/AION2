@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{47A59C3B-4B96-BF99-0D41-31B3F112338B}",
+	"EngineAssociation": "{2D6F2AA8-4E98-58A1-E553-F19741AE343B}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -17,6 +17,10 @@
 		}
 	],
 	"Plugins": [
+		{
+			"Name": "LoadingScreenModule",
+			"Enabled": true
+		},
 		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
@@ -50,6 +54,10 @@
 		},
 		{
 			"Name": "GameplayStateTree",
+			"Enabled": true
+		},
+		{
+			"Name": "BinkMedia",
 			"Enabled": true
 		}
 	]

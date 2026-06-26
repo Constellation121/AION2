@@ -13,6 +13,15 @@ class USkeletalMeshComponent;
 class UInputAction;
 class UGameplayEffect;
 
+class UAOUserWidgetBase;
+class UWidgetComponent;
+class UAOWidgetComponentBase;
+class USceneComponent;
+class UMaterialInterface;
+
+class AAOPlayerState;
+class UAbilitySystemComponent;
+
 UENUM(BlueprintType)
 enum class EDaevaPartType : uint8
 {
@@ -67,6 +76,14 @@ enum class EAbilityID : uint8
 	KeyQ,
 	KeyE
 };
+
+// UI: Player ASC�� �غ�Ǹ� bind
+DECLARE_MULTICAST_DELEGATE_ThreeParams(
+	FOnPlayerUIReady,
+	AAOPlayerState*,
+	UAbilitySystemComponent*,
+	ADaeva*
+);
 
 UCLASS()
 class AION2_API ADaeva : public AAOCharacter
@@ -193,6 +210,10 @@ private:
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
 	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
+private:
+	// UI ����. Local Player�� ���� Head-up UI�� �߰��Ѵ�.
+	void BindOverheadStatusWidget();
+
 public:
 	FORCEINLINE UAnimMontage* GetMontageByID(EMontageID Index) const { return Montages[Index]; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return Weapon; }
@@ -221,6 +242,16 @@ private:
 	float MaxZoomDistance = 1200.f;
 
 	float TargetZoomDistance;
+
+public:
+	// UI: Player ASC�� �غ�Ǹ� UI Bind.
+	FOnPlayerUIReady OnPlayerUIReady;
+
+	bool IsPlayerUIReady() const;
+	void NotifyPlayerUIReady();
+
+private:
+	bool bPlayerUIReady = false;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -301,4 +332,12 @@ private:
 	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
 
+private:
+	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> BillboardComponent;
+
+	TObjectPtr<UMaterialInterface> WidgetMaterial;
 };
