@@ -113,7 +113,7 @@ bool UAOGameInstance::IsServerConnected()
 }
 
 FString UAOGameInstance::GetLocalIPAddress()
-{	
+{
 	bool bCanBind = false;
 	TSharedPtr<FInternetAddr> LocalAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLocalHostAddr(*GLog, bCanBind);
 	if (LocalAddr.IsValid())
@@ -136,29 +136,42 @@ FString UAOGameInstance::GetLocalIPAddress()
 int32 UAOGameInstance::GetLocalPort()
 {
 	int32 Port = -1;
-	if (GetWorld() && GetWorld()->GetNetDriver())
+	if (GetWorld() && GetWorld()->GetNetDriver() && GetWorld()->GetNetDriver()->LocalAddr.IsValid())
 	{
-		Port = GetWorld()->GetNetDriver()->LocalAddr->GetPort();
+		return GetWorld()->GetNetDriver()->LocalAddr->GetPort();
 	}
 	return Port;
 }
 
-void UAOGameInstance::SendDediIpPort(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+void UAOGameInstance::SendDediIpPort()
 {
-	if (bWasSuccessful && Response.IsValid())
+	FString PublicIP = GetLocalIPAddress();
+	int32 Port = GetLocalPort();
+	if (Port <= 0)
 	{
-		FString PublicIP = Response->GetContentAsString();
-		int32 Port = GetLocalPort();
-		if (Port <= 0)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Error Port"));
-		}
-		Protocol::C_DedicatedPacket DediPkt;
-		DediPkt.set_serverip(TCHAR_TO_UTF8(*PublicIP));
-		DediPkt.set_serverport(Port);
-		SendPacket(DediPkt, PKT_DS_DEDICATED);
+		UE_LOG(LogTemp, Warning, TEXT("Error Port"));
 	}
+	Protocol::C_DedicatedPacket DediPkt;
+	DediPkt.set_serverip(TCHAR_TO_UTF8(*PublicIP));
+	DediPkt.set_serverport(Port);
+	SendPacket(DediPkt, PKT_DS_DEDICATED);
 }
+
+//void UAOGameInstance::SendDediIpPort(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+//{
+//	
+//		FString PublicIP = GetLocalIPAddress();
+//		int32 Port = GetLocalPort();
+//		if (Port <= 0)
+//		{
+//			UE_LOG(LogTemp, Warning, TEXT("Error Port"));
+//		}
+//		Protocol::C_DedicatedPacket DediPkt;
+//		DediPkt.set_serverip(TCHAR_TO_UTF8(*PublicIP));
+//		DediPkt.set_serverport(Port);
+//		SendPacket(DediPkt, PKT_DS_DEDICATED);
+//	
+//}
 
 void UAOGameInstance::SendSignUpPacket(const FString& Id, const FString& Password, int32 ClassType)
 {

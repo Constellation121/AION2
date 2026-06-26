@@ -301,4 +301,9 @@ private:
 	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
 
+public:
+	void SetDungeonId(int32 NewDungeonId) { DungeonId = NewDungeonId; }
+
+private:
+	int32 DungeonId;
 };
