@@ -3,6 +3,8 @@
 
 #include "UI/AODungeonEntranceWidget.h"
 #include "Components/Button.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "Game/AOGameInstance.h"
 #include "AION2.h"
 
@@ -18,7 +20,7 @@ void UAODungeonEntranceWidget::NativeConstruct()
 	// CreateButton 이벤트 바인딩
 	if (CreateButton)
 	{
-		EnterButton->OnClicked.AddDynamic(this, &UAODungeonEntranceWidget::OnCreateButtonClicked);
+		CreateButton->OnClicked.AddDynamic(this, &UAODungeonEntranceWidget::OnCreateButtonClicked);
 	}
 }
 
@@ -47,5 +49,70 @@ void UAODungeonEntranceWidget::OnCreateButtonClicked()
 
 	Protocol::C_DungeonCreatePacket CreatePacket;
 	SEND_PACKET(CreatePacket, PKT_C_DUNGEONCREATE);
+	
+}
 
+void UAODungeonEntranceWidget::SetLeaderClass(uint8 InLeaderClass)
+{
+	if (EnterButton)
+	{
+		EnterButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (CreateButton)
+	{
+		CreateButton->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	SetImage(LeaderClass, InLeaderClass);
+}
+
+void UAODungeonEntranceWidget::SetLeaderName(FString InLeaderName)
+{
+	LeaderName->SetText(FText::FromStringView(InLeaderName));
+}
+
+void UAODungeonEntranceWidget::SetMember1Class(uint8 InLeaderClass)
+{
+
+}
+
+void UAODungeonEntranceWidget::SetMember1Name(FString InLeaderName)
+{
+
+}	
+
+void UAODungeonEntranceWidget::SetImage(class UImage* TargetImage, uint8 ClassType)
+{
+	FSlateBrush Brush;
+	switch (ClassType)
+	{
+	case 1:
+	{
+		Brush.SetResourceObject(AssassinImage);
+		TargetImage->SetBrush(Brush);
+		break;
+	}
+	case 2:
+	{
+		Brush.SetResourceObject(AssassinImage);
+		TargetImage->SetBrush(Brush);
+		break;
+	}
+	case 3:
+	{
+		Brush.SetResourceObject(AssassinImage);
+		TargetImage->SetBrush(Brush);
+		break;
+	}
+	case 4:
+	{
+		Brush.SetResourceObject(AssassinImage);
+		TargetImage->SetBrush(Brush);
+		break;
+	}
+	default :
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Leader Class Empty"));
+	}
+	}
 }

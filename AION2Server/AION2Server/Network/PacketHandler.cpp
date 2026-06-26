@@ -210,7 +210,6 @@ bool PacketHandler::HandleDungeonCreate(PacketSessionRef& session, Protocol::C_D
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	PlayerRef player = gameSession->_player;
-	//Protocol::S_DungeonCreatePacket createPacket;
 
 	GDungeon->DoAsync(&Dungeon::HandleCreateDungeon, player);
 	return true;

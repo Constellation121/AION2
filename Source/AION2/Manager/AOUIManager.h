@@ -32,6 +32,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI Manager")
 	void HideWidget(UUserWidget* WidgetInstance);
 
+	UFUNCTION(BlueprintCallable, Category = "UI Manager")
+	UUserWidget* GetWidgetByClass(TSubclassOf<UUserWidget>WidgetClass) const;
+
+	template<typename T>
+	T* GetWidget() const
+	{
+		return Cast<T>(GetWidgetByClass(T::StaticClass()));
+	}
+
 private:
 	int GetZOrderForLayer(EUILayer Layer) const;
 
