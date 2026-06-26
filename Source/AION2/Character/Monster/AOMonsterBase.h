@@ -33,8 +33,20 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// AODungeonGameMode -> TEST
+	UFUNCTION(BlueprintCallable, Category = "Dungeon")
+	void HandleBossDeath();
 
+public:
+	/*
+	* 0 = 일반 몬스터
+	* 1 = b1
+	* 2 = b2
+	* 3 = b3
+	*/
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Dungeon")
+	int32 DungeonBossIndex = 0;
 
-
-
+	UFUNCTION(BlueprintCallable, Category = "Dungeon")
+	void SetDungeonBossActive(bool bActive);
 };
