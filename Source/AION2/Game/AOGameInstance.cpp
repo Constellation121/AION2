@@ -93,12 +93,6 @@ bool UAOGameInstance::ConnectToServer(const FString& Ip, int32 Port)
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Connected to server: %s:%d"), *Ip, Port);
-
-#if UE_SERVER
-	SendDediIpPort();
-#endif
-
-
 	return true;
 }
 
@@ -138,7 +132,7 @@ int32 UAOGameInstance::GetLocalPort()
 	int32 Port = -1;
 	if (GetWorld() && GetWorld()->GetNetDriver() && GetWorld()->GetNetDriver()->LocalAddr.IsValid())
 	{
-		Port = GetWorld()->GetNetDriver()->LocalAddr->GetPort();
+		return GetWorld()->GetNetDriver()->LocalAddr->GetPort();
 	}
 	else
 	{
@@ -146,6 +140,7 @@ int32 UAOGameInstance::GetLocalPort()
 	}
 	return Port;
 }
+
 
 //void UAOGameInstance::SendDediIpPort(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 //{
@@ -175,6 +170,21 @@ void UAOGameInstance::SendDediIpPort()
 	SendPacket(DediPkt, PKT_DS_DEDICATED);
 }
 
+//void UAOGameInstance::SendDediIpPort(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+//{
+//	
+//		FString PublicIP = GetLocalIPAddress();
+//		int32 Port = GetLocalPort();
+//		if (Port <= 0)
+//		{
+//			UE_LOG(LogTemp, Warning, TEXT("Error Port"));
+//		}
+//		Protocol::C_DedicatedPacket DediPkt;
+//		DediPkt.set_serverip(TCHAR_TO_UTF8(*PublicIP));
+//		DediPkt.set_serverport(Port);
+//		SendPacket(DediPkt, PKT_DS_DEDICATED);
+//	
+//}
 
 void UAOGameInstance::SendSignUpPacket(const FString& Id, const FString& Password, int32 ClassType)
 {

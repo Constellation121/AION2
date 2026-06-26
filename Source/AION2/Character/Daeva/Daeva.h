@@ -77,7 +77,7 @@ enum class EAbilityID : uint8
 	KeyE
 };
 
-// UI: Player ASC°¡ ÁØºñµÇ¸é bind
+// UI: Player ASCï¿½ï¿½ ï¿½Øºï¿½Ç¸ï¿½ bind
 DECLARE_MULTICAST_DELEGATE_ThreeParams(
 	FOnPlayerUIReady,
 	AAOPlayerState*,
@@ -211,7 +211,7 @@ private:
 	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
 private:
-	// UI °ü·Ã. Local PlayerÀÏ ¶§¸¸ Head-up UI¸¦ Ãß°¡ÇÑ´Ù.
+	// UI ï¿½ï¿½ï¿½ï¿½. Local Playerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Head-up UIï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.
 	void BindOverheadStatusWidget();
 
 public:
@@ -244,7 +244,7 @@ private:
 	float TargetZoomDistance;
 
 public:
-	// UI: Player ASC°¡ ÁØºñµÇ¸é UI Bind.
+	// UI: Player ASCï¿½ï¿½ ï¿½Øºï¿½Ç¸ï¿½ UI Bind.
 	FOnPlayerUIReady OnPlayerUIReady;
 
 	bool IsPlayerUIReady() const;
@@ -331,7 +331,6 @@ private:
 private:
 	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
-
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))

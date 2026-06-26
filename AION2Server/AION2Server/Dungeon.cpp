@@ -175,7 +175,7 @@ void DungeonWaitingRoom::HandleEnterDungeon(PlayerRef player)
 		enterPlayerProto->set_memberid(player->GetId());
 		enterPlayerProto->set_membername(player->GetName());
 		enterPlayerProto->set_memberclass(player->GetClass());
-		enterPlayerProto->set_isready(false);
+		enterPlayerProto->set_isready(true);
 		enterPlayerProto->set_index(static_cast<int32>(targetDungeon->GetMembers().size()));
 
 		SendBufferRef enterBuffer = PacketHandler::MakeSendBuffer(enterPacket);

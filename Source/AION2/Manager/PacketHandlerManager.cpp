@@ -163,9 +163,9 @@ bool Handle_S_ENTER(UAONetworkManager* NetworkMng, Protocol::S_DungeonEnterPacke
 	Protocol::DungeonPlayerInfo NewPlayer = Pkt.enterplayer();
 	FString NewPlayerName = UTF8_TO_TCHAR(NewPlayer.membername().c_str());
 	Protocol::ClassType NewPlayerClass = NewPlayer.memberclass();
-	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_CREATE /LeaderName: %s"), *NewPlayerName);
+	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_Enter/LeaderName: %s"), *NewPlayerName);
 
-
+	
 	return false;
 }
 
@@ -181,6 +181,6 @@ bool Handle_S_START(UAONetworkManager* NetworkMng, Protocol::S_DungeonStartPacke
 
 	FString ConnectionURL = FString::Printf(TEXT("%s:%d"), *ServerIp, ServerPort);
 
-	NetworkMng->PlayerMng->HandleDungeon(ConnectionURL);
+	NetworkMng->PlayerMng->HandleDungeonStart(ConnectionURL);
 	return false;
 }

@@ -72,4 +72,7 @@ private:
 	UFUNCTION()
 	void OnCreateButtonClicked();
 
+	UFUNCTION()
+	void OnStartButtonClicked();
+
 };
