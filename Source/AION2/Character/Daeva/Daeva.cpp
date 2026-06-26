@@ -6,6 +6,9 @@
 #include "Physics/Collision.h"
 #include "Player/AOPlayerController.h"
 
+#include "Components/CapsuleComponent.h"
+#include "Net/UnrealNetwork.h"
+
 #include "GameplayTagContainer.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -15,13 +18,6 @@
 #include "EnhancedInputComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
-#include "UI/AOWidgetComponentBase.h"
-#include "UI/AOPlayerHUDWidget.h"
-#include "Components/WidgetComponent.h"
-#include "Components/SceneComponent.h"
-#include "Materials/MaterialInterface.h"
-
-#include "AION2.h"
 
 const float TargetTraceRadius = 2000.0f;
 
@@ -73,59 +69,14 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	Wing = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Wing"));
 	Wing->SetupAttachment(GetMesh(), TEXT("Wing_Root"));
 	Wing->SetVisibility(false);
-
-	// Head-up UI
-	BillboardComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BillboardComponent"));
-	BillboardComponent->SetupAttachment(RootComponent);
-	BillboardComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 120.0f));
-	BillboardComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
-
-	OverheadStatusWidgetComponent = CreateDefaultSubobject<UAOWidgetComponentBase>(TEXT("OverheadStatusWidget"));
-	OverheadStatusWidgetComponent->SetupAttachment(BillboardComponent);
-	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
-	OverheadStatusWidgetComponent->SetBlendMode(EWidgetBlendMode::Transparent);
-	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 14.0f));
-	OverheadStatusWidgetComponent->SetRelativeLocation(FVector::ZeroVector);
-	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator::ZeroRotator);
-	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	static ConstructorHelpers::FClassFinder<UUserWidget>
-		WidgetClass(
-			TEXT("/Game/UI/Ingame/WBP_PlayaerStatus_Head.WBP_PlayaerStatus_Head_C"));
-
-	if (WidgetClass.Succeeded())
-	{
-		OverheadStatusWidgetComponent->SetWidgetClass(
-			WidgetClass.Class);
-	}
-
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WidgetMat(
-		TEXT("/Game/UI/Resource/Material/BaseMaterial/M_WorldSpaceUI.M_WorldSpaceUI")
-	);
-
-	if (WidgetMat.Succeeded())
-	{
-		WidgetMaterial = WidgetMat.Object;
-	}
 }
 
 void ADaeva::BeginPlay()
 {
 	Super::BeginPlay();
 
-	LastLoc = GetActorLocation();
-	LastRot = GetActorRotation();
-	bWasMovingLastSend = false;
-
 	TargetZoomDistance = SpringArm->TargetArmLength;
 	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 1.0f, true);
-
-	// UI
-	if (WidgetMaterial)
-	{
-		OverheadStatusWidgetComponent->SetMaterial(0, WidgetMaterial);
-		OverheadStatusWidgetComponent->MarkRenderStateDirty();
-	}
 }
 
 void ADaeva::Tick(float DeltaTime)
@@ -133,18 +84,6 @@ void ADaeva::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Tick_Camera(DeltaTime);
-	Tick_Combat(DeltaTime);
-
-	//if (!IsLocallyControlled())
-	//{
-	//	FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetLoc, DeltaTime, 10.f);
-	//	FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRot, DeltaTime, 10.f);
-
-	//	SetActorLocation(NewLocation);
-	//	SetActorRotation(NewRotation);
-
-	//	GetCharacterMovement()->Velocity = TargetVel;
-	//}
 }
 
 void ADaeva::PossessedBy(AController* NewController)
@@ -152,24 +91,6 @@ void ADaeva::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	InitGAS();
-
-	//if (!IsLocallyControlled()) return;
-	//{
-	//	UE_LOG(LogTemp, Log, TEXT(" ADaeva::BeginPlay() - SetTimer"));
-	//	GetWorldTimerManager().SetTimer(SendMoveHandle, this, &ADaeva::SendMovePacket, SendMoveTimer, true);
-	//}
-
-	// TODO: 만약 테스트해보고 안되면 UI Manager로 우회
-	// 만약 로컬 컨트롤러라면 ASCReady를 보냄
-	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(NewController))
-	{
-		if (AOController->IsLocalController())
-		{
-			AOController->HandlePawnASCReady();
-		}
-	}
-
-	BindOverheadStatusWidget();
 }
 
 void ADaeva::UnPossessed()
@@ -184,17 +105,15 @@ void ADaeva::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitGAS();
+}
 
-	// UI 관련해, Localplayer면 추가.
-	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
-	{
-		if (AOController->IsLocalController())
-		{
-			AOController->HandlePawnASCReady();
-		}
-	}
+void ADaeva::GetLifetimeReplicatedProps(
+	TArray<FLifetimeProperty>& OutLifetimeProps
+) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	BindOverheadStatusWidget();
+	DOREPLIFETIME(ADaeva, bIsDead);
 }
 
 void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -207,7 +126,7 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADaeva::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADaeva::Look);
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ADaeva::Zoom);
-		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Dash));
+		//EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Dash));
 		EnhancedInputComponent->BindAction(SpaceAction, ETriggerEvent::Started, this, &ADaeva::InputSpacePressed);
 		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Triggered, this, &ADaeva::InputLBPressed);
 		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Triggered, this, &ADaeva::InputRBPressed);
@@ -244,27 +163,19 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ADaeva::Tick_Camera(float DeltaTime)
 {
 	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
-
-	// UI BillBoard
-	const FVector CameraLocation = Camera->GetComponentLocation();
-	const FVector WidgetLocation = BillboardComponent->GetComponentLocation();
-
-	FRotator LookAtRotation = (CameraLocation - WidgetLocation).Rotation();
-
-	BillboardComponent->SetWorldRotation(LookAtRotation);
 }
 
-void ADaeva::Tick_Combat(float DeltaTime)
+void ADaeva::Multicast_PlayMontage_Implementation(EMontageID MontageID, float PlayRate)
 {
-	/*if (!HasAuthority() && IsLocallyControlled())
+	if (!GetMesh() || !Montages[MontageID])
 	{
-		SearchTarget();
-		if (IsValid(CurrentTarget) && PreviousTarget != CurrentTarget)
-		{
-			Server_SetCurrentTarget(CurrentTarget);
-			UE_LOG(LogTemp, Log, TEXT("%s"), *GetNameSafe(CurrentTarget));
-		}
-	}*/
+		return;
+	}
+
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	{
+		AnimInstance->Montage_Play(Montages[MontageID], PlayRate);
+	}
 }
 
 void ADaeva::Multicast_PlayWingMontage_Implementation(EMontageID MontageID, float PlayRate)
@@ -303,6 +214,11 @@ void ADaeva::Server_SetCurrentTarget_Implementation(AAOCharacter* NewTarget)
 
 void ADaeva::SearchTarget()
 {
+	if (!IsLocallyControlled())
+	{
+		return;
+	}
+
 	PreviousTarget = CurrentTarget;
 
 	TArray<FHitResult> OutHitResults;
@@ -315,7 +231,7 @@ void ADaeva::SearchTarget()
 
 	if (!bHitDetected)
 	{
-		CurrentTarget = nullptr;
+		ChangeCurrentTargetInClient(nullptr);
 		return;
 	}
 
@@ -350,7 +266,7 @@ void ADaeva::SearchTarget()
 
 	if (Candidates.IsEmpty())
 	{
-		CurrentTarget = nullptr;
+		ChangeCurrentTargetInClient(nullptr);
 		return;
 	}
 
@@ -366,11 +282,17 @@ void ADaeva::SearchTarget()
 		}
 	);
 
-	CurrentTarget = Candidates[0].Target;
+	ChangeCurrentTargetInClient(Candidates[0].Target);
 }
 
 void ADaeva::Move(const FInputActionValue& Value)
 {
+	if (IsDead())
+	{
+		return;
+	}
+
+
 	FVector2D Movement = Value.Get<FVector2D>();
 
 	FRotator Rotation = GetControlRotation();
@@ -427,6 +349,15 @@ void ADaeva::InitGAS()
 	ASC = GASPS->GetAbilitySystemComponent();
 	ASC->InitAbilityActorInfo(GASPS, this);
 
+	if (!HealthChangedDelegateHandle.IsValid())
+	{
+		HealthChangedDelegateHandle =
+			ASC->GetGameplayAttributeValueChangeDelegate(
+				UAOAttributeSet::GetHealthAttribute()
+			).AddUObject(this, &ADaeva::OnHealthChanged);
+	}
+
+
 	if (!ASC->HasMatchingGameplayTag(TEAM_DAEVA))
 	{
 		ASC->AddLooseGameplayTag(TEAM_DAEVA);
@@ -467,6 +398,15 @@ void ADaeva::ClearGAS()
 
 		MoveSpeedChangedDelegateHandle.Reset();
 		bMoveSpeedDelegateRegistered = false;
+	}
+
+	if (ASC && HealthChangedDelegateHandle.IsValid())
+	{
+		ASC->GetGameplayAttributeValueChangeDelegate(
+			UAOAttributeSet::GetHealthAttribute()
+		).Remove(HealthChangedDelegateHandle);
+
+		HealthChangedDelegateHandle.Reset();
 	}
 
 	if (HasAuthority())
@@ -615,6 +555,8 @@ void ADaeva::InputSpacePressed()
 
 	if (GetCharacterMovement()->IsFalling())
 	{
+		RequestStopSprint();
+
 		GASInputPressed(static_cast<int32>(EAbilityID::Glide));
 		return;
 	}
@@ -624,7 +566,12 @@ void ADaeva::InputSpacePressed()
 
 void ADaeva::InputLBPressed()
 {
-	GASInputReleased(static_cast<int32>(EAbilityID::Dash));
+	if (IsDead())
+	{
+		return;
+	}
+
+	RequestStopSprint();
 
 	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB2))
 	{
@@ -642,6 +589,13 @@ void ADaeva::InputLBPressed()
 
 void ADaeva::InputRBPressed()
 {
+	if (IsDead())
+	{
+		return;
+	}
+
+	RequestStopSprint();
+
 	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB2))
 	{
 		GASInputPressed(static_cast<int32>(EAbilityID::RB_2));
@@ -658,7 +612,6 @@ void ADaeva::InputRBPressed()
 
 void ADaeva::InputMoveReleased()
 {
-	bHasMoveInput = false;
 	RequestStopSprint();
 }
 
@@ -668,6 +621,58 @@ void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)
 
 	SetWeaponVisibility(bIsCombat);
 	SetSubWeaponVisibility(bIsCombat);
+}
+
+void ADaeva::HandleDeath()
+{
+	if (bIsDead)
+	{
+		return;
+	}
+
+	bIsDead = true;
+
+	UE_LOG(LogTemp, Warning, TEXT("[Death] %s Died"), *GetName());
+
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (ASC)
+	{
+		ASC->CancelAllAbilities();
+
+		const FGameplayTag DeadTag =
+			FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+
+		ASC->AddLooseGameplayTag(DeadTag);
+	}
+
+	if (HasAuthority())
+	{
+		DetachFromControllerPendingDestroy();
+		Multicast_PlayMontage(EMontageID::Die, 1.0f);
+		Multicast_PlayWingMontage(EMontageID::Die, 1.0f);
+		Multicast_SetWingVisibility(true);
+	}
+}
+
+void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[Health] %s : %.1f -> %.1f"),
+		*GetName(),
+		Data.OldValue,
+		Data.NewValue
+	);
+
+	if (Data.NewValue <= 0.0f && !bIsDead)
+	{
+		HandleDeath();
+	}
 }
 
 void ADaeva::StartSprint()
@@ -864,101 +869,6 @@ void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 	Parts.Add(PartType, PartMesh);
 }
 
-void ADaeva::SendMovePacket()
-{
-	bool bCurrentMovement = HasMovement();
-
-	bool bShouldSend = false;
-
-	if (bCurrentMovement)
-	{
-		bShouldSend = true;
-
-		bWasMovingLastSend = true;
-	}
-
-	else
-	{
-		// ���� ����
-		if (bWasMovingLastSend)
-		{
-			// ��Ŷ ������
-			bShouldSend = true;
-			bWasMovingLastSend = false;
-		}
-		else
-		{
-			// ��� ���� ����
-			return;
-		}
-	}
-
-	if (bShouldSend) 
-	{
-		FVector CurrLoc = GetActorLocation();
-		FRotator CurrRot = GetActorRotation();
-
-		Protocol::C_MovePacket MovePacket;
-		MovePacket.set_playerid(MyId);
-
-		Protocol::Vector3* Location = MovePacket.mutable_playerlocation();
-		Location->set_x(CurrLoc.X);
-		Location->set_y(CurrLoc.Y);
-		Location->set_z(CurrLoc.Z);
-
-		FVector CurrVelocity = GetCharacterMovement()->Velocity;
-
-		Protocol::Vector3* Velocity = MovePacket.mutable_playervelocity();
-		Velocity->set_x(CurrVelocity.X);
-		Velocity->set_y(CurrVelocity.Y);
-		Velocity->set_z(CurrVelocity.Z);
-
-		Protocol::Rotator3* Rotation = MovePacket.mutable_playerrotation();
-		Rotation->set_pitch(CurrRot.Pitch);
-		Rotation->set_yaw(CurrRot.Yaw);
-		Rotation->set_roll(CurrRot.Roll);
-
-		SEND_PACKET(MovePacket, PKT_C_MOVE);
-
-		LastLoc = CurrLoc;
-		LastRot = CurrRot;
-	}
-}
-
-bool ADaeva::HasMovement()
-{
-	FVector CurrentLoc = GetActorLocation();
-	FRotator CurrentRot = GetActorRotation();
-
-	// ĳ���� ��ġ�� ���� �Ÿ� �̻� ����������
-	float Distance = FVector::DistSquared(CurrentLoc, LastLoc);
-
-	// ĳ���� ������ ���� ���� ����������
-	float YawDiff = FRotator::NormalizeAxis(CurrentRot.Yaw - LastRot.Yaw);
-	bool bRotated = FMath::Abs(YawDiff) >= 10.0f;
-
-	// ĳ���͹����Ʈ�� ��ȭ�� �־�����
-	bool bIsMoving = GetCharacterMovement()->Velocity.SizeSquared() > 0.f;
-
-	return (Distance > 25.f) || bRotated || bIsMoving;
-}
-
-bool ADaeva::IsCurrentMoving()
-{
-	if (!GetCharacterMovement()) return false;
-	bool bHasVelocity = GetCharacterMovement()->Velocity.SizeSquared() > 100.f;
-
-	bool bHasInput = !GetPendingMovementInputVector().IsNearlyZero();
-
-	return bHasVelocity || bHasInput;
-}
-
-void ADaeva::ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel)
-{
-	TargetLoc = NewLoc;
-	TargetRot = NewRot;
-	TargetVel = NewVel;
-}
 
 void ADaeva::PlayCameraShake(bool& bDidShakeCamera)
 {
@@ -994,21 +904,11 @@ float ADaeva::CalcDistanceSquaredToScreenCenter(AActor* Other)
 	return FVector2D::DistSquared(ScreenPosition, ScreenCenter);
 }
 
-void ADaeva::BindOverheadStatusWidget()
+void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 {
-	if (GetNetMode() == NM_DedicatedServer || !OverheadStatusWidgetComponent)
+	CurrentTarget = NewTarget;
+	if (PreviousTarget != CurrentTarget)
 	{
-		return;
-	}
-
-	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
-	if (!AOPlayerState)
-	{
-		return;
-	}
-
-	if (UAOPlayerHUDWidget* StatusWidget = Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject()))
-	{
-		StatusWidget->BindToPlayerState(AOPlayerState);
+		Server_SetCurrentTarget(CurrentTarget);
 	}
 }

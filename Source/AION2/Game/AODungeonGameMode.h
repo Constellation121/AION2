@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "AODunzeonEntranceWidget.generated.h"
+#include "GameFramework/GameModeBase.h"
+#include "AODungeonGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AION2_API UAODunzeonEntranceWidget : public UUserWidget
+class AION2_API AAODungeonGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	

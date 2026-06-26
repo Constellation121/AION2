@@ -42,7 +42,7 @@ private:
 private:
 	void ShowDebugCollider();
 	void ShowDebugGAS();
-
+	
 private:
 	// UI
 	void CreateOrBindMainHUD();

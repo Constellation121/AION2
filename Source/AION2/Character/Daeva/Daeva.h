@@ -13,11 +13,6 @@ class USkeletalMeshComponent;
 class UInputAction;
 class UGameplayEffect;
 
-class UWidgetComponent;
-class UAOWidgetComponentBase;
-class USceneComponent;
-class UMaterialInterface;
-
 UENUM(BlueprintType)
 enum class EDaevaPartType : uint8
 {
@@ -47,7 +42,9 @@ enum class EMontageID : uint8
 	Key3,
 	Key4,
 	KeyQ,
-	KeyE
+	KeyE,
+	Die,
+	Rebirth
 };
 
 UENUM(BlueprintType)
@@ -87,11 +84,17 @@ protected:
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void GetLifetimeReplicatedProps(
+		TArray<FLifetimeProperty>& OutLifetimeProps
+	) const override;
+
 private:
 	void Tick_Camera(float DeltaTime);
-	void Tick_Combat(float DeltaTime);
 
 public:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayMontage(EMontageID MontageID, float PlayRate);
+
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayWingMontage(EMontageID MontageID, float PlayRate);
 
@@ -141,6 +144,18 @@ private:
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
 
+protected :
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "State")
+	bool bIsDead = false;
+
+public :
+	bool IsDead() const { return bIsDead; }
+
+	virtual void HandleDeath();
+	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
+
+protected :
+	FDelegateHandle HealthChangedDelegateHandle;
 
 protected:
 	void StartSprint();
@@ -185,20 +200,7 @@ private:
 	void PlayCameraShake(bool& bDidShakeCamera);
 	bool IsFrontOfCamera(AActor* Other);
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
-
-private:
-	// UI 관련. Local Player일 때만 Head-up UI를 추가한다.
-	void BindOverheadStatusWidget();
-
-public:
-	void SetMyId(uint64 Id) { MyId = Id; }
-
-	void SendMovePacket();
-	void ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel);
-
-	bool HasMovement();
-	bool IsCurrentMoving();
-
+	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
 public:
 	FORCEINLINE UAnimMontage* GetMontageByID(EMontageID Index) const { return Montages[Index]; }
@@ -301,26 +303,6 @@ private:
 
 	bool bTagEventsRegistered = false;
 
-
-private:
-	FTimerHandle SendMoveHandle;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Network")
-	float SendMoveTimer = 0.1f;
-
-	// �ֱٿ� ���´� ��ġ, ȸ��
-	FVector LastLoc = FVector::ZeroVector;
-	FRotator LastRot = FRotator::ZeroRotator;
-
-	// ���� ��ġ, ȸ��
-	FVector TargetLoc = FVector::ZeroVector;
-	FRotator TargetRot = FRotator::ZeroRotator;
-	FVector TargetVel = FVector::ZeroVector;
-
-	bool bWasMovingLastSend = false;
-
-	uint64 MyId = -1;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
@@ -328,13 +310,4 @@ private:
 	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
 
-
-private:
-	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
-
-	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USceneComponent> BillboardComponent;
-
-	TObjectPtr<UMaterialInterface> WidgetMaterial;
 };
