@@ -112,9 +112,9 @@ bool UAOGameInstance::IsServerConnected()
 		return false;
 }
 
-void UAOGameInstance::GetLocalIPAddress()
+FString UAOGameInstance::GetLocalIPAddress()
 {
-	/*
+	
 	bool bCanBind = false;
 	TSharedPtr<FInternetAddr> LocalAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLocalHostAddr(*GLog, bCanBind);
 	if (LocalAddr.IsValid())
@@ -122,16 +122,16 @@ void UAOGameInstance::GetLocalIPAddress()
 		return LocalAddr->ToString(false);
 	}
 
-	return TEXT("127.0.0.1");*/
+	return TEXT("127.0.0.1");
 
-	FHttpModule* Http = &FHttpModule::Get();
+	/*FHttpModule* Http = &FHttpModule::Get();
 	if (!Http) return;
 
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
 	Request->OnProcessRequestComplete().BindUObject(this, &UAOGameInstance::SendDediIpPort);
 	Request->SetURL(TEXT("https://api.ipify.org"));
 	Request->SetVerb(TEXT("GET"));
-	Request->ProcessRequest();
+	Request->ProcessRequest();*/
 }
 
 int32 UAOGameInstance::GetLocalPort()

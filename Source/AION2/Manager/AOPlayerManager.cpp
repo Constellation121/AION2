@@ -107,3 +107,12 @@ void UAOPlayerManager::HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator
 		Player->ReceiveMovePacket(NewLocation, NewRotation, NewVel);
 	}
 }
+
+void UAOPlayerManager::HandleDungeon(FString ServerURL)
+{
+	AAOPlayerController* PC = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PC)
+	{
+		PC->ClientTravel(ServerURL, ETravelType::TRAVEL_Absolute);
+	}
+}

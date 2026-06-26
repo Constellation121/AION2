@@ -24,7 +24,7 @@ public:
 	bool ConnectToServer(const FString& Ip, int32 Port);
 	bool IsServerConnected();
 
-	void  GetLocalIPAddress();
+	FString  GetLocalIPAddress();
 	int32 GetLocalPort();
 	void SendDediIpPort(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 

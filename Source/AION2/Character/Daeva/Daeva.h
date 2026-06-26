@@ -138,7 +138,6 @@ private:
 	void InputSpacePressed();
 	void InputLBPressed();
 	void InputRBPressed();
-
 	void InputMoveReleased();
 
 protected:
@@ -231,7 +230,7 @@ private:
 
 	float TargetZoomDistance;
 
-private:
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
 
