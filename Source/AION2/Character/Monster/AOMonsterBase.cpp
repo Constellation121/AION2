@@ -1,7 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Character/Monster/AOMonsterBase.h"
+
+#include "Game/AODunGameMode.h"
+
+#include "AIController.h"
+#include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NavigationSystem.h"
@@ -96,6 +100,103 @@ void AAOMonsterBase::InitAttributeSet()
 {
 
 
+}
+
+// Boss Health 0 -> Call
+// Only Server Call
+void AAOMonsterBase::HandleBossDeath()
+{
+	UE_LOG(
+		LogTemp,
+		Error,
+		TEXT("[BossDeath] HandleBossDeath Called! Boss: %s"),
+		*GetName()
+	);
+
+
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	AAODunGameMode* DungeonGameMode =
+		GetWorld()->GetAuthGameMode<AAODunGameMode>();
+
+	if (!DungeonGameMode)
+	{
+		UE_LOG(
+			LogTemp,
+			Error,
+			TEXT("[Dungeon] DungeonGameMode not found. Boss: %s"),
+			*GetName()
+		);
+		return;
+	}
+
+	DungeonGameMode->NotifyBossDefeated(this);
+}
+
+void AAOMonsterBase::SetDungeonBossActive(bool bActive)
+{
+	// 외형 표시 여부
+	SetActorHiddenInGame(!bActive);
+
+	// Capsule Collision도 함께 제어
+	if (UCapsuleComponent* Capsule = GetCapsuleComponent())
+	{
+		Capsule->SetCollisionEnabled(
+			bActive
+			? ECollisionEnabled::QueryAndPhysics
+			: ECollisionEnabled::NoCollision
+		);
+	}
+
+	// Tick을 꺼야 AI 관련 Tick이나 행동이 남지 않는다.
+	SetActorTickEnabled(bActive);
+
+	AAIController* AIController = Cast<AAIController>(GetController());
+
+	if (!AIController)
+	{
+		UE_LOG(
+			LogTemp,
+			Warning,
+			TEXT("[Dungeon] AIController is null: %s"),
+			*GetName()
+		);
+		return;
+	}
+
+	if (!AIController->BrainComponent)
+	{
+		UE_LOG(
+			LogTemp,
+			Warning,
+			TEXT("[Dungeon] BrainComponent is null: %s"),
+			*GetName()
+		);
+		return;
+	}
+
+	if (!bActive)
+	{
+		AIController->StopMovement();
+
+		AIController->BrainComponent->StopLogic(
+			TEXT("Dungeon Boss Disabled")
+		);
+
+		return;
+	}
+
+	AIController->BrainComponent->RestartLogic();
+
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[Dungeon] Boss AI Activated: %s"),
+		*GetName()
+	);
 }
 
 

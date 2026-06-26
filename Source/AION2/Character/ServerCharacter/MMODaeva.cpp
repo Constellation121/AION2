@@ -3,6 +3,7 @@
 
 #include "Character/ServerCharacter/MMODaeva.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "EnhancedInputComponent.h"
 #include "AION2.h"
 
 void AMMODaeva::BeginPlay()
@@ -31,7 +32,7 @@ void AMMODaeva::Tick(float DeltaTime)
 
 void AMMODaeva::PossessedBy(AController* NewController)
 {
-	Super::PossessedBy(NewController);
+	ACharacter::PossessedBy(NewController);
 
 	if (!IsLocallyControlled()) return;
 {
@@ -142,4 +143,32 @@ void AMMODaeva::ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& Ne
 	TargetLoc = NewLoc;
 	TargetRot = NewRot;
 	TargetVel = NewVel;
+}
+
+
+void AMMODaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	ACharacter::SetupPlayerInputComponent(PlayerInputComponent);
+
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (EnhancedInputComponent)
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMMODaeva::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMMODaeva::Look);
+		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &AMMODaeva::Zoom);
+
+		EnhancedInputComponent->BindAction(
+			MoveAction,
+			ETriggerEvent::Completed,
+			this,
+			&AMMODaeva::InputMoveReleased
+		);
+
+		EnhancedInputComponent->BindAction(
+			ShiftAction,
+			ETriggerEvent::Started,
+			this,
+			&AMMODaeva::InputShiftPressed
+		);
+	}
 }

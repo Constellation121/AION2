@@ -24,7 +24,8 @@ public:
 	void HandleLogin(uint64 PlayerId, uint8 ClassType);
 	void HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation);
 	void HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel);
-	
+	void HandleDungeon(FString ServerURL);
+
 private:
 	FVector PlayerStartLocation = FVector(442.0f,-147.0f, 90.0f );
 

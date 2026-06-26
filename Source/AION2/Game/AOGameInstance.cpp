@@ -16,7 +16,7 @@ void UAOGameInstance::Init()
 	Super::Init();
 
 #if UE_SERVER
-	TryAsyncConnect("127.0.0.1", 9999);
+	TryAsyncConnect("172.16.15.116", 9999);
 #else
 
 #if UE_BUILD_DEVELOPMENT
@@ -95,7 +95,7 @@ bool UAOGameInstance::ConnectToServer(const FString& Ip, int32 Port)
 	UE_LOG(LogTemp, Log, TEXT("Connected to server: %s:%d"), *Ip, Port);
 
 #if UE_SERVER
-	GetLocalIPAddress();
+	SendDediIpPort();
 #endif
 
 
@@ -112,9 +112,8 @@ bool UAOGameInstance::IsServerConnected()
 		return false;
 }
 
-void UAOGameInstance::GetLocalIPAddress()
-{
-	/*
+FString UAOGameInstance::GetLocalIPAddress()
+{	
 	bool bCanBind = false;
 	TSharedPtr<FInternetAddr> LocalAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLocalHostAddr(*GLog, bCanBind);
 	if (LocalAddr.IsValid())
@@ -122,16 +121,16 @@ void UAOGameInstance::GetLocalIPAddress()
 		return LocalAddr->ToString(false);
 	}
 
-	return TEXT("127.0.0.1");*/
+	return TEXT("127.0.0.1");
 
-	FHttpModule* Http = &FHttpModule::Get();
+	/*FHttpModule* Http = &FHttpModule::Get();
 	if (!Http) return;
 
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
 	Request->OnProcessRequestComplete().BindUObject(this, &UAOGameInstance::SendDediIpPort);
 	Request->SetURL(TEXT("https://api.ipify.org"));
 	Request->SetVerb(TEXT("GET"));
-	Request->ProcessRequest();
+	Request->ProcessRequest();*/
 }
 
 int32 UAOGameInstance::GetLocalPort()

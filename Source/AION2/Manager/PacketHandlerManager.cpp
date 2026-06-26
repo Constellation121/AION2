@@ -8,6 +8,7 @@
 #include "Manager/AOUIManager.h"
 #include "AONetworkManager.h"
 
+
 PacketHandlerFunc GAOPacketHandler[UINT16_MAX];
 
 // 초기화 함수: 전역 배열에 패킷 ID와 변환 정책 함수를 바인딩함
@@ -175,5 +176,11 @@ bool Handle_S_READY(UAONetworkManager* NetworkMng, Protocol::S_DungeonReadyPacke
 
 bool Handle_S_START(UAONetworkManager* NetworkMng, Protocol::S_DungeonStartPacket& Pkt)
 {
+	FString ServerIp = UTF8_TO_TCHAR(Pkt.dungeonip().c_str());
+	int32 ServerPort = Pkt.port();
+
+	FString ConnectionURL = FString::Printf(TEXT("%s:%d"), *ServerIp, ServerPort);
+
+	NetworkMng->PlayerMng->HandleDungeon(ConnectionURL);
 	return false;
 }
