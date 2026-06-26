@@ -253,7 +253,7 @@ public:
 private:
 	bool bPlayerUIReady = false;
 
-private:
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
 
