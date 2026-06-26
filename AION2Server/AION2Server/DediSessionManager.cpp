@@ -30,7 +30,7 @@ DediSessionRef DediSessionManager::GetFreeDediSession()
 	std::lock_guard<std::mutex>lock(_dediSessionMngLock);
 	for (auto& session : _dediSessions)
 	{
-		if (session->IsUsing())
+		if (!session->IsUsing())
 			return session;
 	}
 		return nullptr;

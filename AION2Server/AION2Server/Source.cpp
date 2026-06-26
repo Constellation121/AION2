@@ -44,7 +44,7 @@ int main()
 	);
 
 	DediServiceRef dediService = make_shared<DediService>(
-		NetAddress(L"127.0.0.1", 9999),
+		NetAddress(L"172.16.15.116", 9999),
 		dediIocpCore,
 		[]() { return  std::make_shared<DedicatedSession>(); },
 		10
@@ -59,7 +59,15 @@ int main()
 		std::cout << "Server Start Failed" << std::endl;
 		return 0;
 	}
-
+	if (dediService->Start())
+	{
+		std::cout << "Dedi Server Started on Port 9999" << std::endl;
+	}
+	else
+	{
+		std::cout << "Dedi Server Start Failed" << std::endl;
+		return 0;
+	}
 	int32 maxCore = std::thread::hardware_concurrency();
 	for (int32 i = 0; i < maxCore - 5; i++)
 	{
