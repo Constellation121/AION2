@@ -56,18 +56,24 @@ struct TableStruct_Protocol_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Protocol_2eproto;
 namespace Protocol {
-class C_DunzeonCreatePacket;
-struct C_DunzeonCreatePacketDefaultTypeInternal;
-extern C_DunzeonCreatePacketDefaultTypeInternal _C_DunzeonCreatePacket_default_instance_;
-class C_DunzeonEnteracket;
-struct C_DunzeonEnteracketDefaultTypeInternal;
-extern C_DunzeonEnteracketDefaultTypeInternal _C_DunzeonEnteracket_default_instance_;
-class C_DunzeonReadyacket;
-struct C_DunzeonReadyacketDefaultTypeInternal;
-extern C_DunzeonReadyacketDefaultTypeInternal _C_DunzeonReadyacket_default_instance_;
-class C_DunzeonStartacket;
-struct C_DunzeonStartacketDefaultTypeInternal;
-extern C_DunzeonStartacketDefaultTypeInternal _C_DunzeonStartacket_default_instance_;
+class C_DedicatedPacket;
+struct C_DedicatedPacketDefaultTypeInternal;
+extern C_DedicatedPacketDefaultTypeInternal _C_DedicatedPacket_default_instance_;
+class C_DungeonCreatePacket;
+struct C_DungeonCreatePacketDefaultTypeInternal;
+extern C_DungeonCreatePacketDefaultTypeInternal _C_DungeonCreatePacket_default_instance_;
+class C_DungeonEnteracket;
+struct C_DungeonEnteracketDefaultTypeInternal;
+extern C_DungeonEnteracketDefaultTypeInternal _C_DungeonEnteracket_default_instance_;
+class C_DungeonReadyacket;
+struct C_DungeonReadyacketDefaultTypeInternal;
+extern C_DungeonReadyacketDefaultTypeInternal _C_DungeonReadyacket_default_instance_;
+class C_DungeonStartacket;
+struct C_DungeonStartacketDefaultTypeInternal;
+extern C_DungeonStartacketDefaultTypeInternal _C_DungeonStartacket_default_instance_;
+class C_DungeonWaitingRoomEnterPacket;
+struct C_DungeonWaitingRoomEnterPacketDefaultTypeInternal;
+extern C_DungeonWaitingRoomEnterPacketDefaultTypeInternal _C_DungeonWaitingRoomEnterPacket_default_instance_;
 class C_LoginPacket;
 struct C_LoginPacketDefaultTypeInternal;
 extern C_LoginPacketDefaultTypeInternal _C_LoginPacket_default_instance_;
@@ -80,18 +86,21 @@ extern C_MovePacketDefaultTypeInternal _C_MovePacket_default_instance_;
 class C_SignUpPacket;
 struct C_SignUpPacketDefaultTypeInternal;
 extern C_SignUpPacketDefaultTypeInternal _C_SignUpPacket_default_instance_;
-class S_DunzeonCreatePacket;
-struct S_DunzeonCreatePacketDefaultTypeInternal;
-extern S_DunzeonCreatePacketDefaultTypeInternal _S_DunzeonCreatePacket_default_instance_;
-class S_DunzeonEnterPacket;
-struct S_DunzeonEnterPacketDefaultTypeInternal;
-extern S_DunzeonEnterPacketDefaultTypeInternal _S_DunzeonEnterPacket_default_instance_;
-class S_DunzeonReadyPacket;
-struct S_DunzeonReadyPacketDefaultTypeInternal;
-extern S_DunzeonReadyPacketDefaultTypeInternal _S_DunzeonReadyPacket_default_instance_;
-class S_DunzeonStartPacket;
-struct S_DunzeonStartPacketDefaultTypeInternal;
-extern S_DunzeonStartPacketDefaultTypeInternal _S_DunzeonStartPacket_default_instance_;
+class S_DungeonCreatePacket;
+struct S_DungeonCreatePacketDefaultTypeInternal;
+extern S_DungeonCreatePacketDefaultTypeInternal _S_DungeonCreatePacket_default_instance_;
+class S_DungeonEnterPacket;
+struct S_DungeonEnterPacketDefaultTypeInternal;
+extern S_DungeonEnterPacketDefaultTypeInternal _S_DungeonEnterPacket_default_instance_;
+class S_DungeonReadyPacket;
+struct S_DungeonReadyPacketDefaultTypeInternal;
+extern S_DungeonReadyPacketDefaultTypeInternal _S_DungeonReadyPacket_default_instance_;
+class S_DungeonStartPacket;
+struct S_DungeonStartPacketDefaultTypeInternal;
+extern S_DungeonStartPacketDefaultTypeInternal _S_DungeonStartPacket_default_instance_;
+class S_DungeonWaitingRoomEnterPacket;
+struct S_DungeonWaitingRoomEnterPacketDefaultTypeInternal;
+extern S_DungeonWaitingRoomEnterPacketDefaultTypeInternal _S_DungeonWaitingRoomEnterPacket_default_instance_;
 class S_ItemDataPacket;
 struct S_ItemDataPacketDefaultTypeInternal;
 extern S_ItemDataPacketDefaultTypeInternal _S_ItemDataPacket_default_instance_;
@@ -112,18 +121,21 @@ struct S_SpawnPacketDefaultTypeInternal;
 extern S_SpawnPacketDefaultTypeInternal _S_SpawnPacket_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
-template<> ::Protocol::C_DunzeonCreatePacket* Arena::CreateMaybeMessage<::Protocol::C_DunzeonCreatePacket>(Arena*);
-template<> ::Protocol::C_DunzeonEnteracket* Arena::CreateMaybeMessage<::Protocol::C_DunzeonEnteracket>(Arena*);
-template<> ::Protocol::C_DunzeonReadyacket* Arena::CreateMaybeMessage<::Protocol::C_DunzeonReadyacket>(Arena*);
-template<> ::Protocol::C_DunzeonStartacket* Arena::CreateMaybeMessage<::Protocol::C_DunzeonStartacket>(Arena*);
+template<> ::Protocol::C_DedicatedPacket* Arena::CreateMaybeMessage<::Protocol::C_DedicatedPacket>(Arena*);
+template<> ::Protocol::C_DungeonCreatePacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonCreatePacket>(Arena*);
+template<> ::Protocol::C_DungeonEnteracket* Arena::CreateMaybeMessage<::Protocol::C_DungeonEnteracket>(Arena*);
+template<> ::Protocol::C_DungeonReadyacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonReadyacket>(Arena*);
+template<> ::Protocol::C_DungeonStartacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonStartacket>(Arena*);
+template<> ::Protocol::C_DungeonWaitingRoomEnterPacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonWaitingRoomEnterPacket>(Arena*);
 template<> ::Protocol::C_LoginPacket* Arena::CreateMaybeMessage<::Protocol::C_LoginPacket>(Arena*);
 template<> ::Protocol::C_MapLoadCompletePacket* Arena::CreateMaybeMessage<::Protocol::C_MapLoadCompletePacket>(Arena*);
 template<> ::Protocol::C_MovePacket* Arena::CreateMaybeMessage<::Protocol::C_MovePacket>(Arena*);
 template<> ::Protocol::C_SignUpPacket* Arena::CreateMaybeMessage<::Protocol::C_SignUpPacket>(Arena*);
-template<> ::Protocol::S_DunzeonCreatePacket* Arena::CreateMaybeMessage<::Protocol::S_DunzeonCreatePacket>(Arena*);
-template<> ::Protocol::S_DunzeonEnterPacket* Arena::CreateMaybeMessage<::Protocol::S_DunzeonEnterPacket>(Arena*);
-template<> ::Protocol::S_DunzeonReadyPacket* Arena::CreateMaybeMessage<::Protocol::S_DunzeonReadyPacket>(Arena*);
-template<> ::Protocol::S_DunzeonStartPacket* Arena::CreateMaybeMessage<::Protocol::S_DunzeonStartPacket>(Arena*);
+template<> ::Protocol::S_DungeonCreatePacket* Arena::CreateMaybeMessage<::Protocol::S_DungeonCreatePacket>(Arena*);
+template<> ::Protocol::S_DungeonEnterPacket* Arena::CreateMaybeMessage<::Protocol::S_DungeonEnterPacket>(Arena*);
+template<> ::Protocol::S_DungeonReadyPacket* Arena::CreateMaybeMessage<::Protocol::S_DungeonReadyPacket>(Arena*);
+template<> ::Protocol::S_DungeonStartPacket* Arena::CreateMaybeMessage<::Protocol::S_DungeonStartPacket>(Arena*);
+template<> ::Protocol::S_DungeonWaitingRoomEnterPacket* Arena::CreateMaybeMessage<::Protocol::S_DungeonWaitingRoomEnterPacket>(Arena*);
 template<> ::Protocol::S_ItemDataPacket* Arena::CreateMaybeMessage<::Protocol::S_ItemDataPacket>(Arena*);
 template<> ::Protocol::S_LoginFailPacket* Arena::CreateMaybeMessage<::Protocol::S_LoginFailPacket>(Arena*);
 template<> ::Protocol::S_LoginSuccessPacket* Arena::CreateMaybeMessage<::Protocol::S_LoginSuccessPacket>(Arena*);
@@ -1788,24 +1800,24 @@ class S_MovePacket final :
 };
 // -------------------------------------------------------------------
 
-class C_DunzeonCreatePacket final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DunzeonCreatePacket) */ {
+class C_DedicatedPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DedicatedPacket) */ {
  public:
-  inline C_DunzeonCreatePacket() : C_DunzeonCreatePacket(nullptr) {}
-  ~C_DunzeonCreatePacket() override;
-  explicit PROTOBUF_CONSTEXPR C_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline C_DedicatedPacket() : C_DedicatedPacket(nullptr) {}
+  ~C_DedicatedPacket() override;
+  explicit PROTOBUF_CONSTEXPR C_DedicatedPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  C_DunzeonCreatePacket(const C_DunzeonCreatePacket& from);
-  C_DunzeonCreatePacket(C_DunzeonCreatePacket&& from) noexcept
-    : C_DunzeonCreatePacket() {
+  C_DedicatedPacket(const C_DedicatedPacket& from);
+  C_DedicatedPacket(C_DedicatedPacket&& from) noexcept
+    : C_DedicatedPacket() {
     *this = ::std::move(from);
   }
 
-  inline C_DunzeonCreatePacket& operator=(const C_DunzeonCreatePacket& from) {
+  inline C_DedicatedPacket& operator=(const C_DedicatedPacket& from) {
     CopyFrom(from);
     return *this;
   }
-  inline C_DunzeonCreatePacket& operator=(C_DunzeonCreatePacket&& from) noexcept {
+  inline C_DedicatedPacket& operator=(C_DedicatedPacket&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1828,20 +1840,20 @@ class C_DunzeonCreatePacket final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const C_DunzeonCreatePacket& default_instance() {
+  static const C_DedicatedPacket& default_instance() {
     return *internal_default_instance();
   }
-  static inline const C_DunzeonCreatePacket* internal_default_instance() {
-    return reinterpret_cast<const C_DunzeonCreatePacket*>(
-               &_C_DunzeonCreatePacket_default_instance_);
+  static inline const C_DedicatedPacket* internal_default_instance() {
+    return reinterpret_cast<const C_DedicatedPacket*>(
+               &_C_DedicatedPacket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     10;
 
-  friend void swap(C_DunzeonCreatePacket& a, C_DunzeonCreatePacket& b) {
+  friend void swap(C_DedicatedPacket& a, C_DedicatedPacket& b) {
     a.Swap(&b);
   }
-  inline void Swap(C_DunzeonCreatePacket* other) {
+  inline void Swap(C_DedicatedPacket* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1854,7 +1866,7 @@ class C_DunzeonCreatePacket final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(C_DunzeonCreatePacket* other) {
+  void UnsafeArenaSwap(C_DedicatedPacket* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1862,14 +1874,14 @@ class C_DunzeonCreatePacket final :
 
   // implements Message ----------------------------------------------
 
-  C_DunzeonCreatePacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<C_DunzeonCreatePacket>(arena);
+  C_DedicatedPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DedicatedPacket>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const C_DunzeonCreatePacket& from);
+  void CopyFrom(const C_DedicatedPacket& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const C_DunzeonCreatePacket& from) {
-    C_DunzeonCreatePacket::MergeImpl(*this, from);
+  void MergeFrom( const C_DedicatedPacket& from) {
+    C_DedicatedPacket::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1887,15 +1899,15 @@ class C_DunzeonCreatePacket final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(C_DunzeonCreatePacket* other);
+  void InternalSwap(C_DedicatedPacket* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.C_DunzeonCreatePacket";
+    return "Protocol.C_DedicatedPacket";
   }
   protected:
-  explicit C_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit C_DedicatedPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1909,18 +1921,33 @@ class C_DunzeonCreatePacket final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayerIdFieldNumber = 1,
+    kServerIPFieldNumber = 1,
+    kServerPortFieldNumber = 2,
   };
-  // uint64 playerId = 1;
-  void clear_playerid();
-  uint64_t playerid() const;
-  void set_playerid(uint64_t value);
+  // string serverIP = 1;
+  void clear_serverip();
+  const std::string& serverip() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_serverip(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_serverip();
+  PROTOBUF_NODISCARD std::string* release_serverip();
+  void set_allocated_serverip(std::string* serverip);
   private:
-  uint64_t _internal_playerid() const;
-  void _internal_set_playerid(uint64_t value);
+  const std::string& _internal_serverip() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_serverip(const std::string& value);
+  std::string* _internal_mutable_serverip();
   public:
 
-  // @@protoc_insertion_point(class_scope:Protocol.C_DunzeonCreatePacket)
+  // int32 serverPort = 2;
+  void clear_serverport();
+  int32_t serverport() const;
+  void set_serverport(int32_t value);
+  private:
+  int32_t _internal_serverport() const;
+  void _internal_set_serverport(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_DedicatedPacket)
  private:
   class _Internal;
 
@@ -1928,7 +1955,8 @@ class C_DunzeonCreatePacket final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t playerid_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr serverip_;
+    int32_t serverport_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1936,24 +1964,23 @@ class C_DunzeonCreatePacket final :
 };
 // -------------------------------------------------------------------
 
-class S_DunzeonCreatePacket final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DunzeonCreatePacket) */ {
+class C_DungeonWaitingRoomEnterPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.C_DungeonWaitingRoomEnterPacket) */ {
  public:
-  inline S_DunzeonCreatePacket() : S_DunzeonCreatePacket(nullptr) {}
-  ~S_DunzeonCreatePacket() override;
-  explicit PROTOBUF_CONSTEXPR S_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline C_DungeonWaitingRoomEnterPacket() : C_DungeonWaitingRoomEnterPacket(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR C_DungeonWaitingRoomEnterPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  S_DunzeonCreatePacket(const S_DunzeonCreatePacket& from);
-  S_DunzeonCreatePacket(S_DunzeonCreatePacket&& from) noexcept
-    : S_DunzeonCreatePacket() {
+  C_DungeonWaitingRoomEnterPacket(const C_DungeonWaitingRoomEnterPacket& from);
+  C_DungeonWaitingRoomEnterPacket(C_DungeonWaitingRoomEnterPacket&& from) noexcept
+    : C_DungeonWaitingRoomEnterPacket() {
     *this = ::std::move(from);
   }
 
-  inline S_DunzeonCreatePacket& operator=(const S_DunzeonCreatePacket& from) {
+  inline C_DungeonWaitingRoomEnterPacket& operator=(const C_DungeonWaitingRoomEnterPacket& from) {
     CopyFrom(from);
     return *this;
   }
-  inline S_DunzeonCreatePacket& operator=(S_DunzeonCreatePacket&& from) noexcept {
+  inline C_DungeonWaitingRoomEnterPacket& operator=(C_DungeonWaitingRoomEnterPacket&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1976,20 +2003,20 @@ class S_DunzeonCreatePacket final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const S_DunzeonCreatePacket& default_instance() {
+  static const C_DungeonWaitingRoomEnterPacket& default_instance() {
     return *internal_default_instance();
   }
-  static inline const S_DunzeonCreatePacket* internal_default_instance() {
-    return reinterpret_cast<const S_DunzeonCreatePacket*>(
-               &_S_DunzeonCreatePacket_default_instance_);
+  static inline const C_DungeonWaitingRoomEnterPacket* internal_default_instance() {
+    return reinterpret_cast<const C_DungeonWaitingRoomEnterPacket*>(
+               &_C_DungeonWaitingRoomEnterPacket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     11;
 
-  friend void swap(S_DunzeonCreatePacket& a, S_DunzeonCreatePacket& b) {
+  friend void swap(C_DungeonWaitingRoomEnterPacket& a, C_DungeonWaitingRoomEnterPacket& b) {
     a.Swap(&b);
   }
-  inline void Swap(S_DunzeonCreatePacket* other) {
+  inline void Swap(C_DungeonWaitingRoomEnterPacket* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2002,7 +2029,7 @@ class S_DunzeonCreatePacket final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(S_DunzeonCreatePacket* other) {
+  void UnsafeArenaSwap(C_DungeonWaitingRoomEnterPacket* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2010,40 +2037,26 @@ class S_DunzeonCreatePacket final :
 
   // implements Message ----------------------------------------------
 
-  S_DunzeonCreatePacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<S_DunzeonCreatePacket>(arena);
+  C_DungeonWaitingRoomEnterPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DungeonWaitingRoomEnterPacket>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const S_DunzeonCreatePacket& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const S_DunzeonCreatePacket& from) {
-    S_DunzeonCreatePacket::MergeImpl(*this, from);
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const C_DungeonWaitingRoomEnterPacket& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
   }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const C_DungeonWaitingRoomEnterPacket& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
   public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(S_DunzeonCreatePacket* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.S_DunzeonCreatePacket";
+    return "Protocol.C_DungeonWaitingRoomEnterPacket";
   }
   protected:
-  explicit S_DunzeonCreatePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit C_DungeonWaitingRoomEnterPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -2056,19 +2069,7 @@ class S_DunzeonCreatePacket final :
 
   // accessors -------------------------------------------------------
 
-  enum : int {
-    kPlayerIdFieldNumber = 1,
-  };
-  // uint64 playerId = 1;
-  void clear_playerid();
-  uint64_t playerid() const;
-  void set_playerid(uint64_t value);
-  private:
-  uint64_t _internal_playerid() const;
-  void _internal_set_playerid(uint64_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Protocol.S_DunzeonCreatePacket)
+  // @@protoc_insertion_point(class_scope:Protocol.C_DungeonWaitingRoomEnterPacket)
  private:
   class _Internal;
 
@@ -2076,32 +2077,29 @@ class S_DunzeonCreatePacket final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t playerid_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
-  union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
 // -------------------------------------------------------------------
 
-class C_DunzeonEnteracket final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DunzeonEnteracket) */ {
+class S_DungeonWaitingRoomEnterPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DungeonWaitingRoomEnterPacket) */ {
  public:
-  inline C_DunzeonEnteracket() : C_DunzeonEnteracket(nullptr) {}
-  ~C_DunzeonEnteracket() override;
-  explicit PROTOBUF_CONSTEXPR C_DunzeonEnteracket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline S_DungeonWaitingRoomEnterPacket() : S_DungeonWaitingRoomEnterPacket(nullptr) {}
+  ~S_DungeonWaitingRoomEnterPacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DungeonWaitingRoomEnterPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  C_DunzeonEnteracket(const C_DunzeonEnteracket& from);
-  C_DunzeonEnteracket(C_DunzeonEnteracket&& from) noexcept
-    : C_DunzeonEnteracket() {
+  S_DungeonWaitingRoomEnterPacket(const S_DungeonWaitingRoomEnterPacket& from);
+  S_DungeonWaitingRoomEnterPacket(S_DungeonWaitingRoomEnterPacket&& from) noexcept
+    : S_DungeonWaitingRoomEnterPacket() {
     *this = ::std::move(from);
   }
 
-  inline C_DunzeonEnteracket& operator=(const C_DunzeonEnteracket& from) {
+  inline S_DungeonWaitingRoomEnterPacket& operator=(const S_DungeonWaitingRoomEnterPacket& from) {
     CopyFrom(from);
     return *this;
   }
-  inline C_DunzeonEnteracket& operator=(C_DunzeonEnteracket&& from) noexcept {
+  inline S_DungeonWaitingRoomEnterPacket& operator=(S_DungeonWaitingRoomEnterPacket&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2124,20 +2122,20 @@ class C_DunzeonEnteracket final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const C_DunzeonEnteracket& default_instance() {
+  static const S_DungeonWaitingRoomEnterPacket& default_instance() {
     return *internal_default_instance();
   }
-  static inline const C_DunzeonEnteracket* internal_default_instance() {
-    return reinterpret_cast<const C_DunzeonEnteracket*>(
-               &_C_DunzeonEnteracket_default_instance_);
+  static inline const S_DungeonWaitingRoomEnterPacket* internal_default_instance() {
+    return reinterpret_cast<const S_DungeonWaitingRoomEnterPacket*>(
+               &_S_DungeonWaitingRoomEnterPacket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     12;
 
-  friend void swap(C_DunzeonEnteracket& a, C_DunzeonEnteracket& b) {
+  friend void swap(S_DungeonWaitingRoomEnterPacket& a, S_DungeonWaitingRoomEnterPacket& b) {
     a.Swap(&b);
   }
-  inline void Swap(C_DunzeonEnteracket* other) {
+  inline void Swap(S_DungeonWaitingRoomEnterPacket* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2150,7 +2148,7 @@ class C_DunzeonEnteracket final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(C_DunzeonEnteracket* other) {
+  void UnsafeArenaSwap(S_DungeonWaitingRoomEnterPacket* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2158,14 +2156,14 @@ class C_DunzeonEnteracket final :
 
   // implements Message ----------------------------------------------
 
-  C_DunzeonEnteracket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<C_DunzeonEnteracket>(arena);
+  S_DungeonWaitingRoomEnterPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DungeonWaitingRoomEnterPacket>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const C_DunzeonEnteracket& from);
+  void CopyFrom(const S_DungeonWaitingRoomEnterPacket& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const C_DunzeonEnteracket& from) {
-    C_DunzeonEnteracket::MergeImpl(*this, from);
+  void MergeFrom( const S_DungeonWaitingRoomEnterPacket& from) {
+    S_DungeonWaitingRoomEnterPacket::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -2183,15 +2181,447 @@ class C_DunzeonEnteracket final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(C_DunzeonEnteracket* other);
+  void InternalSwap(S_DungeonWaitingRoomEnterPacket* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.C_DunzeonEnteracket";
+    return "Protocol.S_DungeonWaitingRoomEnterPacket";
   }
   protected:
-  explicit C_DunzeonEnteracket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit S_DungeonWaitingRoomEnterPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDungeonInfosFieldNumber = 1,
+  };
+  // repeated .Protocol.DungeonInfo dungeonInfos = 1;
+  int dungeoninfos_size() const;
+  private:
+  int _internal_dungeoninfos_size() const;
+  public:
+  void clear_dungeoninfos();
+  ::Protocol::DungeonInfo* mutable_dungeoninfos(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DungeonInfo >*
+      mutable_dungeoninfos();
+  private:
+  const ::Protocol::DungeonInfo& _internal_dungeoninfos(int index) const;
+  ::Protocol::DungeonInfo* _internal_add_dungeoninfos();
+  public:
+  const ::Protocol::DungeonInfo& dungeoninfos(int index) const;
+  ::Protocol::DungeonInfo* add_dungeoninfos();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DungeonInfo >&
+      dungeoninfos() const;
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_DungeonWaitingRoomEnterPacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DungeonInfo > dungeoninfos_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class C_DungeonCreatePacket final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.C_DungeonCreatePacket) */ {
+ public:
+  inline C_DungeonCreatePacket() : C_DungeonCreatePacket(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR C_DungeonCreatePacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_DungeonCreatePacket(const C_DungeonCreatePacket& from);
+  C_DungeonCreatePacket(C_DungeonCreatePacket&& from) noexcept
+    : C_DungeonCreatePacket() {
+    *this = ::std::move(from);
+  }
+
+  inline C_DungeonCreatePacket& operator=(const C_DungeonCreatePacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_DungeonCreatePacket& operator=(C_DungeonCreatePacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_DungeonCreatePacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_DungeonCreatePacket* internal_default_instance() {
+    return reinterpret_cast<const C_DungeonCreatePacket*>(
+               &_C_DungeonCreatePacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(C_DungeonCreatePacket& a, C_DungeonCreatePacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_DungeonCreatePacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_DungeonCreatePacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_DungeonCreatePacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DungeonCreatePacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const C_DungeonCreatePacket& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const C_DungeonCreatePacket& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_DungeonCreatePacket";
+  }
+  protected:
+  explicit C_DungeonCreatePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_DungeonCreatePacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_DungeonCreatePacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DungeonCreatePacket) */ {
+ public:
+  inline S_DungeonCreatePacket() : S_DungeonCreatePacket(nullptr) {}
+  ~S_DungeonCreatePacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DungeonCreatePacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_DungeonCreatePacket(const S_DungeonCreatePacket& from);
+  S_DungeonCreatePacket(S_DungeonCreatePacket&& from) noexcept
+    : S_DungeonCreatePacket() {
+    *this = ::std::move(from);
+  }
+
+  inline S_DungeonCreatePacket& operator=(const S_DungeonCreatePacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_DungeonCreatePacket& operator=(S_DungeonCreatePacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_DungeonCreatePacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_DungeonCreatePacket* internal_default_instance() {
+    return reinterpret_cast<const S_DungeonCreatePacket*>(
+               &_S_DungeonCreatePacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    14;
+
+  friend void swap(S_DungeonCreatePacket& a, S_DungeonCreatePacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_DungeonCreatePacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_DungeonCreatePacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_DungeonCreatePacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DungeonCreatePacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_DungeonCreatePacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_DungeonCreatePacket& from) {
+    S_DungeonCreatePacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_DungeonCreatePacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_DungeonCreatePacket";
+  }
+  protected:
+  explicit S_DungeonCreatePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDungeonInfoFieldNumber = 1,
+  };
+  // .Protocol.DungeonInfo dungeonInfo = 1;
+  bool has_dungeoninfo() const;
+  private:
+  bool _internal_has_dungeoninfo() const;
+  public:
+  void clear_dungeoninfo();
+  const ::Protocol::DungeonInfo& dungeoninfo() const;
+  PROTOBUF_NODISCARD ::Protocol::DungeonInfo* release_dungeoninfo();
+  ::Protocol::DungeonInfo* mutable_dungeoninfo();
+  void set_allocated_dungeoninfo(::Protocol::DungeonInfo* dungeoninfo);
+  private:
+  const ::Protocol::DungeonInfo& _internal_dungeoninfo() const;
+  ::Protocol::DungeonInfo* _internal_mutable_dungeoninfo();
+  public:
+  void unsafe_arena_set_allocated_dungeoninfo(
+      ::Protocol::DungeonInfo* dungeoninfo);
+  ::Protocol::DungeonInfo* unsafe_arena_release_dungeoninfo();
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_DungeonCreatePacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::Protocol::DungeonInfo* dungeoninfo_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class C_DungeonEnteracket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DungeonEnteracket) */ {
+ public:
+  inline C_DungeonEnteracket() : C_DungeonEnteracket(nullptr) {}
+  ~C_DungeonEnteracket() override;
+  explicit PROTOBUF_CONSTEXPR C_DungeonEnteracket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_DungeonEnteracket(const C_DungeonEnteracket& from);
+  C_DungeonEnteracket(C_DungeonEnteracket&& from) noexcept
+    : C_DungeonEnteracket() {
+    *this = ::std::move(from);
+  }
+
+  inline C_DungeonEnteracket& operator=(const C_DungeonEnteracket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_DungeonEnteracket& operator=(C_DungeonEnteracket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_DungeonEnteracket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_DungeonEnteracket* internal_default_instance() {
+    return reinterpret_cast<const C_DungeonEnteracket*>(
+               &_C_DungeonEnteracket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    15;
+
+  friend void swap(C_DungeonEnteracket& a, C_DungeonEnteracket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_DungeonEnteracket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_DungeonEnteracket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_DungeonEnteracket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DungeonEnteracket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_DungeonEnteracket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_DungeonEnteracket& from) {
+    C_DungeonEnteracket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_DungeonEnteracket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_DungeonEnteracket";
+  }
+  protected:
+  explicit C_DungeonEnteracket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -2216,7 +2646,7 @@ class C_DunzeonEnteracket final :
   void _internal_set_playerid(uint64_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Protocol.C_DunzeonEnteracket)
+  // @@protoc_insertion_point(class_scope:Protocol.C_DungeonEnteracket)
  private:
   class _Internal;
 
@@ -2232,24 +2662,24 @@ class C_DunzeonEnteracket final :
 };
 // -------------------------------------------------------------------
 
-class S_DunzeonEnterPacket final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DunzeonEnterPacket) */ {
+class S_DungeonEnterPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DungeonEnterPacket) */ {
  public:
-  inline S_DunzeonEnterPacket() : S_DunzeonEnterPacket(nullptr) {}
-  ~S_DunzeonEnterPacket() override;
-  explicit PROTOBUF_CONSTEXPR S_DunzeonEnterPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline S_DungeonEnterPacket() : S_DungeonEnterPacket(nullptr) {}
+  ~S_DungeonEnterPacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DungeonEnterPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  S_DunzeonEnterPacket(const S_DunzeonEnterPacket& from);
-  S_DunzeonEnterPacket(S_DunzeonEnterPacket&& from) noexcept
-    : S_DunzeonEnterPacket() {
+  S_DungeonEnterPacket(const S_DungeonEnterPacket& from);
+  S_DungeonEnterPacket(S_DungeonEnterPacket&& from) noexcept
+    : S_DungeonEnterPacket() {
     *this = ::std::move(from);
   }
 
-  inline S_DunzeonEnterPacket& operator=(const S_DunzeonEnterPacket& from) {
+  inline S_DungeonEnterPacket& operator=(const S_DungeonEnterPacket& from) {
     CopyFrom(from);
     return *this;
   }
-  inline S_DunzeonEnterPacket& operator=(S_DunzeonEnterPacket&& from) noexcept {
+  inline S_DungeonEnterPacket& operator=(S_DungeonEnterPacket&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2272,473 +2702,20 @@ class S_DunzeonEnterPacket final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const S_DunzeonEnterPacket& default_instance() {
+  static const S_DungeonEnterPacket& default_instance() {
     return *internal_default_instance();
   }
-  static inline const S_DunzeonEnterPacket* internal_default_instance() {
-    return reinterpret_cast<const S_DunzeonEnterPacket*>(
-               &_S_DunzeonEnterPacket_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    13;
-
-  friend void swap(S_DunzeonEnterPacket& a, S_DunzeonEnterPacket& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(S_DunzeonEnterPacket* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(S_DunzeonEnterPacket* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  S_DunzeonEnterPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<S_DunzeonEnterPacket>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const S_DunzeonEnterPacket& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const S_DunzeonEnterPacket& from) {
-    S_DunzeonEnterPacket::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(S_DunzeonEnterPacket* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.S_DunzeonEnterPacket";
-  }
-  protected:
-  explicit S_DunzeonEnterPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kDunzeonPlayerInfoFieldNumber = 1,
-  };
-  // repeated .Protocol.DunzeonPlayerInfo dunzeonPlayerInfo = 1;
-  int dunzeonplayerinfo_size() const;
-  private:
-  int _internal_dunzeonplayerinfo_size() const;
-  public:
-  void clear_dunzeonplayerinfo();
-  ::Protocol::DunzeonPlayerInfo* mutable_dunzeonplayerinfo(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo >*
-      mutable_dunzeonplayerinfo();
-  private:
-  const ::Protocol::DunzeonPlayerInfo& _internal_dunzeonplayerinfo(int index) const;
-  ::Protocol::DunzeonPlayerInfo* _internal_add_dunzeonplayerinfo();
-  public:
-  const ::Protocol::DunzeonPlayerInfo& dunzeonplayerinfo(int index) const;
-  ::Protocol::DunzeonPlayerInfo* add_dunzeonplayerinfo();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo >&
-      dunzeonplayerinfo() const;
-
-  // @@protoc_insertion_point(class_scope:Protocol.S_DunzeonEnterPacket)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo > dunzeonplayerinfo_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_Protocol_2eproto;
-};
-// -------------------------------------------------------------------
-
-class C_DunzeonReadyacket final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DunzeonReadyacket) */ {
- public:
-  inline C_DunzeonReadyacket() : C_DunzeonReadyacket(nullptr) {}
-  ~C_DunzeonReadyacket() override;
-  explicit PROTOBUF_CONSTEXPR C_DunzeonReadyacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  C_DunzeonReadyacket(const C_DunzeonReadyacket& from);
-  C_DunzeonReadyacket(C_DunzeonReadyacket&& from) noexcept
-    : C_DunzeonReadyacket() {
-    *this = ::std::move(from);
-  }
-
-  inline C_DunzeonReadyacket& operator=(const C_DunzeonReadyacket& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline C_DunzeonReadyacket& operator=(C_DunzeonReadyacket&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const C_DunzeonReadyacket& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const C_DunzeonReadyacket* internal_default_instance() {
-    return reinterpret_cast<const C_DunzeonReadyacket*>(
-               &_C_DunzeonReadyacket_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    14;
-
-  friend void swap(C_DunzeonReadyacket& a, C_DunzeonReadyacket& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(C_DunzeonReadyacket* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(C_DunzeonReadyacket* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  C_DunzeonReadyacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<C_DunzeonReadyacket>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const C_DunzeonReadyacket& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const C_DunzeonReadyacket& from) {
-    C_DunzeonReadyacket::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(C_DunzeonReadyacket* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.C_DunzeonReadyacket";
-  }
-  protected:
-  explicit C_DunzeonReadyacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kDunzeonIdFieldNumber = 1,
-  };
-  // int32 dunzeonId = 1;
-  void clear_dunzeonid();
-  int32_t dunzeonid() const;
-  void set_dunzeonid(int32_t value);
-  private:
-  int32_t _internal_dunzeonid() const;
-  void _internal_set_dunzeonid(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Protocol.C_DunzeonReadyacket)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    int32_t dunzeonid_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_Protocol_2eproto;
-};
-// -------------------------------------------------------------------
-
-class S_DunzeonReadyPacket final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DunzeonReadyPacket) */ {
- public:
-  inline S_DunzeonReadyPacket() : S_DunzeonReadyPacket(nullptr) {}
-  ~S_DunzeonReadyPacket() override;
-  explicit PROTOBUF_CONSTEXPR S_DunzeonReadyPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  S_DunzeonReadyPacket(const S_DunzeonReadyPacket& from);
-  S_DunzeonReadyPacket(S_DunzeonReadyPacket&& from) noexcept
-    : S_DunzeonReadyPacket() {
-    *this = ::std::move(from);
-  }
-
-  inline S_DunzeonReadyPacket& operator=(const S_DunzeonReadyPacket& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline S_DunzeonReadyPacket& operator=(S_DunzeonReadyPacket&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const S_DunzeonReadyPacket& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const S_DunzeonReadyPacket* internal_default_instance() {
-    return reinterpret_cast<const S_DunzeonReadyPacket*>(
-               &_S_DunzeonReadyPacket_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    15;
-
-  friend void swap(S_DunzeonReadyPacket& a, S_DunzeonReadyPacket& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(S_DunzeonReadyPacket* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(S_DunzeonReadyPacket* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  S_DunzeonReadyPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<S_DunzeonReadyPacket>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const S_DunzeonReadyPacket& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const S_DunzeonReadyPacket& from) {
-    S_DunzeonReadyPacket::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(S_DunzeonReadyPacket* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.S_DunzeonReadyPacket";
-  }
-  protected:
-  explicit S_DunzeonReadyPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kDunzeonIdFieldNumber = 1,
-  };
-  // int32 dunzeonId = 1;
-  void clear_dunzeonid();
-  int32_t dunzeonid() const;
-  void set_dunzeonid(int32_t value);
-  private:
-  int32_t _internal_dunzeonid() const;
-  void _internal_set_dunzeonid(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Protocol.S_DunzeonReadyPacket)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    int32_t dunzeonid_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_Protocol_2eproto;
-};
-// -------------------------------------------------------------------
-
-class C_DunzeonStartacket final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DunzeonStartacket) */ {
- public:
-  inline C_DunzeonStartacket() : C_DunzeonStartacket(nullptr) {}
-  ~C_DunzeonStartacket() override;
-  explicit PROTOBUF_CONSTEXPR C_DunzeonStartacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  C_DunzeonStartacket(const C_DunzeonStartacket& from);
-  C_DunzeonStartacket(C_DunzeonStartacket&& from) noexcept
-    : C_DunzeonStartacket() {
-    *this = ::std::move(from);
-  }
-
-  inline C_DunzeonStartacket& operator=(const C_DunzeonStartacket& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline C_DunzeonStartacket& operator=(C_DunzeonStartacket&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const C_DunzeonStartacket& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const C_DunzeonStartacket* internal_default_instance() {
-    return reinterpret_cast<const C_DunzeonStartacket*>(
-               &_C_DunzeonStartacket_default_instance_);
+  static inline const S_DungeonEnterPacket* internal_default_instance() {
+    return reinterpret_cast<const S_DungeonEnterPacket*>(
+               &_S_DungeonEnterPacket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     16;
 
-  friend void swap(C_DunzeonStartacket& a, C_DunzeonStartacket& b) {
+  friend void swap(S_DungeonEnterPacket& a, S_DungeonEnterPacket& b) {
     a.Swap(&b);
   }
-  inline void Swap(C_DunzeonStartacket* other) {
+  inline void Swap(S_DungeonEnterPacket* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2751,7 +2728,7 @@ class C_DunzeonStartacket final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(C_DunzeonStartacket* other) {
+  void UnsafeArenaSwap(S_DungeonEnterPacket* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2759,14 +2736,14 @@ class C_DunzeonStartacket final :
 
   // implements Message ----------------------------------------------
 
-  C_DunzeonStartacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<C_DunzeonStartacket>(arena);
+  S_DungeonEnterPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DungeonEnterPacket>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const C_DunzeonStartacket& from);
+  void CopyFrom(const S_DungeonEnterPacket& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const C_DunzeonStartacket& from) {
-    C_DunzeonStartacket::MergeImpl(*this, from);
+  void MergeFrom( const S_DungeonEnterPacket& from) {
+    S_DungeonEnterPacket::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -2784,15 +2761,15 @@ class C_DunzeonStartacket final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(C_DunzeonStartacket* other);
+  void InternalSwap(S_DungeonEnterPacket* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.C_DunzeonStartacket";
+    return "Protocol.S_DungeonEnterPacket";
   }
   protected:
-  explicit C_DunzeonStartacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit S_DungeonEnterPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -2806,18 +2783,37 @@ class C_DunzeonStartacket final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kDunzeonIdFieldNumber = 1,
+    kEnterPlayerFieldNumber = 2,
+    kDungeonIdFieldNumber = 1,
   };
-  // int32 dunzeonId = 1;
-  void clear_dunzeonid();
-  int32_t dunzeonid() const;
-  void set_dunzeonid(int32_t value);
+  // .Protocol.DungeonPlayerInfo enterPlayer = 2;
+  bool has_enterplayer() const;
   private:
-  int32_t _internal_dunzeonid() const;
-  void _internal_set_dunzeonid(int32_t value);
+  bool _internal_has_enterplayer() const;
+  public:
+  void clear_enterplayer();
+  const ::Protocol::DungeonPlayerInfo& enterplayer() const;
+  PROTOBUF_NODISCARD ::Protocol::DungeonPlayerInfo* release_enterplayer();
+  ::Protocol::DungeonPlayerInfo* mutable_enterplayer();
+  void set_allocated_enterplayer(::Protocol::DungeonPlayerInfo* enterplayer);
+  private:
+  const ::Protocol::DungeonPlayerInfo& _internal_enterplayer() const;
+  ::Protocol::DungeonPlayerInfo* _internal_mutable_enterplayer();
+  public:
+  void unsafe_arena_set_allocated_enterplayer(
+      ::Protocol::DungeonPlayerInfo* enterplayer);
+  ::Protocol::DungeonPlayerInfo* unsafe_arena_release_enterplayer();
+
+  // int32 dungeonId = 1;
+  void clear_dungeonid();
+  int32_t dungeonid() const;
+  void set_dungeonid(int32_t value);
+  private:
+  int32_t _internal_dungeonid() const;
+  void _internal_set_dungeonid(int32_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Protocol.C_DunzeonStartacket)
+  // @@protoc_insertion_point(class_scope:Protocol.S_DungeonEnterPacket)
  private:
   class _Internal;
 
@@ -2825,7 +2821,8 @@ class C_DunzeonStartacket final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    int32_t dunzeonid_;
+    ::Protocol::DungeonPlayerInfo* enterplayer_;
+    int32_t dungeonid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2833,24 +2830,24 @@ class C_DunzeonStartacket final :
 };
 // -------------------------------------------------------------------
 
-class S_DunzeonStartPacket final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DunzeonStartPacket) */ {
+class C_DungeonReadyacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DungeonReadyacket) */ {
  public:
-  inline S_DunzeonStartPacket() : S_DunzeonStartPacket(nullptr) {}
-  ~S_DunzeonStartPacket() override;
-  explicit PROTOBUF_CONSTEXPR S_DunzeonStartPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline C_DungeonReadyacket() : C_DungeonReadyacket(nullptr) {}
+  ~C_DungeonReadyacket() override;
+  explicit PROTOBUF_CONSTEXPR C_DungeonReadyacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  S_DunzeonStartPacket(const S_DunzeonStartPacket& from);
-  S_DunzeonStartPacket(S_DunzeonStartPacket&& from) noexcept
-    : S_DunzeonStartPacket() {
+  C_DungeonReadyacket(const C_DungeonReadyacket& from);
+  C_DungeonReadyacket(C_DungeonReadyacket&& from) noexcept
+    : C_DungeonReadyacket() {
     *this = ::std::move(from);
   }
 
-  inline S_DunzeonStartPacket& operator=(const S_DunzeonStartPacket& from) {
+  inline C_DungeonReadyacket& operator=(const C_DungeonReadyacket& from) {
     CopyFrom(from);
     return *this;
   }
-  inline S_DunzeonStartPacket& operator=(S_DunzeonStartPacket&& from) noexcept {
+  inline C_DungeonReadyacket& operator=(C_DungeonReadyacket&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -2873,20 +2870,20 @@ class S_DunzeonStartPacket final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const S_DunzeonStartPacket& default_instance() {
+  static const C_DungeonReadyacket& default_instance() {
     return *internal_default_instance();
   }
-  static inline const S_DunzeonStartPacket* internal_default_instance() {
-    return reinterpret_cast<const S_DunzeonStartPacket*>(
-               &_S_DunzeonStartPacket_default_instance_);
+  static inline const C_DungeonReadyacket* internal_default_instance() {
+    return reinterpret_cast<const C_DungeonReadyacket*>(
+               &_C_DungeonReadyacket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     17;
 
-  friend void swap(S_DunzeonStartPacket& a, S_DunzeonStartPacket& b) {
+  friend void swap(C_DungeonReadyacket& a, C_DungeonReadyacket& b) {
     a.Swap(&b);
   }
-  inline void Swap(S_DunzeonStartPacket* other) {
+  inline void Swap(C_DungeonReadyacket* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -2899,7 +2896,7 @@ class S_DunzeonStartPacket final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(S_DunzeonStartPacket* other) {
+  void UnsafeArenaSwap(C_DungeonReadyacket* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -2907,14 +2904,14 @@ class S_DunzeonStartPacket final :
 
   // implements Message ----------------------------------------------
 
-  S_DunzeonStartPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<S_DunzeonStartPacket>(arena);
+  C_DungeonReadyacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DungeonReadyacket>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const S_DunzeonStartPacket& from);
+  void CopyFrom(const C_DungeonReadyacket& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const S_DunzeonStartPacket& from) {
-    S_DunzeonStartPacket::MergeImpl(*this, from);
+  void MergeFrom( const C_DungeonReadyacket& from) {
+    C_DungeonReadyacket::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -2932,15 +2929,15 @@ class S_DunzeonStartPacket final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(S_DunzeonStartPacket* other);
+  void InternalSwap(C_DungeonReadyacket* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.S_DunzeonStartPacket";
+    return "Protocol.C_DungeonReadyacket";
   }
   protected:
-  explicit S_DunzeonStartPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit C_DungeonReadyacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -2954,33 +2951,18 @@ class S_DunzeonStartPacket final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kDunzeonIPFieldNumber = 2,
-    kDunjeonIdFieldNumber = 1,
+    kDungeonIdFieldNumber = 1,
   };
-  // string dunzeonIP = 2;
-  void clear_dunzeonip();
-  const std::string& dunzeonip() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_dunzeonip(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_dunzeonip();
-  PROTOBUF_NODISCARD std::string* release_dunzeonip();
-  void set_allocated_dunzeonip(std::string* dunzeonip);
+  // int32 dungeonId = 1;
+  void clear_dungeonid();
+  int32_t dungeonid() const;
+  void set_dungeonid(int32_t value);
   private:
-  const std::string& _internal_dunzeonip() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_dunzeonip(const std::string& value);
-  std::string* _internal_mutable_dunzeonip();
+  int32_t _internal_dungeonid() const;
+  void _internal_set_dungeonid(int32_t value);
   public:
 
-  // int32 dunjeonId = 1;
-  void clear_dunjeonid();
-  int32_t dunjeonid() const;
-  void set_dunjeonid(int32_t value);
-  private:
-  int32_t _internal_dunjeonid() const;
-  void _internal_set_dunjeonid(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Protocol.S_DunzeonStartPacket)
+  // @@protoc_insertion_point(class_scope:Protocol.C_DungeonReadyacket)
  private:
   class _Internal;
 
@@ -2988,8 +2970,489 @@ class S_DunzeonStartPacket final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dunzeonip_;
-    int32_t dunjeonid_;
+    int32_t dungeonid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_DungeonReadyPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DungeonReadyPacket) */ {
+ public:
+  inline S_DungeonReadyPacket() : S_DungeonReadyPacket(nullptr) {}
+  ~S_DungeonReadyPacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DungeonReadyPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_DungeonReadyPacket(const S_DungeonReadyPacket& from);
+  S_DungeonReadyPacket(S_DungeonReadyPacket&& from) noexcept
+    : S_DungeonReadyPacket() {
+    *this = ::std::move(from);
+  }
+
+  inline S_DungeonReadyPacket& operator=(const S_DungeonReadyPacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_DungeonReadyPacket& operator=(S_DungeonReadyPacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_DungeonReadyPacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_DungeonReadyPacket* internal_default_instance() {
+    return reinterpret_cast<const S_DungeonReadyPacket*>(
+               &_S_DungeonReadyPacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    18;
+
+  friend void swap(S_DungeonReadyPacket& a, S_DungeonReadyPacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_DungeonReadyPacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_DungeonReadyPacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_DungeonReadyPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DungeonReadyPacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_DungeonReadyPacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_DungeonReadyPacket& from) {
+    S_DungeonReadyPacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_DungeonReadyPacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_DungeonReadyPacket";
+  }
+  protected:
+  explicit S_DungeonReadyPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPlayerIdFieldNumber = 2,
+    kDungeonIdFieldNumber = 1,
+  };
+  // uint64 playerId = 2;
+  void clear_playerid();
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
+  private:
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
+  public:
+
+  // int32 dungeonId = 1;
+  void clear_dungeonid();
+  int32_t dungeonid() const;
+  void set_dungeonid(int32_t value);
+  private:
+  int32_t _internal_dungeonid() const;
+  void _internal_set_dungeonid(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_DungeonReadyPacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t playerid_;
+    int32_t dungeonid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class C_DungeonStartacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DungeonStartacket) */ {
+ public:
+  inline C_DungeonStartacket() : C_DungeonStartacket(nullptr) {}
+  ~C_DungeonStartacket() override;
+  explicit PROTOBUF_CONSTEXPR C_DungeonStartacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_DungeonStartacket(const C_DungeonStartacket& from);
+  C_DungeonStartacket(C_DungeonStartacket&& from) noexcept
+    : C_DungeonStartacket() {
+    *this = ::std::move(from);
+  }
+
+  inline C_DungeonStartacket& operator=(const C_DungeonStartacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_DungeonStartacket& operator=(C_DungeonStartacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_DungeonStartacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_DungeonStartacket* internal_default_instance() {
+    return reinterpret_cast<const C_DungeonStartacket*>(
+               &_C_DungeonStartacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    19;
+
+  friend void swap(C_DungeonStartacket& a, C_DungeonStartacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_DungeonStartacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_DungeonStartacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_DungeonStartacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DungeonStartacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_DungeonStartacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_DungeonStartacket& from) {
+    C_DungeonStartacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_DungeonStartacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_DungeonStartacket";
+  }
+  protected:
+  explicit C_DungeonStartacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDungeonIdFieldNumber = 1,
+  };
+  // int32 dungeonId = 1;
+  void clear_dungeonid();
+  int32_t dungeonid() const;
+  void set_dungeonid(int32_t value);
+  private:
+  int32_t _internal_dungeonid() const;
+  void _internal_set_dungeonid(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_DungeonStartacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int32_t dungeonid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_DungeonStartPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_DungeonStartPacket) */ {
+ public:
+  inline S_DungeonStartPacket() : S_DungeonStartPacket(nullptr) {}
+  ~S_DungeonStartPacket() override;
+  explicit PROTOBUF_CONSTEXPR S_DungeonStartPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_DungeonStartPacket(const S_DungeonStartPacket& from);
+  S_DungeonStartPacket(S_DungeonStartPacket&& from) noexcept
+    : S_DungeonStartPacket() {
+    *this = ::std::move(from);
+  }
+
+  inline S_DungeonStartPacket& operator=(const S_DungeonStartPacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_DungeonStartPacket& operator=(S_DungeonStartPacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_DungeonStartPacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_DungeonStartPacket* internal_default_instance() {
+    return reinterpret_cast<const S_DungeonStartPacket*>(
+               &_S_DungeonStartPacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    20;
+
+  friend void swap(S_DungeonStartPacket& a, S_DungeonStartPacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_DungeonStartPacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_DungeonStartPacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_DungeonStartPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_DungeonStartPacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_DungeonStartPacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_DungeonStartPacket& from) {
+    S_DungeonStartPacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_DungeonStartPacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_DungeonStartPacket";
+  }
+  protected:
+  explicit S_DungeonStartPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDungeonIPFieldNumber = 2,
+    kDungeonIdFieldNumber = 1,
+    kPortFieldNumber = 3,
+  };
+  // string dungeonIP = 2;
+  void clear_dungeonip();
+  const std::string& dungeonip() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_dungeonip(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_dungeonip();
+  PROTOBUF_NODISCARD std::string* release_dungeonip();
+  void set_allocated_dungeonip(std::string* dungeonip);
+  private:
+  const std::string& _internal_dungeonip() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_dungeonip(const std::string& value);
+  std::string* _internal_mutable_dungeonip();
+  public:
+
+  // int32 dungeonId = 1;
+  void clear_dungeonid();
+  int32_t dungeonid() const;
+  void set_dungeonid(int32_t value);
+  private:
+  int32_t _internal_dungeonid() const;
+  void _internal_set_dungeonid(int32_t value);
+  public:
+
+  // int32 port = 3;
+  void clear_port();
+  int32_t port() const;
+  void set_port(int32_t value);
+  private:
+  int32_t _internal_port() const;
+  void _internal_set_port(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_DungeonStartPacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dungeonip_;
+    int32_t dungeonid_;
+    int32_t port_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -4053,266 +4516,544 @@ inline void S_MovePacket::set_allocated_playerrotation(::Protocol::Rotator3* pla
 
 // -------------------------------------------------------------------
 
-// C_DunzeonCreatePacket
+// C_DedicatedPacket
 
-// uint64 playerId = 1;
-inline void C_DunzeonCreatePacket::clear_playerid() {
-  _impl_.playerid_ = uint64_t{0u};
+// string serverIP = 1;
+inline void C_DedicatedPacket::clear_serverip() {
+  _impl_.serverip_.ClearToEmpty();
 }
-inline uint64_t C_DunzeonCreatePacket::_internal_playerid() const {
-  return _impl_.playerid_;
-}
-inline uint64_t C_DunzeonCreatePacket::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_DunzeonCreatePacket.playerId)
-  return _internal_playerid();
-}
-inline void C_DunzeonCreatePacket::_internal_set_playerid(uint64_t value) {
-  
-  _impl_.playerid_ = value;
-}
-inline void C_DunzeonCreatePacket::set_playerid(uint64_t value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_DunzeonCreatePacket.playerId)
-}
-
-// -------------------------------------------------------------------
-
-// S_DunzeonCreatePacket
-
-// uint64 playerId = 1;
-inline void S_DunzeonCreatePacket::clear_playerid() {
-  _impl_.playerid_ = uint64_t{0u};
-}
-inline uint64_t S_DunzeonCreatePacket::_internal_playerid() const {
-  return _impl_.playerid_;
-}
-inline uint64_t S_DunzeonCreatePacket::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonCreatePacket.playerId)
-  return _internal_playerid();
-}
-inline void S_DunzeonCreatePacket::_internal_set_playerid(uint64_t value) {
-  
-  _impl_.playerid_ = value;
-}
-inline void S_DunzeonCreatePacket::set_playerid(uint64_t value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_DunzeonCreatePacket.playerId)
-}
-
-// -------------------------------------------------------------------
-
-// C_DunzeonEnteracket
-
-// uint64 playerId = 1;
-inline void C_DunzeonEnteracket::clear_playerid() {
-  _impl_.playerid_ = uint64_t{0u};
-}
-inline uint64_t C_DunzeonEnteracket::_internal_playerid() const {
-  return _impl_.playerid_;
-}
-inline uint64_t C_DunzeonEnteracket::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_DunzeonEnteracket.playerId)
-  return _internal_playerid();
-}
-inline void C_DunzeonEnteracket::_internal_set_playerid(uint64_t value) {
-  
-  _impl_.playerid_ = value;
-}
-inline void C_DunzeonEnteracket::set_playerid(uint64_t value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_DunzeonEnteracket.playerId)
-}
-
-// -------------------------------------------------------------------
-
-// S_DunzeonEnterPacket
-
-// repeated .Protocol.DunzeonPlayerInfo dunzeonPlayerInfo = 1;
-inline int S_DunzeonEnterPacket::_internal_dunzeonplayerinfo_size() const {
-  return _impl_.dunzeonplayerinfo_.size();
-}
-inline int S_DunzeonEnterPacket::dunzeonplayerinfo_size() const {
-  return _internal_dunzeonplayerinfo_size();
-}
-inline ::Protocol::DunzeonPlayerInfo* S_DunzeonEnterPacket::mutable_dunzeonplayerinfo(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
-  return _impl_.dunzeonplayerinfo_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo >*
-S_DunzeonEnterPacket::mutable_dunzeonplayerinfo() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
-  return &_impl_.dunzeonplayerinfo_;
-}
-inline const ::Protocol::DunzeonPlayerInfo& S_DunzeonEnterPacket::_internal_dunzeonplayerinfo(int index) const {
-  return _impl_.dunzeonplayerinfo_.Get(index);
-}
-inline const ::Protocol::DunzeonPlayerInfo& S_DunzeonEnterPacket::dunzeonplayerinfo(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
-  return _internal_dunzeonplayerinfo(index);
-}
-inline ::Protocol::DunzeonPlayerInfo* S_DunzeonEnterPacket::_internal_add_dunzeonplayerinfo() {
-  return _impl_.dunzeonplayerinfo_.Add();
-}
-inline ::Protocol::DunzeonPlayerInfo* S_DunzeonEnterPacket::add_dunzeonplayerinfo() {
-  ::Protocol::DunzeonPlayerInfo* _add = _internal_add_dunzeonplayerinfo();
-  // @@protoc_insertion_point(field_add:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DunzeonPlayerInfo >&
-S_DunzeonEnterPacket::dunzeonplayerinfo() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_DunzeonEnterPacket.dunzeonPlayerInfo)
-  return _impl_.dunzeonplayerinfo_;
-}
-
-// -------------------------------------------------------------------
-
-// C_DunzeonReadyacket
-
-// int32 dunzeonId = 1;
-inline void C_DunzeonReadyacket::clear_dunzeonid() {
-  _impl_.dunzeonid_ = 0;
-}
-inline int32_t C_DunzeonReadyacket::_internal_dunzeonid() const {
-  return _impl_.dunzeonid_;
-}
-inline int32_t C_DunzeonReadyacket::dunzeonid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_DunzeonReadyacket.dunzeonId)
-  return _internal_dunzeonid();
-}
-inline void C_DunzeonReadyacket::_internal_set_dunzeonid(int32_t value) {
-  
-  _impl_.dunzeonid_ = value;
-}
-inline void C_DunzeonReadyacket::set_dunzeonid(int32_t value) {
-  _internal_set_dunzeonid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_DunzeonReadyacket.dunzeonId)
-}
-
-// -------------------------------------------------------------------
-
-// S_DunzeonReadyPacket
-
-// int32 dunzeonId = 1;
-inline void S_DunzeonReadyPacket::clear_dunzeonid() {
-  _impl_.dunzeonid_ = 0;
-}
-inline int32_t S_DunzeonReadyPacket::_internal_dunzeonid() const {
-  return _impl_.dunzeonid_;
-}
-inline int32_t S_DunzeonReadyPacket::dunzeonid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonReadyPacket.dunzeonId)
-  return _internal_dunzeonid();
-}
-inline void S_DunzeonReadyPacket::_internal_set_dunzeonid(int32_t value) {
-  
-  _impl_.dunzeonid_ = value;
-}
-inline void S_DunzeonReadyPacket::set_dunzeonid(int32_t value) {
-  _internal_set_dunzeonid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_DunzeonReadyPacket.dunzeonId)
-}
-
-// -------------------------------------------------------------------
-
-// C_DunzeonStartacket
-
-// int32 dunzeonId = 1;
-inline void C_DunzeonStartacket::clear_dunzeonid() {
-  _impl_.dunzeonid_ = 0;
-}
-inline int32_t C_DunzeonStartacket::_internal_dunzeonid() const {
-  return _impl_.dunzeonid_;
-}
-inline int32_t C_DunzeonStartacket::dunzeonid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_DunzeonStartacket.dunzeonId)
-  return _internal_dunzeonid();
-}
-inline void C_DunzeonStartacket::_internal_set_dunzeonid(int32_t value) {
-  
-  _impl_.dunzeonid_ = value;
-}
-inline void C_DunzeonStartacket::set_dunzeonid(int32_t value) {
-  _internal_set_dunzeonid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_DunzeonStartacket.dunzeonId)
-}
-
-// -------------------------------------------------------------------
-
-// S_DunzeonStartPacket
-
-// int32 dunjeonId = 1;
-inline void S_DunzeonStartPacket::clear_dunjeonid() {
-  _impl_.dunjeonid_ = 0;
-}
-inline int32_t S_DunzeonStartPacket::_internal_dunjeonid() const {
-  return _impl_.dunjeonid_;
-}
-inline int32_t S_DunzeonStartPacket::dunjeonid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonStartPacket.dunjeonId)
-  return _internal_dunjeonid();
-}
-inline void S_DunzeonStartPacket::_internal_set_dunjeonid(int32_t value) {
-  
-  _impl_.dunjeonid_ = value;
-}
-inline void S_DunzeonStartPacket::set_dunjeonid(int32_t value) {
-  _internal_set_dunjeonid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_DunzeonStartPacket.dunjeonId)
-}
-
-// string dunzeonIP = 2;
-inline void S_DunzeonStartPacket::clear_dunzeonip() {
-  _impl_.dunzeonip_.ClearToEmpty();
-}
-inline const std::string& S_DunzeonStartPacket::dunzeonip() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_DunzeonStartPacket.dunzeonIP)
-  return _internal_dunzeonip();
+inline const std::string& C_DedicatedPacket::serverip() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DedicatedPacket.serverIP)
+  return _internal_serverip();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void S_DunzeonStartPacket::set_dunzeonip(ArgT0&& arg0, ArgT... args) {
+void C_DedicatedPacket::set_serverip(ArgT0&& arg0, ArgT... args) {
  
- _impl_.dunzeonip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Protocol.S_DunzeonStartPacket.dunzeonIP)
+ _impl_.serverip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.C_DedicatedPacket.serverIP)
 }
-inline std::string* S_DunzeonStartPacket::mutable_dunzeonip() {
-  std::string* _s = _internal_mutable_dunzeonip();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_DunzeonStartPacket.dunzeonIP)
+inline std::string* C_DedicatedPacket::mutable_serverip() {
+  std::string* _s = _internal_mutable_serverip();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_DedicatedPacket.serverIP)
   return _s;
 }
-inline const std::string& S_DunzeonStartPacket::_internal_dunzeonip() const {
-  return _impl_.dunzeonip_.Get();
+inline const std::string& C_DedicatedPacket::_internal_serverip() const {
+  return _impl_.serverip_.Get();
 }
-inline void S_DunzeonStartPacket::_internal_set_dunzeonip(const std::string& value) {
+inline void C_DedicatedPacket::_internal_set_serverip(const std::string& value) {
   
-  _impl_.dunzeonip_.Set(value, GetArenaForAllocation());
+  _impl_.serverip_.Set(value, GetArenaForAllocation());
 }
-inline std::string* S_DunzeonStartPacket::_internal_mutable_dunzeonip() {
+inline std::string* C_DedicatedPacket::_internal_mutable_serverip() {
   
-  return _impl_.dunzeonip_.Mutable(GetArenaForAllocation());
+  return _impl_.serverip_.Mutable(GetArenaForAllocation());
 }
-inline std::string* S_DunzeonStartPacket::release_dunzeonip() {
-  // @@protoc_insertion_point(field_release:Protocol.S_DunzeonStartPacket.dunzeonIP)
-  return _impl_.dunzeonip_.Release();
+inline std::string* C_DedicatedPacket::release_serverip() {
+  // @@protoc_insertion_point(field_release:Protocol.C_DedicatedPacket.serverIP)
+  return _impl_.serverip_.Release();
 }
-inline void S_DunzeonStartPacket::set_allocated_dunzeonip(std::string* dunzeonip) {
-  if (dunzeonip != nullptr) {
+inline void C_DedicatedPacket::set_allocated_serverip(std::string* serverip) {
+  if (serverip != nullptr) {
     
   } else {
     
   }
-  _impl_.dunzeonip_.SetAllocated(dunzeonip, GetArenaForAllocation());
+  _impl_.serverip_.SetAllocated(serverip, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.dunzeonip_.IsDefault()) {
-    _impl_.dunzeonip_.Set("", GetArenaForAllocation());
+  if (_impl_.serverip_.IsDefault()) {
+    _impl_.serverip_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_DunzeonStartPacket.dunzeonIP)
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_DedicatedPacket.serverIP)
+}
+
+// int32 serverPort = 2;
+inline void C_DedicatedPacket::clear_serverport() {
+  _impl_.serverport_ = 0;
+}
+inline int32_t C_DedicatedPacket::_internal_serverport() const {
+  return _impl_.serverport_;
+}
+inline int32_t C_DedicatedPacket::serverport() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DedicatedPacket.serverPort)
+  return _internal_serverport();
+}
+inline void C_DedicatedPacket::_internal_set_serverport(int32_t value) {
+  
+  _impl_.serverport_ = value;
+}
+inline void C_DedicatedPacket::set_serverport(int32_t value) {
+  _internal_set_serverport(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DedicatedPacket.serverPort)
+}
+
+// -------------------------------------------------------------------
+
+// C_DungeonWaitingRoomEnterPacket
+
+// -------------------------------------------------------------------
+
+// S_DungeonWaitingRoomEnterPacket
+
+// repeated .Protocol.DungeonInfo dungeonInfos = 1;
+inline int S_DungeonWaitingRoomEnterPacket::_internal_dungeoninfos_size() const {
+  return _impl_.dungeoninfos_.size();
+}
+inline int S_DungeonWaitingRoomEnterPacket::dungeoninfos_size() const {
+  return _internal_dungeoninfos_size();
+}
+inline ::Protocol::DungeonInfo* S_DungeonWaitingRoomEnterPacket::mutable_dungeoninfos(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_DungeonWaitingRoomEnterPacket.dungeonInfos)
+  return _impl_.dungeoninfos_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DungeonInfo >*
+S_DungeonWaitingRoomEnterPacket::mutable_dungeoninfos() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_DungeonWaitingRoomEnterPacket.dungeonInfos)
+  return &_impl_.dungeoninfos_;
+}
+inline const ::Protocol::DungeonInfo& S_DungeonWaitingRoomEnterPacket::_internal_dungeoninfos(int index) const {
+  return _impl_.dungeoninfos_.Get(index);
+}
+inline const ::Protocol::DungeonInfo& S_DungeonWaitingRoomEnterPacket::dungeoninfos(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonWaitingRoomEnterPacket.dungeonInfos)
+  return _internal_dungeoninfos(index);
+}
+inline ::Protocol::DungeonInfo* S_DungeonWaitingRoomEnterPacket::_internal_add_dungeoninfos() {
+  return _impl_.dungeoninfos_.Add();
+}
+inline ::Protocol::DungeonInfo* S_DungeonWaitingRoomEnterPacket::add_dungeoninfos() {
+  ::Protocol::DungeonInfo* _add = _internal_add_dungeoninfos();
+  // @@protoc_insertion_point(field_add:Protocol.S_DungeonWaitingRoomEnterPacket.dungeonInfos)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::DungeonInfo >&
+S_DungeonWaitingRoomEnterPacket::dungeoninfos() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_DungeonWaitingRoomEnterPacket.dungeonInfos)
+  return _impl_.dungeoninfos_;
+}
+
+// -------------------------------------------------------------------
+
+// C_DungeonCreatePacket
+
+// -------------------------------------------------------------------
+
+// S_DungeonCreatePacket
+
+// .Protocol.DungeonInfo dungeonInfo = 1;
+inline bool S_DungeonCreatePacket::_internal_has_dungeoninfo() const {
+  return this != internal_default_instance() && _impl_.dungeoninfo_ != nullptr;
+}
+inline bool S_DungeonCreatePacket::has_dungeoninfo() const {
+  return _internal_has_dungeoninfo();
+}
+inline const ::Protocol::DungeonInfo& S_DungeonCreatePacket::_internal_dungeoninfo() const {
+  const ::Protocol::DungeonInfo* p = _impl_.dungeoninfo_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::DungeonInfo&>(
+      ::Protocol::_DungeonInfo_default_instance_);
+}
+inline const ::Protocol::DungeonInfo& S_DungeonCreatePacket::dungeoninfo() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonCreatePacket.dungeonInfo)
+  return _internal_dungeoninfo();
+}
+inline void S_DungeonCreatePacket::unsafe_arena_set_allocated_dungeoninfo(
+    ::Protocol::DungeonInfo* dungeoninfo) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.dungeoninfo_);
+  }
+  _impl_.dungeoninfo_ = dungeoninfo;
+  if (dungeoninfo) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_DungeonCreatePacket.dungeonInfo)
+}
+inline ::Protocol::DungeonInfo* S_DungeonCreatePacket::release_dungeoninfo() {
+  
+  ::Protocol::DungeonInfo* temp = _impl_.dungeoninfo_;
+  _impl_.dungeoninfo_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::DungeonInfo* S_DungeonCreatePacket::unsafe_arena_release_dungeoninfo() {
+  // @@protoc_insertion_point(field_release:Protocol.S_DungeonCreatePacket.dungeonInfo)
+  
+  ::Protocol::DungeonInfo* temp = _impl_.dungeoninfo_;
+  _impl_.dungeoninfo_ = nullptr;
+  return temp;
+}
+inline ::Protocol::DungeonInfo* S_DungeonCreatePacket::_internal_mutable_dungeoninfo() {
+  
+  if (_impl_.dungeoninfo_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::DungeonInfo>(GetArenaForAllocation());
+    _impl_.dungeoninfo_ = p;
+  }
+  return _impl_.dungeoninfo_;
+}
+inline ::Protocol::DungeonInfo* S_DungeonCreatePacket::mutable_dungeoninfo() {
+  ::Protocol::DungeonInfo* _msg = _internal_mutable_dungeoninfo();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_DungeonCreatePacket.dungeonInfo)
+  return _msg;
+}
+inline void S_DungeonCreatePacket::set_allocated_dungeoninfo(::Protocol::DungeonInfo* dungeoninfo) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.dungeoninfo_);
+  }
+  if (dungeoninfo) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(dungeoninfo));
+    if (message_arena != submessage_arena) {
+      dungeoninfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, dungeoninfo, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.dungeoninfo_ = dungeoninfo;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_DungeonCreatePacket.dungeonInfo)
+}
+
+// -------------------------------------------------------------------
+
+// C_DungeonEnteracket
+
+// uint64 playerId = 1;
+inline void C_DungeonEnteracket::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
+}
+inline uint64_t C_DungeonEnteracket::_internal_playerid() const {
+  return _impl_.playerid_;
+}
+inline uint64_t C_DungeonEnteracket::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DungeonEnteracket.playerId)
+  return _internal_playerid();
+}
+inline void C_DungeonEnteracket::_internal_set_playerid(uint64_t value) {
+  
+  _impl_.playerid_ = value;
+}
+inline void C_DungeonEnteracket::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DungeonEnteracket.playerId)
+}
+
+// -------------------------------------------------------------------
+
+// S_DungeonEnterPacket
+
+// int32 dungeonId = 1;
+inline void S_DungeonEnterPacket::clear_dungeonid() {
+  _impl_.dungeonid_ = 0;
+}
+inline int32_t S_DungeonEnterPacket::_internal_dungeonid() const {
+  return _impl_.dungeonid_;
+}
+inline int32_t S_DungeonEnterPacket::dungeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonEnterPacket.dungeonId)
+  return _internal_dungeonid();
+}
+inline void S_DungeonEnterPacket::_internal_set_dungeonid(int32_t value) {
+  
+  _impl_.dungeonid_ = value;
+}
+inline void S_DungeonEnterPacket::set_dungeonid(int32_t value) {
+  _internal_set_dungeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DungeonEnterPacket.dungeonId)
+}
+
+// .Protocol.DungeonPlayerInfo enterPlayer = 2;
+inline bool S_DungeonEnterPacket::_internal_has_enterplayer() const {
+  return this != internal_default_instance() && _impl_.enterplayer_ != nullptr;
+}
+inline bool S_DungeonEnterPacket::has_enterplayer() const {
+  return _internal_has_enterplayer();
+}
+inline const ::Protocol::DungeonPlayerInfo& S_DungeonEnterPacket::_internal_enterplayer() const {
+  const ::Protocol::DungeonPlayerInfo* p = _impl_.enterplayer_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::DungeonPlayerInfo&>(
+      ::Protocol::_DungeonPlayerInfo_default_instance_);
+}
+inline const ::Protocol::DungeonPlayerInfo& S_DungeonEnterPacket::enterplayer() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonEnterPacket.enterPlayer)
+  return _internal_enterplayer();
+}
+inline void S_DungeonEnterPacket::unsafe_arena_set_allocated_enterplayer(
+    ::Protocol::DungeonPlayerInfo* enterplayer) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.enterplayer_);
+  }
+  _impl_.enterplayer_ = enterplayer;
+  if (enterplayer) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_DungeonEnterPacket.enterPlayer)
+}
+inline ::Protocol::DungeonPlayerInfo* S_DungeonEnterPacket::release_enterplayer() {
+  
+  ::Protocol::DungeonPlayerInfo* temp = _impl_.enterplayer_;
+  _impl_.enterplayer_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::DungeonPlayerInfo* S_DungeonEnterPacket::unsafe_arena_release_enterplayer() {
+  // @@protoc_insertion_point(field_release:Protocol.S_DungeonEnterPacket.enterPlayer)
+  
+  ::Protocol::DungeonPlayerInfo* temp = _impl_.enterplayer_;
+  _impl_.enterplayer_ = nullptr;
+  return temp;
+}
+inline ::Protocol::DungeonPlayerInfo* S_DungeonEnterPacket::_internal_mutable_enterplayer() {
+  
+  if (_impl_.enterplayer_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::DungeonPlayerInfo>(GetArenaForAllocation());
+    _impl_.enterplayer_ = p;
+  }
+  return _impl_.enterplayer_;
+}
+inline ::Protocol::DungeonPlayerInfo* S_DungeonEnterPacket::mutable_enterplayer() {
+  ::Protocol::DungeonPlayerInfo* _msg = _internal_mutable_enterplayer();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_DungeonEnterPacket.enterPlayer)
+  return _msg;
+}
+inline void S_DungeonEnterPacket::set_allocated_enterplayer(::Protocol::DungeonPlayerInfo* enterplayer) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.enterplayer_);
+  }
+  if (enterplayer) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(enterplayer));
+    if (message_arena != submessage_arena) {
+      enterplayer = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, enterplayer, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.enterplayer_ = enterplayer;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_DungeonEnterPacket.enterPlayer)
+}
+
+// -------------------------------------------------------------------
+
+// C_DungeonReadyacket
+
+// int32 dungeonId = 1;
+inline void C_DungeonReadyacket::clear_dungeonid() {
+  _impl_.dungeonid_ = 0;
+}
+inline int32_t C_DungeonReadyacket::_internal_dungeonid() const {
+  return _impl_.dungeonid_;
+}
+inline int32_t C_DungeonReadyacket::dungeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DungeonReadyacket.dungeonId)
+  return _internal_dungeonid();
+}
+inline void C_DungeonReadyacket::_internal_set_dungeonid(int32_t value) {
+  
+  _impl_.dungeonid_ = value;
+}
+inline void C_DungeonReadyacket::set_dungeonid(int32_t value) {
+  _internal_set_dungeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DungeonReadyacket.dungeonId)
+}
+
+// -------------------------------------------------------------------
+
+// S_DungeonReadyPacket
+
+// int32 dungeonId = 1;
+inline void S_DungeonReadyPacket::clear_dungeonid() {
+  _impl_.dungeonid_ = 0;
+}
+inline int32_t S_DungeonReadyPacket::_internal_dungeonid() const {
+  return _impl_.dungeonid_;
+}
+inline int32_t S_DungeonReadyPacket::dungeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonReadyPacket.dungeonId)
+  return _internal_dungeonid();
+}
+inline void S_DungeonReadyPacket::_internal_set_dungeonid(int32_t value) {
+  
+  _impl_.dungeonid_ = value;
+}
+inline void S_DungeonReadyPacket::set_dungeonid(int32_t value) {
+  _internal_set_dungeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DungeonReadyPacket.dungeonId)
+}
+
+// uint64 playerId = 2;
+inline void S_DungeonReadyPacket::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
+}
+inline uint64_t S_DungeonReadyPacket::_internal_playerid() const {
+  return _impl_.playerid_;
+}
+inline uint64_t S_DungeonReadyPacket::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonReadyPacket.playerId)
+  return _internal_playerid();
+}
+inline void S_DungeonReadyPacket::_internal_set_playerid(uint64_t value) {
+  
+  _impl_.playerid_ = value;
+}
+inline void S_DungeonReadyPacket::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DungeonReadyPacket.playerId)
+}
+
+// -------------------------------------------------------------------
+
+// C_DungeonStartacket
+
+// int32 dungeonId = 1;
+inline void C_DungeonStartacket::clear_dungeonid() {
+  _impl_.dungeonid_ = 0;
+}
+inline int32_t C_DungeonStartacket::_internal_dungeonid() const {
+  return _impl_.dungeonid_;
+}
+inline int32_t C_DungeonStartacket::dungeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DungeonStartacket.dungeonId)
+  return _internal_dungeonid();
+}
+inline void C_DungeonStartacket::_internal_set_dungeonid(int32_t value) {
+  
+  _impl_.dungeonid_ = value;
+}
+inline void C_DungeonStartacket::set_dungeonid(int32_t value) {
+  _internal_set_dungeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DungeonStartacket.dungeonId)
+}
+
+// -------------------------------------------------------------------
+
+// S_DungeonStartPacket
+
+// int32 dungeonId = 1;
+inline void S_DungeonStartPacket::clear_dungeonid() {
+  _impl_.dungeonid_ = 0;
+}
+inline int32_t S_DungeonStartPacket::_internal_dungeonid() const {
+  return _impl_.dungeonid_;
+}
+inline int32_t S_DungeonStartPacket::dungeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonStartPacket.dungeonId)
+  return _internal_dungeonid();
+}
+inline void S_DungeonStartPacket::_internal_set_dungeonid(int32_t value) {
+  
+  _impl_.dungeonid_ = value;
+}
+inline void S_DungeonStartPacket::set_dungeonid(int32_t value) {
+  _internal_set_dungeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DungeonStartPacket.dungeonId)
+}
+
+// string dungeonIP = 2;
+inline void S_DungeonStartPacket::clear_dungeonip() {
+  _impl_.dungeonip_.ClearToEmpty();
+}
+inline const std::string& S_DungeonStartPacket::dungeonip() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonStartPacket.dungeonIP)
+  return _internal_dungeonip();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void S_DungeonStartPacket::set_dungeonip(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.dungeonip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.S_DungeonStartPacket.dungeonIP)
+}
+inline std::string* S_DungeonStartPacket::mutable_dungeonip() {
+  std::string* _s = _internal_mutable_dungeonip();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_DungeonStartPacket.dungeonIP)
+  return _s;
+}
+inline const std::string& S_DungeonStartPacket::_internal_dungeonip() const {
+  return _impl_.dungeonip_.Get();
+}
+inline void S_DungeonStartPacket::_internal_set_dungeonip(const std::string& value) {
+  
+  _impl_.dungeonip_.Set(value, GetArenaForAllocation());
+}
+inline std::string* S_DungeonStartPacket::_internal_mutable_dungeonip() {
+  
+  return _impl_.dungeonip_.Mutable(GetArenaForAllocation());
+}
+inline std::string* S_DungeonStartPacket::release_dungeonip() {
+  // @@protoc_insertion_point(field_release:Protocol.S_DungeonStartPacket.dungeonIP)
+  return _impl_.dungeonip_.Release();
+}
+inline void S_DungeonStartPacket::set_allocated_dungeonip(std::string* dungeonip) {
+  if (dungeonip != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.dungeonip_.SetAllocated(dungeonip, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.dungeonip_.IsDefault()) {
+    _impl_.dungeonip_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_DungeonStartPacket.dungeonIP)
+}
+
+// int32 port = 3;
+inline void S_DungeonStartPacket::clear_port() {
+  _impl_.port_ = 0;
+}
+inline int32_t S_DungeonStartPacket::_internal_port() const {
+  return _impl_.port_;
+}
+inline int32_t S_DungeonStartPacket::port() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonStartPacket.port)
+  return _internal_port();
+}
+inline void S_DungeonStartPacket::_internal_set_port(int32_t value) {
+  
+  _impl_.port_ = value;
+}
+inline void S_DungeonStartPacket::set_port(int32_t value) {
+  _internal_set_port(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DungeonStartPacket.port)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -35,7 +35,6 @@ protected:
 	FAttackData AttackData;
 
 private:
-	// 여기 배열에 GE_AttackSlow도 넣는다.
 	UPROPERTY(EditDefaultsOnly, Category = "Effects", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<UGameplayEffect>> GameplayEffectsToApply;
 

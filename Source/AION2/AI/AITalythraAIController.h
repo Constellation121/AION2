@@ -4,11 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Types/AIPhaseFlag.h"
+#include "Types/TalythraTypes.h"
 #include "AITalythraAIController.generated.h"
-
-
-
 
 /**
  * 

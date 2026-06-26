@@ -84,9 +84,7 @@ protected:
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void GetLifetimeReplicatedProps(
-		TArray<FLifetimeProperty>& OutLifetimeProps
-	) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private:
 	void Tick_Camera(float DeltaTime);
@@ -138,23 +136,16 @@ private:
 	void InputSpacePressed();
 	void InputLBPressed();
 	void InputRBPressed();
-
 	void InputMoveReleased();
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
 
-protected :
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "State")
-	bool bIsDead = false;
-
-public :
-	bool IsDead() const { return bIsDead; }
-
+public:
 	virtual void HandleDeath();
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 
-protected :
+protected:
 	FDelegateHandle HealthChangedDelegateHandle;
 
 protected:
@@ -203,16 +194,6 @@ private:
 	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
 public:
-	void SetMyId(uint64 Id) { MyId = Id; }
-
-	void SendMovePacket();
-	void ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel);
-
-	bool HasMovement();
-	bool IsCurrentMoving();
-
-
-public:
 	FORCEINLINE UAnimMontage* GetMontageByID(EMontageID Index) const { return Montages[Index]; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return Weapon; }
 	FORCEINLINE USkeletalMeshComponent* GetSubWeaponMesh() const { return SubWeapon; }
@@ -241,7 +222,7 @@ private:
 
 	float TargetZoomDistance;
 
-private:
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
 
@@ -312,25 +293,6 @@ private:
 	TSubclassOf<UGameplayEffect> DashStaminaRegenEffect;
 
 	bool bTagEventsRegistered = false;
-
-private:
-	FTimerHandle SendMoveHandle;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Network")
-	float SendMoveTimer = 0.1f;
-
-	// �ֱٿ� ���´� ��ġ, ȸ��
-	FVector LastLoc = FVector::ZeroVector;
-	FRotator LastRot = FRotator::ZeroRotator;
-
-	// ���� ��ġ, ȸ��
-	FVector TargetLoc = FVector::ZeroVector;
-	FRotator TargetRot = FRotator::ZeroRotator;
-	FVector TargetVel = FVector::ZeroVector;
-
-	bool bWasMovingLastSend = false;
-
-	uint64 MyId = -1;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;

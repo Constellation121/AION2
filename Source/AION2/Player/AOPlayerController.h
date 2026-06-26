@@ -35,7 +35,7 @@ private:
 private:
 	void ShowDebugCollider();
 	void ShowDebugGAS();
-
+	
 private:
 	bool bShowColliderDebug = false;
 	bool bShowGASDebug = false;

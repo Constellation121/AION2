@@ -56,6 +56,18 @@ void UAOUIManager::HideWidget(UUserWidget* WidgetInstance)
 	}
 }
 
+UUserWidget* UAOUIManager::GetWidgetByClass(TSubclassOf<UUserWidget> WidgetClass) const
+{
+	for (auto& Pair : WidgetCache)
+	{
+		if (Pair.Value && Pair.Value->GetClass()->IsChildOf(WidgetClass))
+		{
+			return Pair.Value;
+		}
+	}
+	return nullptr;
+}
+
 int UAOUIManager::GetZOrderForLayer(EUILayer Layer) const
 {
 	switch (Layer)
