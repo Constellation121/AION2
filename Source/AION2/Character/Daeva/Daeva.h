@@ -42,7 +42,9 @@ enum class EMontageID : uint8
 	Key3,
 	Key4,
 	KeyQ,
-	KeyE
+	KeyE,
+	Die,
+	Rebirth
 };
 
 UENUM(BlueprintType)
@@ -82,11 +84,17 @@ protected:
 	virtual void OnRep_PlayerState() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void GetLifetimeReplicatedProps(
+		TArray<FLifetimeProperty>& OutLifetimeProps
+	) const override;
+
 private:
 	void Tick_Camera(float DeltaTime);
-	void Tick_Combat(float DeltaTime);
 
 public:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayMontage(EMontageID MontageID, float PlayRate);
+
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayWingMontage(EMontageID MontageID, float PlayRate);
 
@@ -124,7 +132,7 @@ protected:
 
 protected:
 	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera) override;
-	virtual void TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser) override;
+	virtual void TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser) override;
 
 private:
 	void InputSpacePressed();
@@ -136,6 +144,18 @@ private:
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
 
+protected :
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "State")
+	bool bIsDead = false;
+
+public :
+	bool IsDead() const { return bIsDead; }
+
+	virtual void HandleDeath();
+	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
+
+protected :
+	FDelegateHandle HealthChangedDelegateHandle;
 
 protected:
 	void StartSprint();
@@ -150,6 +170,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
 	TSubclassOf<UGameplayEffect> SprintDrainEffect;
 
+
 	UFUNCTION(Server, Reliable)
 	void ServerStartSprint();
 
@@ -158,6 +179,7 @@ protected:
 
 	void RequestStartSprint();
 	void RequestStopSprint();
+
 
 	FActiveGameplayEffectHandle SprintEffectHandle;
 	FActiveGameplayEffectHandle SprintDrainEffectHandle;
@@ -178,6 +200,7 @@ private:
 	void PlayCameraShake(bool& bDidShakeCamera);
 	bool IsFrontOfCamera(AActor* Other);
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
+	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
 public:
 	FORCEINLINE UAnimMontage* GetMontageByID(EMontageID Index) const { return Montages[Index]; }

@@ -31,7 +31,7 @@ protected:
 
 protected:
 	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera);
-	virtual void TakeDamageAO(const FAttackData& AttackData, AAOCharacter* DamageCauser);
+	virtual void TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser);
 
 protected:
 	bool IsEnemy(AActor* TargetActor);

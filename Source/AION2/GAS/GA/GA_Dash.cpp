@@ -96,9 +96,11 @@ void UGA_Dash::ActivateAbility(
 
 	UAnimMontage* DashMontage = nullptr;
 
+	float MontagePlayRate = 1.0f;
 	if (ASC->HasMatchingGameplayTag(STATE_COMBAT))
 	{
 		DashMontage = Daeva->GetMontageByID(EMontageID::CombatDash);
+		MontagePlayRate = 1.3f;
 	}
 	else
 	{
@@ -118,7 +120,7 @@ void UGA_Dash::ActivateAbility(
 			this,
 			NAME_None,
 			DashMontage,
-			1.0f
+			MontagePlayRate
 		);
 
 	if (!MontageTask)
