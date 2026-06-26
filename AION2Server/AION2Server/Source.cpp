@@ -54,20 +54,12 @@ int main()
 	{
 		std::cout << "Server Started on Port 7777" << std::endl;
 	}
-	else
-	{
-		std::cout << "Server Start Failed" << std::endl;
-		return 0;
-	}
+
 	if (dediService->Start())
 	{
 		std::cout << "Dedi Server Started on Port 9999" << std::endl;
 	}
-	else
-	{
-		std::cout << "Dedi Server Start Failed" << std::endl;
-		return 0;
-	}
+
 	int32 maxCore = std::thread::hardware_concurrency();
 	for (int32 i = 0; i < maxCore - 5; i++)
 	{

@@ -16,7 +16,7 @@ void UAOGameInstance::Init()
 	Super::Init();
 
 #if UE_SERVER
-	TryAsyncConnect("127.0.0.1", 9999);
+	TryAsyncConnect("172.16.15.116", 9999);
 #else
 
 #if UE_BUILD_DEVELOPMENT
@@ -95,7 +95,7 @@ bool UAOGameInstance::ConnectToServer(const FString& Ip, int32 Port)
 	UE_LOG(LogTemp, Log, TEXT("Connected to server: %s:%d"), *Ip, Port);
 
 #if UE_SERVER
-	GetLocalIPAddress();
+	SendDediIpPort();
 #endif
 
 
@@ -113,8 +113,7 @@ bool UAOGameInstance::IsServerConnected()
 }
 
 FString UAOGameInstance::GetLocalIPAddress()
-{
-	
+{	
 	bool bCanBind = false;
 	TSharedPtr<FInternetAddr> LocalAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLocalHostAddr(*GLog, bCanBind);
 	if (LocalAddr.IsValid())
