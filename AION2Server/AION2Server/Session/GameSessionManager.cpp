@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "GameSessionManager.h"
 #include "GameSession.h"
+#include "DediSessionManager.h"
 
 GameSessionManager GSessionManager;
-\
+
 void GameSessionManager::Add(GameSessionRef session)
 {
 	std::lock_guard<std::mutex>lock(_sessionMngLock);
@@ -15,6 +16,7 @@ void GameSessionManager::Remove(GameSessionRef session)
 	std::lock_guard<std::mutex>lock(_sessionMngLock);
 	_sessions.erase(session);
 }
+
 
 void GameSessionManager::Broadcast(SendBufferRef sendBuffer)
 {

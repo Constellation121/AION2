@@ -8,6 +8,7 @@
 #include "Player/AOPlayerController.h"
 #include "Game/AOGameInstance.h"
 #include "Manager/AOUIManager.h"
+#include "Character/ServerCharacter/MMODaeva.h"
 
 // Sets default values
 AAODunzeonEntrance::AAODunzeonEntrance()
@@ -92,11 +93,18 @@ void AAODunzeonEntrance::EnterDunzeon()
 
 void AAODunzeonEntrance::EnterDunzeonWaitingRoom()
 {
-	UE_LOG(LogTemp, Log, TEXT("DunzeonWaitingRoom Enter"));
-
 	UIManager->HideWidget(DunzeonWaitingRoomWidget);
 
 	DunzeonRoomWidget = UIManager->ShowWidget(DunzeonRoomClass, EUILayer::System);
+	if (PC)
+	{
+		PC->SetShowMouseCursor(true);
+		AMMODaeva* Owner = Cast<AMMODaeva>( PC->GetPawn());
+		if (Owner)
+		{
+			Owner->SendDungeonWait();
+		}
+	}
 }
 
 
