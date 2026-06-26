@@ -36,7 +36,8 @@ public class AION2 : ModuleRules
             "Niagara",
             "UMG",
             "NavigationSystem",
-            "Navmesh"
+            "Navmesh",
+            "HTTP"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] {

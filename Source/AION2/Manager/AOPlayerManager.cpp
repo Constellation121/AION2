@@ -4,12 +4,12 @@
 #include "AOPlayerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/AOGameInstance.h"
-#include "Character/Daeva/Daeva.h"
+#include "Character/ServerCharacter/MMODaeva.h"
 #include "Player/AOPlayerController.h"
 
 UAOPlayerManager::UAOPlayerManager() 
 {
-	static ConstructorHelpers::FClassFinder<APawn> AssassinClassRef(TEXT("/Game/Blueprint/Daeva/Assassin/BP_Assassin"));
+	static ConstructorHelpers::FClassFinder<APawn> AssassinClassRef(TEXT("/Game/Blueprint/Daeva/Assassin/BP_MMOAssassin"));
 	if (AssassinClassRef.Succeeded())
 	{
 		JobClassMap.Add(1, AssassinClassRef.Class);
@@ -21,13 +21,13 @@ UAOPlayerManager::UAOPlayerManager()
 	//	JobClassMap.Add(2, ClericClassRef.Class);
 	//}
 
-	static ConstructorHelpers::FClassFinder<APawn> RangerClassRef(TEXT("/Game/Blueprint/Daeva/Ranger/BP_Ranger"));
+	static ConstructorHelpers::FClassFinder<APawn> RangerClassRef(TEXT("/Game/Blueprint/Daeva/Ranger/BP_MMORanger"));
 	if (RangerClassRef.Succeeded())
 	{
 		JobClassMap.Add(3, RangerClassRef.Class);
 	}
 
-	static ConstructorHelpers::FClassFinder<APawn> TemplarClassRef(TEXT("/Game/Blueprint/Daeva/Templar/BP_Templar"));
+	static ConstructorHelpers::FClassFinder<APawn> TemplarClassRef(TEXT("/Game/Blueprint/Daeva/Templar/BP_MMOTemplar"));
 	if (TemplarClassRef.Succeeded())
 	{
 		JobClassMap.Add(4, TemplarClassRef.Class);
@@ -61,10 +61,12 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector Spa
 		UClass* SpawnClass = JobClassMap[ClassType].Get();
 		if (GameInstance->GetMyPlayerId() == PlayerId)
 		{
-			MyPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
+			MyPlayer = GetWorld()->SpawnActor<AMMODaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 			if (MyPlayer != nullptr)
 			{
 				MyPlayer->SetMyId(PlayerId);
+				MyPlayer->SetMyClass(ClassType);
+
 				UE_LOG(LogTemp, Log, TEXT("HandleSpawn - SetMyId: %d"), PlayerId);
 
 				AAOPlayerController* PlayerController = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
@@ -77,7 +79,7 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector Spa
 
 		else
 		{
-			ADaeva* NewPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
+			AMMODaeva* NewPlayer = GetWorld()->SpawnActor<AMMODaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 			UE_LOG(LogTemp, Log, TEXT("Create NewPlayer: %d"), PlayerId);
 			PlayerInfos.Add(PlayerId, NewPlayer);
 		}

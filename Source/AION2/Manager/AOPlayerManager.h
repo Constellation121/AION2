@@ -11,7 +11,7 @@
 /**
  * 
  */
-class ADaeva;
+class AMMODaeva;
 UCLASS()
 class AION2_API UAOPlayerManager : public UGameInstanceSubsystem
 {
@@ -30,12 +30,12 @@ private:
 
 private:	
 	UPROPERTY()
-	TObjectPtr<ADaeva> MyPlayer;
+	TObjectPtr<AMMODaeva> MyPlayer;
 
 	UPROPERTY()
-	TMap<uint64, TObjectPtr<ADaeva>> PlayerInfos;
+	TMap<uint64, TObjectPtr<AMMODaeva>> PlayerInfos;
 	
-	TSubclassOf <ADaeva> PlayerClass;
+	TSubclassOf <AMMODaeva> PlayerClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TMap<uint8, TSubclassOf<APawn>> JobClassMap;

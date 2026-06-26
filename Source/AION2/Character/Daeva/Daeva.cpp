@@ -18,7 +18,6 @@
 #include "EnhancedInputComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
-#include "AION2.h"
 
 const float TargetTraceRadius = 2000.0f;
 
@@ -75,10 +74,6 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 void ADaeva::BeginPlay()
 {
 	Super::BeginPlay();
-
-	LastLoc = GetActorLocation();
-	LastRot = GetActorRotation();
-	bWasMovingLastSend = false;
 
 	TargetZoomDistance = SpringArm->TargetArmLength;
 	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 1.0f, true);
@@ -618,7 +613,6 @@ void ADaeva::InputRBPressed()
 
 void ADaeva::InputMoveReleased()
 {
-	bHasMoveInput = false;
 	RequestStopSprint();
 }
 
@@ -876,101 +870,6 @@ void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 	Parts.Add(PartType, PartMesh);
 }
 
-void ADaeva::SendMovePacket()
-{
-	bool bCurrentMovement = HasMovement();
-
-	bool bShouldSend = false;
-
-	if (bCurrentMovement)
-	{
-		bShouldSend = true;
-
-		bWasMovingLastSend = true;
-	}
-
-	else
-	{
-		// ���� ����
-		if (bWasMovingLastSend)
-		{
-			// ��Ŷ ������
-			bShouldSend = true;
-			bWasMovingLastSend = false;
-		}
-		else
-		{
-			// ��� ���� ����
-			return;
-		}
-	}
-
-	if (bShouldSend) 
-	{
-		FVector CurrLoc = GetActorLocation();
-		FRotator CurrRot = GetActorRotation();
-
-		Protocol::C_MovePacket MovePacket;
-		MovePacket.set_playerid(MyId);
-
-		Protocol::Vector3* Location = MovePacket.mutable_playerlocation();
-		Location->set_x(CurrLoc.X);
-		Location->set_y(CurrLoc.Y);
-		Location->set_z(CurrLoc.Z);
-
-		FVector CurrVelocity = GetCharacterMovement()->Velocity;
-
-		Protocol::Vector3* Velocity = MovePacket.mutable_playervelocity();
-		Velocity->set_x(CurrVelocity.X);
-		Velocity->set_y(CurrVelocity.Y);
-		Velocity->set_z(CurrVelocity.Z);
-
-		Protocol::Rotator3* Rotation = MovePacket.mutable_playerrotation();
-		Rotation->set_pitch(CurrRot.Pitch);
-		Rotation->set_yaw(CurrRot.Yaw);
-		Rotation->set_roll(CurrRot.Roll);
-
-		SEND_PACKET(MovePacket, PKT_C_MOVE);
-
-		LastLoc = CurrLoc;
-		LastRot = CurrRot;
-	}
-}
-
-bool ADaeva::HasMovement()
-{
-	FVector CurrentLoc = GetActorLocation();
-	FRotator CurrentRot = GetActorRotation();
-
-	// ĳ���� ��ġ�� ���� �Ÿ� �̻� ����������
-	float Distance = FVector::DistSquared(CurrentLoc, LastLoc);
-
-	// ĳ���� ������ ���� ���� ����������
-	float YawDiff = FRotator::NormalizeAxis(CurrentRot.Yaw - LastRot.Yaw);
-	bool bRotated = FMath::Abs(YawDiff) >= 10.0f;
-
-	// ĳ���͹����Ʈ�� ��ȭ�� �־�����
-	bool bIsMoving = GetCharacterMovement()->Velocity.SizeSquared() > 0.f;
-
-	return (Distance > 25.f) || bRotated || bIsMoving;
-}
-
-bool ADaeva::IsCurrentMoving()
-{
-	if (!GetCharacterMovement()) return false;
-	bool bHasVelocity = GetCharacterMovement()->Velocity.SizeSquared() > 100.f;
-
-	bool bHasInput = !GetPendingMovementInputVector().IsNearlyZero();
-
-	return bHasVelocity || bHasInput;
-}
-
-void ADaeva::ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel)
-{
-	TargetLoc = NewLoc;
-	TargetRot = NewRot;
-	TargetVel = NewVel;
-}
 
 void ADaeva::PlayCameraShake(bool& bDidShakeCamera)
 {

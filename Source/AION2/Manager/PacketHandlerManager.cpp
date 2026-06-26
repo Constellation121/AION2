@@ -3,6 +3,9 @@
 #include "PacketHandler.h"
 #include "Manager/AOPlayerManager.h"
 #include "Game/AOGameInstance.h"
+#include "UI/AOLoginUserWidget.h"
+#include "UI/AODungeonEntranceWidget.h"
+#include "Manager/AOUIManager.h"
 #include "AONetworkManager.h"
 
 PacketHandlerFunc GAOPacketHandler[UINT16_MAX];
@@ -13,13 +16,27 @@ void InitPacketHandler()
 	for (int32 i = 1000; i < UINT16_MAX; i++)
 		GAOPacketHandler[i] = &Handle_INVALID;
 
+#if  UE_SERVER
+	// 서버 핸들러
+
+#else
+
+#if UE_BUILD_DEVELOPMENT
+
 	// 템플릿을 활용해 자동으로 파싱 정책을 맵핑함
-	GAOPacketHandler[PKT_S_SIGNUP] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_SignUpResultPacket>(Handle_S_SIGNUP, Mng, Buf, Len);};
-	GAOPacketHandler[PKT_S_FLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_LoginFailPacket>(Handle_S_FLOGIN, Mng, Buf, Len);};
-	GAOPacketHandler[PKT_S_SLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_LoginSuccessPacket>(Handle_S_SLOGIN, Mng, Buf, Len);};
-	GAOPacketHandler[PKT_S_ITEM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_ItemDataPacket>(Handle_S_ITEM, Mng, Buf, Len);};
-	GAOPacketHandler[PKT_S_SPAWN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_SpawnPacket>(Handle_S_SPAWN, Mng, Buf, Len);};
-	GAOPacketHandler[PKT_S_MOVE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_MovePacket>(Handle_S_MOVE, Mng, Buf, Len);};
+	GAOPacketHandler[PKT_S_SIGNUP] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_SignUpResultPacket>(Handle_S_SIGNUP, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_FLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_LoginFailPacket>(Handle_S_FLOGIN, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_SLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_LoginSuccessPacket>(Handle_S_SLOGIN, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_ITEM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_ItemDataPacket>(Handle_S_ITEM, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_SPAWN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_SpawnPacket>(Handle_S_SPAWN, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_MOVE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_MovePacket>(Handle_S_MOVE, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEONCREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(Handle_S_CREATE, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEONENTER] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonEnterPacket>(Handle_S_ENTER, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEONREADY] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonReadyPacket>(Handle_S_READY, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEONSTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonStartPacket>(Handle_S_START, Mng, Buf, Len); };
+
+#endif
+#endif
 }
 
 bool Handle_INVALID(UAONetworkManager* NetworkMng, uint8* Buffer, int32 Len)
@@ -32,7 +49,7 @@ bool Handle_S_SIGNUP(UAONetworkManager* NetworkMng, Protocol::S_SignUpResultPack
 	bool bIsSuccess = Pkt.success();
 	if (bIsSuccess)
 		return true;
-	//	NetworkMng->GameInstance->LoginWidget->HandleRegisterError();
+	NetworkMng->GameInstance->LoginWidget->HandleRegisterError();
 	return false;
 }
 
@@ -51,12 +68,28 @@ bool Handle_S_SLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginSuccessPack
 
 bool Handle_S_FLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginFailPacket& Pkt)
 {
-
+	NetworkMng->GameInstance->LoginWidget->HandleLoginResult();
 	return false;
 }
 
 bool Handle_S_ITEM(UAONetworkManager* NetworkMng, Protocol::S_ItemDataPacket& Pkt)
 {
+	if (Pkt.playeritems_size() > 0)
+	{
+		int32 ItemCount = Pkt.playeritems_size();
+
+		UE_LOG(LogTemp, Log, TEXT("Received Item Count: %d"), ItemCount);
+		if (ItemCount == 0) return false;
+		for (int i = 0; i < ItemCount; i++)
+		{
+			const Protocol::ItemData& Item = Pkt.playeritems(i);
+
+			int32 InstanceId = Item.iteminstancedid();
+			int32 TemplateId = Item.itemtemplateid();
+			int32 SlotIndex = Item.slotindex();
+			int32 Count = Item.count();
+		}
+	}
 	return false;
 }
 
@@ -97,5 +130,50 @@ bool Handle_S_MOVE(UAONetworkManager* NetworkMng, Protocol::S_MovePacket& Pkt)
 
 	NetworkMng->PlayerMng->HnadleMove(PlayerId, TargetLoc, TargetRot, TargetVel);
 
+	return false;
+}
+
+bool Handle_S_CREATE(UAONetworkManager* NetworkMng, Protocol::S_DungeonCreatePacket& Pkt)
+{
+	Protocol::DungeonInfo* DungeonInfo = Pkt.mutable_dungeoninfo();
+	int32 DungeonId = DungeonInfo->dungeonid();
+
+	Protocol::DungeonPlayerInfo LeaderInfo = DungeonInfo->leaderinfo();
+	FString LeaderName = UTF8_TO_TCHAR(LeaderInfo.membername().c_str());
+	Protocol::ClassType LeaderClass = LeaderInfo.memberclass();
+
+	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_CREATE /LeaderName: %s"), *LeaderName);
+	UAOUIManager* UIManager = NetworkMng->GameInstance->GetSubsystem<UAOUIManager>();
+	if (UIManager)
+	{
+		if (UAODungeonEntranceWidget* DungeonWidget = UIManager->GetWidget<UAODungeonEntranceWidget>())
+		{
+			DungeonWidget->SetLeaderName(LeaderName);
+			DungeonWidget->SetLeaderClass(LeaderClass);
+		}
+	}
+
+	return false;
+}
+
+bool Handle_S_ENTER(UAONetworkManager* NetworkMng, Protocol::S_DungeonEnterPacket& Pkt)
+{
+	int32 DungeonId = Pkt.dungeonid();
+	Protocol::DungeonPlayerInfo NewPlayer = Pkt.enterplayer();
+	FString NewPlayerName = UTF8_TO_TCHAR(NewPlayer.membername().c_str());
+	Protocol::ClassType NewPlayerClass = NewPlayer.memberclass();
+	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_CREATE /LeaderName: %s"), *NewPlayerName);
+
+
+	return false;
+}
+
+bool Handle_S_READY(UAONetworkManager* NetworkMng, Protocol::S_DungeonReadyPacket& Pkt)
+{
+	return false;
+}
+
+bool Handle_S_START(UAONetworkManager* NetworkMng, Protocol::S_DungeonStartPacket& Pkt)
+{
 	return false;
 }
