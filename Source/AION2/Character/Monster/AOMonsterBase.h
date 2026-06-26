@@ -79,4 +79,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void SetDungeonBossActive(bool bActive);
+
+	void Die();
+
+protected :
+	void OnHealthChanged(const FOnAttributeChangeData& Data);
+
+protected :
+	FDelegateHandle HealthChangedDelegateHandle;
 };
