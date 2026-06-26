@@ -107,13 +107,9 @@ void ADaeva::OnRep_PlayerState()
 	InitGAS();
 }
 
-void ADaeva::GetLifetimeReplicatedProps(
-	TArray<FLifetimeProperty>& OutLifetimeProps
-) const
+void ADaeva::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ADaeva, bIsDead);
 }
 
 void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -247,6 +243,11 @@ void ADaeva::SearchTarget()
 	{
 		AAOCharacter* HitActor = Cast<AAOCharacter>(HitResult.GetActor());
 		if (!IsValid(HitActor))
+		{
+			continue;
+		}
+
+		if (HitActor->IsDead())
 		{
 			continue;
 		}
