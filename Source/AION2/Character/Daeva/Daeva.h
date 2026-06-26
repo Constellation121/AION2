@@ -107,6 +107,7 @@ public:
 
 public:
 	virtual void SearchTarget() override;
+	virtual void TeleportBackToTarget() override;
 
 protected:
 	virtual void Move(const FInputActionValue& Value);

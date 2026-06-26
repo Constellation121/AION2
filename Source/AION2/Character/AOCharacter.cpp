@@ -32,6 +32,10 @@ void AAOCharacter::SearchTarget()
 {
 }
 
+void AAOCharacter::TeleportBackToTarget()
+{
+}
+
 void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 {
 	if (!HasAuthority())

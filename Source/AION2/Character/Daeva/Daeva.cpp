@@ -286,6 +286,44 @@ void ADaeva::SearchTarget()
 	ChangeCurrentTargetInClient(Candidates[0].Target);
 }
 
+void ADaeva::TeleportBackToTarget()
+{
+	if (!IsValid(CurrentTarget))
+	{
+		return;
+	}
+
+	FVector TargetLocation = CurrentTarget->GetActorLocation();
+	FVector BehindLocation = TargetLocation - CurrentTarget->GetActorForwardVector() * 100.f;
+	BehindLocation.Z = GetActorLocation().Z;
+
+	FVector Direction = TargetLocation - BehindLocation;
+	Direction.Z = 0.f;
+
+	const FRotator LookAtRot = Direction.Rotation();
+
+	TeleportTo(BehindLocation, LookAtRot);
+
+	if (IsLocallyControlled())
+	{
+		if (AController* Controller = GetController())
+		{
+			SpringArm->bEnableCameraLag = false;
+			SpringArm->bEnableCameraRotationLag = false;
+
+			Controller->SetControlRotation(LookAtRot);
+
+			GetWorldTimerManager().SetTimerForNextTick(
+				[this]()
+				{
+					SpringArm->bEnableCameraLag = true;
+					SpringArm->bEnableCameraRotationLag = true;
+				}
+			);
+		}
+	}
+}
+
 void ADaeva::Move(const FInputActionValue& Value)
 {
 	if (IsDead())

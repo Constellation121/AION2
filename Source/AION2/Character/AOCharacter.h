@@ -24,6 +24,7 @@ public:
 
 public:
 	virtual void SearchTarget();
+	virtual void TeleportBackToTarget();
 
 public:
 	virtual void CheckAttackHit(const FAttackData& AttackData);
