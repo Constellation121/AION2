@@ -93,12 +93,6 @@ bool UAOGameInstance::ConnectToServer(const FString& Ip, int32 Port)
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Connected to server: %s:%d"), *Ip, Port);
-
-#if UE_SERVER
-	SendDediIpPort();
-#endif
-
-
 	return true;
 }
 
