@@ -59,10 +59,24 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TMap<FGameplayTag, TObjectPtr<UAnimMontage>> MontageMap;
 
+	// AODungeonGameMode -> TEST
+	UFUNCTION(BlueprintCallable, Category = "Dungeon")
+	void HandleBossDeath();
 
+public:
+	/*
+	* 0 = 일반 몬스터
+	* 1 = b1
+	* 2 = b2
+	* 3 = b3
+	*/
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Dungeon")
+	int32 DungeonBossIndex = 0;
 	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UDA_AbilitySet> AbilitySet;
 
 
 
+	UFUNCTION(BlueprintCallable, Category = "Dungeon")
+	void SetDungeonBossActive(bool bActive);
 };
