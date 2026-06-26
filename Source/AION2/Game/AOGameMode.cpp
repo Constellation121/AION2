@@ -19,9 +19,9 @@ void AAOGameMode::BeginPlay()
 	}
 
 #if UE_SERVER
-	if (GameInst = Cast<UAOGameInstance>(GetGameInstance()))
+	if (GameInst)
 	{
-		GI->SendDediIpPort();
+		GameInst->SendDediIpPort();
 	}
 #endif
 }
