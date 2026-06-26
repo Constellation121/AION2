@@ -169,6 +169,7 @@ bool PacketHandler::HandleMapComplete(PacketSessionRef& session, Protocol::C_Map
 {
 	std::cout << "Handle Map Complete\n";
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	if (!gameSession)return false;
 	PlayerRef player = gameSession->_player;
 	GRoom->DoAsync(&Room::HandleEnterPlayer, player);
 
