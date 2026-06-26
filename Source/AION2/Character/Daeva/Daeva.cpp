@@ -19,6 +19,12 @@
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
 
+#include "UI/AOWidgetComponentBase.h"
+#include "UI/AOPlayerHUDWidget.h"
+#include "Components/WidgetComponent.h"
+#include "Components/SceneComponent.h"
+#include "Materials/MaterialInterface.h"
+
 const float TargetTraceRadius = 2000.0f;
 
 ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
@@ -69,6 +75,40 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	Wing = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Wing"));
 	Wing->SetupAttachment(GetMesh(), TEXT("Wing_Root"));
 	Wing->SetVisibility(false);
+
+	// Head-up UI
+	BillboardComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BillboardComponent"));
+	BillboardComponent->SetupAttachment(RootComponent);
+	BillboardComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 130.0f));
+	BillboardComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
+
+	OverheadStatusWidgetComponent = CreateDefaultSubobject<UAOWidgetComponentBase>(TEXT("OverheadStatusWidget"));
+	OverheadStatusWidgetComponent->SetupAttachment(BillboardComponent);
+	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+	OverheadStatusWidgetComponent->SetBlendMode(EWidgetBlendMode::Transparent);
+	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 14.0f));
+	OverheadStatusWidgetComponent->SetRelativeLocation(FVector::ZeroVector);
+	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator::ZeroRotator);
+	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget>
+		WidgetClass(
+			TEXT("/Game/UI/Ingame/WBP_PlayaerStatus_Head.WBP_PlayaerStatus_Head_C"));
+
+	if (WidgetClass.Succeeded())
+	{
+		OverheadStatusWidgetComponent->SetWidgetClass(
+			WidgetClass.Class);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WidgetMat(
+		TEXT("/Game/UI/Resource/Material/BaseMaterial/M_WorldSpaceUI.M_WorldSpaceUI")
+	);
+
+	if (WidgetMat.Succeeded())
+	{
+		WidgetMaterial = WidgetMat.Object;
+	}
 }
 
 void ADaeva::BeginPlay()
@@ -77,6 +117,16 @@ void ADaeva::BeginPlay()
 
 	TargetZoomDistance = SpringArm->TargetArmLength;
 	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 1.0f, true);
+
+	/* [UI: 발광도를 죽이는 Material로 설정.]
+	* 생성자에서는 초기화 과정에서 Material이 기본값으로 바뀔 수 있기 때문에,
+	* 타이밍이 더 뒤인 Begin에서 작동.
+	*/
+	if (WidgetMaterial)
+	{
+		OverheadStatusWidgetComponent->SetMaterial(0, WidgetMaterial);
+		OverheadStatusWidgetComponent->MarkRenderStateDirty();
+	}
 }
 
 void ADaeva::Tick(float DeltaTime)
@@ -91,6 +141,17 @@ void ADaeva::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	InitGAS();
+
+	// UI 관련해, Localplayer면 추가.
+	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(NewController))
+	{
+		if (AOController->IsLocalController())
+		{
+			AOController->HandlePawnASCReady();
+		}
+	}
+
+	BindOverheadStatusWidget();
 }
 
 void ADaeva::UnPossessed()
@@ -105,6 +166,17 @@ void ADaeva::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitGAS();
+
+	// UI 관련해, Localplayer면 추가.
+	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
+	{
+		if (AOController->IsLocalController())
+		{
+			AOController->HandlePawnASCReady();
+		}
+	}
+
+	BindOverheadStatusWidget();
 }
 
 void ADaeva::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -158,7 +230,27 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ADaeva::Tick_Camera(float DeltaTime)
 {
-	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
+	if (IsLocallyControlled())
+	{
+		SpringArm->TargetArmLength =
+			FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
+	}
+
+	// UI Bill Board
+	if (GetNetMode() == NM_DedicatedServer || !BillboardComponent)
+	{
+		return;
+	}
+
+	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
+	if (!LocalPC || !LocalPC->PlayerCameraManager)
+	{
+		return;
+	}
+
+	const FVector CameraLocation = LocalPC->PlayerCameraManager->GetCameraLocation();
+	const FVector WidgetLocation = BillboardComponent->GetComponentLocation();
+	BillboardComponent->SetWorldRotation((CameraLocation - WidgetLocation).Rotation());
 }
 
 void ADaeva::Multicast_PlayMontage_Implementation(EMontageID MontageID, float PlayRate)
@@ -387,6 +479,9 @@ void ADaeva::InitGAS()
 		CombatAbilitySet->GiveToASC(ASC, CombatAbilityHandles);
 		ApplyDashStaminaRegenEffect();
 	}
+
+	// UI 생성 및 Bind.
+	NotifyPlayerUIReady();
 }
 
 void ADaeva::ClearGAS()
@@ -913,3 +1008,45 @@ void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 		Server_SetCurrentTarget(CurrentTarget);
 	}
 }
+
+void ADaeva::BindOverheadStatusWidget()
+{
+
+	if (GetNetMode() == NM_DedicatedServer || !OverheadStatusWidgetComponent)
+	{
+		return;
+	}
+
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	if (!AOPlayerState)
+	{
+		return;
+	}
+
+	if (UAOPlayerHUDWidget* StatusWidget = Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject()))
+	{
+		StatusWidget->BindToPlayerState(AOPlayerState);
+	}
+}
+
+
+bool ADaeva::IsPlayerUIReady() const
+{
+	return bPlayerUIReady && ASC != nullptr && GetPlayerState<AAOPlayerState>() != nullptr;
+}
+
+void ADaeva::NotifyPlayerUIReady()
+{
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	if (!AOPlayerState || !ASC)
+	{
+		return;
+	}
+
+	bPlayerUIReady = true;
+
+	BindOverheadStatusWidget();
+
+	OnPlayerUIReady.Broadcast(AOPlayerState, ASC, this);
+}
+
