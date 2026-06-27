@@ -76,7 +76,7 @@ void ADaeva::BeginPlay()
 	Super::BeginPlay();
 
 	TargetZoomDistance = SpringArm->TargetArmLength;
-	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 1.0f, true);
+	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 0.25f, true);
 }
 
 void ADaeva::Tick(float DeltaTime)
@@ -303,7 +303,24 @@ void ADaeva::TeleportBackToTarget()
 	const FRotator LookAtRot = Direction.Rotation();
 
 	TeleportTo(BehindLocation, LookAtRot);
+	SetCameraByLookAt(LookAtRot);
+}
 
+FRotator ADaeva::GetLookAtToTarget()
+{
+	if (!IsValid(CurrentTarget))
+	{
+		return FRotator::ZeroRotator;
+	}
+
+	FVector TargetLocation = CurrentTarget->GetActorLocation();
+	FVector Direction = TargetLocation - GetActorLocation();
+	Direction.Z = 0.f;
+	return Direction.Rotation();
+}
+
+void ADaeva::SetCameraByLookAt(const FRotator& LookAtRot)
+{
 	if (IsLocallyControlled())
 	{
 		if (AController* Controller = GetController())
