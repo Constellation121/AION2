@@ -19,7 +19,7 @@
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
 
-const float TargetTraceRadius = 2000.0f;
+const float TargetTraceRadius = 3500.0f;
 
 ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
