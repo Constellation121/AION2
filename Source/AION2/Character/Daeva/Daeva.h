@@ -204,6 +204,7 @@ public:
 	FORCEINLINE USkeletalMeshComponent* GetSubWeaponMesh() const { return SubWeapon; }
 	FORCEINLINE USkeletalMeshComponent* GetWingMesh() const { return Wing; }
 	FORCEINLINE UAnimInstance* GetWingAnimInstance() const { return GetWingMesh()->GetAnimInstance(); }
+	virtual TArray<USkeletalMeshComponent*> GetAllMeshes() override;
 
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
@@ -305,5 +306,4 @@ private:
 private:
 	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
-
 };

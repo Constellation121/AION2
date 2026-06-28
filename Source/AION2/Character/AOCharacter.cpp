@@ -248,3 +248,11 @@ UAbilitySystemComponent* AAOCharacter::GetAbilitySystemComponent() const
 {
 	return ASC;
 }
+
+TArray<USkeletalMeshComponent*> AAOCharacter::GetAllMeshes()
+{
+	TArray<USkeletalMeshComponent*> Meshes;
+	Meshes.Add(GetMesh());
+
+	return Meshes;
+}

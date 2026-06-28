@@ -582,7 +582,11 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 
 void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
 {
-	// Todo: 회피 & 리턴 처리
+	if (ASC->HasMatchingGameplayTag(STATE_DASHING))
+	{
+		ASC->ExecuteGameplayCue(CUE_GHOSTTRAIL);
+		return;
+	}
 	
 	Super::TakeDamageAO(AttackData, HitResult, DamageCauser);
 
@@ -592,11 +596,6 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitRe
 
 void ADaeva::InputShiftPressed()
 {
-	/*if (IsSprinting())
-	{
-		return;
-	}*/
-
 	GASInputPressed(static_cast<int32>(EAbilityID::Dash));
 
 	if (bHasMoveInput)
@@ -930,7 +929,6 @@ void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 	Parts.Add(PartType, PartMesh);
 }
 
-
 void ADaeva::PlayCameraShake(bool& bDidShakeCamera)
 {
 	if (!bDidShakeCamera)
@@ -972,4 +970,29 @@ void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 	{
 		Server_SetCurrentTarget(CurrentTarget);
 	}
+}
+
+TArray<USkeletalMeshComponent*> ADaeva::GetAllMeshes()
+{
+	TArray<USkeletalMeshComponent*> Meshes;
+
+	for (const auto& Pair : Parts)
+	{
+		if (USkeletalMeshComponent* PartMesh = Pair.Value)
+		{
+			Meshes.Add(PartMesh);
+		}
+	}
+
+	if (Weapon)
+	{
+		Meshes.Add(Weapon);
+	}
+
+	if (SubWeapon)
+	{
+		Meshes.Add(SubWeapon);
+	}
+
+	return Meshes;
 }
