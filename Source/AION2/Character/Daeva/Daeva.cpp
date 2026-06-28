@@ -208,6 +208,11 @@ void ADaeva::Server_SetCurrentTarget_Implementation(AAOCharacter* NewTarget)
 	SetCurrentTarget(NewTarget);
 }
 
+bool ADaeva::HasMoveInput()
+{
+	return GetCharacterMovement()->GetCurrentAcceleration().SizeSquared() > 0.0f;
+}
+
 void ADaeva::SearchTarget()
 {
 	if (!IsLocallyControlled())

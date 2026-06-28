@@ -106,6 +106,7 @@ public:
 	void Client_PlayCameraShake();
 
 public:
+	bool HasMoveInput();
 	virtual void SearchTarget() override;
 	virtual void TeleportBackToTarget() override;
 	FRotator GetLookAtToTarget();
