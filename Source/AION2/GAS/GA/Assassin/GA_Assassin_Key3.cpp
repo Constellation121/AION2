@@ -41,7 +41,7 @@ void UGA_Assassin_Key3::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	MoveDir.Z = 0.f;
 	MoveDir = MoveDir.GetSafeNormal();
 
-	const float BehindDistance = 100.f;
+	const float BehindDistance = 200.f;
 	FVector Destination = TargetLocation + MoveDir * BehindDistance;
 	Destination.Z = StartLocation.Z;
 

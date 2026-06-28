@@ -294,7 +294,7 @@ void ADaeva::TeleportBackToTarget()
 	}
 
 	FVector TargetLocation = CurrentTarget->GetActorLocation();
-	FVector BehindLocation = TargetLocation - CurrentTarget->GetActorForwardVector() * 100.f;
+	FVector BehindLocation = TargetLocation - CurrentTarget->GetActorForwardVector() * 200.f;
 	BehindLocation.Z = GetActorLocation().Z;
 
 	FVector Direction = TargetLocation - BehindLocation;
