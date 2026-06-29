@@ -5,26 +5,30 @@
 #include "Game/AOGameInstance.h"
 #include "UI/AOLoginUserWidget.h"
 #include "UI/AODungeonEntranceWidget.h"
+#include "Player/AOPlayerController.h"
+#include "AOInventoryComponent.h"
 #include "Manager/AOUIManager.h"
+#include "UI/AOPlayerHUDWidget.h"
+#include "UI/AOMainHUDWidget.h"
 #include "AONetworkManager.h"
 
 
 PacketHandlerFunc GAOPacketHandler[UINT16_MAX];
 
-// ÃÊ±âÈ­ ÇÔ¼ö: Àü¿ª ¹è¿­¿¡ ÆĞÅ¶ ID¿Í º¯È¯ Á¤Ã¥ ÇÔ¼ö¸¦ ¹ÙÀÎµùÇÔ
+// ì´ˆê¸°í™” í•¨ìˆ˜: ì „ì—­ ë°°ì—´ì— íŒ¨í‚· IDì™€ ë³€í™˜ ì •ì±… í•¨ìˆ˜ë¥¼ ë°”ì¸ë”©í•¨
 void InitPacketHandler()
 {
 	for (int32 i = 1000; i < UINT16_MAX; i++)
 		GAOPacketHandler[i] = &Handle_INVALID;
 
 #if  UE_SERVER
-	// ¼­¹ö ÇÚµé·¯
+	// ì„œë²„ í•¸ë“¤ëŸ¬
 
 #else
 
 #if UE_BUILD_DEVELOPMENT
 
-	// ÅÛÇÃ¸´À» È°¿ëÇØ ÀÚµ¿À¸·Î ÆÄ½Ì Á¤Ã¥À» ¸ÊÇÎÇÔ
+	// í…œí”Œë¦¿ì„ í™œìš©í•´ ìë™ìœ¼ë¡œ íŒŒì‹± ì •ì±…ì„ ë§µí•‘í•¨
 	GAOPacketHandler[PKT_S_SIGNUP] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_SignUpResultPacket>(Handle_S_SIGNUP, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_FLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_LoginFailPacket>(Handle_S_FLOGIN, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_SLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_LoginSuccessPacket>(Handle_S_SLOGIN, Mng, Buf, Len); };
@@ -51,7 +55,7 @@ bool Handle_S_SIGNUP(UAONetworkManager* NetworkMng, Protocol::S_SignUpResultPack
 	if (bIsSuccess)
 		return true;
 	NetworkMng->GameInstance->LoginWidget->HandleRegisterError();
-	return false;
+	return true;
 }
 
 bool Handle_S_SLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginSuccessPacket& pkt)
@@ -70,7 +74,7 @@ bool Handle_S_SLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginSuccessPack
 bool Handle_S_FLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginFailPacket& Pkt)
 {
 	NetworkMng->GameInstance->LoginWidget->HandleLoginResult();
-	return false;
+	return true;
 }
 
 bool Handle_S_ITEM(UAONetworkManager* NetworkMng, Protocol::S_ItemDataPacket& Pkt)
@@ -78,9 +82,25 @@ bool Handle_S_ITEM(UAONetworkManager* NetworkMng, Protocol::S_ItemDataPacket& Pk
 	if (Pkt.playeritems_size() > 0)
 	{
 		int32 ItemCount = Pkt.playeritems_size();
-
-		UE_LOG(LogTemp, Log, TEXT("Received Item Count: %d"), ItemCount);
 		if (ItemCount == 0) return false;
+
+		UWorld* World = NetworkMng->GetWorld();
+		if (World == nullptr) return false;
+
+		AAOPlayerController* PC = Cast<AAOPlayerController>(World->GetFirstPlayerController());
+		if (PC == nullptr) return false;
+
+		UAOMainHUDWidget* MainHUD = PC->GetMainHUD();
+		if (MainHUD == nullptr) return false;
+
+		UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
+		if (PlayerHUD == nullptr) return false;
+
+		APawn* Pawn = PC->GetPawn();
+		if (Pawn == nullptr) return false;
+		UAOInventoryComponent* InventoryComp = Pawn->FindComponentByClass<UAOInventoryComponent>();
+		if (InventoryComp == nullptr) return false;
+
 		for (int i = 0; i < ItemCount; i++)
 		{
 			const Protocol::ItemData& Item = Pkt.playeritems(i);
@@ -89,9 +109,21 @@ bool Handle_S_ITEM(UAONetworkManager* NetworkMng, Protocol::S_ItemDataPacket& Pk
 			int32 TemplateId = Item.itemtemplateid();
 			int32 SlotIndex = Item.slotindex();
 			int32 Count = Item.count();
+
+			FAOSlotData SlotData;
+			SlotData.ItemInstancedId = InstanceId;
+			SlotData.ItemTemplateId = TemplateId;
+			SlotData.SlotIndex = SlotIndex;
+			SlotData.Count = Count;
+			FItemData TemplateData;
+
+			if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
+			{
+				PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
+			}
 		}
 	}
-	return false;
+	return true;
 }
 
 bool Handle_S_SPAWN(UAONetworkManager* NetworkMng, Protocol::S_SpawnPacket& Pkt)
@@ -111,7 +143,7 @@ bool Handle_S_SPAWN(UAONetworkManager* NetworkMng, Protocol::S_SpawnPacket& Pkt)
 			NetworkMng->PlayerMng->HandleSpawn(PlayerId, CalssType, Location, Rotation);
 		}
 	}
-	return false;
+	return true;
 }
 
 bool Handle_S_MOVE(UAONetworkManager* NetworkMng, Protocol::S_MovePacket& Pkt)
@@ -131,7 +163,7 @@ bool Handle_S_MOVE(UAONetworkManager* NetworkMng, Protocol::S_MovePacket& Pkt)
 
 	NetworkMng->PlayerMng->HnadleMove(PlayerId, TargetLoc, TargetRot, TargetVel);
 
-	return false;
+	return true;
 }
 
 bool Handle_S_CREATE(UAONetworkManager* NetworkMng, Protocol::S_DungeonCreatePacket& Pkt)
@@ -154,7 +186,7 @@ bool Handle_S_CREATE(UAONetworkManager* NetworkMng, Protocol::S_DungeonCreatePac
 		}
 	}
 
-	return false;
+	return true;
 }
 
 bool Handle_S_ENTER(UAONetworkManager* NetworkMng, Protocol::S_DungeonEnterPacket& Pkt)
@@ -165,13 +197,13 @@ bool Handle_S_ENTER(UAONetworkManager* NetworkMng, Protocol::S_DungeonEnterPacke
 	Protocol::ClassType NewPlayerClass = NewPlayer.memberclass();
 	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_Enter/LeaderName: %s"), *NewPlayerName);
 
-	
-	return false;
+
+	return true;
 }
 
 bool Handle_S_READY(UAONetworkManager* NetworkMng, Protocol::S_DungeonReadyPacket& Pkt)
 {
-	return false;
+	return true;
 }
 
 bool Handle_S_START(UAONetworkManager* NetworkMng, Protocol::S_DungeonStartPacket& Pkt)
@@ -182,5 +214,5 @@ bool Handle_S_START(UAONetworkManager* NetworkMng, Protocol::S_DungeonStartPacke
 	FString ConnectionURL = FString::Printf(TEXT("%s:%d"), *ServerIp, ServerPort);
 
 	NetworkMng->PlayerMng->HandleDungeonStart(ConnectionURL);
-	return false;
+	return true;
 }

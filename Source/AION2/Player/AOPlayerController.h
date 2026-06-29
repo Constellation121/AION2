@@ -48,6 +48,9 @@ private:
 	// UI
 	void CreateOrBindMainHUD();
 
+public:
+	UAOMainHUDWidget* GetMainHUD() const { return MainHUD; }
+
 private:
 	bool bShowColliderDebug = false;
 	bool bShowGASDebug = false;

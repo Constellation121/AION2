@@ -18,24 +18,38 @@ struct FItemData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	FText ItemName;
 
-	// ¾ÆÀÌÅÛ »çÁø
+	// ì•„ì´ì½˜
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	UTexture2D* ItemIcon;
 
-	// ÃÖ´ë ÁßÃ¸ °³¼ö
+	// ìµœëŒ€ ìŠ¤íƒ ìˆ˜
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	int32 MaxStack = 99;
 
-	// È¸º¹·®
+	// íšŒë³µëŸ‰
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	int32 HealAcount = 50;
-
-	// slot À§Ä¡
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
-	int32 ItemSlot;
 };
 
+USTRUCT(BlueprintType)
+struct FAOSlotData
+{
+	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
+	int32 ItemInstancedId = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
+	int32 ItemTemplateId = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
+	int32 SlotIndex = -1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
+	int32 Count = 0;
+
+	bool IsValid() const { return ItemTemplateId > 0 && Count > 0; }
+};
 
 UCLASS(BlueprintType)
 class AION2_API UAOItemDataBase : public UPrimaryDataAsset
@@ -43,7 +57,10 @@ class AION2_API UAOItemDataBase : public UPrimaryDataAsset
 	GENERATED_BODY()
 	
 public:
-	// ¾ÆÀÌÅÛ id °ªÀ» key·Î °ü¸®
+	// ì•„ì´í…œ idë¥¼ keyë¡œ í•¨
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	TMap<int32, FItemData> ItemMap;
+
+	UFUNCTION(BlueprintCallable, Category = "Item")
+	bool FindItemTemplate(int32 ItemId, FItemData& OutItemData) const;
 };
