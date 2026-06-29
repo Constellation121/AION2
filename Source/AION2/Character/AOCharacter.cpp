@@ -113,7 +113,7 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 	const float Multiplier = AttackData.DamageMultiplier;
 	const float BaseDamage = AttackPower * Multiplier;
 
-	const float FinalDamage = FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
+	const float FinalDamage = 1.0f; //FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
 
 	FGameplayEffectContextHandle Context = SourceASC->MakeEffectContext();
 	Context.AddSourceObject(DamageCauser);
