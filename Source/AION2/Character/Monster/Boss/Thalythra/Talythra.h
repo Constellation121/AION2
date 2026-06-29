@@ -33,10 +33,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// 보스 AI 컨트롤러에서 State, Phase 설정 뒤 Replicate. 
-	FORCEINLINE void Set_Phase(ETalythraPhase _PhaseFlag) { Phase = _PhaseFlag; }
-	FORCEINLINE void Set_State(ETalythraState _StateFlag) { State = _StateFlag; }
-
 	// State Tree에서 몽타주를 실행하기 위해 만든 함수
 	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
 	void Multicast_PlayAttackMontage(class UAnimMontage* MontageToPlay);
@@ -166,13 +162,6 @@ protected:
 
 	// 페이즈 및 상태 관련 
 public:
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Phase")
-	ETalythraPhase Phase;
-
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "State")
-	ETalythraState State;
-
-
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite)
 	bool bLockPelvis = false;
 

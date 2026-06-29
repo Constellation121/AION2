@@ -51,7 +51,7 @@ void UGA_Monster_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 
     AAOMonsterBase* pMonster = CastChecked<AAOMonsterBase>(ActorInfo->AvatarActor.Get());
 
-    pMonster->OnAbilityFinishedEvent.Broadcast();
+   
 
 
 }

@@ -1,26 +1,26 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GA_Boss_Teleport.h"
+#include "GA_Boss_TeleportAttack.h"
 #include "GAS/AOGameplayTags.h"
 #include "GAS/GE/Monster/GE_Cooldown_Monster_Teleport.h"
-#include "Character/Monster/Boss/Thalythra/Talythra.h"
+#include "Character/Monster/AOMonsterBase.h"
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 
-UGA_Boss_Teleport::UGA_Boss_Teleport()
+
+UGA_Boss_TeleportAttack::UGA_Boss_TeleportAttack()
 {
-	// Ability 자체에 태그를 붙이는 의미 
-	// 이 어빌리티는 ChargeAttack 어빌리티다
-	// AbilityTags.AddTag(ABILITY_MONSTER_CHARGEATTACK);
-	// 이 어빌리티는 ChargeAttack 어빌리티다
+	// Ability 자체 태그
 	FGameplayTagContainer AssetTags;
-	AssetTags.AddTag(ABILITY_MONSTER_TELEPORT);
+	AssetTags.AddTag(ABILITY_MONSTER_TH_TELEPORTATTACK);
 	SetAssetTags(AssetTags);
 
 
 	// ActivationBlockedTags는 Ability의 발동을 막는 태그 목록입니다.
 	// ASC가 Cooldown.Monster.ChargeAttack 태그를 가지고 있으면
 	// 이 어빌리티는 실행하지 마라.
-	ActivationBlockedTags.AddTag(COOLDOWN_MONSTER_TELEPORT);
+	ActivationBlockedTags.AddTag(COOLDOWN_MONSTER_TH_TELEPORTATTACK);
 
 	//InstancedPerActor는 “각 Actor마다 해당 GA 인스턴스를 따로 가진다”는 의미
 	//예를 들어 GA_Boss_ChargeAttack이 있고, 몬스터가 3마리 있다고 하면,
@@ -43,7 +43,7 @@ UGA_Boss_Teleport::UGA_Boss_Teleport()
 
 }
 
-void UGA_Boss_Teleport::ActivateAbility(
+void UGA_Boss_TeleportAttack::ActivateAbility(
 	const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo,
@@ -51,6 +51,22 @@ void UGA_Boss_Teleport::ActivateAbility(
 {
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+
+	AAOMonsterBase* pMonster = CastChecked<AAOMonsterBase>(ActorInfo->AvatarActor.Get());
+
+	UAbilityTask_PlayMontageAndWait* MontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, pMonster->GetMontageByTag(MontageTag));
+	MontageTask->OnCompleted.AddDynamic(this, &UGA_Boss_TeleportAttack::OnMontageTaskFinished);
+	MontageTask->OnBlendOut.AddDynamic(this, &UGA_Boss_TeleportAttack::OnMontageTaskFinished);
+	MontageTask->OnInterrupted.AddDynamic(this, &UGA_Boss_TeleportAttack::OnMontageTaskCancelled);
+	MontageTask->OnCancelled.AddDynamic(this, &UGA_Boss_TeleportAttack::OnMontageTaskCancelled);
+	MontageTask->ReadyForActivation();
+
+
+	UAbilityTask_WaitGameplayEvent* WaitHitCheckTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EVENT_CHECKATTACKHIT);
+	WaitHitCheckTask->EventReceived.AddDynamic(this, &UGA_Boss_TeleportAttack::OnCheckAttackHitEvent);
+	WaitHitCheckTask->ReadyForActivation();
+
 
 
 	// 여기서 비용 / 쿨타임 적용
@@ -63,7 +79,7 @@ void UGA_Boss_Teleport::ActivateAbility(
 
 	}
 
-	EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+	//EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 
 	// 여기서 CommitAbility()가 true를 반환했다는 뜻은 :
 	// 
@@ -80,13 +96,10 @@ void UGA_Boss_Teleport::ActivateAbility(
 	// 이 Ability를 지금 확정해서 사용할 수 없다.
 
 
-
-
-
 }
 
 
-void UGA_Boss_Teleport::CancelAbility(
+void UGA_Boss_TeleportAttack::CancelAbility(
 	const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo,
@@ -100,7 +113,7 @@ void UGA_Boss_Teleport::CancelAbility(
 }
 
 
-void UGA_Boss_Teleport::EndAbility(
+void UGA_Boss_TeleportAttack::EndAbility(
 	const FGameplayAbilitySpecHandle Handle, 
 	const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo,
@@ -108,6 +121,57 @@ void UGA_Boss_Teleport::EndAbility(
 	bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+
+
+}
+
+
+
+
+void UGA_Boss_TeleportAttack::OnMontageTaskFinished()
+{
+	EndAbility(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		true,
+		false
+	);
+}
+
+void UGA_Boss_TeleportAttack::OnMontageTaskCancelled()
+{
+	EndAbility(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		true,
+		true
+	);
+}
+
+void UGA_Boss_TeleportAttack::OnCheckAttackHitEvent(FGameplayEventData Payload)
+{
+	if (!HasAuthority(&CurrentActivationInfo))
+	{
+		return;
+	}
+
+	AAOCharacter* AOCharacter =
+		Cast<AAOCharacter>(GetAvatarActorFromActorInfo());
+
+	if (!AOCharacter)
+	{
+		return;
+	}
+
+	AOCharacter->CheckAttackHit(AttackData);
+}
+
+
+void UGA_Boss_TeleportAttack::AbilityEnd()
+{
 
 
 

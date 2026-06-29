@@ -1,12 +1,11 @@
-#include "STCondition_ASCHasTag.h"
-
+#include "STC_ASCHasTag.h"
 #include "StateTreeExecutionContext.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/Pawn.h"
 
-bool FStateTreeASCHasTagCondition::TestCondition(
+bool FSTC_ASCHasTag::TestCondition(
 	FStateTreeExecutionContext& Context) const
 {
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);

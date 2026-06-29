@@ -37,7 +37,9 @@ public class AION2 : ModuleRules
             "UMG",
             "NavigationSystem",
             "Navmesh",
-            "HTTP"
+            "HTTP",
+            "StateTreeModule",
+            "GameplayStateTreeModule"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] {
