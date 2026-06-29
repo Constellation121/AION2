@@ -120,7 +120,8 @@ void UGA_Dash::ActivateAbility(
 			this,
 			NAME_None,
 			DashMontage,
-			MontagePlayRate
+			MontagePlayRate,
+			Daeva->HasMoveInput() ? FName("Forward") : FName("Back")
 		);
 
 	if (!MontageTask)

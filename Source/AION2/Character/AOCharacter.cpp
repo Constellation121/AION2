@@ -32,6 +32,10 @@ void AAOCharacter::SearchTarget()
 {
 }
 
+void AAOCharacter::TeleportBackToTarget()
+{
+}
+
 void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 {
 	if (!HasAuthority())
@@ -109,7 +113,7 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 	const float Multiplier = AttackData.DamageMultiplier;
 	const float BaseDamage = AttackPower * Multiplier;
 
-	const float FinalDamage = 1.0f; // FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
+	const float FinalDamage = FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
 
 	FGameplayEffectContextHandle Context = SourceASC->MakeEffectContext();
 	Context.AddSourceObject(DamageCauser);
@@ -243,4 +247,12 @@ void AAOCharacter::ClearGAS()
 UAbilitySystemComponent* AAOCharacter::GetAbilitySystemComponent() const
 {
 	return ASC;
+}
+
+TArray<USkeletalMeshComponent*> AAOCharacter::GetAllMeshes()
+{
+	TArray<USkeletalMeshComponent*> Meshes;
+	Meshes.Add(GetMesh());
+
+	return Meshes;
 }

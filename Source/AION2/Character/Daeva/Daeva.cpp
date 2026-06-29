@@ -25,7 +25,7 @@
 #include "Components/SceneComponent.h"
 #include "Materials/MaterialInterface.h"
 
-const float TargetTraceRadius = 2000.0f;
+const float TargetTraceRadius = 3500.0f;
 
 ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -116,11 +116,11 @@ void ADaeva::BeginPlay()
 	Super::BeginPlay();
 
 	TargetZoomDistance = SpringArm->TargetArmLength;
-	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 1.0f, true);
+	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 0.25f, true);
 
-	/* [UI: ë°œê´‘ë„ë¥¼ ì£½ì´ëŠ” Materialë¡œ ì„¤ì •.]
-	* ìƒì„±ìì—ì„œëŠ” ì´ˆê¸°í™” ê³¼ì •ì—ì„œ Materialì´ ê¸°ë³¸ê°’ìœ¼ë¡œ ë°”ë€” ìˆ˜ ìˆê¸° ë•Œë¬¸ì—,
-	* íƒ€ì´ë°ì´ ë” ë’¤ì¸ Beginì—ì„œ ì‘ë™.
+	/* [UI: ¹ß±¤µµ¸¦ Á×ÀÌ´Â Material·Î ¼³Á¤.]
+	* »ı¼ºÀÚ¿¡¼­´Â ÃÊ±âÈ­ °úÁ¤¿¡¼­ MaterialÀÌ ±âº»°ªÀ¸·Î ¹Ù²ğ ¼ö ÀÖ±â ¶§¹®¿¡,
+	* Å¸ÀÌ¹ÖÀÌ ´õ µÚÀÎ Begin¿¡¼­ ÀÛµ¿.
 	*/
 	if (WidgetMaterial)
 	{
@@ -142,7 +142,7 @@ void ADaeva::PossessedBy(AController* NewController)
 
 	InitGAS();
 
-	// UI ê´€ë ¨í•´, Localplayerë©´ ì¶”ê°€.
+	// UI ê´€?¨í•´, Localplayerë©?ì¶”ê?.
 	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(NewController))
 	{
 		if (AOController->IsLocalController())
@@ -167,7 +167,7 @@ void ADaeva::OnRep_PlayerState()
 
 	InitGAS();
 
-	// UI ê´€ë ¨í•´, Localplayerë©´ ì¶”ê°€.
+	// UI ê´€?¨í•´, Localplayerë©?ì¶”ê?.
 	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
 	{
 		if (AOController->IsLocalController())
@@ -300,6 +300,11 @@ void ADaeva::Server_SetCurrentTarget_Implementation(AAOCharacter* NewTarget)
 	SetCurrentTarget(NewTarget);
 }
 
+bool ADaeva::HasMoveInput()
+{
+	return GetCharacterMovement()->GetCurrentAcceleration().SizeSquared() > 0.0f;
+}
+
 void ADaeva::SearchTarget()
 {
 	if (!IsLocallyControlled())
@@ -376,6 +381,61 @@ void ADaeva::SearchTarget()
 	);
 
 	ChangeCurrentTargetInClient(Candidates[0].Target);
+}
+
+void ADaeva::TeleportBackToTarget()
+{
+	if (!IsValid(CurrentTarget))
+	{
+		return;
+	}
+
+	FVector TargetLocation = CurrentTarget->GetActorLocation();
+	FVector BehindLocation = TargetLocation - CurrentTarget->GetActorForwardVector() * 200.f;
+	BehindLocation.Z = GetActorLocation().Z;
+
+	FVector Direction = TargetLocation - BehindLocation;
+	Direction.Z = 0.f;
+
+	const FRotator LookAtRot = Direction.Rotation();
+
+	TeleportTo(BehindLocation, LookAtRot);
+	SetCameraByLookAt(LookAtRot);
+}
+
+FRotator ADaeva::GetLookAtToTarget()
+{
+	if (!IsValid(CurrentTarget))
+	{
+		return FRotator::ZeroRotator;
+	}
+
+	FVector TargetLocation = CurrentTarget->GetActorLocation();
+	FVector Direction = TargetLocation - GetActorLocation();
+	Direction.Z = 0.f;
+	return Direction.Rotation();
+}
+
+void ADaeva::SetCameraByLookAt(const FRotator& LookAtRot)
+{
+	if (IsLocallyControlled())
+	{
+		if (AController* Controller = GetController())
+		{
+			SpringArm->bEnableCameraLag = false;
+			SpringArm->bEnableCameraRotationLag = false;
+
+			Controller->SetControlRotation(LookAtRot);
+
+			GetWorldTimerManager().SetTimerForNextTick(
+				[this]()
+				{
+					SpringArm->bEnableCameraLag = true;
+					SpringArm->bEnableCameraRotationLag = true;
+				}
+			);
+		}
+	}
 }
 
 void ADaeva::Move(const FInputActionValue& Value)
@@ -480,7 +540,7 @@ void ADaeva::InitGAS()
 		ApplyDashStaminaRegenEffect();
 	}
 
-	// UI ìƒì„± ë° Bind.
+	// UI ?ì„± ë°?Bind.
 	NotifyPlayerUIReady();
 }
 
@@ -617,7 +677,11 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 
 void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
 {
-	// Todo: íšŒí”¼ & ë¦¬í„´ ì²˜ë¦¬
+	if (ASC->HasMatchingGameplayTag(STATE_DASHING))
+	{
+		ASC->ExecuteGameplayCue(CUE_GHOSTTRAIL);
+		return;
+	}
 	
 	Super::TakeDamageAO(AttackData, HitResult, DamageCauser);
 
@@ -627,11 +691,6 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitRe
 
 void ADaeva::InputShiftPressed()
 {
-	/*if (IsSprinting())
-	{
-		return;
-	}*/
-
 	GASInputPressed(static_cast<int32>(EAbilityID::Dash));
 
 	if (bHasMoveInput)
@@ -965,7 +1024,6 @@ void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 	Parts.Add(PartType, PartMesh);
 }
 
-
 void ADaeva::PlayCameraShake(bool& bDidShakeCamera)
 {
 	if (!bDidShakeCamera)
@@ -1050,3 +1108,27 @@ void ADaeva::NotifyPlayerUIReady()
 	OnPlayerUIReady.Broadcast(AOPlayerState, ASC, this);
 }
 
+TArray<USkeletalMeshComponent*> ADaeva::GetAllMeshes()
+{
+	TArray<USkeletalMeshComponent*> Meshes;
+
+	for (const auto& Pair : Parts)
+	{
+		if (USkeletalMeshComponent* PartMesh = Pair.Value)
+		{
+			Meshes.Add(PartMesh);
+		}
+	}
+
+	if (Weapon)
+	{
+		Meshes.Add(Weapon);
+	}
+
+	if (SubWeapon)
+	{
+		Meshes.Add(SubWeapon);
+	}
+
+	return Meshes;
+}

@@ -18,8 +18,6 @@ void UGA_RangedAttack::ActivateAbility(
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	UE_LOG(LogTemp, Log, TEXT("Go"));
-
 	if (!ActorInfo)
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
@@ -227,5 +225,6 @@ void UGA_RangedAttack::OnLaunchProjectileEvent(FGameplayEventData Payload)
 		return;
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("Summon Shuriken"));
 	AOCharacter->SpawnAttackProjectile(AttackData, ProjectileClass, ProjectileSpawnSocket);
 }

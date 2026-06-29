@@ -2,7 +2,8 @@
 
 #include "Character/Monster/AOMonsterBase.h"
 
-#include "Game/AODunGameMode.h"
+#include "Game/AODungeonGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "AIController.h"
 #include "BrainComponent.h"
@@ -71,11 +72,32 @@ void AAOMonsterBase::InitGAS()
     // ASC에 능력 넣어주는 작업 
     AbilitySet->GiveToASC(ASC, AbilityHandles);
 
+	// Delegate
+	if (!HealthChangedDelegateHandle.IsValid())
+	{
+		HealthChangedDelegateHandle =
+			ASC->GetGameplayAttributeValueChangeDelegate(
+				UAOAttributeSet::GetHealthAttribute()
+			).AddUObject(this, &AAOMonsterBase::OnHealthChanged);
+	}
+
+	bIsDead = false;
+
 
 }
 
 void AAOMonsterBase::ClearGAS()
 {
+	if (ASC && HealthChangedDelegateHandle.IsValid())
+	{
+		ASC->GetGameplayAttributeValueChangeDelegate(
+			UAOAttributeSet::GetHealthAttribute()
+		).Remove(HealthChangedDelegateHandle);
+
+		HealthChangedDelegateHandle.Reset();
+	}
+
+	Super::ClearGAS();
 }
 
 
@@ -106,34 +128,79 @@ void AAOMonsterBase::InitAttributeSet()
 // Only Server Call
 void AAOMonsterBase::HandleBossDeath()
 {
-	UE_LOG(
-		LogTemp,
-		Error,
-		TEXT("[BossDeath] HandleBossDeath Called! Boss: %s"),
-		*GetName()
-	);
+	if (bIsDead)
+	{
+		return;
+	}
 
+	bIsDead = true;
 
+	UE_LOG(LogTemp, Warning, TEXT("[Monster Death] %s Died"), *GetName());
+
+	// 클라이언트/서버 공통: 더 이상 이동, 충돌, 피격이 일어나지 않도록 처리
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (ASC)
+	{
+		ASC->CancelAllAbilities();
+
+		const FGameplayTag DeadTag =
+			FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+
+		ASC->AddLooseGameplayTag(DeadTag);
+	}
+
+	// AI 중지
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		AIController->StopMovement();
+
+		if (UBrainComponent* Brain = AIController->GetBrainComponent())
+		{
+			Brain->StopLogic(TEXT("Monster Dead"));
+		}
+	}
+
+	// 던전 진행은 서버에서만 결정
 	if (!HasAuthority())
 	{
 		return;
 	}
 
-	AAODunGameMode* DungeonGameMode =
-		GetWorld()->GetAuthGameMode<AAODunGameMode>();
+	// 여기서 사망 몽타주 재생
+	// Multicast_PlayDeathMontage();
 
-	if (!DungeonGameMode)
+	// DungeonBossIndex가 1~3이면 던전 보스
+	if (DungeonBossIndex >= 1 && DungeonBossIndex <= 3)
 	{
-		UE_LOG(
-			LogTemp,
-			Error,
-			TEXT("[Dungeon] DungeonGameMode not found. Boss: %s"),
-			*GetName()
-		);
-		return;
-	}
+		AAODungeonGameMode* DungeonGameMode =
+			Cast<AAODungeonGameMode>(UGameplayStatics::GetGameMode(this));
 
-	DungeonGameMode->NotifyBossDefeated(this);
+		if (DungeonGameMode)
+		{
+			DungeonGameMode->NotifyBossDefeated(this);
+		}
+	}
+}
+
+void AAOMonsterBase::OnHealthChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[Monster Health] %s : %.1f -> %.1f"),
+		*GetName(),
+		Data.OldValue,
+		Data.NewValue
+	);
+
+	if (Data.NewValue <= 0.0f && !bIsDead)
+	{
+		HandleBossDeath();
+	}
 }
 
 void AAOMonsterBase::SetDungeonBossActive(bool bActive)
@@ -197,6 +264,11 @@ void AAOMonsterBase::SetDungeonBossActive(bool bActive)
 		TEXT("[Dungeon] Boss AI Activated: %s"),
 		*GetName()
 	);
+}
+
+void AAOMonsterBase::Die()
+{
+	HandleBossDeath();
 }
 
 
