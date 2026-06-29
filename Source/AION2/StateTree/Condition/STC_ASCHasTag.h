@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "StateTreeConditionBase.h"
 #include "GameplayTagContainer.h"
-#include "STCondition_ASCHasTag.generated.h"
+#include "STC_ASCHasTag.generated.h"
 
 class AActor;
 
@@ -23,8 +23,8 @@ struct FStateTreeASCHasTagConditionInstanceData
 	bool bInvert = false;
 };
 
-USTRUCT(DisplayName = "ASC Has Gameplay Tag")
-struct AION2_API FStateTreeASCHasTagCondition : public FStateTreeConditionCommonBase
+USTRUCT(DisplayName = "ASC Has Gameplay Tag", Category = "AION2")
+struct AION2_API FSTC_ASCHasTag : public FStateTreeConditionCommonBase
 {
 	GENERATED_BODY()
 

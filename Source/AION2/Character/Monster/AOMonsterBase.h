@@ -29,6 +29,10 @@ protected:
 	virtual void InitGAS() override;
 	virtual void ClearGAS() override;
 
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
 	// Navigation Mesh의 범위 밖에 이동인지 아닌지를 판단하는 함수 
 	UFUNCTION(BlueprintCallable, Category = "Navigation")
 	bool CanMoveOnNavMesh(const FVector Direction, float Distance);
@@ -41,8 +45,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Montage")
 	UAnimMontage* GetMontageByTag(const FGameplayTag& MontageTag) const;
 
-	UPROPERTY(BlueprintAssignable, Category = "GAS")
-	FOnAbilityFinishedEvent OnAbilityFinishedEvent;
+
+	// 몬스터 AI 컨트롤러에서 Phase 설정 뒤 Replicate. 
+	FORCEINLINE void Set_Phase(FGameplayTag _PhaseFlag) { Phase = _PhaseFlag; }
+	FORCEINLINE void Set_State(FGameplayTag _StateFlag) { State = _StateFlag; }
 
 
 protected:
@@ -51,6 +57,8 @@ protected:
 	TObjectPtr<class UAOAttributeSet> AttributeSet;
 
 	virtual void InitAttributeSet();
+
+
 private:
 	// GAS 관련 
 	UPROPERTY()
@@ -59,9 +67,28 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TMap<FGameplayTag, TObjectPtr<UAnimMontage>> MontageMap;
 
+
+
+
+	// 몬스터 페이즈 및 상태 설정 
+
+	//  EditAnywhere 에디터 Details 패널에서 값을 수정할 수 있냐를 정합니다.
+	//  BlueprintReadWrite 루프린트 그래프에서 Get/Set 노드로 접근할 수 있냐를 정합니다.
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "AI State", meta = (AllowPrivateAccess = "true"))
+	FGameplayTag Phase;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "AI State", meta = (AllowPrivateAccess = "true"))
+	FGameplayTag State;
+
+
+
 	// AODungeonGameMode -> TEST
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void HandleBossDeath();
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UDA_AbilitySet> AbilitySet;
 
 public:
 	/*
@@ -72,9 +99,6 @@ public:
 	*/
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Dungeon")
 	int32 DungeonBossIndex = 0;
-	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UDA_AbilitySet> AbilitySet;
-
 
 
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")

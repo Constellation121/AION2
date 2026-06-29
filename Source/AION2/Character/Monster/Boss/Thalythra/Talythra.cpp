@@ -7,7 +7,7 @@
 #include "Animation/AnimMontage.h"
 #include "Character/Monster/Boss/Thalythra/Projectile/TalythraProjectile.h"
 #include "NiagaraFunctionLibrary.h"
-#include "AI/AITalythraAIController.h"
+#include "AI/Talythra/AITalythraAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
@@ -71,14 +71,14 @@ void ATalythra::BeginPlay()
 
 
 	//@PLZTODO : 이거 위치 바꿔줘야함. 
-	if (HasAuthority()) // 서버인 경우 
-	{
-		for (const auto& Ability : HasAbilities) // 능력들 저장. 
-		{
-			FGameplayAbilitySpec AbilitySpec(Ability.Value);
-			ASC->GiveAbility(AbilitySpec);
-		}
-	}
+	//if (HasAuthority()) // 서버인 경우 
+	//{
+	//	for (const auto& Ability : HasAbilities) // 능력들 저장. 
+	//	{
+	//		FGameplayAbilitySpec AbilitySpec(Ability.Value);
+	//		ASC->GiveAbility(AbilitySpec);
+	//	}
+	//}
 
 
 #pragma region Attack_Line SceneComponents
@@ -189,6 +189,12 @@ void ATalythra::Tick(float DeltaTime)
 		TurnToTarget();
 	}
 
+	//GEngine->AddOnScreenDebugMessage(
+	//	-1,                  // Key (-1이면 매번 새 줄)
+	//	2.f,                 // 표시 시간 (초)
+	//	FColor::Yellow,      // 색상
+	//	FString::Printf(TEXT("Health: %.1f"), AttributeSet->GetHealth())
+	//);
 
 }
 
@@ -665,14 +671,14 @@ void ATalythra::InitAttributeSet()
 
 	AttributeSet->InitStamina(100.f);
 	AttributeSet->InitMaxStamina(100.f);
+
 }
 
 void ATalythra::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ATalythra, Phase);
-	DOREPLIFETIME(ATalythra, State);
+
 	DOREPLIFETIME(ATalythra, bLockPelvis);
 
 }
