@@ -24,6 +24,7 @@ public:
 
 public:
 	virtual void SearchTarget();
+	virtual void TeleportBackToTarget();
 
 public:
 	virtual void CheckAttackHit(const FAttackData& AttackData);
@@ -42,6 +43,7 @@ protected:
 public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	FORCEINLINE AAOCharacter* GetCurrentTarget() const { return CurrentTarget; }
+	virtual TArray<class USkeletalMeshComponent*> GetAllMeshes();
 
 public:
 	FORCEINLINE void SetCurrentTarget(AAOCharacter* NewTarget) { CurrentTarget = NewTarget; }

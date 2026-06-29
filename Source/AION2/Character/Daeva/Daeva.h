@@ -123,7 +123,11 @@ public:
 	void Client_PlayCameraShake();
 
 public:
+	bool HasMoveInput();
 	virtual void SearchTarget() override;
+	virtual void TeleportBackToTarget() override;
+	FRotator GetLookAtToTarget();
+	void SetCameraByLookAt(const FRotator& LookAtRot);
 
 protected:
 	virtual void Move(const FInputActionValue& Value);
@@ -220,6 +224,7 @@ public:
 	FORCEINLINE USkeletalMeshComponent* GetSubWeaponMesh() const { return SubWeapon; }
 	FORCEINLINE USkeletalMeshComponent* GetWingMesh() const { return Wing; }
 	FORCEINLINE UAnimInstance* GetWingAnimInstance() const { return GetWingMesh()->GetAnimInstance(); }
+	virtual TArray<USkeletalMeshComponent*> GetAllMeshes() override;
 
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))

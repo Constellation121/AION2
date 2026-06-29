@@ -32,6 +32,10 @@ void AAOCharacter::SearchTarget()
 {
 }
 
+void AAOCharacter::TeleportBackToTarget()
+{
+}
+
 void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 {
 	if (!HasAuthority())
@@ -243,4 +247,12 @@ void AAOCharacter::ClearGAS()
 UAbilitySystemComponent* AAOCharacter::GetAbilitySystemComponent() const
 {
 	return ASC;
+}
+
+TArray<USkeletalMeshComponent*> AAOCharacter::GetAllMeshes()
+{
+	TArray<USkeletalMeshComponent*> Meshes;
+	Meshes.Add(GetMesh());
+
+	return Meshes;
 }
