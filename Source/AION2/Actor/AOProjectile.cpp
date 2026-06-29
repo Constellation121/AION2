@@ -77,10 +77,10 @@ void AAOProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComp, AAc
         return;
     }
 
-    //if (!DamageCauser->IsEnemy(HitCharacter))
-    //{
-    //    return;
-    //}
+    if (!DamageCauser->IsEnemy(HitCharacter))
+    {
+        return;
+    }
 
     bool bDidCameraShake = false;
     DamageCauser->OnAttackSucceeded(AttackData, Target, SweepResult, bDidCameraShake);

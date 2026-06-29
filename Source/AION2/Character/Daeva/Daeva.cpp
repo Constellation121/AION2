@@ -351,10 +351,10 @@ void ADaeva::SearchTarget()
 			continue;
 		}
 
-		//if (!IsEnemy(HitActor))
-		//{
-		//	continue;
-		//}
+		if (!IsEnemy(HitActor))
+		{
+			continue;
+		}
 
 		if (!IsFrontOfCamera(HitActor))
 		{
@@ -718,6 +718,16 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitRe
 	}
 	
 	Super::TakeDamageAO(AttackData, HitResult, DamageCauser);
+
+	if (StateCombatApplyEffect)
+	{
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(StateCombatApplyEffect, 1.f, Context);
+		if (SpecHandle.IsValid())
+		{
+			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
+	}
 
 	bool bDidShakeCamera = false;
 	PlayCameraShake(bDidShakeCamera);
