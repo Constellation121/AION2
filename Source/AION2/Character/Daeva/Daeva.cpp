@@ -8,11 +8,13 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Game/AODungeonGameMode.h"
 
 #include "GameplayTagContainer.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/PlayerController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
@@ -438,6 +440,38 @@ void ADaeva::SetCameraByLookAt(const FRotator& LookAtRot)
 	}
 }
 
+void ADaeva::ResetForDungeonRespawn()
+{
+	if (!ASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ASC is null"));
+		return;
+	}
+
+	const UAOAttributeSet* AttributeSet = ASC->GetSet<UAOAttributeSet>();
+
+	if (!AttributeSet)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttributeSet is null"));
+		return;
+	}
+
+	const float RespawnHealth = AttributeSet->GetMaxHealth();
+	const float RespawnMana = AttributeSet->GetMana();
+	const float RespawnStamina = AttributeSet->GetStamina();
+
+	ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), RespawnHealth);
+	ASC->SetNumericAttributeBase(UAOAttributeSet::GetManaAttribute(), RespawnMana);
+	ASC->SetNumericAttributeBase(UAOAttributeSet::GetStaminaAttribute(), RespawnStamina);
+
+	// 사망 태그 제거.
+	const FGameplayTag DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+	ASC->RemoveLooseGameplayTag(DeadTag);
+
+	// New Pawn이므로 기본적으로 false이지만 명확하게 하기 위해 초기화.
+	bIsDead = false;
+}
+
 void ADaeva::Move(const FInputActionValue& Value)
 {
 	if (IsDead())
@@ -691,7 +725,19 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitRe
 
 void ADaeva::InputShiftPressed()
 {
+	if (IsDead())
+	{
+		return;
+	}
+
+	// 대시는 전투, 비전투 모두 가능.
 	GASInputPressed(static_cast<int32>(EAbilityID::Dash));
+
+	// 전투 중과 활강 중에는 Sprint 금지
+	if (ASC->HasMatchingGameplayTag(STATE_COMBAT) || ASC->HasMatchingGameplayTag(STATE_GLIDING))
+	{
+		return;
+	}
 
 	if (bHasMoveInput)
 	{
@@ -776,6 +822,12 @@ void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)
 
 	SetWeaponVisibility(bIsCombat);
 	SetSubWeaponVisibility(bIsCombat);
+
+	// 전투 진입 순간 기준 Sprint 강제 종료.
+	if (bIsCombat)
+	{
+		RequestStopSprint();
+	}
 }
 
 void ADaeva::HandleDeath()
@@ -788,6 +840,10 @@ void ADaeva::HandleDeath()
 	bIsDead = true;
 
 	UE_LOG(LogTemp, Warning, TEXT("[Death] %s Died"), *GetName());
+
+	// 죽기 전에 Controller를 먼저 확보해야 한다.
+	APlayerController* PlayerController =
+		Cast<APlayerController>(GetController());
 
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
@@ -806,10 +862,43 @@ void ADaeva::HandleDeath()
 
 	if (HasAuthority())
 	{
-		DetachFromControllerPendingDestroy();
+		// GameMode에 먼저 사망 사실 전달
+		if (PlayerController)
+		{
+			if (AAODungeonGameMode* DungeonGameMode =
+				GetWorld()->GetAuthGameMode<AAODungeonGameMode>())
+			{
+				UE_LOG(
+					LogTemp,
+					Warning,
+					TEXT("[Death] Notify Dungeon GameMode: %s"),
+					*PlayerController->GetName()
+				);
+
+				DungeonGameMode->NotifyPlayerDied(PlayerController);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("[Death] DungeonGameMode is null"));
+			}
+		}
+		else
+		{
+			UE_LOG(
+				LogTemp,
+				Error,
+				TEXT("[Death] PlayerController is null before detach: %s"),
+				*GetName()
+			);
+		}
+
+		// 사망 애니메이션은 Controller가 붙어 있어도 재생 가능
 		Multicast_PlayMontage(EMontageID::Die, 1.0f);
 		Multicast_PlayWingMontage(EMontageID::Die, 1.0f);
 		Multicast_SetWingVisibility(true);
+
+		// 여기서는 제거하거나 주석 처리
+		// DetachFromControllerPendingDestroy();
 	}
 }
 
@@ -836,6 +925,13 @@ void ADaeva::StartSprint()
 	{
 		return;
 	}
+
+	//서버 권한 기준으로 최종 차단.
+	if (ASC->HasMatchingGameplayTag(STATE_COMBAT))
+	{
+		return;
+	}
+
 
 	if (SprintEffectHandle.IsValid())
 	{
@@ -869,14 +965,6 @@ void ADaeva::StartSprint()
 	SprintEffectHandle =
 		ASC->ApplyGameplayEffectSpecToSelf(*SprintSpec.Data.Get());
 
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[Sprint] Sprint applied / HandleValid=%d / Speed=%.1f"),
-		SprintEffectHandle.IsValid(),
-		ASC->GetNumericAttribute(UAOAttributeSet::GetMoveSpeedAttribute())
-	);
-
 	FGameplayEffectContextHandle DrainContext = ASC->MakeEffectContext();
 	DrainContext.AddSourceObject(this);
 
@@ -891,13 +979,6 @@ void ADaeva::StartSprint()
 
 	SprintDrainEffectHandle =
 		ASC->ApplyGameplayEffectSpecToSelf(*DrainSpec.Data.Get());
-
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[Sprint] Drain applied / HandleValid=%d"),
-		SprintDrainEffectHandle.IsValid()
-	);
 }
 
 void ADaeva::StopSprint()
@@ -918,8 +999,6 @@ void ADaeva::StopSprint()
 		ASC->RemoveActiveGameplayEffect(SprintDrainEffectHandle);
 		SprintDrainEffectHandle.Invalidate();
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("[Sprint] Stopped"));
 }
 
 bool ADaeva::IsSprinting() const
