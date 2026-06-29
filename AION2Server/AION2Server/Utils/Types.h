@@ -38,6 +38,7 @@ USING_SHARED_PTR(Job);
 
 USING_SHARED_PTR(Room);
 USING_SHARED_PTR(Dungeon);
+USING_SHARED_PTR(DungeonWaitingRoom);
 
 
 const uint64 WORKER_TICK = 64;

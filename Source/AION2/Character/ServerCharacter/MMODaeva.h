@@ -7,7 +7,7 @@
 #include "MMODaeva.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class AION2_API AMMODaeva : public ADaeva
@@ -17,6 +17,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 public:
 	void SetMyId(uint64 Id) { MyId = Id; }
@@ -29,6 +30,7 @@ public:
 	bool IsCurrentMoving();
 
 	void SendDungeonWait();
+	void SetDungeonId(int32 NewDungeonId) { DungeonId = NewDungeonId; }
 
 	bool bHasMoveInput = false;
 
@@ -48,6 +50,11 @@ private:
 	FVector TargetVel = FVector::ZeroVector;
 
 	bool bWasMovingLastSend = false;
+public:
+
+
+private:
+	int32 DungeonId;
 
 	uint64 MyId = -1;
 	uint8 MyClassType;

@@ -1089,12 +1089,13 @@ class DungeonPlayerInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMemberNameFieldNumber = 1,
-    kMemberClassFieldNumber = 2,
-    kIsReadyFieldNumber = 3,
-    kIndexFieldNumber = 4,
+    kMemberNameFieldNumber = 2,
+    kMemberIdFieldNumber = 1,
+    kMemberClassFieldNumber = 3,
+    kIsReadyFieldNumber = 4,
+    kIndexFieldNumber = 5,
   };
-  // string memberName = 1;
+  // string memberName = 2;
   void clear_membername();
   const std::string& membername() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1108,7 +1109,16 @@ class DungeonPlayerInfo final :
   std::string* _internal_mutable_membername();
   public:
 
-  // .Protocol.ClassType memberClass = 2;
+  // uint64 memberId = 1;
+  void clear_memberid();
+  uint64_t memberid() const;
+  void set_memberid(uint64_t value);
+  private:
+  uint64_t _internal_memberid() const;
+  void _internal_set_memberid(uint64_t value);
+  public:
+
+  // .Protocol.ClassType memberClass = 3;
   void clear_memberclass();
   ::Protocol::ClassType memberclass() const;
   void set_memberclass(::Protocol::ClassType value);
@@ -1117,7 +1127,7 @@ class DungeonPlayerInfo final :
   void _internal_set_memberclass(::Protocol::ClassType value);
   public:
 
-  // bool isReady = 3;
+  // bool isReady = 4;
   void clear_isready();
   bool isready() const;
   void set_isready(bool value);
@@ -1126,7 +1136,7 @@ class DungeonPlayerInfo final :
   void _internal_set_isready(bool value);
   public:
 
-  // int32 index = 4;
+  // int32 index = 5;
   void clear_index();
   int32_t index() const;
   void set_index(int32_t value);
@@ -1144,6 +1154,7 @@ class DungeonPlayerInfo final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr membername_;
+    uint64_t memberid_;
     int memberclass_;
     bool isready_;
     int32_t index_;
@@ -1842,7 +1853,27 @@ inline void PlayerState::set_allocated_playerrotation(::Protocol::Rotator3* play
 
 // DungeonPlayerInfo
 
-// string memberName = 1;
+// uint64 memberId = 1;
+inline void DungeonPlayerInfo::clear_memberid() {
+  _impl_.memberid_ = uint64_t{0u};
+}
+inline uint64_t DungeonPlayerInfo::_internal_memberid() const {
+  return _impl_.memberid_;
+}
+inline uint64_t DungeonPlayerInfo::memberid() const {
+  // @@protoc_insertion_point(field_get:Protocol.DungeonPlayerInfo.memberId)
+  return _internal_memberid();
+}
+inline void DungeonPlayerInfo::_internal_set_memberid(uint64_t value) {
+  
+  _impl_.memberid_ = value;
+}
+inline void DungeonPlayerInfo::set_memberid(uint64_t value) {
+  _internal_set_memberid(value);
+  // @@protoc_insertion_point(field_set:Protocol.DungeonPlayerInfo.memberId)
+}
+
+// string memberName = 2;
 inline void DungeonPlayerInfo::clear_membername() {
   _impl_.membername_.ClearToEmpty();
 }
@@ -1892,7 +1923,7 @@ inline void DungeonPlayerInfo::set_allocated_membername(std::string* membername)
   // @@protoc_insertion_point(field_set_allocated:Protocol.DungeonPlayerInfo.memberName)
 }
 
-// .Protocol.ClassType memberClass = 2;
+// .Protocol.ClassType memberClass = 3;
 inline void DungeonPlayerInfo::clear_memberclass() {
   _impl_.memberclass_ = 0;
 }
@@ -1912,7 +1943,7 @@ inline void DungeonPlayerInfo::set_memberclass(::Protocol::ClassType value) {
   // @@protoc_insertion_point(field_set:Protocol.DungeonPlayerInfo.memberClass)
 }
 
-// bool isReady = 3;
+// bool isReady = 4;
 inline void DungeonPlayerInfo::clear_isready() {
   _impl_.isready_ = false;
 }
@@ -1932,7 +1963,7 @@ inline void DungeonPlayerInfo::set_isready(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.DungeonPlayerInfo.isReady)
 }
 
-// int32 index = 4;
+// int32 index = 5;
 inline void DungeonPlayerInfo::clear_index() {
   _impl_.index_ = 0;
 }

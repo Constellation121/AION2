@@ -22,11 +22,21 @@ void UAODungeonEntranceWidget::NativeConstruct()
 	{
 		CreateButton->OnClicked.AddDynamic(this, &UAODungeonEntranceWidget::OnCreateButtonClicked);
 	}
+
+	if (StartButton)
+	{
+		StartButton->OnClicked.AddDynamic(this, &UAODungeonEntranceWidget::OnStartButtonClicked);
+	}
 }
 
 void UAODungeonEntranceWidget::OnEnterButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("C++: Enter Button Clicked!"));
+	if (EnterButton)
+	{
+		EnterButton->SetIsEnabled(false);
+	}
+
 	UAOGameInstance* GI = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
 
 	if (!GI) return;
@@ -42,14 +52,28 @@ void UAODungeonEntranceWidget::OnCreateButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("C++: Create Button Clicked!"));
 
+	if (CreateButton)
+	{
+		CreateButton->SetIsEnabled(false);
+	}
+
 	UAOGameInstance* GI = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
 
-	if (!GI) return;
-	uint64 PlayerId = GI->GetMyPlayerId();
+	//if (!GI) return;
+	//uint64 PlayerId = GI->GetMyPlayerId();
 
 	Protocol::C_DungeonCreatePacket CreatePacket;
+
 	SEND_PACKET(CreatePacket, PKT_C_DUNGEONCREATE);
 	
+}
+void UAODungeonEntranceWidget::OnStartButtonClicked()
+{
+	UE_LOG(LogTemp, Warning, TEXT("C++: Create Button Clicked!"));
+
+	Protocol::C_DungeonStartacket StartPacket;
+	StartPacket.set_dungeonid(1);
+	SEND_PACKET(StartPacket, PKT_C_DUNGEONSTART);	
 }
 
 void UAODungeonEntranceWidget::SetLeaderClass(uint8 InLeaderClass)

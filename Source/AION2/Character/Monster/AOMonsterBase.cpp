@@ -1,7 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Character/Monster/AOMonsterBase.h"
+
+#include "Game/AODungeonGameMode.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "AIController.h"
+#include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NavigationSystem.h"
@@ -67,11 +72,32 @@ void AAOMonsterBase::InitGAS()
     // ASC에 능력 넣어주는 작업 
     AbilitySet->GiveToASC(ASC, AbilityHandles);
 
+	// Delegate
+	if (!HealthChangedDelegateHandle.IsValid())
+	{
+		HealthChangedDelegateHandle =
+			ASC->GetGameplayAttributeValueChangeDelegate(
+				UAOAttributeSet::GetHealthAttribute()
+			).AddUObject(this, &AAOMonsterBase::OnHealthChanged);
+	}
+
+	bIsDead = false;
+
 
 }
 
 void AAOMonsterBase::ClearGAS()
 {
+	if (ASC && HealthChangedDelegateHandle.IsValid())
+	{
+		ASC->GetGameplayAttributeValueChangeDelegate(
+			UAOAttributeSet::GetHealthAttribute()
+		).Remove(HealthChangedDelegateHandle);
+
+		HealthChangedDelegateHandle.Reset();
+	}
+
+	Super::ClearGAS();
 }
 
 
@@ -96,6 +122,153 @@ void AAOMonsterBase::InitAttributeSet()
 {
 
 
+}
+
+// Boss Health 0 -> Call
+// Only Server Call
+void AAOMonsterBase::HandleBossDeath()
+{
+	if (bIsDead)
+	{
+		return;
+	}
+
+	bIsDead = true;
+
+	UE_LOG(LogTemp, Warning, TEXT("[Monster Death] %s Died"), *GetName());
+
+	// 클라이언트/서버 공통: 더 이상 이동, 충돌, 피격이 일어나지 않도록 처리
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (ASC)
+	{
+		ASC->CancelAllAbilities();
+
+		const FGameplayTag DeadTag =
+			FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+
+		ASC->AddLooseGameplayTag(DeadTag);
+	}
+
+	// AI 중지
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		AIController->StopMovement();
+
+		if (UBrainComponent* Brain = AIController->GetBrainComponent())
+		{
+			Brain->StopLogic(TEXT("Monster Dead"));
+		}
+	}
+
+	// 던전 진행은 서버에서만 결정
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	// 여기서 사망 몽타주 재생
+	// Multicast_PlayDeathMontage();
+
+	// DungeonBossIndex가 1~3이면 던전 보스
+	if (DungeonBossIndex >= 1 && DungeonBossIndex <= 3)
+	{
+		AAODungeonGameMode* DungeonGameMode =
+			Cast<AAODungeonGameMode>(UGameplayStatics::GetGameMode(this));
+
+		if (DungeonGameMode)
+		{
+			DungeonGameMode->NotifyBossDefeated(this);
+		}
+	}
+}
+
+void AAOMonsterBase::OnHealthChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[Monster Health] %s : %.1f -> %.1f"),
+		*GetName(),
+		Data.OldValue,
+		Data.NewValue
+	);
+
+	if (Data.NewValue <= 0.0f && !bIsDead)
+	{
+		HandleBossDeath();
+	}
+}
+
+void AAOMonsterBase::SetDungeonBossActive(bool bActive)
+{
+	// 외형 표시 여부
+	SetActorHiddenInGame(!bActive);
+
+	// Capsule Collision도 함께 제어
+	if (UCapsuleComponent* Capsule = GetCapsuleComponent())
+	{
+		Capsule->SetCollisionEnabled(
+			bActive
+			? ECollisionEnabled::QueryAndPhysics
+			: ECollisionEnabled::NoCollision
+		);
+	}
+
+	// Tick을 꺼야 AI 관련 Tick이나 행동이 남지 않는다.
+	SetActorTickEnabled(bActive);
+
+	AAIController* AIController = Cast<AAIController>(GetController());
+
+	if (!AIController)
+	{
+		UE_LOG(
+			LogTemp,
+			Warning,
+			TEXT("[Dungeon] AIController is null: %s"),
+			*GetName()
+		);
+		return;
+	}
+
+	if (!AIController->BrainComponent)
+	{
+		UE_LOG(
+			LogTemp,
+			Warning,
+			TEXT("[Dungeon] BrainComponent is null: %s"),
+			*GetName()
+		);
+		return;
+	}
+
+	if (!bActive)
+	{
+		AIController->StopMovement();
+
+		AIController->BrainComponent->StopLogic(
+			TEXT("Dungeon Boss Disabled")
+		);
+
+		return;
+	}
+
+	AIController->BrainComponent->RestartLogic();
+
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[Dungeon] Boss AI Activated: %s"),
+		*GetName()
+	);
+}
+
+void AAOMonsterBase::Die()
+{
+	HandleBossDeath();
 }
 
 

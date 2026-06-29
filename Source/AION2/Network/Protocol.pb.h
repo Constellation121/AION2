@@ -3408,6 +3408,7 @@ class S_DungeonStartPacket final :
   enum : int {
     kDungeonIPFieldNumber = 2,
     kDungeonIdFieldNumber = 1,
+    kPortFieldNumber = 3,
   };
   // string dungeonIP = 2;
   void clear_dungeonip();
@@ -3432,6 +3433,15 @@ class S_DungeonStartPacket final :
   void _internal_set_dungeonid(int32_t value);
   public:
 
+  // int32 port = 3;
+  void clear_port();
+  int32_t port() const;
+  void set_port(int32_t value);
+  private:
+  int32_t _internal_port() const;
+  void _internal_set_port(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_DungeonStartPacket)
  private:
   class _Internal;
@@ -3442,6 +3452,7 @@ class S_DungeonStartPacket final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dungeonip_;
     int32_t dungeonid_;
+    int32_t port_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5012,6 +5023,26 @@ inline void S_DungeonStartPacket::set_allocated_dungeonip(std::string* dungeonip
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_DungeonStartPacket.dungeonIP)
+}
+
+// int32 port = 3;
+inline void S_DungeonStartPacket::clear_port() {
+  _impl_.port_ = 0;
+}
+inline int32_t S_DungeonStartPacket::_internal_port() const {
+  return _impl_.port_;
+}
+inline int32_t S_DungeonStartPacket::port() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonStartPacket.port)
+  return _internal_port();
+}
+inline void S_DungeonStartPacket::_internal_set_port(int32_t value) {
+  
+  _impl_.port_ = value;
+}
+inline void S_DungeonStartPacket::set_port(int32_t value) {
+  _internal_set_port(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DungeonStartPacket.port)
 }
 
 #ifdef __GNUC__

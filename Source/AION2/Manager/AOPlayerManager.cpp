@@ -107,3 +107,32 @@ void UAOPlayerManager::HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator
 		Player->ReceiveMovePacket(NewLocation, NewRotation, NewVel);
 	}
 }
+
+void UAOPlayerManager::HandleDungeonCreate(int32 DungeonId)
+{
+	if (!GameInstance)
+		return;
+	uint64 PlayerId = GameInstance->GetMyPlayerId();
+	auto PlayerRef = PlayerInfos.Find(PlayerId);
+	if (PlayerRef == nullptr)return;
+	auto Player = PlayerRef->Get();
+	if (Player)
+	{
+		Player->SetDungeonId(DungeonId);
+	}
+
+}
+
+void UAOPlayerManager::HandleDungeonEnter(int32 DungeonId)
+{
+
+}
+
+void UAOPlayerManager::HandleDungeonStart(FString ServerURL)
+{
+	AAOPlayerController* PC = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PC)
+	{
+		PC->ClientTravel(ServerURL, ETravelType::TRAVEL_Absolute);
+	}
+}

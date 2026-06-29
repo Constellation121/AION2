@@ -24,9 +24,10 @@ public:
 	bool ConnectToServer(const FString& Ip, int32 Port);
 	bool IsServerConnected();
 
-	void  GetLocalIPAddress();
+	FString  GetLocalIPAddress();
 	int32 GetLocalPort();
-	void SendDediIpPort(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	//void SendDediIpPort(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void SendDediIpPort();
 
 	UFUNCTION(BlueprintCallable)
 	void SendSignUpPacket(const FString& Id, const FString& Password, int32 ClassType);

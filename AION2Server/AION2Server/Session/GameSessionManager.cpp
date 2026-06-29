@@ -2,6 +2,7 @@
 #include "GameSessionManager.h"
 #include "GameSession.h"
 #include "DediSessionManager.h"
+#include "Player.h"
 
 GameSessionManager GSessionManager;
 
@@ -26,4 +27,15 @@ void GameSessionManager::Broadcast(SendBufferRef sendBuffer)
 		session->Send(sendBuffer);
 	}
 
+}
+
+GameSessionRef GameSessionManager::FindById(uint64 id)
+{
+	std::lock_guard<std::mutex>lock(_sessionMngLock);
+	for (GameSessionRef session : _sessions)
+	{
+		if (session->_player && session->_player->GetId() == id)
+			return session;
+	}
+	return nullptr;
 }

@@ -105,6 +105,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR DungeonPlayerInfo::DungeonPlayerInfo(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.membername_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.memberid_)*/uint64_t{0u}
   , /*decltype(_impl_.memberclass_)*/0
   , /*decltype(_impl_.isready_)*/false
   , /*decltype(_impl_.index_)*/0
@@ -192,6 +193,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::DungeonPlayerInfo, _impl_.memberid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::DungeonPlayerInfo, _impl_.membername_),
   PROTOBUF_FIELD_OFFSET(::Protocol::DungeonPlayerInfo, _impl_.memberclass_),
   PROTOBUF_FIELD_OFFSET(::Protocol::DungeonPlayerInfo, _impl_.isready_),
@@ -214,7 +216,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 28, -1, -1, sizeof(::Protocol::PlayerInfo)},
   { 36, -1, -1, sizeof(::Protocol::PlayerState)},
   { 46, -1, -1, sizeof(::Protocol::DungeonPlayerInfo)},
-  { 56, -1, -1, sizeof(::Protocol::DungeonInfo)},
+  { 57, -1, -1, sizeof(::Protocol::DungeonInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -239,21 +241,22 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "\020\n\010playerId\030\001 \001(\004\022(\n\013playerClass\030\002 \001(\0162\023"
   ".Protocol.ClassType\022)\n\016playerLocation\030\003 "
   "\001(\0132\021.Protocol.Vector3\022*\n\016playerRotation"
-  "\030\004 \001(\0132\022.Protocol.Rotator3\"q\n\021DungeonPla"
-  "yerInfo\022\022\n\nmemberName\030\001 \001(\t\022(\n\013memberCla"
-  "ss\030\002 \001(\0162\023.Protocol.ClassType\022\017\n\007isReady"
-  "\030\003 \001(\010\022\r\n\005index\030\004 \001(\005\"\245\001\n\013DungeonInfo\022\021\n"
-  "\tdungeonId\030\001 \001(\005\022$\n\006status\030\002 \001(\0162\024.Proto"
-  "col.RoomStatus\022/\n\nleaderInfo\030\003 \001(\0132\033.Pro"
-  "tocol.DungeonPlayerInfo\022,\n\007members\030\004 \003(\013"
-  "2\033.Protocol.DungeonPlayerInfob\006proto3"
+  "\030\004 \001(\0132\022.Protocol.Rotator3\"\203\001\n\021DungeonPl"
+  "ayerInfo\022\020\n\010memberId\030\001 \001(\004\022\022\n\nmemberName"
+  "\030\002 \001(\t\022(\n\013memberClass\030\003 \001(\0162\023.Protocol.C"
+  "lassType\022\017\n\007isReady\030\004 \001(\010\022\r\n\005index\030\005 \001(\005"
+  "\"\245\001\n\013DungeonInfo\022\021\n\tdungeonId\030\001 \001(\005\022$\n\006s"
+  "tatus\030\002 \001(\0162\024.Protocol.RoomStatus\022/\n\nlea"
+  "derInfo\030\003 \001(\0132\033.Protocol.DungeonPlayerIn"
+  "fo\022,\n\007members\030\004 \003(\0132\033.Protocol.DungeonPl"
+  "ayerInfob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 757, descriptor_table_protodef_Struct_2eproto,
+    false, false, 776, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 7,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -1596,6 +1599,7 @@ DungeonPlayerInfo::DungeonPlayerInfo(const DungeonPlayerInfo& from)
   DungeonPlayerInfo* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.membername_){}
+    , decltype(_impl_.memberid_){}
     , decltype(_impl_.memberclass_){}
     , decltype(_impl_.isready_){}
     , decltype(_impl_.index_){}
@@ -1610,9 +1614,9 @@ DungeonPlayerInfo::DungeonPlayerInfo(const DungeonPlayerInfo& from)
     _this->_impl_.membername_.Set(from._internal_membername(), 
       _this->GetArenaForAllocation());
   }
-  ::memcpy(&_impl_.memberclass_, &from._impl_.memberclass_,
+  ::memcpy(&_impl_.memberid_, &from._impl_.memberid_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.index_) -
-    reinterpret_cast<char*>(&_impl_.memberclass_)) + sizeof(_impl_.index_));
+    reinterpret_cast<char*>(&_impl_.memberid_)) + sizeof(_impl_.index_));
   // @@protoc_insertion_point(copy_constructor:Protocol.DungeonPlayerInfo)
 }
 
@@ -1622,6 +1626,7 @@ inline void DungeonPlayerInfo::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.membername_){}
+    , decltype(_impl_.memberid_){uint64_t{0u}}
     , decltype(_impl_.memberclass_){0}
     , decltype(_impl_.isready_){false}
     , decltype(_impl_.index_){0}
@@ -1658,9 +1663,9 @@ void DungeonPlayerInfo::Clear() {
   (void) cached_has_bits;
 
   _impl_.membername_.ClearToEmpty();
-  ::memset(&_impl_.memberclass_, 0, static_cast<size_t>(
+  ::memset(&_impl_.memberid_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&_impl_.index_) -
-      reinterpret_cast<char*>(&_impl_.memberclass_)) + sizeof(_impl_.index_));
+      reinterpret_cast<char*>(&_impl_.memberid_)) + sizeof(_impl_.index_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1670,9 +1675,17 @@ const char* DungeonPlayerInfo::_InternalParse(const char* ptr, ::_pbi::ParseCont
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // string memberName = 1;
+      // uint64 memberId = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.memberid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string memberName = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_membername();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
@@ -1680,26 +1693,26 @@ const char* DungeonPlayerInfo::_InternalParse(const char* ptr, ::_pbi::ParseCont
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.ClassType memberClass = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+      // .Protocol.ClassType memberClass = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_memberclass(static_cast<::Protocol::ClassType>(val));
         } else
           goto handle_unusual;
         continue;
-      // bool isReady = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+      // bool isReady = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           _impl_.isready_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 index = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+      // int32 index = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
           _impl_.index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -1734,33 +1747,39 @@ uint8_t* DungeonPlayerInfo::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string memberName = 1;
+  // uint64 memberId = 1;
+  if (this->_internal_memberid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_memberid(), target);
+  }
+
+  // string memberName = 2;
   if (!this->_internal_membername().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_membername().data(), static_cast<int>(this->_internal_membername().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "Protocol.DungeonPlayerInfo.memberName");
     target = stream->WriteStringMaybeAliased(
-        1, this->_internal_membername(), target);
+        2, this->_internal_membername(), target);
   }
 
-  // .Protocol.ClassType memberClass = 2;
+  // .Protocol.ClassType memberClass = 3;
   if (this->_internal_memberclass() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      2, this->_internal_memberclass(), target);
+      3, this->_internal_memberclass(), target);
   }
 
-  // bool isReady = 3;
+  // bool isReady = 4;
   if (this->_internal_isready() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_isready(), target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(4, this->_internal_isready(), target);
   }
 
-  // int32 index = 4;
+  // int32 index = 5;
   if (this->_internal_index() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_index(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(5, this->_internal_index(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1779,25 +1798,30 @@ size_t DungeonPlayerInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string memberName = 1;
+  // string memberName = 2;
   if (!this->_internal_membername().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_membername());
   }
 
-  // .Protocol.ClassType memberClass = 2;
+  // uint64 memberId = 1;
+  if (this->_internal_memberid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_memberid());
+  }
+
+  // .Protocol.ClassType memberClass = 3;
   if (this->_internal_memberclass() != 0) {
     total_size += 1 +
       ::_pbi::WireFormatLite::EnumSize(this->_internal_memberclass());
   }
 
-  // bool isReady = 3;
+  // bool isReady = 4;
   if (this->_internal_isready() != 0) {
     total_size += 1 + 1;
   }
 
-  // int32 index = 4;
+  // int32 index = 5;
   if (this->_internal_index() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_index());
   }
@@ -1822,6 +1846,9 @@ void DungeonPlayerInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, cons
 
   if (!from._internal_membername().empty()) {
     _this->_internal_set_membername(from._internal_membername());
+  }
+  if (from._internal_memberid() != 0) {
+    _this->_internal_set_memberid(from._internal_memberid());
   }
   if (from._internal_memberclass() != 0) {
     _this->_internal_set_memberclass(from._internal_memberclass());
@@ -1858,9 +1885,9 @@ void DungeonPlayerInfo::InternalSwap(DungeonPlayerInfo* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(DungeonPlayerInfo, _impl_.index_)
       + sizeof(DungeonPlayerInfo::_impl_.index_)
-      - PROTOBUF_FIELD_OFFSET(DungeonPlayerInfo, _impl_.memberclass_)>(
-          reinterpret_cast<char*>(&_impl_.memberclass_),
-          reinterpret_cast<char*>(&other->_impl_.memberclass_));
+      - PROTOBUF_FIELD_OFFSET(DungeonPlayerInfo, _impl_.memberid_)>(
+          reinterpret_cast<char*>(&_impl_.memberid_),
+          reinterpret_cast<char*>(&other->_impl_.memberid_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata DungeonPlayerInfo::GetMetadata() const {
