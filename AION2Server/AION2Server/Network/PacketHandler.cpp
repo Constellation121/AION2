@@ -139,6 +139,8 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 
 		GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 		PlayerRef player = gameSession->_player;
+		player->SetName(pkt.id());
+
 		Protocol::PlayerInfo* playerInfo = loginPkt.mutable_playerinfo();
 		playerInfo->set_playerclass(static_cast<Protocol::ClassType>(player->_class));
 		playerInfo->set_playerid(player->_playerId);

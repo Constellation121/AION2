@@ -25,6 +25,8 @@
     <ClCompile Include="DB\DBBind.cpp" />
     <ClCompile Include="DB\DBConnection.cpp" />
     <ClCompile Include="DB\DBConnectionPool.cpp" />
+    <ClCompile Include="DB\RedisConnectionPool.cpp" />
+    <ClCompile Include="DB\RedisManager.cpp" />
     <ClCompile Include="DediSessionManager.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="Enum.pb.cc">
@@ -33,7 +35,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ItemData.cpp" />
     <ClCompile Include="Job\Job.cpp" />
     <ClCompile Include="Job\JobQueue.cpp" />
     <ClCompile Include="Job\JobTimer.cpp" />
@@ -53,6 +54,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RedisConnection.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="Session\DedicatedSession.cpp" />
     <ClCompile Include="Session\GameSession.cpp" />
@@ -82,10 +84,11 @@
     <ClInclude Include="DB\DBBind.h" />
     <ClInclude Include="DB\DBConnection.h" />
     <ClInclude Include="DB\DBConnectionPool.h" />
+    <ClInclude Include="DB\RedisConnectionPool.h" />
+    <ClInclude Include="DB\RedisManager.h" />
     <ClInclude Include="DediSessionManager.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="Enum.pb.h" />
-    <ClInclude Include="ItemData.h" />
     <ClInclude Include="Job\Job.h" />
     <ClInclude Include="Job\JobQueue.h" />
     <ClInclude Include="Job\JobTimer.h" />
@@ -100,6 +103,7 @@
     <ClInclude Include="ObjectUtils.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Protocol.pb.h" />
+    <ClInclude Include="RedisConnection.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Session\DedicatedSession.h" />
     <ClInclude Include="Session\GameSession.h" />
