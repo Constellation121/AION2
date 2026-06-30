@@ -142,7 +142,7 @@ int32 UAOGameInstance::GetLocalPort()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Error: Port InVaild"));
 	}
-	return Port;
+	return 7777;
 }
 
 
