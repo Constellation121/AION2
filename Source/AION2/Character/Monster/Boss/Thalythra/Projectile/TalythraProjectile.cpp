@@ -41,17 +41,11 @@ void ATalythraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][BeginPlay] Projectile=%s NetMode=%d HasAuthority=%d Instigator=%s"), *GetNameSafe(this), static_cast<int32>(GetNetMode()), HasAuthority() ? 1 : 0, *GetNameSafe(GetInstigator()));
-
 	if (HasAuthority() == false)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][BeginPlay][Skip] Projectile=%s Reason=NoAuthority"), *GetNameSafe(this));
 		return;
-	}
 
 	//Collision->OnComponentHit.AddDynamic(this, &ATalythraProjectile::OnProjectileHit);
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &ATalythraProjectile::OnProjectileOverlapEvent);
-	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][BeginPlay] Projectile=%s BoundOverlap=1"), *GetNameSafe(this));
 
 }
 
@@ -77,21 +71,14 @@ void ATalythraProjectile::OnProjectileHit(
 
 void ATalythraProjectile::OnProjectileOverlapEvent(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][Overlap][Enter] Projectile=%s NetMode=%d HasAuthority=%d Other=%s OtherComp=%s Instigator=%s"), *GetNameSafe(this), static_cast<int32>(GetNetMode()), HasAuthority() ? 1 : 0, *GetNameSafe(OtherActor), *GetNameSafe(OtherComp), *GetNameSafe(GetInstigator()));
-
 	// 같은 발사자가 쏜 다른 투사체 무시
 	if (ATalythraProjectile* OtherProj = Cast<ATalythraProjectile>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][Overlap][Reject] Projectile=%s OtherProjectile=%s Reason=ProjectileVsProjectile"), *GetNameSafe(this), *GetNameSafe(OtherProj));
 		return; // 투사체끼리는 무조건 무시 (또는 GetInstigator 비교)
 	}
 
 	// 발사자 본인 무시
-	if (OtherActor == GetInstigator())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][Overlap][Reject] Projectile=%s Other=%s Reason=SelfInstigator"), *GetNameSafe(this), *GetNameSafe(OtherActor));
-		return;
-	}
+	if (OtherActor == GetInstigator()) return;
 
 
 	int a = 4;
@@ -102,27 +89,15 @@ void ATalythraProjectile::OnProjectileOverlapEvent(UPrimitiveComponent* Overlapp
 
 
 	AAOCharacter* HitCharacter = Cast<AAOCharacter>(OtherActor);
-	if (!HitCharacter)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][Overlap][Reject] Projectile=%s Other=%s Reason=NotAOCharacter"), *GetNameSafe(this), *GetNameSafe(OtherActor));
-		return;
-	}
 
 	if (HitCharacter->IsDead())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][Overlap][Reject] Projectile=%s Target=%s Reason=TargetDead"), *GetNameSafe(this), *GetNameSafe(HitCharacter));
 		return;
 	}
 
 
 	AAOCharacter* ProjectileOwner = Cast<AAOCharacter>(GetInstigator());
-	if (!ProjectileOwner)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][Overlap][Abort] Projectile=%s Target=%s Reason=ProjectileOwnerNull Instigator=%s"), *GetNameSafe(this), *GetNameSafe(HitCharacter), *GetNameSafe(GetInstigator()));
-		return;
-	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][TalythraProjectile][Overlap][CallTakeDamageAO] Projectile=%s Owner=%s Target=%s"), *GetNameSafe(this), *GetNameSafe(ProjectileOwner), *GetNameSafe(HitCharacter));
 	bool bDidCameraShake = false;
 	HitCharacter->TakeDamageAO(AttackData, SweepResult, ProjectileOwner);
 
