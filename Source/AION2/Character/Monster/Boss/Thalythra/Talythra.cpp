@@ -139,7 +139,7 @@ void ATalythra::Tick(float DeltaTime)
 
 	if (bChargeAttack)
 	{
-		if (CanMoveOnNavMesh(ChargeDirection, 100.f)) // 이 부분도 수정 
+		if (CanMoveOnNavMesh(ChargeDirection, 750.f)) // 이 부분도 수정 
 		{
 			AddMovementInput(ChargeDirection, 1.0f, false);
 		}
@@ -648,8 +648,8 @@ void ATalythra::DoFireProjectile_3()
 void ATalythra::InitAttributeSet()
 {
 	// AttributeSet설정
-	AttributeSet->InitHealth(100.f);
-	AttributeSet->InitMaxHealth(100.f);
+	AttributeSet->InitHealth(250.f);
+	AttributeSet->InitMaxHealth(250.f);
 
 	AttributeSet->InitStamina(100.f);
 	AttributeSet->InitMaxStamina(100.f);
