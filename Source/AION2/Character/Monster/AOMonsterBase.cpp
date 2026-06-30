@@ -32,7 +32,7 @@ AAOMonsterBase::AAOMonsterBase(const FObjectInitializer& ObjectInitializer)
 
     ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
     ASC->SetIsReplicated(true);
-    ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+    ASC->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 
 
     AttributeSet = CreateDefaultSubobject<UAOAttributeSet>(TEXT("AttributeSet"));
@@ -40,6 +40,8 @@ AAOMonsterBase::AAOMonsterBase(const FObjectInitializer& ObjectInitializer)
 
     bReplicates = true;
     SetReplicateMovement(true);
+    SetNetUpdateFrequency(30.f);
+    SetMinNetUpdateFrequency(10.f);
 
 
 	// TargetWidgetComponent

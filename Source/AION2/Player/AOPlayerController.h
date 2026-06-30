@@ -74,5 +74,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RaidHUD)
 	TSubclassOf<UAOMainHUDWidget> MainHUDClass;
 
+	int32 PendingHUDBindRetryCount = 0;
+
 	TObjectPtr<UAOMainHUDWidget> MainHUD;
 };

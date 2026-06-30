@@ -144,6 +144,16 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 
 	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
 
+	if (HasAuthority())
+	{
+		ForceNetUpdate();
+
+		if (AActor* TargetASCOwner = TargetASC->GetOwnerActor())
+		{
+			TargetASCOwner->ForceNetUpdate();
+		}
+	}
+
 	const float NewHealth =
 		TargetASC->GetNumericAttribute(
 			UAOAttributeSet::GetHealthAttribute()
