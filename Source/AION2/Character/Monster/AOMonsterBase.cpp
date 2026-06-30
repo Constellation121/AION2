@@ -43,13 +43,16 @@ void AAOMonsterBase::BeginPlay()
 {
     Super::BeginPlay();
 
+	// 클라에서 호출
+	InitGAS();
+
 }
 
 void AAOMonsterBase::PossessedBy(AController* NewController)
 {
     Super::PossessedBy(NewController);
 
-
+	// 서버에서 호출
     InitGAS();
 
 

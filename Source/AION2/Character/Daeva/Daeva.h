@@ -160,6 +160,7 @@ private:
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
+	void OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 public:
 	virtual void HandleDeath();
@@ -327,12 +328,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
 	TSubclassOf<UGameplayEffect> DashStaminaRegenEffect;
 
+	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	TSubclassOf<UGameplayEffect> StateCombatApplyEffect;
+
 	bool bTagEventsRegistered = false;
 
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
-private:
 	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
 
