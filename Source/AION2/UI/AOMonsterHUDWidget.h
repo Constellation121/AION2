@@ -34,9 +34,7 @@ public:
 
 protected:
     void HandleHealthChanged(const FOnAttributeChangeData& Data);
-    void HandleMaxHealthChanged(const FOnAttributeChangeData& Data);
     void HandleStaminaChanged(const FOnAttributeChangeData& Data);
-    void HandleMaxStaminaChanged(const FOnAttributeChangeData& Data);
 
 private:
     void BindASCDelegates();
@@ -55,11 +53,9 @@ private:
     // 기존 Delegate을 저장하고, 재Binding마다 기존 Delegate 제거 후 bind.
     ///
     FDelegateHandle HealthChangedHandle;
-    FDelegateHandle MaxHealthChangedHandle;
 
     // 여기서 Stamina는 그로기 게이지.
     FDelegateHandle StaminaChangedHandle;
-    FDelegateHandle MaxStaminaChangedHandle;
 
 protected:
     UPROPERTY(meta = (BindWidget), BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

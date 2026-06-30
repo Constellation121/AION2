@@ -10,11 +10,6 @@
 
 TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
 
-namespace
-{
-	constexpr int32 MaxHUDBindRetryCount = 30;
-}
-
 AAOPlayerController::AAOPlayerController()
 {
 	CurrentInputType = EInputType::Game;
@@ -127,7 +122,6 @@ void AAOPlayerController::HandlePawnASCReady()
 		return;
 	}
 
-	PendingHUDBindRetryCount = 0;
 	CreateOrBindMainHUD();
 }
 
@@ -158,17 +152,5 @@ void AAOPlayerController::CreateOrBindMainHUD()
 	}
 
 	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
-	if (!AOPlayerState)
-	{
-		if (PendingHUDBindRetryCount < MaxHUDBindRetryCount)
-		{
-			++PendingHUDBindRetryCount;
-			GetWorldTimerManager().SetTimerForNextTick(this, &AAOPlayerController::CreateOrBindMainHUD);
-		}
-
-		return;
-	}
-
-	PendingHUDBindRetryCount = 0;
 	MainHUD->BindToPlayerState(AOPlayerState);
 }

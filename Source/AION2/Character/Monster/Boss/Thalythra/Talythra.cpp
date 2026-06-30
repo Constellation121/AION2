@@ -65,11 +65,7 @@ void ATalythra::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (HasAuthority())
-	{
-		InitAttributeSet();
-		ForceNetUpdate();
-	}
+	InitAttributeSet();
 
 
 	//@PLZTODO : 이거 위치 바꿔줘야함. 
