@@ -4,7 +4,6 @@
 #include "Session/DedicatedSession.h"
 #include "DBConnectionPool.h"
 #include "DBBind.h"
-#include "ItemData.h"
 #include "Room.h"
 #include "Dungeon.h"
 #include "Player.h"
@@ -173,6 +172,7 @@ bool PacketHandler::HandleMapComplete(PacketSessionRef& session, Protocol::C_Map
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	if (!gameSession)return false;
 	PlayerRef player = gameSession->_player;
+	if (!player) return false;
 	GRoom->DoAsync(&Room::HandleEnterPlayer, player);
 
 	return true;
