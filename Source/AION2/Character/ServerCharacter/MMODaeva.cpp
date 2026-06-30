@@ -163,13 +163,6 @@ void AMMODaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			this,
 			&AMMODaeva::InputMoveReleased
 		);
-
-		EnhancedInputComponent->BindAction(
-			ShiftAction,
-			ETriggerEvent::Started,
-			this,
-			&AMMODaeva::InputShiftPressed
-		);
 	}
 }
 

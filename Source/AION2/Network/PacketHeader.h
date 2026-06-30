@@ -74,7 +74,15 @@ struct FPlayerInfo
 	uint64 PlayerId = 0;
 
 	UPROPERTY()
+	FString PlayerName;
+
+	UPROPERTY()
 	uint8 ClassType = 0;
+
+	FPlayerInfo() {}
+	FPlayerInfo(uint64 InId, FString InName, uint8 InClass)
+		:PlayerId(InId), PlayerName(InName), ClassType(InClass) 
+	{}
 };
 
 struct FPacket

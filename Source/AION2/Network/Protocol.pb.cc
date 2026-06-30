@@ -81,8 +81,7 @@ struct S_LoginFailPacketDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_LoginFailPacketDefaultTypeInternal _S_LoginFailPacket_default_instance_;
 PROTOBUF_CONSTEXPR S_LoginSuccessPacket::S_LoginSuccessPacket(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.playername_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.playerinfo_)*/nullptr
+    /*decltype(_impl_.playerinfo_)*/nullptr
   , /*decltype(_impl_.gold_)*/0
   , /*decltype(_impl_.exp_)*/0
   , /*decltype(_impl_.hp_)*/0
@@ -406,7 +405,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_LoginSuccessPacket, _impl_.playerinfo_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_LoginSuccessPacket, _impl_.playername_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_LoginSuccessPacket, _impl_.gold_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_LoginSuccessPacket, _impl_.exp_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_LoginSuccessPacket, _impl_.hp_),
@@ -567,26 +565,26 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 16, -1, -1, sizeof(::Protocol::C_LoginPacket)},
   { 24, -1, -1, sizeof(::Protocol::S_LoginFailPacket)},
   { 30, -1, -1, sizeof(::Protocol::S_LoginSuccessPacket)},
-  { 41, -1, -1, sizeof(::Protocol::C_MapLoadCompletePacket)},
-  { 47, -1, -1, sizeof(::Protocol::S_ItemDataPacket)},
-  { 54, -1, -1, sizeof(::Protocol::S_SpawnPacket)},
-  { 61, -1, -1, sizeof(::Protocol::C_MovePacket)},
-  { 71, -1, -1, sizeof(::Protocol::S_MovePacket)},
-  { 81, -1, -1, sizeof(::Protocol::C_DedicatedPacket)},
-  { 89, -1, -1, sizeof(::Protocol::C_DungeonWaitingRoomEnterPacket)},
-  { 95, -1, -1, sizeof(::Protocol::S_DungeonWaitingRoomEnterPacket)},
-  { 102, -1, -1, sizeof(::Protocol::C_DungeonCreatePacket)},
-  { 108, -1, -1, sizeof(::Protocol::S_DungeonCreatePacket)},
-  { 115, -1, -1, sizeof(::Protocol::C_DungeonEnteracket)},
-  { 122, -1, -1, sizeof(::Protocol::S_DungeonEnterPacket)},
-  { 130, -1, -1, sizeof(::Protocol::C_DungeonReadyacket)},
-  { 137, -1, -1, sizeof(::Protocol::S_DungeonReadyPacket)},
-  { 145, -1, -1, sizeof(::Protocol::C_DungeonStartacket)},
-  { 152, -1, -1, sizeof(::Protocol::S_DungeonStartPacket)},
-  { 161, -1, -1, sizeof(::Protocol::C_DungeonExitPacket)},
-  { 168, -1, -1, sizeof(::Protocol::C_StorePurchase)},
-  { 176, -1, -1, sizeof(::Protocol::S_StorePurchase)},
-  { 183, -1, -1, sizeof(::Protocol::C_ChangeHp)},
+  { 40, -1, -1, sizeof(::Protocol::C_MapLoadCompletePacket)},
+  { 46, -1, -1, sizeof(::Protocol::S_ItemDataPacket)},
+  { 53, -1, -1, sizeof(::Protocol::S_SpawnPacket)},
+  { 60, -1, -1, sizeof(::Protocol::C_MovePacket)},
+  { 70, -1, -1, sizeof(::Protocol::S_MovePacket)},
+  { 80, -1, -1, sizeof(::Protocol::C_DedicatedPacket)},
+  { 88, -1, -1, sizeof(::Protocol::C_DungeonWaitingRoomEnterPacket)},
+  { 94, -1, -1, sizeof(::Protocol::S_DungeonWaitingRoomEnterPacket)},
+  { 101, -1, -1, sizeof(::Protocol::C_DungeonCreatePacket)},
+  { 107, -1, -1, sizeof(::Protocol::S_DungeonCreatePacket)},
+  { 114, -1, -1, sizeof(::Protocol::C_DungeonEnteracket)},
+  { 121, -1, -1, sizeof(::Protocol::S_DungeonEnterPacket)},
+  { 129, -1, -1, sizeof(::Protocol::C_DungeonReadyacket)},
+  { 136, -1, -1, sizeof(::Protocol::S_DungeonReadyPacket)},
+  { 144, -1, -1, sizeof(::Protocol::C_DungeonStartacket)},
+  { 151, -1, -1, sizeof(::Protocol::S_DungeonStartPacket)},
+  { 160, -1, -1, sizeof(::Protocol::C_DungeonExitPacket)},
+  { 167, -1, -1, sizeof(::Protocol::C_StorePurchase)},
+  { 175, -1, -1, sizeof(::Protocol::S_StorePurchase)},
+  { 182, -1, -1, sizeof(::Protocol::C_ChangeHp)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -624,42 +622,41 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "\023.Protocol.ClassType\"\'\n\024S_SignUpResultPa"
   "cket\022\017\n\007success\030\001 \001(\010\"-\n\rC_LoginPacket\022\n"
   "\n\002id\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\"\023\n\021S_LoginF"
-  "ailPacket\"{\n\024S_LoginSuccessPacket\022(\n\npla"
-  "yerInfo\030\001 \001(\0132\024.Protocol.PlayerInfo\022\022\n\np"
-  "layerName\030\002 \001(\t\022\014\n\004gold\030\003 \001(\005\022\013\n\003exp\030\004 \001"
-  "(\005\022\n\n\002hp\030\005 \001(\005\"\031\n\027C_MapLoadCompletePacke"
-  "t\";\n\020S_ItemDataPacket\022\'\n\013playerItems\030\001 \003"
-  "(\0132\022.Protocol.ItemData\"<\n\rS_SpawnPacket\022"
-  "+\n\014playerStates\030\001 \003(\0132\025.Protocol.PlayerS"
-  "tate\"\242\001\n\014C_MovePacket\022\020\n\010playerId\030\001 \001(\004\022"
-  ")\n\016PlayerLocation\030\002 \001(\0132\021.Protocol.Vecto"
-  "r3\022)\n\016PlayerVelocity\030\003 \001(\0132\021.Protocol.Ve"
-  "ctor3\022*\n\016PlayerRotation\030\004 \001(\0132\022.Protocol"
-  ".Rotator3\"\242\001\n\014S_MovePacket\022\020\n\010playerId\030\001"
-  " \001(\004\022)\n\016PlayerLocation\030\002 \001(\0132\021.Protocol."
-  "Vector3\022)\n\016PlayerVelocity\030\003 \001(\0132\021.Protoc"
-  "ol.Vector3\022*\n\016PlayerRotation\030\004 \001(\0132\022.Pro"
-  "tocol.Rotator3\"9\n\021C_DedicatedPacket\022\020\n\010s"
-  "erverIP\030\001 \001(\t\022\022\n\nserverPort\030\002 \001(\005\"!\n\037C_D"
-  "ungeonWaitingRoomEnterPacket\"N\n\037S_Dungeo"
-  "nWaitingRoomEnterPacket\022+\n\014dungeonInfos\030"
-  "\001 \003(\0132\025.Protocol.DungeonInfo\"\027\n\025C_Dungeo"
-  "nCreatePacket\"C\n\025S_DungeonCreatePacket\022*"
-  "\n\013dungeonInfo\030\001 \001(\0132\025.Protocol.DungeonIn"
-  "fo\"\'\n\023C_DungeonEnteracket\022\020\n\010playerId\030\001 "
-  "\001(\004\"[\n\024S_DungeonEnterPacket\022\021\n\tdungeonId"
-  "\030\001 \001(\005\0220\n\013enterPlayer\030\002 \001(\0132\033.Protocol.D"
-  "ungeonPlayerInfo\"(\n\023C_DungeonReadyacket\022"
-  "\021\n\tdungeonId\030\001 \001(\005\";\n\024S_DungeonReadyPack"
-  "et\022\021\n\tdungeonId\030\001 \001(\005\022\020\n\010playerId\030\002 \001(\004\""
-  "(\n\023C_DungeonStartacket\022\021\n\tdungeonId\030\001 \001("
-  "\005\"J\n\024S_DungeonStartPacket\022\021\n\tdungeonId\030\001"
-  " \001(\005\022\021\n\tdungeonIP\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\"(\n"
-  "\023C_DungeonExitPacket\022\021\n\tdungeonId\030\001 \001(\005\""
-  "3\n\017C_StorePurchase\022\016\n\006itemId\030\001 \001(\005\022\020\n\010pl"
-  "ayerId\030\002 \001(\004\"\037\n\017S_StorePurchase\022\014\n\004gold\030"
-  "\001 \001(\005\"*\n\nC_ChangeHp\022\020\n\010playerId\030\001 \001(\004\022\n\n"
-  "\002hp\030\002 \001(\005b\006proto3"
+  "ailPacket\"g\n\024S_LoginSuccessPacket\022(\n\npla"
+  "yerInfo\030\001 \001(\0132\024.Protocol.PlayerInfo\022\014\n\004g"
+  "old\030\002 \001(\005\022\013\n\003exp\030\003 \001(\005\022\n\n\002hp\030\004 \001(\005\"\031\n\027C_"
+  "MapLoadCompletePacket\";\n\020S_ItemDataPacke"
+  "t\022\'\n\013playerItems\030\001 \003(\0132\022.Protocol.ItemDa"
+  "ta\"<\n\rS_SpawnPacket\022+\n\014playerStates\030\001 \003("
+  "\0132\025.Protocol.PlayerState\"\242\001\n\014C_MovePacke"
+  "t\022\020\n\010playerId\030\001 \001(\004\022)\n\016PlayerLocation\030\002 "
+  "\001(\0132\021.Protocol.Vector3\022)\n\016PlayerVelocity"
+  "\030\003 \001(\0132\021.Protocol.Vector3\022*\n\016PlayerRotat"
+  "ion\030\004 \001(\0132\022.Protocol.Rotator3\"\242\001\n\014S_Move"
+  "Packet\022\020\n\010playerId\030\001 \001(\004\022)\n\016PlayerLocati"
+  "on\030\002 \001(\0132\021.Protocol.Vector3\022)\n\016PlayerVel"
+  "ocity\030\003 \001(\0132\021.Protocol.Vector3\022*\n\016Player"
+  "Rotation\030\004 \001(\0132\022.Protocol.Rotator3\"9\n\021C_"
+  "DedicatedPacket\022\020\n\010serverIP\030\001 \001(\t\022\022\n\nser"
+  "verPort\030\002 \001(\005\"!\n\037C_DungeonWaitingRoomEnt"
+  "erPacket\"N\n\037S_DungeonWaitingRoomEnterPac"
+  "ket\022+\n\014dungeonInfos\030\001 \003(\0132\025.Protocol.Dun"
+  "geonInfo\"\027\n\025C_DungeonCreatePacket\"C\n\025S_D"
+  "ungeonCreatePacket\022*\n\013dungeonInfo\030\001 \001(\0132"
+  "\025.Protocol.DungeonInfo\"\'\n\023C_DungeonEnter"
+  "acket\022\020\n\010playerId\030\001 \001(\004\"[\n\024S_DungeonEnte"
+  "rPacket\022\021\n\tdungeonId\030\001 \001(\005\0220\n\013enterPlaye"
+  "r\030\002 \001(\0132\033.Protocol.DungeonPlayerInfo\"(\n\023"
+  "C_DungeonReadyacket\022\021\n\tdungeonId\030\001 \001(\005\";"
+  "\n\024S_DungeonReadyPacket\022\021\n\tdungeonId\030\001 \001("
+  "\005\022\020\n\010playerId\030\002 \001(\004\"(\n\023C_DungeonStartack"
+  "et\022\021\n\tdungeonId\030\001 \001(\005\"J\n\024S_DungeonStartP"
+  "acket\022\021\n\tdungeonId\030\001 \001(\005\022\021\n\tdungeonIP\030\002 "
+  "\001(\t\022\014\n\004port\030\003 \001(\005\"(\n\023C_DungeonExitPacket"
+  "\022\021\n\tdungeonId\030\001 \001(\005\"3\n\017C_StorePurchase\022\016"
+  "\n\006itemId\030\001 \001(\005\022\020\n\010playerId\030\002 \001(\004\"\037\n\017S_St"
+  "orePurchase\022\014\n\004gold\030\001 \001(\005\"*\n\nC_ChangeHp\022"
+  "\020\n\010playerId\030\001 \001(\004\022\n\n\002hp\030\002 \001(\005b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -667,7 +664,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1657, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1637, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 25,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -1463,22 +1460,13 @@ S_LoginSuccessPacket::S_LoginSuccessPacket(const S_LoginSuccessPacket& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_LoginSuccessPacket* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.playername_){}
-    , decltype(_impl_.playerinfo_){nullptr}
+      decltype(_impl_.playerinfo_){nullptr}
     , decltype(_impl_.gold_){}
     , decltype(_impl_.exp_){}
     , decltype(_impl_.hp_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.playername_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.playername_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_playername().empty()) {
-    _this->_impl_.playername_.Set(from._internal_playername(), 
-      _this->GetArenaForAllocation());
-  }
   if (from._internal_has_playerinfo()) {
     _this->_impl_.playerinfo_ = new ::Protocol::PlayerInfo(*from._impl_.playerinfo_);
   }
@@ -1493,17 +1481,12 @@ inline void S_LoginSuccessPacket::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.playername_){}
-    , decltype(_impl_.playerinfo_){nullptr}
+      decltype(_impl_.playerinfo_){nullptr}
     , decltype(_impl_.gold_){0}
     , decltype(_impl_.exp_){0}
     , decltype(_impl_.hp_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
-  _impl_.playername_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.playername_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 S_LoginSuccessPacket::~S_LoginSuccessPacket() {
@@ -1517,7 +1500,6 @@ S_LoginSuccessPacket::~S_LoginSuccessPacket() {
 
 inline void S_LoginSuccessPacket::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.playername_.Destroy();
   if (this != internal_default_instance()) delete _impl_.playerinfo_;
 }
 
@@ -1531,7 +1513,6 @@ void S_LoginSuccessPacket::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.playername_.ClearToEmpty();
   if (GetArenaForAllocation() == nullptr && _impl_.playerinfo_ != nullptr) {
     delete _impl_.playerinfo_;
   }
@@ -1556,35 +1537,25 @@ const char* S_LoginSuccessPacket::_InternalParse(const char* ptr, ::_pbi::ParseC
         } else
           goto handle_unusual;
         continue;
-      // string playerName = 2;
+      // int32 gold = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          auto str = _internal_mutable_playername();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.S_LoginSuccessPacket.playerName"));
-        } else
-          goto handle_unusual;
-        continue;
-      // int32 gold = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.gold_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 exp = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+      // int32 exp = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _impl_.exp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 hp = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+      // int32 hp = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           _impl_.hp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -1626,32 +1597,22 @@ uint8_t* S_LoginSuccessPacket::_InternalSerialize(
         _Internal::playerinfo(this).GetCachedSize(), target, stream);
   }
 
-  // string playerName = 2;
-  if (!this->_internal_playername().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_playername().data(), static_cast<int>(this->_internal_playername().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.S_LoginSuccessPacket.playerName");
-    target = stream->WriteStringMaybeAliased(
-        2, this->_internal_playername(), target);
-  }
-
-  // int32 gold = 3;
+  // int32 gold = 2;
   if (this->_internal_gold() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_gold(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_gold(), target);
   }
 
-  // int32 exp = 4;
+  // int32 exp = 3;
   if (this->_internal_exp() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_exp(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_exp(), target);
   }
 
-  // int32 hp = 5;
+  // int32 hp = 4;
   if (this->_internal_hp() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(5, this->_internal_hp(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_hp(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1670,13 +1631,6 @@ size_t S_LoginSuccessPacket::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string playerName = 2;
-  if (!this->_internal_playername().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_playername());
-  }
-
   // .Protocol.PlayerInfo playerInfo = 1;
   if (this->_internal_has_playerinfo()) {
     total_size += 1 +
@@ -1684,17 +1638,17 @@ size_t S_LoginSuccessPacket::ByteSizeLong() const {
         *_impl_.playerinfo_);
   }
 
-  // int32 gold = 3;
+  // int32 gold = 2;
   if (this->_internal_gold() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_gold());
   }
 
-  // int32 exp = 4;
+  // int32 exp = 3;
   if (this->_internal_exp() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_exp());
   }
 
-  // int32 hp = 5;
+  // int32 hp = 4;
   if (this->_internal_hp() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_hp());
   }
@@ -1717,9 +1671,6 @@ void S_LoginSuccessPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, c
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from._internal_playername().empty()) {
-    _this->_internal_set_playername(from._internal_playername());
-  }
   if (from._internal_has_playerinfo()) {
     _this->_internal_mutable_playerinfo()->::Protocol::PlayerInfo::MergeFrom(
         from._internal_playerinfo());
@@ -1749,13 +1700,7 @@ bool S_LoginSuccessPacket::IsInitialized() const {
 
 void S_LoginSuccessPacket::InternalSwap(S_LoginSuccessPacket* other) {
   using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.playername_, lhs_arena,
-      &other->_impl_.playername_, rhs_arena
-  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(S_LoginSuccessPacket, _impl_.hp_)
       + sizeof(S_LoginSuccessPacket::_impl_.hp_)

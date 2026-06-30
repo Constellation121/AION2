@@ -38,8 +38,9 @@ public:
 
 	void GiveCommonAbilities();
 
-	void SetPlayerClass(EDaevaClassType InClassType);
-	void SetName(FString InName);
+	void SetMyId(uint64 PlayerId);
+	void SetMyClass(EDaevaClassType InClassType);
+	void SetMyName(FString InName);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
@@ -57,9 +58,9 @@ private:
 	bool bCommonAbilitiesGiven = false;
 
 private:
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	EDaevaClassType ClassType = EDaevaClassType::None;
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
+	EDaevaClassType MyClassType = EDaevaClassType::None;
 
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	FString PlayerName;
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
+	FString MyName;
 };

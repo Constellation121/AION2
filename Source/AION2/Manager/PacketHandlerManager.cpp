@@ -6,10 +6,7 @@
 #include "UI/AOLoginUserWidget.h"
 #include "UI/AODungeonEntranceWidget.h"
 #include "Player/AOPlayerController.h"
-#include "AOInventoryComponent.h"
 #include "Manager/AOUIManager.h"
-#include "UI/AOPlayerHUDWidget.h"
-#include "UI/AOMainHUDWidget.h"
 #include "AONetworkManager.h"
 
 
@@ -64,8 +61,7 @@ bool Handle_S_SLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginSuccessPack
 	{
 		uint64 PlayerId = pkt.playerinfo().playerid();
 		uint8 ClassType = static_cast<uint8>(pkt.playerinfo().playerclass());
-		FString PlayerName = TCHAR_TO_UTF8( pkt.playername().c_str());
-		NetworkMng->PlayerMng->HandleLogin(PlayerId, ClassType, PlayerName);
+		NetworkMng->PlayerMng->HandleLogin(PlayerId, ClassType);
 		NetworkMng->GameInstance->OnReadyoOpenLevel();
 	}
 	return true;
@@ -79,50 +75,7 @@ bool Handle_S_FLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginFailPacket&
 
 bool Handle_S_ITEM(UAONetworkManager* NetworkMng, Protocol::S_ItemDataPacket& Pkt)
 {
-	if (Pkt.playeritems_size() > 0)
-	{
-		int32 ItemCount = Pkt.playeritems_size();
-		if (ItemCount == 0) return false;
-
-		UWorld* World = NetworkMng->GetWorld();
-		if (World == nullptr) return false;
-
-		AAOPlayerController* PC = Cast<AAOPlayerController>(World->GetFirstPlayerController());
-		if (PC == nullptr) return false;
-
-		UAOMainHUDWidget* MainHUD = PC->GetMainHUD();
-		if (MainHUD == nullptr) return false;
-
-		UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
-		if (PlayerHUD == nullptr) return false;
-
-		APawn* Pawn = PC->GetPawn();
-		if (Pawn == nullptr) return false;
-		UAOInventoryComponent* InventoryComp = Pawn->FindComponentByClass<UAOInventoryComponent>();
-		if (InventoryComp == nullptr) return false;
-
-		for (int i = 0; i < ItemCount; i++)
-		{
-			const Protocol::ItemData& Item = Pkt.playeritems(i);
-
-			int32 InstanceId = Item.iteminstancedid();
-			int32 TemplateId = Item.itemtemplateid();
-			int32 SlotIndex = Item.slotindex();
-			int32 Count = Item.count();
-
-			FAOSlotData SlotData;
-			SlotData.ItemInstancedId = InstanceId;
-			SlotData.ItemTemplateId = TemplateId;
-			SlotData.SlotIndex = SlotIndex;
-			SlotData.Count = Count;
-			FItemData TemplateData;
-
-			if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
-			{
-				PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
-			}
-		}
-	}
+	NetworkMng->PlayerMng->HandleItem(Pkt);
 	return true;
 }
 
@@ -137,10 +90,12 @@ bool Handle_S_SPAWN(UAONetworkManager* NetworkMng, Protocol::S_SpawnPacket& Pkt)
 		{
 			const Protocol::PlayerState& State = Pkt.playerstates(i);
 			uint64 PlayerId = State.playerid();
+			FString PlayerName = TCHAR_TO_UTF8(State.playername().c_str());
 			FVector Location = FVector(State.playerlocation().x(), State.playerlocation().y(), State.playerlocation().z());
 			FRotator Rotation = FRotator(State.playerrotation().pitch(), State.playerrotation().yaw(), State.playerrotation().roll());
 			uint8 CalssType = static_cast<uint8>(State.playerclass());
-			NetworkMng->PlayerMng->HandleSpawn(PlayerId, CalssType, Location, Rotation);
+
+			NetworkMng->PlayerMng->HandleSpawn(PlayerId, PlayerName, CalssType, Location, Rotation);
 		}
 	}
 	return true;
