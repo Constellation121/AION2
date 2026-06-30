@@ -176,11 +176,17 @@ protected:
 	void InputShiftReleased();
 	void InputShiftPressed();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Sprint")
 	TSubclassOf<UGameplayEffect> SprintEffect;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Sprint")
 	TSubclassOf<UGameplayEffect> SprintDrainEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Mana")
+	TSubclassOf<UGameplayEffect> ManaRegenEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Mana")
+	TSubclassOf<UGameplayEffect> HitManaRegenEffect;
 
 
 	UFUNCTION(Server, Reliable)
@@ -245,6 +251,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	float MaxZoomDistance = 1200.f;
+
+	UPROPERTY(EditDefaultsOnly, Category ="GAS|Mana")
+	float HitManaRegenAmount = 5.f;
 
 	float TargetZoomDistance;
 
