@@ -56,7 +56,7 @@ void UAOMonsterHUDWidget::SetMonsterIndex(int32 InMonsterIndex)
         break;
     }
 
-    TB_MonsterName->Text = FText::FromString(MonsterName);
+    TB_MonsterName->SetText(FText::FromString(MonsterName));
 }
 
 void UAOMonsterHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)
