@@ -77,9 +77,8 @@ ATalythra::ATalythra(const FObjectInitializer& ObjectInitializer)
 			WidgetClass.Class);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WidgetMat(
-		TEXT("/Game/UI/Resource/Material/BaseMaterial/M_WorldSpaceUI1.M_WorldSpaceUI1")
-	);
+	OverheadStatusWidgetComponent->SetMaxVisibleDistance(6000.0f);
+
 #pragma endregion
 
 }
@@ -146,7 +145,7 @@ void ATalythra::BeginPlay()
 			SceneComp->SetVisibility(false, true);
 		}
 
-
+		
 	}
 
 #pragma endregion 
@@ -683,8 +682,8 @@ void ATalythra::DoFireProjectile_3()
 void ATalythra::InitAttributeSet()
 {
 	// AttributeSet설정
-	AttributeSet->InitHealth(1000.f);
-	AttributeSet->InitMaxHealth(1000.f);
+	AttributeSet->InitHealth(100.f);
+	AttributeSet->InitMaxHealth(100.f);
 
 	AttributeSet->InitStamina(100.f);
 	AttributeSet->InitMaxStamina(100.f);
