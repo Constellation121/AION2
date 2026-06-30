@@ -9,4 +9,6 @@ class AION2_API ASiliatorAIController : public AAIMonsterControllerBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void TargetPerceptionOn(AActor* Actor, FAIStimulus  Stimlus) override;
 };
