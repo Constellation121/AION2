@@ -254,6 +254,11 @@ public:
 	bool IsPlayerUIReady() const;
 	void NotifyPlayerUIReady();
 
+public:
+	void SetMyId(uint64 Id);
+	void SetMyClass(uint8 ClassType);
+	void SetMyName(FString InName);
+
 private:
 	bool bPlayerUIReady = false;
 
@@ -339,4 +344,8 @@ private:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
+
+protected:
+	//EDaevaClassType Type = EDaevaClassType::None;
+	uint64 MyId = -1;
 };

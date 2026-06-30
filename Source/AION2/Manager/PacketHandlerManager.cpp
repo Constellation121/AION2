@@ -53,7 +53,7 @@ bool Handle_S_SIGNUP(UAONetworkManager* NetworkMng, Protocol::S_SignUpResultPack
 {
 	bool bIsSuccess = Pkt.success();
 	if (bIsSuccess)
-		return true;
+		NetworkMng->GameInstance->LoginWidget->HandleRegisterResult();
 	NetworkMng->GameInstance->LoginWidget->HandleRegisterError();
 	return true;
 }
@@ -64,8 +64,8 @@ bool Handle_S_SLOGIN(UAONetworkManager* NetworkMng, Protocol::S_LoginSuccessPack
 	{
 		uint64 PlayerId = pkt.playerinfo().playerid();
 		uint8 ClassType = static_cast<uint8>(pkt.playerinfo().playerclass());
-
-		NetworkMng->PlayerMng->HandleLogin(PlayerId, ClassType);
+		FString PlayerName = TCHAR_TO_UTF8( pkt.playername().c_str());
+		NetworkMng->PlayerMng->HandleLogin(PlayerId, ClassType, PlayerName);
 		NetworkMng->GameInstance->OnReadyoOpenLevel();
 	}
 	return true;

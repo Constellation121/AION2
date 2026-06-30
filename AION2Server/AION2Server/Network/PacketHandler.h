@@ -108,10 +108,12 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_ItemDataPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_ITEM); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_SpawnPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_SPAWN); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_MovePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_MOVE); };
+
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonWaitingRoomEnterPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONWAITINTROOM); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonCreatePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONCREATE); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonEnterPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONENTER); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonStartPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONSTART); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonReadyPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONREADY); };
 
 	static SendBufferRef MakeSendBuffer(Protocol::S_StorePurchase& pkt) { return MakeSendBuffer(pkt, PKT_S_STOREPURCHASE); };
 

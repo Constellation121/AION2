@@ -172,3 +172,4 @@ void AMMODaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		);
 	}
 }
+
