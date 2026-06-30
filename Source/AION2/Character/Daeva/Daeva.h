@@ -19,6 +19,7 @@ class UAOWidgetComponentBase;
 
 class AAOPlayerState;
 class UAbilitySystemComponent;
+class UAOQuickSlotComponent;
 
 UENUM(BlueprintType)
 enum class EDaevaPartType : uint8
@@ -231,6 +232,7 @@ public:
 	FORCEINLINE USkeletalMeshComponent* GetWingMesh() const { return Wing; }
 	FORCEINLINE UAnimInstance* GetWingAnimInstance() const { return GetWingMesh()->GetAnimInstance(); }
 	virtual TArray<USkeletalMeshComponent*> GetAllMeshes() override;
+	FORCEINLINE UAOQuickSlotComponent* GetQuickSlotComponent() const { return QuickSlotComponent; }
 
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
@@ -263,6 +265,11 @@ public:
 
 	bool IsPlayerUIReady() const;
 	void NotifyPlayerUIReady();
+
+public:
+	void SetMyId(uint64 Id);
+	void SetMyClass(uint8 ClassType);
+	void SetMyName(FString InName);
 
 private:
 	bool bPlayerUIReady = false;
@@ -352,4 +359,11 @@ private:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QuickSlot", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAOQuickSlotComponent> QuickSlotComponent;
+
+protected:
+	
+	uint64 MyId = -1;
 };
