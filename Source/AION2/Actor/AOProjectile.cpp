@@ -77,6 +77,11 @@ void AAOProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComp, AAc
         return;
     }
 
+    if (HitCharacter->IsDead())
+    {
+        return;
+    }
+
     if (!DamageCauser->IsEnemy(HitCharacter))
     {
         return;

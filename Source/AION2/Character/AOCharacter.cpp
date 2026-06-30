@@ -73,8 +73,13 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 
 	for (const FHitResult& HitResult : OutHitResults)
 	{
-		AActor* HitActor = HitResult.GetActor();
+		AAOCharacter* HitActor = Cast<AAOCharacter>(HitResult.GetActor());
 		if (!IsValid(HitActor))
+		{
+			continue;
+		}
+
+		if (HitActor->IsDead())
 		{
 			continue;
 		}
@@ -114,7 +119,7 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 	const float Multiplier = AttackData.DamageMultiplier;
 	const float BaseDamage = AttackPower * Multiplier;
 
-	const float FinalDamage = 1.0f; //FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
+	const float FinalDamage = FMath::Max(1.0f, BaseDamage * (100.0f / (100.0f + Defense)));
 
 	FGameplayEffectContextHandle Context = SourceASC->MakeEffectContext();
 	Context.AddSourceObject(DamageCauser);

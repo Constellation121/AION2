@@ -428,6 +428,19 @@ void ADaeva::ResetForDungeonRespawn()
 
 	// New Pawn이므로 기본적으로 false이지만 명확하게 하기 위해 초기화.
 	bIsDead = false;
+
+	if (HasAuthority())
+	{
+		Multicast_PlayMontage(EMontageID::Rebirth, 1.3f);
+		Multicast_PlayWingMontage(EMontageID::Rebirth, 1.0f);
+		Multicast_SetWingVisibility(true);
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			FOnMontageEnded EndDelegate;
+			EndDelegate.BindUObject(this, &ThisClass::OnRebirthMontageEnded);
+			AnimInstance->Montage_SetEndDelegate(EndDelegate, GetMontageByID(EMontageID::Rebirth));
+		}
+	}
 }
 
 void ADaeva::Move(const FInputActionValue& Value)
@@ -795,6 +808,14 @@ void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)
 	if (bIsCombat)
 	{
 		RequestStopSprint();
+	}
+}
+
+void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (HasAuthority())
+	{
+		Multicast_SetWingVisibility(false);
 	}
 }
 

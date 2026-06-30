@@ -160,6 +160,7 @@ private:
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
+	void OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 public:
 	virtual void HandleDeath();
