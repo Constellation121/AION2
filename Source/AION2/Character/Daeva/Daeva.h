@@ -161,6 +161,7 @@ private:
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
+	void OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 public:
 	virtual void HandleDeath();
@@ -176,11 +177,17 @@ protected:
 	void InputShiftReleased();
 	void InputShiftPressed();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Sprint")
 	TSubclassOf<UGameplayEffect> SprintEffect;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Sprint")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Sprint")
 	TSubclassOf<UGameplayEffect> SprintDrainEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Mana")
+	TSubclassOf<UGameplayEffect> ManaRegenEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Mana")
+	TSubclassOf<UGameplayEffect> HitManaRegenEffect;
 
 
 	UFUNCTION(Server, Reliable)
@@ -246,6 +253,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	float MaxZoomDistance = 1200.f;
+
+	UPROPERTY(EditDefaultsOnly, Category ="GAS|Mana")
+	float HitManaRegenAmount = 5.f;
 
 	float TargetZoomDistance;
 
@@ -334,12 +344,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
 	TSubclassOf<UGameplayEffect> DashStaminaRegenEffect;
 
+	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	TSubclassOf<UGameplayEffect> StateCombatApplyEffect;
+
 	bool bTagEventsRegistered = false;
 
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
-private:
 	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
 

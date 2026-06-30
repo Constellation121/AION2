@@ -162,6 +162,25 @@ void ATalythra::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (HasAuthority() == false)
+		return; 
+
+
+	if (bChargeAttack)
+	{
+		if (CanMoveOnNavMesh(ChargeDirection, 100.f)) // 이 부분도 수정 
+		{
+			AddMovementInput(ChargeDirection, 1.0f, false);
+		}
+
+		else
+		{
+			GetCharacterMovement()->StopMovementImmediately();
+			EndChargeMove();
+		}
+
+	}
+
 
 	if (AttackWarningRangeSceneComponent->GetVisibleFlag() == true)
 	{

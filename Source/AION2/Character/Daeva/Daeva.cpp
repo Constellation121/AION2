@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Game/AODungeonGameMode.h"
+#include "GameplayEffect.h"		
 
 #include "GameplayTagContainer.h"
 #include "AbilitySystemComponent.h"
@@ -312,10 +313,10 @@ void ADaeva::SearchTarget()
 			continue;
 		}
 
-		//if (!IsEnemy(HitActor))
-		//{
-		//	continue;
-		//}
+		if (!IsEnemy(HitActor))
+		{
+			continue;
+		}
 
 		if (!IsFrontOfCamera(HitActor))
 		{
@@ -431,6 +432,19 @@ void ADaeva::ResetForDungeonRespawn()
 
 	// New Pawn이므로 기본적으로 false이지만 명확하게 하기 위해 초기화.
 	bIsDead = false;
+
+	if (HasAuthority())
+	{
+		Multicast_PlayMontage(EMontageID::Rebirth, 1.3f);
+		Multicast_PlayWingMontage(EMontageID::Rebirth, 1.0f);
+		Multicast_SetWingVisibility(true);
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			FOnMontageEnded EndDelegate;
+			EndDelegate.BindUObject(this, &ThisClass::OnRebirthMontageEnded);
+			AnimInstance->Montage_SetEndDelegate(EndDelegate, GetMontageByID(EMontageID::Rebirth));
+		}
+	}
 }
 
 void ADaeva::Move(const FInputActionValue& Value)
@@ -449,9 +463,7 @@ void ADaeva::Move(const FInputActionValue& Value)
 	FVector ForwardVector = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	FVector RightVector = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	FVector NewMoveInputDirection =
-		ForwardVector * Movement.Y +
-		RightVector * Movement.X;
+	FVector NewMoveInputDirection =	ForwardVector * Movement.Y + RightVector * Movement.X;
 
 	if (NewMoveInputDirection.IsNearlyZero())
 	{
@@ -462,12 +474,6 @@ void ADaeva::Move(const FInputActionValue& Value)
 
 	CurrentMoveInputDirection = NewMoveInputDirection.GetSafeNormal();
 	AddMovementInput(CurrentMoveInputDirection);
-
-	
-	/*if (bSprintInputHeld)
-	{
-		RequestStartSprint();
-	}*/
 }
 
 void ADaeva::Look(const FInputActionValue& Value)
@@ -496,6 +502,20 @@ void ADaeva::InitGAS()
 
 	ASC = GASPS->GetAbilitySystemComponent();
 	ASC->InitAbilityActorInfo(GASPS, this);
+
+	if (HasAuthority() && ManaRegenEffect)
+	{
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+		Context.AddSourceObject(this);
+
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(ManaRegenEffect, 1.f, Context);
+
+		if (SpecHandle.IsValid())
+		{
+			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			UE_LOG(LogTemp, Log, TEXT("Regen Effect Applied."));
+		}
+	}
 
 	if (!HealthChangedDelegateHandle.IsValid())
 	{
@@ -614,8 +634,7 @@ void ADaeva::ApplyDashStaminaRegenEffect()
 	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 
-	FGameplayEffectSpecHandle SpecHandle =
-		ASC->MakeOutgoingSpec(DashStaminaRegenEffect, 1.0f, EffectContext);
+	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DashStaminaRegenEffect, 1.0f, EffectContext);
 
 	if (SpecHandle.IsValid())
 	{
@@ -630,19 +649,14 @@ void ADaeva::BindMoveSpeedAttribute()
 		return;
 	}
 
-	MoveSpeedChangedDelegateHandle =
-		ASC->GetGameplayAttributeValueChangeDelegate(
-			UAOAttributeSet::GetMoveSpeedAttribute()
-		).AddUObject(this, &ADaeva::OnMoveSpeedChanged);
+	MoveSpeedChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate( 
+		UAOAttributeSet::GetMoveSpeedAttribute()).AddUObject(this, &ADaeva::OnMoveSpeedChanged);
 
 	bMoveSpeedDelegateRegistered = true;
 
-	const float CurrentMoveSpeed =
-		ASC->GetNumericAttribute(UAOAttributeSet::GetMoveSpeedAttribute());
+	const float CurrentMoveSpeed = ASC->GetNumericAttribute(UAOAttributeSet::GetMoveSpeedAttribute());
 
 	GetCharacterMovement()->MaxWalkSpeed = CurrentMoveSpeed;
-
-	UE_LOG(LogTemp, Log, TEXT("[MoveSpeed] Initial Apply: %.1f"), CurrentMoveSpeed);
 }
 
 void ADaeva::OnMoveSpeedChanged(const FOnAttributeChangeData& Data)
@@ -654,13 +668,7 @@ void ADaeva::OnMoveSpeedChanged(const FOnAttributeChangeData& Data)
 
 	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
 
-	UE_LOG(
-		LogTemp,
-		Log,
-		TEXT("[MoveSpeed] %.1f -> %.1f"),
-		Data.OldValue,
-		Data.NewValue
-	);
+	UE_LOG(	LogTemp,Log,TEXT("[MoveSpeed] %.1f -> %.1f"),Data.OldValue,	Data.NewValue);
 }
 
 void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
@@ -668,6 +676,31 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 	Super::OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
 
 	PlayCameraShake(bDidShakeCamera);
+
+	// ���� ���� �� ���� ȸ��.
+	if (HasAuthority() && HitManaRegenEffect)
+	{
+		UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+
+		if (!ASC)
+		{
+			return;
+		}
+
+		FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+		ContextHandle.AddSourceObject(this);
+
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(HitManaRegenEffect, 1.f, ContextHandle);
+		if (!SpecHandle.IsValid())
+		{
+			return;
+		}
+
+		SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(TEXT("Data.HitManaRegen")), HitManaRegenAmount);
+		const float BeforeMana = ASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
+		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		const float AfterMana = ASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
+	}
 }
 
 void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
@@ -679,6 +712,16 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitRe
 	}
 	
 	Super::TakeDamageAO(AttackData, HitResult, DamageCauser);
+
+	if (StateCombatApplyEffect)
+	{
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(StateCombatApplyEffect, 1.f, Context);
+		if (SpecHandle.IsValid())
+		{
+			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
+	}
 
 	bool bDidShakeCamera = false;
 	PlayCameraShake(bDidShakeCamera);
@@ -791,6 +834,14 @@ void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)
 	}
 }
 
+void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (HasAuthority())
+	{
+		Multicast_SetWingVisibility(false);
+	}
+}
+
 void ADaeva::HandleDeath()
 {
 	if (bIsDead)
@@ -802,9 +853,9 @@ void ADaeva::HandleDeath()
 
 	UE_LOG(LogTemp, Warning, TEXT("[Death] %s Died"), *GetName());
 
+
 	// 죽기 전에 Controller를 먼저 확보해야 한다.
-	APlayerController* PlayerController =
-		Cast<APlayerController>(GetController());
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
@@ -815,8 +866,7 @@ void ADaeva::HandleDeath()
 	{
 		ASC->CancelAllAbilities();
 
-		const FGameplayTag DeadTag =
-			FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+		const FGameplayTag DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
 
 		ASC->AddLooseGameplayTag(DeadTag);
 	}
@@ -826,15 +876,9 @@ void ADaeva::HandleDeath()
 		// GameMode에 먼저 사망 사실 전달
 		if (PlayerController)
 		{
-			if (AAODungeonGameMode* DungeonGameMode =
-				GetWorld()->GetAuthGameMode<AAODungeonGameMode>())
+			if (AAODungeonGameMode* DungeonGameMode = GetWorld()->GetAuthGameMode<AAODungeonGameMode>())
 			{
-				UE_LOG(
-					LogTemp,
-					Warning,
-					TEXT("[Death] Notify Dungeon GameMode: %s"),
-					*PlayerController->GetName()
-				);
+				UE_LOG(LogTemp,Warning,TEXT("[Death] Notify Dungeon GameMode: %s"),*PlayerController->GetName());
 
 				DungeonGameMode->NotifyPlayerDied(PlayerController);
 			}
@@ -845,12 +889,7 @@ void ADaeva::HandleDeath()
 		}
 		else
 		{
-			UE_LOG(
-				LogTemp,
-				Error,
-				TEXT("[Death] PlayerController is null before detach: %s"),
-				*GetName()
-			);
+			UE_LOG(LogTemp,	Error,TEXT("[Death] PlayerController is null before detach: %s"),*GetName());
 		}
 
 		// 사망 애니메이션은 Controller가 붙어 있어도 재생 가능
@@ -914,8 +953,7 @@ void ADaeva::StartSprint()
 	FGameplayEffectContextHandle SprintContext = ASC->MakeEffectContext();
 	SprintContext.AddSourceObject(this);
 
-	FGameplayEffectSpecHandle SprintSpec =
-		ASC->MakeOutgoingSpec(SprintEffect, 1.0f, SprintContext);
+	FGameplayEffectSpecHandle SprintSpec = ASC->MakeOutgoingSpec(SprintEffect, 1.0f, SprintContext);
 
 	if (!SprintSpec.IsValid())
 	{
@@ -929,8 +967,7 @@ void ADaeva::StartSprint()
 	FGameplayEffectContextHandle DrainContext = ASC->MakeEffectContext();
 	DrainContext.AddSourceObject(this);
 
-	FGameplayEffectSpecHandle DrainSpec =
-		ASC->MakeOutgoingSpec(SprintDrainEffect, 1.0f, DrainContext);
+	FGameplayEffectSpecHandle DrainSpec = ASC->MakeOutgoingSpec(SprintDrainEffect, 1.0f, DrainContext);
 
 	if (!DrainSpec.IsValid())
 	{
@@ -938,8 +975,7 @@ void ADaeva::StartSprint()
 		return;
 	}
 
-	SprintDrainEffectHandle =
-		ASC->ApplyGameplayEffectSpecToSelf(*DrainSpec.Data.Get());
+	SprintDrainEffectHandle = ASC->ApplyGameplayEffectSpecToSelf(*DrainSpec.Data.Get());
 }
 
 void ADaeva::StopSprint()
@@ -969,8 +1005,7 @@ bool ADaeva::IsSprinting() const
 		return false;
 	}
 
-	const FGameplayTag SprintTag =
-		FGameplayTag::RequestGameplayTag(FName("State.Sprint"));
+	const FGameplayTag SprintTag = FGameplayTag::RequestGameplayTag(FName("State.Sprint"));
 
 	return ASC->HasMatchingGameplayTag(SprintTag);
 }
