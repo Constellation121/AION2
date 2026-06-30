@@ -25,8 +25,6 @@
 #include "UI/AOWidgetComponentBase.h"
 #include "UI/AOPlayerHUDWidget.h"
 #include "Components/WidgetComponent.h"
-#include "Components/SceneComponent.h"
-#include "Materials/MaterialInterface.h"
 
 const float TargetTraceRadius = 3500.0f;
 
@@ -80,18 +78,13 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	Wing->SetVisibility(false);
 
 	// Head-up UI
-	BillboardComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BillboardComponent"));
-	BillboardComponent->SetupAttachment(RootComponent);
-	BillboardComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 130.0f));
-	BillboardComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
-
 	OverheadStatusWidgetComponent = CreateDefaultSubobject<UAOWidgetComponentBase>(TEXT("OverheadStatusWidget"));
-	OverheadStatusWidgetComponent->SetupAttachment(BillboardComponent);
-	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
+	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	OverheadStatusWidgetComponent->SetBlendMode(EWidgetBlendMode::Transparent);
 	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 14.0f));
-	OverheadStatusWidgetComponent->SetRelativeLocation(FVector::ZeroVector);
-	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator::ZeroRotator);
+	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 130.0f));
+	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
 	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget>
@@ -103,15 +96,6 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 		OverheadStatusWidgetComponent->SetWidgetClass(
 			WidgetClass.Class);
 	}
-
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WidgetMat(
-		TEXT("/Game/UI/Resource/Material/BaseMaterial/M_WorldSpaceUI.M_WorldSpaceUI")
-	);
-
-	if (WidgetMat.Succeeded())
-	{
-		WidgetMaterial = WidgetMat.Object;
-	}
 }
 
 void ADaeva::BeginPlay()
@@ -120,16 +104,6 @@ void ADaeva::BeginPlay()
 
 	TargetZoomDistance = SpringArm->TargetArmLength;
 	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 0.25f, true);
-
-	/* [UI: 발광도를 죽이는 Material로 설정.]
-	* 생성자에서는 초기화 과정에서 Material이 기본값으로 바뀔 수 있기 때문에,
-	* 타이밍이 더 뒤인 Begin에서 작동.
-	*/
-	if (WidgetMaterial)
-	{
-		OverheadStatusWidgetComponent->SetMaterial(0, WidgetMaterial);
-		OverheadStatusWidgetComponent->MarkRenderStateDirty();
-	}
 }
 
 void ADaeva::Tick(float DeltaTime)
@@ -238,22 +212,6 @@ void ADaeva::Tick_Camera(float DeltaTime)
 		SpringArm->TargetArmLength =
 			FMath::FInterpTo(SpringArm->TargetArmLength, TargetZoomDistance, DeltaTime, 10.f);
 	}
-
-	// UI Bill Board
-	if (GetNetMode() == NM_DedicatedServer || !BillboardComponent)
-	{
-		return;
-	}
-
-	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
-	if (!LocalPC || !LocalPC->PlayerCameraManager)
-	{
-		return;
-	}
-
-	const FVector CameraLocation = LocalPC->PlayerCameraManager->GetCameraLocation();
-	const FVector WidgetLocation = BillboardComponent->GetComponentLocation();
-	BillboardComponent->SetWorldRotation((CameraLocation - WidgetLocation).Rotation());
 }
 
 void ADaeva::Multicast_PlayMontage_Implementation(EMontageID MontageID, float PlayRate)
@@ -352,10 +310,10 @@ void ADaeva::SearchTarget()
 			continue;
 		}
 
-		//if (!IsEnemy(HitActor))
-		//{
-		//	continue;
-		//}
+		if (!IsEnemy(HitActor))
+		{
+			continue;
+		}
 
 		if (!IsFrontOfCamera(HitActor))
 		{
@@ -471,6 +429,19 @@ void ADaeva::ResetForDungeonRespawn()
 
 	// New Pawn이므로 기본적으로 false이지만 명확하게 하기 위해 초기화.
 	bIsDead = false;
+
+	if (HasAuthority())
+	{
+		Multicast_PlayMontage(EMontageID::Rebirth, 1.3f);
+		Multicast_PlayWingMontage(EMontageID::Rebirth, 1.0f);
+		Multicast_SetWingVisibility(true);
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			FOnMontageEnded EndDelegate;
+			EndDelegate.BindUObject(this, &ThisClass::OnRebirthMontageEnded);
+			AnimInstance->Montage_SetEndDelegate(EndDelegate, GetMontageByID(EMontageID::Rebirth));
+		}
+	}
 }
 
 void ADaeva::Move(const FInputActionValue& Value)
@@ -739,6 +710,16 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitRe
 	
 	Super::TakeDamageAO(AttackData, HitResult, DamageCauser);
 
+	if (StateCombatApplyEffect)
+	{
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(StateCombatApplyEffect, 1.f, Context);
+		if (SpecHandle.IsValid())
+		{
+			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
+	}
+
 	bool bDidShakeCamera = false;
 	PlayCameraShake(bDidShakeCamera);
 }
@@ -847,6 +828,14 @@ void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)
 	if (bIsCombat)
 	{
 		RequestStopSprint();
+	}
+}
+
+void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (HasAuthority())
+	{
+		Multicast_SetWingVisibility(false);
 	}
 }
 

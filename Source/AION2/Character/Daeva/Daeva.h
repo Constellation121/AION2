@@ -16,8 +16,6 @@ class UGameplayEffect;
 class UAOUserWidgetBase;
 class UWidgetComponent;
 class UAOWidgetComponentBase;
-class USceneComponent;
-class UMaterialInterface;
 
 class AAOPlayerState;
 class UAbilitySystemComponent;
@@ -162,6 +160,7 @@ private:
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
+	void OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 public:
 	virtual void HandleDeath();
@@ -338,21 +337,19 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
 	TSubclassOf<UGameplayEffect> DashStaminaRegenEffect;
 
+	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	TSubclassOf<UGameplayEffect> StateCombatApplyEffect;
+
 	bool bTagEventsRegistered = false;
 
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
-private:
 	AAOCharacter* PreviousTarget = nullptr;
 	FTimerHandle TargetSearchTimer;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
-
-	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USceneComponent> BillboardComponent;
-
-	TObjectPtr<UMaterialInterface> WidgetMaterial;
 };
