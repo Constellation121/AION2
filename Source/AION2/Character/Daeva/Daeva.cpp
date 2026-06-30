@@ -263,6 +263,16 @@ void ADaeva::Client_PlayCameraShake_Implementation()
 
 void ADaeva::Server_SetCurrentTarget_Implementation(AAOCharacter* NewTarget)
 {
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[DamageTrace][Target][Server_SetCurrentTarget] Daeva=%s NetMode=%d HasAuthority=%d NewTarget=%s"),
+		*GetNameSafe(this),
+		static_cast<int32>(GetNetMode()),
+		HasAuthority() ? 1 : 0,
+		*GetNameSafe(NewTarget)
+	);
+
 	SetCurrentTarget(NewTarget);
 }
 
@@ -595,8 +605,36 @@ void ADaeva::ClearGAS()
 
 void ADaeva::GASInputPressed(int32 InputId)
 {
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[DamageTrace][Input][GASInputPressed] Daeva=%s NetMode=%d HasAuthority=%d IsLocallyControlled=%d InputId=%d ASC=%s"),
+		*GetNameSafe(this),
+		static_cast<int32>(GetNetMode()),
+		HasAuthority() ? 1 : 0,
+		IsLocallyControlled() ? 1 : 0,
+		InputId,
+		*GetNameSafe(ASC)
+	);
+
+	if (!ASC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][Input][GASInputPressed][Abort] Daeva=%s Reason=ASCNull InputId=%d"), *GetNameSafe(this), InputId);
+		return;
+	}
+
 	if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId))
 	{
+		UE_LOG(
+			LogTemp,
+			Warning,
+			TEXT("[DamageTrace][Input][GASInputPressed][SpecFound] Daeva=%s InputId=%d Ability=%s IsActive=%d"),
+			*GetNameSafe(this),
+			InputId,
+			*GetNameSafe(Spec->Ability),
+			Spec->IsActive() ? 1 : 0
+		);
+
 		Spec->InputPressed = true;
 		if (Spec->IsActive())
 		{
@@ -604,8 +642,13 @@ void ADaeva::GASInputPressed(int32 InputId)
 		}
 		else
 		{
-			ASC->TryActivateAbility(Spec->Handle);
+			const bool bActivated = ASC->TryActivateAbility(Spec->Handle);
+			UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][Input][TryActivateAbility] Daeva=%s InputId=%d Ability=%s Result=%d"), *GetNameSafe(this), InputId, *GetNameSafe(Spec->Ability), bActivated ? 1 : 0);
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][Input][GASInputPressed][NoSpec] Daeva=%s InputId=%d"), *GetNameSafe(this), InputId);
 	}
 }
 
@@ -675,6 +718,8 @@ void ADaeva::OnMoveSpeedChanged(const FOnAttributeChangeData& Data)
 
 void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][Daeva][OnAttackSucceeded][Enter] Causer=%s HitActor=%s HasAuthority=%d"), *GetNameSafe(this), *GetNameSafe(HitActor), HasAuthority() ? 1 : 0);
+
 	Super::OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
 
 	PlayCameraShake(bDidShakeCamera);
@@ -707,8 +752,17 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 
 void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][Daeva][TakeDamageAO][Enter] Target=%s Causer=%s HasAuthority=%d ASC=%s"), *GetNameSafe(this), *GetNameSafe(DamageCauser), HasAuthority() ? 1 : 0, *GetNameSafe(ASC));
+
+	if (!ASC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][Daeva][TakeDamageAO][Abort] Target=%s Reason=ASCNull"), *GetNameSafe(this));
+		return;
+	}
+
 	if (ASC->HasMatchingGameplayTag(STATE_DASHING))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][Daeva][TakeDamageAO][Skip] Target=%s Reason=DashingGhostTrail"), *GetNameSafe(this));
 		ASC->ExecuteGameplayCue(CUE_GHOSTTRAIL);
 		return;
 	}
@@ -1137,9 +1191,22 @@ float ADaeva::CalcDistanceSquaredToScreenCenter(AActor* Other)
 
 void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 {
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[DamageTrace][Target][ClientChange] Daeva=%s NetMode=%d HasAuthority=%d Prev=%s CurrentBefore=%s New=%s"),
+		*GetNameSafe(this),
+		static_cast<int32>(GetNetMode()),
+		HasAuthority() ? 1 : 0,
+		*GetNameSafe(PreviousTarget),
+		*GetNameSafe(CurrentTarget),
+		*GetNameSafe(NewTarget)
+	);
+
 	CurrentTarget = NewTarget;
 	if (PreviousTarget != CurrentTarget)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][Target][ClientChange][SendServer] Daeva=%s Target=%s"), *GetNameSafe(this), *GetNameSafe(CurrentTarget));
 		Server_SetCurrentTarget(CurrentTarget);
 
 		if (AAOMonsterBase* PreviousMonster = Cast<AAOMonsterBase>(PreviousTarget))

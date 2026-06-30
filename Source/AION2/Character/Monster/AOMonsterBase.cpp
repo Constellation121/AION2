@@ -286,10 +286,14 @@ void AAOMonsterBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 	UE_LOG(
 		LogTemp,
 		Warning,
-		TEXT("[Monster Health] %s : %.1f -> %.1f"),
+		TEXT("[DamageTrace][MonsterHealthChanged] Monster=%s NetMode=%d HasAuthority=%d HP=%.1f -> %.1f MaxHP=%.1f ASC=%s"),
 		*GetName(),
+		static_cast<int32>(GetNetMode()),
+		HasAuthority() ? 1 : 0,
 		Data.OldValue,
-		Data.NewValue
+		Data.NewValue,
+		ASC ? ASC->GetNumericAttribute(UAOAttributeSet::GetMaxHealthAttribute()) : -1.0f,
+		*GetNameSafe(ASC)
 	);
 
 	if (Data.NewValue <= 0.0f && !bIsDead)

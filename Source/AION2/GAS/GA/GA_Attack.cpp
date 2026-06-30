@@ -19,8 +19,19 @@ void UGA_Attack::ActivateAbility(
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[DamageTrace][GA_Attack][Activate][Enter] Ability=%s ActorInfo=%s Avatar=%s HasAuthority=%d"),
+		*GetName(),
+		ActorInfo ? TEXT("Valid") : TEXT("Null"),
+		ActorInfo ? *GetNameSafe(ActorInfo->AvatarActor.Get()) : TEXT("None"),
+		HasAuthority(&ActivationInfo) ? 1 : 0
+	);
+
 	if (!ActorInfo)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][Activate][Abort] Ability=%s Reason=ActorInfoNull"), *GetName());
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
@@ -29,15 +40,18 @@ void UGA_Attack::ActivateAbility(
 
 	if (!Daeva)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][Activate][Abort] Ability=%s Avatar=%s Reason=DaevaCastFailed"), *GetName(), ActorInfo ? *GetNameSafe(ActorInfo->AvatarActor.Get()) : TEXT("None"));
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][Activate][Avatar] Ability=%s Daeva=%s NetMode=%d HasAuthority=%d MontageID=%d"), *GetName(), *GetNameSafe(Daeva), static_cast<int32>(Daeva->GetNetMode()), Daeva->HasAuthority() ? 1 : 0, static_cast<int32>(MontageIDToPlay));
 
 	UAnimMontage* AttackMontage = Daeva->GetMontageByID(MontageIDToPlay);
 
 	if (!AttackMontage)
 	{
-		UE_LOG(LogTemp,Error,TEXT("[Attack] Montage is null. MontageID=%d"),static_cast<int32>(MontageIDToPlay));
+		UE_LOG(LogTemp,Error,TEXT("[DamageTrace][GA_Attack][Activate][Abort] Montage is null. Ability=%s MontageID=%d"),*GetName(),static_cast<int32>(MontageIDToPlay));
 
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
@@ -51,7 +65,7 @@ void UGA_Attack::ActivateAbility(
 
 		if (!ASC)
 		{
-			UE_LOG(LogTemp, Error, TEXT("[Mana] ASC is null. Ability=%s"), *GetName());
+			UE_LOG(LogTemp, Error, TEXT("[DamageTrace][GA_Attack][Mana][Abort] ASC is null. Ability=%s"), *GetName());
 
 			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 			return;
@@ -180,9 +194,14 @@ void UGA_Attack::ActivateAbility(
 
 	if (WaitHitCheckTask)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][WaitGameplayEvent][Bind] Ability=%s Avatar=%s Tag=%s"), *GetName(), *GetNameSafe(Daeva), *EVENT_CHECKATTACKHIT.ToString());
 		WaitHitCheckTask->EventReceived.AddDynamic(this,&UGA_Attack::OnCheckAttackHitEvent);
 
 		WaitHitCheckTask->ReadyForActivation();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][WaitGameplayEvent][Abort] Ability=%s Reason=TaskNull"), *GetName());
 	}
 
     UAT_RotateToTarget* RotateTask = UAT_RotateToTarget::RotateToTarget(this, AttackData.AvailableRange, 15.0f);
@@ -201,17 +220,23 @@ void UGA_Attack::OnMontageTaskCancelled()
 
 void UGA_Attack::OnCheckAttackHitEvent(FGameplayEventData Payload)
 {
+	AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][OnCheckAttackHitEvent][Enter] Ability=%s Avatar=%s HasAuthority=%d EventTag=%s"), *GetName(), *GetNameSafe(AvatarActor), HasAuthority(&CurrentActivationInfo) ? 1 : 0, *Payload.EventTag.ToString());
+
 	if (!HasAuthority(&CurrentActivationInfo))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][OnCheckAttackHitEvent][Skip] Ability=%s Avatar=%s Reason=NoAuthority"), *GetName(), *GetNameSafe(AvatarActor));
 		return;
 	}
 
-	AAOCharacter* AOCharacter =	Cast<AAOCharacter>(GetAvatarActorFromActorInfo());
+	AAOCharacter* AOCharacter =	Cast<AAOCharacter>(AvatarActor);
 
 	if (!AOCharacter)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][OnCheckAttackHitEvent][Abort] Ability=%s Avatar=%s Reason=AOCharacterCastFailed"), *GetName(), *GetNameSafe(AvatarActor));
 		return;
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("[DamageTrace][GA_Attack][OnCheckAttackHitEvent][CallCheckAttackHit] Ability=%s Actor=%s"), *GetName(), *GetNameSafe(AOCharacter));
 	AOCharacter->CheckAttackHit(AttackData);
 }
