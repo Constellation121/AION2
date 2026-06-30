@@ -7,10 +7,12 @@
 #include "Animation/AnimMontage.h"
 #include "Character/Monster/Boss/Thalythra/Projectile/TalythraProjectile.h"
 #include "NiagaraFunctionLibrary.h"
-#include "AI/AITalythraAIController.h"
+#include "AI/Talythra/AITalythraAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
+#include "UI/AOWidgetComponentBase.h"
+#include "UI/AOMonsterHUDWidget.h"
 
 // Sets default values
 ATalythra::ATalythra(const FObjectInitializer& ObjectInitializer)
@@ -52,14 +54,39 @@ ATalythra::ATalythra(const FObjectInitializer& ObjectInitializer)
 		ChargeAttackMontage = ChargeAttackMontageRef.Object;
 	}
 
+	
+
+#pragma region UI
+	// Head-up UI
+	OverheadStatusWidgetComponent = CreateDefaultSubobject<UAOWidgetComponentBase>(TEXT("OverheadStatusWidget"));
+	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
+	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(150.0f, 80.0f));
+	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 3000.0f));
+	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
+	OverheadStatusWidgetComponent->SetRelativeScale3D(FVector(10.0f, 10.0f, 10.0f));
+	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	static ConstructorHelpers::FClassFinder<UAOMonsterHUDWidget>
+		WidgetClass(
+			TEXT("/Game/UI/Ingame/WBP_MonsterStatus_Head.WBP_MonsterStatus_Head_C"));
+
+	if (WidgetClass.Succeeded())
+	{
+		OverheadStatusWidgetComponent->SetWidgetClass(
+			WidgetClass.Class);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WidgetMat(
+		TEXT("/Game/UI/Resource/Material/BaseMaterial/M_WorldSpaceUI1.M_WorldSpaceUI1")
+	);
+#pragma endregion
+
 }
 
 void ATalythra::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-
-
 }
 
 // Called when the game starts or when spawned
@@ -71,14 +98,14 @@ void ATalythra::BeginPlay()
 
 
 	//@PLZTODO : 이거 위치 바꿔줘야함. 
-	if (HasAuthority()) // 서버인 경우 
-	{
-		for (const auto& Ability : HasAbilities) // 능력들 저장. 
-		{
-			FGameplayAbilitySpec AbilitySpec(Ability.Value);
-			ASC->GiveAbility(AbilitySpec);
-		}
-	}
+	//if (HasAuthority()) // 서버인 경우 
+	//{
+	//	for (const auto& Ability : HasAbilities) // 능력들 저장. 
+	//	{
+	//		FGameplayAbilitySpec AbilitySpec(Ability.Value);
+	//		ASC->GiveAbility(AbilitySpec);
+	//	}
+	//}
 
 
 #pragma region Attack_Line SceneComponents
@@ -136,28 +163,8 @@ void ATalythra::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
-	if (HasAuthority() == false)
-		return;
-
-	if (bChargeAttack)
-	{
-		if (CanMoveOnNavMesh(ChargeDirection, 100.f)) // 이 부분도 수정 
-		{
-			AddMovementInput(ChargeDirection, 1.0f, false);
-		}
-
-		else
-		{
-			GetCharacterMovement()->StopMovementImmediately();
-			EndChargeMove();
-		}
-
-	}
-
-
 	if (AttackWarningRangeSceneComponent->GetVisibleFlag() == true)
 	{
-
 		AttackWarningElapsedTime += DeltaTime;
 
 		const float Alpha = FMath::Clamp(
@@ -188,8 +195,6 @@ void ATalythra::Tick(float DeltaTime)
 	{
 		TurnToTarget();
 	}
-
-
 }
 
 void ATalythra::Multicast_PlayAttackMontage_Implementation(UAnimMontage* MontageToPlay)
@@ -654,7 +659,6 @@ void ATalythra::DoFireProjectile_3()
 
 	/* Decal 끄기 */
 	Multicast_AttackLine_Pattern_3_Off();
-
 }
 
 void ATalythra::InitAttributeSet()
@@ -665,14 +669,14 @@ void ATalythra::InitAttributeSet()
 
 	AttributeSet->InitStamina(100.f);
 	AttributeSet->InitMaxStamina(100.f);
+
 }
 
 void ATalythra::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ATalythra, Phase);
-	DOREPLIFETIME(ATalythra, State);
+
 	DOREPLIFETIME(ATalythra, bLockPelvis);
 
 }

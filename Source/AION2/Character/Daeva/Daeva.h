@@ -16,8 +16,6 @@ class UGameplayEffect;
 class UAOUserWidgetBase;
 class UWidgetComponent;
 class UAOWidgetComponentBase;
-class USceneComponent;
-class UMaterialInterface;
 
 class AAOPlayerState;
 class UAbilitySystemComponent;
@@ -128,6 +126,7 @@ public:
 	virtual void TeleportBackToTarget() override;
 	FRotator GetLookAtToTarget();
 	void SetCameraByLookAt(const FRotator& LookAtRot);
+	void ResetForDungeonRespawn();
 
 protected:
 	virtual void Move(const FInputActionValue& Value);
@@ -340,9 +339,4 @@ private:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
-
-	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USceneComponent> BillboardComponent;
-
-	TObjectPtr<UMaterialInterface> WidgetMaterial;
 };

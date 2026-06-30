@@ -7,9 +7,9 @@
 #include "Types/TalythraTypes.h"
 #include "Talythra.generated.h"
 
-
-
-
+// UI
+class UAOWidgetComponentBase;
+class UAOMonsterHUDWidget;
 
 
 UCLASS()
@@ -32,10 +32,6 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// 보스 AI 컨트롤러에서 State, Phase 설정 뒤 Replicate. 
-	FORCEINLINE void Set_Phase(ETalythraPhase _PhaseFlag) { Phase = _PhaseFlag; }
-	FORCEINLINE void Set_State(ETalythraState _StateFlag) { State = _StateFlag; }
 
 	// State Tree에서 몽타주를 실행하기 위해 만든 함수
 	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
@@ -166,13 +162,6 @@ protected:
 
 	// 페이즈 및 상태 관련 
 public:
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Phase")
-	ETalythraPhase Phase;
-
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "State")
-	ETalythraState State;
-
-
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite)
 	bool bLockPelvis = false;
 
@@ -210,6 +199,15 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	float AttackWarningElapsedTime = 0.0f;
+	
 
 
+public:
+	// MonsterBase에서 상속됨.
+	int32 DungeonBossIndex = 3;
+
+	// UI
+private:
+	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
 };

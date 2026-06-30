@@ -59,6 +59,17 @@ void AAOPlayerController::SetupInputComponent()
 	}
 }
 
+// AOPlayerController.cpp
+void AAOPlayerController::AcknowledgePossession(APawn* P)
+{
+	Super::AcknowledgePossession(P);
+
+	if (IsLocalController())
+	{
+		HandlePawnASCReady();
+	}
+}
+
 void AAOPlayerController::SetInputMappingContext(EInputType InNewInputType)
 {
 	ULocalPlayer* LocalPlayer = GetLocalPlayer();

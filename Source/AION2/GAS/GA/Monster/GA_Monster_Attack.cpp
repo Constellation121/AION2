@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GAS/GA/Monster/GA_Monster_Attack.h"
+#include "GA_Monster_Attack.h"
 #include "Character/Monster/AOMonsterBase.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
@@ -51,7 +51,7 @@ void UGA_Monster_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 
     AAOMonsterBase* pMonster = CastChecked<AAOMonsterBase>(ActorInfo->AvatarActor.Get());
 
-    pMonster->OnAbilityFinishedEvent.Broadcast();
+   
 
 
 }
