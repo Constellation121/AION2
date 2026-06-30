@@ -106,7 +106,6 @@ void Room::HandleMove(Protocol::C_MovePacket pkt, PlayerRef player)
 	Protocol::S_MovePacket movePkt;
 
 	movePkt.set_playerid(playerId);
-	std::cout << "HandleMove - Move Player: " << playerId << "\n";
 
 	Protocol::Vector3* loc = movePkt.mutable_playerlocation();
 	loc->set_x(targetPos.x());

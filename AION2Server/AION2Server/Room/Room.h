@@ -18,6 +18,7 @@ public:
 	bool HandleEnterPlayer(PlayerRef player);
 	bool HandleLeavePlayer(PlayerRef player);
 	void HandleMove(Protocol::C_MovePacket pkt, PlayerRef player);
+	void HandleSavePlayerHp(const std::string playerId, int32 hp);
 
 	void AddPlayer(PlayerRef player);
 

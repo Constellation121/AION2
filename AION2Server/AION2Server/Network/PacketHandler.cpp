@@ -8,6 +8,7 @@
 #include "Dungeon.h"
 #include "Player.h"
 #include "ObjectUtils.h"
+#include "RedisManager.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -188,6 +189,23 @@ bool PacketHandler::HandleMove(PacketSessionRef& session, Protocol::C_MovePacket
 
 	GRoom->DoAsync(&Room::HandleMove, pkt, player);
 	return true;
+}
+
+bool PacketHandler::HandleChangeHp(PacketSessionRef& session, Protocol::C_ChangeHp& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+
+	if (player == nullptr)
+		return false;
+
+	int32 hp = pkt.hp();
+	std::string name = player->GetName();
+	
+	GRedisManager.UpdatePlayerHp(name, hp);
+	std::cout << "Player " << player->GetName() << " HP Changed: " << player->GetHp() << " (Redis updated)" << std::endl;
+
+	return false;
 }
 
 bool PacketHandler::HandleDedicated(PacketSessionRef& session, Protocol::C_DedicatedPacket& pkt)
