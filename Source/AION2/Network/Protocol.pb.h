@@ -68,6 +68,9 @@ extern C_DungeonCreatePacketDefaultTypeInternal _C_DungeonCreatePacket_default_i
 class C_DungeonEnteracket;
 struct C_DungeonEnteracketDefaultTypeInternal;
 extern C_DungeonEnteracketDefaultTypeInternal _C_DungeonEnteracket_default_instance_;
+class C_DungeonExitPacket;
+struct C_DungeonExitPacketDefaultTypeInternal;
+extern C_DungeonExitPacketDefaultTypeInternal _C_DungeonExitPacket_default_instance_;
 class C_DungeonReadyacket;
 struct C_DungeonReadyacketDefaultTypeInternal;
 extern C_DungeonReadyacketDefaultTypeInternal _C_DungeonReadyacket_default_instance_;
@@ -134,6 +137,7 @@ template<> ::Protocol::C_ChangeHp* Arena::CreateMaybeMessage<::Protocol::C_Chang
 template<> ::Protocol::C_DedicatedPacket* Arena::CreateMaybeMessage<::Protocol::C_DedicatedPacket>(Arena*);
 template<> ::Protocol::C_DungeonCreatePacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonCreatePacket>(Arena*);
 template<> ::Protocol::C_DungeonEnteracket* Arena::CreateMaybeMessage<::Protocol::C_DungeonEnteracket>(Arena*);
+template<> ::Protocol::C_DungeonExitPacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonExitPacket>(Arena*);
 template<> ::Protocol::C_DungeonReadyacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonReadyacket>(Arena*);
 template<> ::Protocol::C_DungeonStartacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonStartacket>(Arena*);
 template<> ::Protocol::C_DungeonWaitingRoomEnterPacket* Arena::CreateMaybeMessage<::Protocol::C_DungeonWaitingRoomEnterPacket>(Arena*);
@@ -895,11 +899,26 @@ class S_LoginSuccessPacket final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kPlayerNameFieldNumber = 2,
     kPlayerInfoFieldNumber = 1,
-    kGoldFieldNumber = 2,
-    kExpFieldNumber = 3,
-    kHpFieldNumber = 4,
+    kGoldFieldNumber = 3,
+    kExpFieldNumber = 4,
+    kHpFieldNumber = 5,
   };
+  // string playerName = 2;
+  void clear_playername();
+  const std::string& playername() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_playername(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_playername();
+  PROTOBUF_NODISCARD std::string* release_playername();
+  void set_allocated_playername(std::string* playername);
+  private:
+  const std::string& _internal_playername() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_playername(const std::string& value);
+  std::string* _internal_mutable_playername();
+  public:
+
   // .Protocol.PlayerInfo playerInfo = 1;
   bool has_playerinfo() const;
   private:
@@ -918,7 +937,7 @@ class S_LoginSuccessPacket final :
       ::Protocol::PlayerInfo* playerinfo);
   ::Protocol::PlayerInfo* unsafe_arena_release_playerinfo();
 
-  // int32 gold = 2;
+  // int32 gold = 3;
   void clear_gold();
   int32_t gold() const;
   void set_gold(int32_t value);
@@ -927,7 +946,7 @@ class S_LoginSuccessPacket final :
   void _internal_set_gold(int32_t value);
   public:
 
-  // int32 exp = 3;
+  // int32 exp = 4;
   void clear_exp();
   int32_t exp() const;
   void set_exp(int32_t value);
@@ -936,7 +955,7 @@ class S_LoginSuccessPacket final :
   void _internal_set_exp(int32_t value);
   public:
 
-  // int32 hp = 4;
+  // int32 hp = 5;
   void clear_hp();
   int32_t hp() const;
   void set_hp(int32_t value);
@@ -953,6 +972,7 @@ class S_LoginSuccessPacket final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr playername_;
     ::Protocol::PlayerInfo* playerinfo_;
     int32_t gold_;
     int32_t exp_;
@@ -3472,6 +3492,154 @@ class S_DungeonStartPacket final :
 };
 // -------------------------------------------------------------------
 
+class C_DungeonExitPacket final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_DungeonExitPacket) */ {
+ public:
+  inline C_DungeonExitPacket() : C_DungeonExitPacket(nullptr) {}
+  ~C_DungeonExitPacket() override;
+  explicit PROTOBUF_CONSTEXPR C_DungeonExitPacket(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_DungeonExitPacket(const C_DungeonExitPacket& from);
+  C_DungeonExitPacket(C_DungeonExitPacket&& from) noexcept
+    : C_DungeonExitPacket() {
+    *this = ::std::move(from);
+  }
+
+  inline C_DungeonExitPacket& operator=(const C_DungeonExitPacket& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_DungeonExitPacket& operator=(C_DungeonExitPacket&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_DungeonExitPacket& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_DungeonExitPacket* internal_default_instance() {
+    return reinterpret_cast<const C_DungeonExitPacket*>(
+               &_C_DungeonExitPacket_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    21;
+
+  friend void swap(C_DungeonExitPacket& a, C_DungeonExitPacket& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_DungeonExitPacket* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_DungeonExitPacket* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_DungeonExitPacket* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_DungeonExitPacket>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_DungeonExitPacket& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_DungeonExitPacket& from) {
+    C_DungeonExitPacket::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_DungeonExitPacket* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_DungeonExitPacket";
+  }
+  protected:
+  explicit C_DungeonExitPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDungeonIdFieldNumber = 1,
+  };
+  // int32 dungeonId = 1;
+  void clear_dungeonid();
+  int32_t dungeonid() const;
+  void set_dungeonid(int32_t value);
+  private:
+  int32_t _internal_dungeonid() const;
+  void _internal_set_dungeonid(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_DungeonExitPacket)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int32_t dungeonid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class C_StorePurchase final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_StorePurchase) */ {
  public:
@@ -3520,7 +3688,7 @@ class C_StorePurchase final :
                &_C_StorePurchase_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    22;
 
   friend void swap(C_StorePurchase& a, C_StorePurchase& b) {
     a.Swap(&b);
@@ -3679,7 +3847,7 @@ class S_StorePurchase final :
                &_S_StorePurchase_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    23;
 
   friend void swap(S_StorePurchase& a, S_StorePurchase& b) {
     a.Swap(&b);
@@ -3827,7 +3995,7 @@ class C_ChangeHp final :
                &_C_ChangeHp_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    24;
 
   friend void swap(C_ChangeHp& a, C_ChangeHp& b) {
     a.Swap(&b);
@@ -4288,7 +4456,57 @@ inline void S_LoginSuccessPacket::set_allocated_playerinfo(::Protocol::PlayerInf
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_LoginSuccessPacket.playerInfo)
 }
 
-// int32 gold = 2;
+// string playerName = 2;
+inline void S_LoginSuccessPacket::clear_playername() {
+  _impl_.playername_.ClearToEmpty();
+}
+inline const std::string& S_LoginSuccessPacket::playername() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_LoginSuccessPacket.playerName)
+  return _internal_playername();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void S_LoginSuccessPacket::set_playername(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.playername_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.S_LoginSuccessPacket.playerName)
+}
+inline std::string* S_LoginSuccessPacket::mutable_playername() {
+  std::string* _s = _internal_mutable_playername();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_LoginSuccessPacket.playerName)
+  return _s;
+}
+inline const std::string& S_LoginSuccessPacket::_internal_playername() const {
+  return _impl_.playername_.Get();
+}
+inline void S_LoginSuccessPacket::_internal_set_playername(const std::string& value) {
+  
+  _impl_.playername_.Set(value, GetArenaForAllocation());
+}
+inline std::string* S_LoginSuccessPacket::_internal_mutable_playername() {
+  
+  return _impl_.playername_.Mutable(GetArenaForAllocation());
+}
+inline std::string* S_LoginSuccessPacket::release_playername() {
+  // @@protoc_insertion_point(field_release:Protocol.S_LoginSuccessPacket.playerName)
+  return _impl_.playername_.Release();
+}
+inline void S_LoginSuccessPacket::set_allocated_playername(std::string* playername) {
+  if (playername != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.playername_.SetAllocated(playername, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.playername_.IsDefault()) {
+    _impl_.playername_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_LoginSuccessPacket.playerName)
+}
+
+// int32 gold = 3;
 inline void S_LoginSuccessPacket::clear_gold() {
   _impl_.gold_ = 0;
 }
@@ -4308,7 +4526,7 @@ inline void S_LoginSuccessPacket::set_gold(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.S_LoginSuccessPacket.gold)
 }
 
-// int32 exp = 3;
+// int32 exp = 4;
 inline void S_LoginSuccessPacket::clear_exp() {
   _impl_.exp_ = 0;
 }
@@ -4328,7 +4546,7 @@ inline void S_LoginSuccessPacket::set_exp(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.S_LoginSuccessPacket.exp)
 }
 
-// int32 hp = 4;
+// int32 hp = 5;
 inline void S_LoginSuccessPacket::clear_hp() {
   _impl_.hp_ = 0;
 }
@@ -5525,6 +5743,30 @@ inline void S_DungeonStartPacket::set_port(int32_t value) {
 
 // -------------------------------------------------------------------
 
+// C_DungeonExitPacket
+
+// int32 dungeonId = 1;
+inline void C_DungeonExitPacket::clear_dungeonid() {
+  _impl_.dungeonid_ = 0;
+}
+inline int32_t C_DungeonExitPacket::_internal_dungeonid() const {
+  return _impl_.dungeonid_;
+}
+inline int32_t C_DungeonExitPacket::dungeonid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_DungeonExitPacket.dungeonId)
+  return _internal_dungeonid();
+}
+inline void C_DungeonExitPacket::_internal_set_dungeonid(int32_t value) {
+  
+  _impl_.dungeonid_ = value;
+}
+inline void C_DungeonExitPacket::set_dungeonid(int32_t value) {
+  _internal_set_dungeonid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_DungeonExitPacket.dungeonId)
+}
+
+// -------------------------------------------------------------------
+
 // C_StorePurchase
 
 // int32 itemId = 1;
@@ -5638,6 +5880,8 @@ inline void C_ChangeHp::set_hp(int32_t value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -59,3 +59,13 @@ void AAOPlayerState::GiveCommonAbilities()
 
     UE_LOG(LogTemp, Warning, TEXT("Common abilities given. Count: %d"), CommonAbilityHandles.Num());
 }
+
+void AAOPlayerState::SetPlayerClass(EDaevaClassType InClassType)
+{
+    ClassType = InClassType;
+}
+
+void AAOPlayerState::SetName(FString InName)
+{
+    PlayerName = InName;
+}

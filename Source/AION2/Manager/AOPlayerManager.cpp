@@ -6,6 +6,7 @@
 #include "Game/AOGameInstance.h"
 #include "Character/ServerCharacter/MMODaeva.h"
 #include "Player/AOPlayerController.h"
+#include "Player/AOPlayerState.h"
 
 UAOPlayerManager::UAOPlayerManager() 
 {
@@ -41,11 +42,11 @@ void UAOPlayerManager::Initialize(FSubsystemCollectionBase& Collection)
 	PlayerClass = ADaeva::StaticClass();
 }
 
-void UAOPlayerManager::HandleLogin(uint64 PlayerId, uint8 ClassType)
+void UAOPlayerManager::HandleLogin(uint64 PlayerId, uint8 ClassType, FString PlayerName)
 {
-	// 애니메이션 넣기
 	GameInstance->SetMyPlayerId(PlayerId);
 	GameInstance->SetMyPlayerClass(ClassType);
+	MyPlayerName = PlayerName;
 }
 
 void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation)
@@ -66,7 +67,7 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector Spa
 			{
 				MyPlayer->SetMyId(PlayerId);
 				MyPlayer->SetMyClass(ClassType);
-
+				MyPlayer->GetName(MyPlayerName);
 				UE_LOG(LogTemp, Log, TEXT("HandleSpawn - SetMyId: %d"), PlayerId);
 
 				AAOPlayerController* PlayerController = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());

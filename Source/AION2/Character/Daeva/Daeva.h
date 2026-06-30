@@ -255,6 +255,11 @@ public:
 	bool IsPlayerUIReady() const;
 	void NotifyPlayerUIReady();
 
+public:
+	void SetMyId(uint64 Id);
+	void SetMyClass(uint8 ClassType);
+	void SetMyName(FString InName);
+
 private:
 	bool bPlayerUIReady = false;
 
@@ -345,4 +350,8 @@ private:
 	TObjectPtr<USceneComponent> BillboardComponent;
 
 	TObjectPtr<UMaterialInterface> WidgetMaterial;
+
+protected:
+	//EDaevaClassType Type = EDaevaClassType::None;
+	uint64 MyId = -1;
 };

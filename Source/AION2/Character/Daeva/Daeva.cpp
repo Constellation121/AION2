@@ -1132,3 +1132,23 @@ TArray<USkeletalMeshComponent*> ADaeva::GetAllMeshes()
 
 	return Meshes;
 }
+
+void ADaeva::SetMyId(uint64 Id)
+{
+	MyId = Id;
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	AOPlayerState->SetPlayerId(MyId);
+}
+
+void ADaeva::SetMyClass(uint8 ClassType)
+{
+	//Type = static_cast<EDaevaClassType>(ClassType);
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	AOPlayerState->SetPlayerClass(static_cast<EDaevaClassType>(ClassType));
+}
+
+void ADaeva::SetMyName(FString InName)
+{
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	AOPlayerState->SetName(InName);
+}

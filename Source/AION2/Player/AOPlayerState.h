@@ -14,10 +14,10 @@ UENUM(BlueprintType)
 enum class EDaevaClassType : uint8
 {
 	None,
-	Templar,
 	Assassin,
+	Cleric,
 	Ranger,
-	Cleric
+	Templar,
 };
 
 UCLASS()
@@ -38,6 +38,9 @@ public:
 
 	void GiveCommonAbilities();
 
+	void SetPlayerClass(EDaevaClassType InClassType);
+	void SetName(FString InName);
+
 private:
 	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAbilitySystemComponent> ASC;
@@ -56,4 +59,7 @@ private:
 private:
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	EDaevaClassType ClassType = EDaevaClassType::None;
+
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	FString PlayerName;
 };

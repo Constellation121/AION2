@@ -21,7 +21,7 @@ private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;	
 
 public:
-	void HandleLogin(uint64 PlayerId, uint8 ClassType);
+	void HandleLogin(uint64 PlayerId, uint8 ClassType, FString PlayerName);
 	void HandleSpawn(uint64 PlayerId, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation);
 	void HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel);
 	void HandleDungeonCreate(int32 DungeonId);
@@ -45,4 +45,6 @@ private:
 	
 	class UAOGameInstance* GameInstance;
 	UWorld* World;
+
+	FString MyPlayerName;
 };
