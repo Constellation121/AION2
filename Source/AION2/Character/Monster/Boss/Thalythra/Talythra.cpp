@@ -53,34 +53,6 @@ ATalythra::ATalythra(const FObjectInitializer& ObjectInitializer)
 	{
 		ChargeAttackMontage = ChargeAttackMontageRef.Object;
 	}
-
-	
-
-#pragma region UI
-	// Head-up UI
-	OverheadStatusWidgetComponent = CreateDefaultSubobject<UAOWidgetComponentBase>(TEXT("OverheadStatusWidget"));
-	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
-	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(150.0f, 80.0f));
-	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 3000.0f));
-	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-	OverheadStatusWidgetComponent->SetRelativeScale3D(FVector(10.0f, 10.0f, 10.0f));
-	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	static ConstructorHelpers::FClassFinder<UAOMonsterHUDWidget>
-		WidgetClass(
-			TEXT("/Game/UI/Ingame/WBP_MonsterStatus_Head.WBP_MonsterStatus_Head_C"));
-
-	if (WidgetClass.Succeeded())
-	{
-		OverheadStatusWidgetComponent->SetWidgetClass(
-			WidgetClass.Class);
-	}
-
-	OverheadStatusWidgetComponent->SetMaxVisibleDistance(6000.0f);
-
-#pragma endregion
-
 }
 
 void ATalythra::PostInitializeComponents()
@@ -381,12 +353,6 @@ void ATalythra::TurnToTarget()
 		// 여기서 현재 포워트 벡터 기준으로 회전!
 		AddActorWorldRotation(FRotator(0.0f, StepDegree * -1.f, 0.f));
 	}
-
-
-
-
-
-
 }
 
 
