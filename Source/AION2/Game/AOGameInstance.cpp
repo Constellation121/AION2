@@ -41,6 +41,9 @@ void UAOGameInstance::TryAsyncConnect(const FString& Ip, int32 Port)
 						if (WeakInstPtr->UNetworkManager)
 						{
 							WeakInstPtr->UNetworkManager->SetSocket(WeakInstPtr->ClientSocket);
+#if UE_SERVER
+							WeakInstPtr->SendDediIpPort();
+#endif
 						}
 						else
 						{
@@ -56,9 +59,7 @@ void UAOGameInstance::TryAsyncConnect(const FString& Ip, int32 Port)
 			}
 		});
 
-#if UE_SERVER
-	SendDediIpPort();
-#endif
+
 }
 
 bool UAOGameInstance::ConnectToServer(const FString& Ip, int32 Port)
