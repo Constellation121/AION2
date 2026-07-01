@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Global">
-      <UniqueIdentifier>{18bdd421-2f6b-4989-83bc-873661e09166}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Job">
       <UniqueIdentifier>{b16bf6c2-b4a6-456d-aab9-af0b1af0d057}</UniqueIdentifier>
     </Filter>
@@ -27,6 +24,9 @@
     </Filter>
     <Filter Include="Room">
       <UniqueIdentifier>{8abd7d55-f065-4fb9-be94-7f8bdca29720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Global">
+      <UniqueIdentifier>{18bdd421-2f6b-4989-83bc-873661e09166}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -106,29 +106,39 @@
     <ClCompile Include="Job\ThreadManager.cpp">
       <Filter>Job</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
+    <ClCompile Include="Player\Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>
-    <ClCompile Include="ItemData.cpp" />
-    <ClCompile Include="Enum.pb.cc">
+    <ClCompile Include="Header\Enum.pb.cc">
       <Filter>Packet</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol.pb.cc">
+    <ClCompile Include="Header\Protocol.pb.cc">
       <Filter>Packet</Filter>
     </ClCompile>
-    <ClCompile Include="Struct.pb.cc">
+    <ClCompile Include="Header\Struct.pb.cc">
       <Filter>Packet</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectUtils.cpp">
+    <ClCompile Include="Utils\ObjectUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Room.cpp">
+    <ClCompile Include="Room\Room.cpp">
       <Filter>Room</Filter>
     </ClCompile>
-    <ClCompile Include="Dungeon.cpp">
+    <ClCompile Include="Room\Dungeon.cpp">
       <Filter>Room</Filter>
     </ClCompile>
-    <ClCompile Include="DediSessionManager.cpp" />
+    <ClCompile Include="DB\RedisConnectionPool.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="DB\RedisManager.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="Session\DediSessionManager.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="DB\RedisConnection.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreGlobal\CoreGlobal.h">
@@ -209,28 +219,38 @@
     <ClInclude Include="Utils\pch.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="Player\Player.h">
       <Filter>Player</Filter>
     </ClInclude>
-    <ClInclude Include="ItemData.h" />
-    <ClInclude Include="Enum.pb.h">
+    <ClInclude Include="Header\Enum.pb.h">
       <Filter>Packet</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol.pb.h">
+    <ClInclude Include="Header\Protocol.pb.h">
       <Filter>Packet</Filter>
     </ClInclude>
-    <ClInclude Include="Struct.pb.h">
+    <ClInclude Include="Header\Struct.pb.h">
       <Filter>Packet</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectUtils.h">
+    <ClInclude Include="Utils\ObjectUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Room.h">
+    <ClInclude Include="Room\Room.h">
       <Filter>Room</Filter>
     </ClInclude>
-    <ClInclude Include="Dungeon.h">
+    <ClInclude Include="Room\Dungeon.h">
       <Filter>Room</Filter>
     </ClInclude>
-    <ClInclude Include="DediSessionManager.h" />
+    <ClInclude Include="DB\RedisConnectionPool.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="DB\RedisManager.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="Session\DediSessionManager.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="DB\RedisConnection.h">
+      <Filter>DB</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

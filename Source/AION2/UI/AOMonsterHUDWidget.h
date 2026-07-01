@@ -67,6 +67,7 @@ protected:
 
     UPROPERTY(meta = (BindWidget), BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UTextBlock> TB_MonsterName;
+
 	
 private:
     int32 MonsterIndex = 0;

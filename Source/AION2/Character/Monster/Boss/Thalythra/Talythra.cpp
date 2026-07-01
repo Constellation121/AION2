@@ -53,35 +53,6 @@ ATalythra::ATalythra(const FObjectInitializer& ObjectInitializer)
 	{
 		ChargeAttackMontage = ChargeAttackMontageRef.Object;
 	}
-
-	
-
-#pragma region UI
-	// Head-up UI
-	OverheadStatusWidgetComponent = CreateDefaultSubobject<UAOWidgetComponentBase>(TEXT("OverheadStatusWidget"));
-	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
-	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(150.0f, 80.0f));
-	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 3000.0f));
-	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-	OverheadStatusWidgetComponent->SetRelativeScale3D(FVector(10.0f, 10.0f, 10.0f));
-	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	static ConstructorHelpers::FClassFinder<UAOMonsterHUDWidget>
-		WidgetClass(
-			TEXT("/Game/UI/Ingame/WBP_MonsterStatus_Head.WBP_MonsterStatus_Head_C"));
-
-	if (WidgetClass.Succeeded())
-	{
-		OverheadStatusWidgetComponent->SetWidgetClass(
-			WidgetClass.Class);
-	}
-
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WidgetMat(
-		TEXT("/Game/UI/Resource/Material/BaseMaterial/M_WorldSpaceUI1.M_WorldSpaceUI1")
-	);
-#pragma endregion
-
 }
 
 void ATalythra::PostInitializeComponents()
@@ -146,7 +117,7 @@ void ATalythra::BeginPlay()
 			SceneComp->SetVisibility(false, true);
 		}
 
-
+		
 	}
 
 #pragma endregion 
@@ -168,7 +139,7 @@ void ATalythra::Tick(float DeltaTime)
 
 	if (bChargeAttack)
 	{
-		if (CanMoveOnNavMesh(ChargeDirection, 100.f)) // 이 부분도 수정 
+		if (CanMoveOnNavMesh(ChargeDirection, 750.f)) // 이 부분도 수정 
 		{
 			AddMovementInput(ChargeDirection, 1.0f, false);
 		}
@@ -382,12 +353,6 @@ void ATalythra::TurnToTarget()
 		// 여기서 현재 포워트 벡터 기준으로 회전!
 		AddActorWorldRotation(FRotator(0.0f, StepDegree * -1.f, 0.f));
 	}
-
-
-
-
-
-
 }
 
 
@@ -683,8 +648,8 @@ void ATalythra::DoFireProjectile_3()
 void ATalythra::InitAttributeSet()
 {
 	// AttributeSet설정
-	AttributeSet->InitHealth(100.f);
-	AttributeSet->InitMaxHealth(100.f);
+	AttributeSet->InitHealth(5000.f);
+	AttributeSet->InitMaxHealth(5000.f);
 
 	AttributeSet->InitStamina(100.f);
 	AttributeSet->InitMaxStamina(100.f);

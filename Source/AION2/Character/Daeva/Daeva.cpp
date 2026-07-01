@@ -27,6 +27,8 @@
 #include "UI/AOPlayerHUDWidget.h"
 #include "Components/WidgetComponent.h"
 
+#include "Character/Monster/AOMonsterBase.h"
+
 const float TargetTraceRadius = 3500.0f;
 
 ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
@@ -1139,6 +1141,17 @@ void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 	if (PreviousTarget != CurrentTarget)
 	{
 		Server_SetCurrentTarget(CurrentTarget);
+
+		if (AAOMonsterBase* PreviousMonster = Cast<AAOMonsterBase>(PreviousTarget))
+		{
+			PreviousMonster->SetTargetWidgetVisible(false);
+
+		}
+
+		if (AAOMonsterBase* CurrentMonster = Cast<AAOMonsterBase>(CurrentTarget))
+		{
+			CurrentMonster->SetTargetWidgetVisible(true);
+		}
 	}
 }
 

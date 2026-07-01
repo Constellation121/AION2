@@ -5,6 +5,11 @@
 #include "Game/AOGameInstance.h"
 #include "Manager/AONetworkManager.h"
 
+AAOGameMode::AAOGameMode()
+{
+	DefaultPawnClass = nullptr;
+}
+
 void AAOGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -18,12 +23,6 @@ void AAOGameMode::BeginPlay()
 		NetworkManager = GameInst->GetNetworkManager();
 	}
 
-#if UE_SERVER
-	if (GameInst)
-	{
-		GameInst->SendDediIpPort();
-	}
-#endif
 }
 
 void AAOGameMode::Tick(float DeltaTime)
