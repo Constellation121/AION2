@@ -32,12 +32,13 @@ public:
 	FORCEINLINE FGameplayTag Get_State() { return StateTag; }
 
 	UFUNCTION()
-	void TargetPerceptionOn(AActor* Actor, FAIStimulus  Stimlus);
+	virtual void TargetPerceptionOn(AActor* Actor, FAIStimulus  Stimlus);
 
 	UFUNCTION()
 	AActor* Get_CurrentTargetPlayer() { return CurrentTargetPlayer; }	
 
-
+	UFUNCTION()
+	void OnTargetDead(AActor* DeadActor);
 
 protected:
 	// State AI Tree ( 상태 트리 AI ) 

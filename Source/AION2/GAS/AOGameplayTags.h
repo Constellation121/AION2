@@ -4,6 +4,9 @@
 
 #define TEAM_DAEVA FGameplayTag::RequestGameplayTag(TEXT("Team.Daeva"))
 #define TEAM_MONSTER FGameplayTag::RequestGameplayTag(TEXT("Team.Monster"))
+#define TEAM_PERCEPTION_DAEVA 1
+#define TEAM_PERCEPTION_MONSTER 2 
+
 
 #define FACTION_ELYOS FGameplayTag::RequestGameplayTag(TEXT("Faction.Elyos"))
 #define FACTION_ASMODIAN FGameplayTag::RequestGameplayTag(TEXT("Faction.Asmodian"))
@@ -22,7 +25,12 @@
 #define COMBO_AVAILABLE_RB2 FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.RB2"))
 #define COMBO_AVAILABLE_RB3 FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.RB3"))
 
+// Event 
 #define EVENT_CHECKATTACKHIT FGameplayTag::RequestGameplayTag(TEXT("Event.CheckAttackHit"))
+#define EVENT_CHECKATTACKHIT_BEGIN FGameplayTag::RequestGameplayTag(TEXT("Event.CheckAttackHit.Begin"))
+#define EVENT_CHECKATTACKHIT_END FGameplayTag::RequestGameplayTag(TEXT("Event.CheckAttackHit.End"))
+
+
 
 // GameplayCue
 #define CUE_GHOSTTRAIL FGameplayTag::RequestGameplayTag(TEXT("GameplayCue.GhostTrail"))
