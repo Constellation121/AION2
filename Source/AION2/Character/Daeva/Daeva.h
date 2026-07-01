@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "Character/AOCharacter.h"
@@ -7,6 +7,7 @@
 #include "GAS/AttributeSet/AOAttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayAbilitySpecHandle.h"
+#include "GenericTeamAgentInterface.h"
 #include "Daeva.generated.h"
 
 class USkeletalMeshComponent;
@@ -87,7 +88,7 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(
 );
 
 UCLASS()
-class AION2_API ADaeva : public AAOCharacter
+class AION2_API ADaeva : public AAOCharacter , public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -128,6 +129,12 @@ public:
 	void SetCameraByLookAt(const FRotator& LookAtRot);
 	void ResetForDungeonRespawn();
 
+
+	/* SeonHwan */
+	virtual FGenericTeamId GetGenericTeamId() const override { return FGenericTeamId(TeamID); }
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override { TeamID = NewTeamID.GetId(); }
+
+
 protected:
 	virtual void Move(const FInputActionValue& Value);
 	virtual void Look(const FInputActionValue& Value);
@@ -166,6 +173,9 @@ public:
 	virtual void HandleDeath();
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 
+	UFUNCTION(Exec)
+	void TestSetHealth(float NewHealth);
+
 protected:
 	FDelegateHandle HealthChangedDelegateHandle;
 
@@ -188,6 +198,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Mana")
 	TSubclassOf<UGameplayEffect> HitManaRegenEffect;
 
+	// Seohwan ( aicontroller에서 적 및 동료 판별 기준 ) 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	uint8 TeamID = 1;
 
 	UFUNCTION(Server, Reliable)
 	void ServerStartSprint();
@@ -276,6 +289,7 @@ public:
 	void SetMyClass(uint8 ClassType);
 	void SetMyName(FString InName);
 
+	void SendHp(float NewHp);
 private:
 	bool bPlayerUIReady = false;
 
