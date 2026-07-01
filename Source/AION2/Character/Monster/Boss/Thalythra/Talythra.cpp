@@ -648,8 +648,8 @@ void ATalythra::DoFireProjectile_3()
 void ATalythra::InitAttributeSet()
 {
 	// AttributeSet설정
-	AttributeSet->InitHealth(250.f);
-	AttributeSet->InitMaxHealth(250.f);
+	AttributeSet->InitHealth(5000.f);
+	AttributeSet->InitMaxHealth(5000.f);
 
 	AttributeSet->InitStamina(100.f);
 	AttributeSet->InitMaxStamina(100.f);

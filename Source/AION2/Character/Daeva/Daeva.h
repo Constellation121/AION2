@@ -267,6 +267,7 @@ public:
 	void NotifyPlayerUIReady();
 
 public:
+	uint64 GetMy() { return MyId; }
 	void SetMyId(uint64 Id);
 	void SetMyClass(uint8 ClassType);
 	void SetMyName(FString InName);
