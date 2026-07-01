@@ -112,9 +112,6 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayWingMontage(EMontageID MontageID, float PlayRate);
 
-	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_SetWingVisibility(bool NewVisible);
-
 	UFUNCTION(Server, Reliable)
 	void Server_SetCurrentTarget(AAOCharacter* NewTarget);
 
@@ -213,6 +210,11 @@ private:
 	void SetWeaponVisibility(bool NewVisible);
 	void SetSubWeaponVisibility(bool NewVisible);
 	void SetWingVisibility(bool NewVisible);
+
+public:
+	void SetWingVisibilityOnServer(bool NewVisible);
+	UFUNCTION()
+	void OnRep_WingVisible();
 
 private:
 	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
@@ -334,6 +336,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> Wing;
+
+	UPROPERTY(ReplicatedUsing = OnRep_WingVisible)
+	bool bWingVisible = false;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
