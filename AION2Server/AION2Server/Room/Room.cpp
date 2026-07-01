@@ -4,6 +4,10 @@
 #include "Protocol.pb.h"
 #include "PacketHandler.h"
 #include "GameSession.h"
+#include "DB/RedisManager.h"
+#include "DB/DBBind.h"
+#include "DB/DBConnection.h"
+#include "DB/DBConnectionPool.h"
 
 RoomRef GRoom = std::make_shared<Room>();
 
@@ -20,7 +24,7 @@ Room::~Room()
 
 void Room::EnterRoom(PlayerRef player)
 {
-	// »õ·Î µé¾î¿Â ÇÃ·¹ÀÌ¾îÀÇ À§Ä¡¸¦ ±âÁ¸ ÇÃ·¹ÀÌ¾îµé¿¡°Ô Àü¼Û
+	// ìƒˆë¡œ ë“¤ì–´ì˜¨ í”Œë ˆì´ì–´ì˜ ìœ„ì¹˜ë¥¼ ê¸°ì¡´ í”Œë ˆì´ì–´ë“¤ì—ê²Œ ì „ì†¡
 	{
 		std::cout << "New Player: " << player->GetId() << "\n";
 
@@ -43,18 +47,18 @@ void Room::EnterRoom(PlayerRef player)
 
 
 
-		SendBufferRef spawnBuffer =  PacketHandler::MakeSendBuffer(spawnPkt);
+		SendBufferRef spawnBuffer = PacketHandler::MakeSendBuffer(spawnPkt);
 		Broadcast(spawnBuffer, player->_playerId);
 	}
 
-	// ±âÁ¸ ÇÃ·¹ÀÌ¾îµéÀÇ À§Ä¡¸¦ »õ·Î µé¾î¿Â ÇÃ·¹ÀÌ¾î¿¡°Ô Àü¼Û
+	// ê¸°ì¡´ í”Œë ˆì´ì–´ë“¤ì˜ ìœ„ì¹˜ë¥¼ ìƒˆë¡œ ë“¤ì–´ì˜¨ í”Œë ˆì´ì–´ì—ê²Œ ì „ì†¡
 	{
 		Protocol::S_SpawnPacket spawnPkt;
 		for (auto& userInfo : _players)
 		{
 			std::cout << "Ex Player: " << userInfo.first << "To New Player" << player->GetId() << "\n";
 
-			PlayerRef user = userInfo.second;			
+			PlayerRef user = userInfo.second;
 			Protocol::PlayerState* playerState = spawnPkt.add_playerstates();
 			playerState->set_playerid(user->_playerId);
 			playerState->set_playerclass(static_cast<Protocol::ClassType>(user->_class));
@@ -70,15 +74,20 @@ void Room::EnterRoom(PlayerRef player)
 			rot->set_yaw(user->_playerRot.yaw());
 			rot->set_roll(user->_playerRot.roll());
 		}
-			SendBufferRef spawnBuffer = PacketHandler::MakeSendBuffer(spawnPkt);
+		SendBufferRef spawnBuffer = PacketHandler::MakeSendBuffer(spawnPkt);
 
-			if (auto session = player->_ownerSession.lock())
-				session->Send(spawnBuffer);
+		if (auto session = player->_ownerSession.lock())
+			session->Send(spawnBuffer);
 	}
 }
 
 void Room::LeaveRoom(PlayerRef player)
 {
+	if (player == nullptr)
+		return;
+
+	_players.erase(player->_playerId);
+	std::cout << "Player Leave Room: " << player->GetId() << "\n";
 }
 
 bool Room::HandleEnterPlayer(PlayerRef player)
@@ -89,6 +98,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
 bool Room::HandleLeavePlayer(PlayerRef player)
 {
+	LeaveRoom(player);
 	return true;
 }
 
@@ -124,6 +134,39 @@ void Room::HandleMove(Protocol::C_MovePacket pkt, PlayerRef player)
 
 	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(movePkt);
 	Broadcast(sendBuffer, player->_playerId);
+}
+
+void Room::HandleSavePlayerHp()
+{
+	DoTimer(18000, &Room::HandleSavePlayerHp);
+	std::thread doThread([]() {
+		auto pendingUpdates = GRedisManager.GetPendingHpUpdate();
+		if (pendingUpdates.empty()) return;
+
+		DBConnection* dbConnect = GDBConnectionPool->Pop();
+		if (dbConnect == nullptr) return;
+
+		std::vector<std::string> successIds;
+		for (const auto& pair : pendingUpdates)
+		{
+			DBBind<2, 0>dbBind(*dbConnect, L"{CALL sp_UpdateHp(? ,?)}");
+			int32 hp = pair.second;
+			WCHAR widBuf[51] = { 0, };
+			::mbstowcs_s(nullptr, widBuf, 51, pair.first.c_str(), _TRUNCATE);
+
+			dbBind.BindParam(0, hp);
+			dbBind.BindParam(1, widBuf);
+
+			if (dbBind.Execute())
+			{
+				successIds.push_back(pair.first);
+			}
+		}
+		GDBConnectionPool->Push(dbConnect);
+
+		GRedisManager.ClearPendingHpUpdate(successIds);
+		});
+	doThread.detach();
 }
 
 void Room::AddPlayer(PlayerRef player)
