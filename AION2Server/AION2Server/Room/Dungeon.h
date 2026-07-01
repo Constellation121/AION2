@@ -57,7 +57,6 @@ public:
 	void HandleDungeonStart(PlayerRef player, int32 dungeonId);
 	void HandleDungeonExit(int32 dungeonId);
 	void HandleReadyPacket(PlayerRef player, int32 dungeonId);
-	void HandleSavePlayerHp();
 
 	void WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 

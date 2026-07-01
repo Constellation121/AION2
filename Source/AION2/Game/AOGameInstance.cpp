@@ -41,6 +41,9 @@ void UAOGameInstance::TryAsyncConnect(const FString& Ip, int32 Port)
 						if (WeakInstPtr->UNetworkManager)
 						{
 							WeakInstPtr->UNetworkManager->SetSocket(WeakInstPtr->ClientSocket);
+#if UE_SERVER
+							WeakInstPtr->SendDediIpPort();
+#endif
 						}
 						else
 						{
@@ -55,10 +58,6 @@ void UAOGameInstance::TryAsyncConnect(const FString& Ip, int32 Port)
 					});
 			}
 		});
-
-#if UE_SERVER
-	SendDediIpPort();
-#endif
 }
 
 bool UAOGameInstance::ConnectToServer(const FString& Ip, int32 Port)
@@ -138,10 +137,21 @@ int32 UAOGameInstance::GetLocalPort()
 	{
 		return GetWorld()->GetNetDriver()->LocalAddr->GetPort();
 	}
-	else
+
+	if (FParse::Value(FCommandLine::Get(), TEXT("port="), Port))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Error: Port InVaild"));
+		return Port;
 	}
+	
+	if (FParse::Value(FCommandLine::Get(), TEXT("Port="), Port))
+	{
+		return Port;
+	}
+	if (FParse::Value(FCommandLine::Get(), TEXT("-port="), Port))
+	{
+		return Port;
+	}
+
 	return 7777;
 }
 

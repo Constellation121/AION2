@@ -151,4 +151,3 @@ void UAOMonsterHUDWidget::BroadcastInitialAttributes()
     UpdateHpBar(AttributeSet->GetHealth(), AttributeSet->GetMaxHealth());
     UpdateStaminaBar(AttributeSet->GetStamina(), AttributeSet->GetMaxStamina());
 }
-
