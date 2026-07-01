@@ -1087,12 +1087,12 @@ void ADaeva::SetWingVisibility(bool NewVisible)
 {
 	if (Wing)
 	{
-		Wing->SetVisibility(bWingVisible);
+		Wing->SetVisibility(NewVisible);
 	}
 
 	if (Parts[EDaevaPartType::Cape])
 	{
-		Parts[EDaevaPartType::Cape]->SetVisibility(!bWingVisible);
+		Parts[EDaevaPartType::Cape]->SetVisibility(!NewVisible);
 	}
 }
 
@@ -1105,6 +1105,7 @@ void ADaeva::SetWingVisibilityOnServer(bool NewVisible)
 
 	bWingVisible = NewVisible;
 	OnRep_WingVisible();
+	ForceNetUpdate();
 }
 
 void ADaeva::OnRep_WingVisible()
@@ -1195,7 +1196,6 @@ void ADaeva::BindOverheadStatusWidget()
 		StatusWidget->BindToPlayerState(AOPlayerState);
 	}
 }
-
 
 bool ADaeva::IsPlayerUIReady() const
 {
