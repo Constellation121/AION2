@@ -733,6 +733,14 @@ void ADaeva::InputShiftPressed()
 		return;
 	}
 
+	// 활강 대시
+	if (GetCharacterMovement()->MovementMode == MOVE_Custom &&
+		GetCharacterMovement()->CustomMovementMode == static_cast<uint8>(EAOMovementMode::Glide))
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::GlideDash));
+		return;
+	}
+
 	// 대시는 전투, 비전투 모두 가능.
 	GASInputPressed(static_cast<int32>(EAbilityID::Dash));
 

@@ -41,6 +41,7 @@ enum class EMontageID : uint8
 	Dash,
 	CombatDash,
 	Glide,
+	GlideDash,
 	GlideLand,
 	StopGlide,
 	LB,
@@ -73,7 +74,8 @@ enum class EAbilityID : uint8
 	Key3,
 	Key4,
 	KeyQ,
-	KeyE
+	KeyE,
+	GlideDash
 };
 
 // UI: Player ASC�� �غ�Ǹ� bind
