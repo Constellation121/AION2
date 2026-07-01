@@ -113,7 +113,7 @@ public:
 	* 2 = b2
 	* 3 = b3
 	*/
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Dungeon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dungeon")
 	int32 DungeonBossIndex = 0;
 
 
@@ -129,21 +129,18 @@ protected :
 	FDelegateHandle HealthChangedDelegateHandle;
 
 
-
-
-// UI
-private:
-	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
-
 	// Targeting UI
 public:
 	void SetTargetWidgetVisible(bool bVisible);
 
+	// Stat UI
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAOWidgetComponentBase> TargetWidgetComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UUserWidget> TargetWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
 };
