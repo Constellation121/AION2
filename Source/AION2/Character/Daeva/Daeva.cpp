@@ -29,7 +29,7 @@
 
 #include "Character/Monster/AOMonsterBase.h"
 
-const float TargetTraceRadius = 3500.0f;
+const float TargetTraceRadius = 3000.0f;
 
 ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
