@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "Character/AOCharacter.h"
@@ -167,6 +167,9 @@ public:
 	virtual void HandleDeath();
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 
+	UFUNCTION(Exec)
+	void TestSetHealth(float NewHealth);
+
 protected:
 	FDelegateHandle HealthChangedDelegateHandle;
 
@@ -271,6 +274,7 @@ public:
 	void SetMyClass(uint8 ClassType);
 	void SetMyName(FString InName);
 
+	void SendHp(float NewHp);
 private:
 	bool bPlayerUIReady = false;
 
