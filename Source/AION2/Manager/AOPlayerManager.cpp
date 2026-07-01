@@ -16,7 +16,7 @@
 
 UAOPlayerManager::UAOPlayerManager()
 {
-	static ConstructorHelpers::FClassFinder<APawn> AssassinClassRef(TEXT("/Game/Blueprint/Daeva/Assassin/BP_Assassin"));
+	static ConstructorHelpers::FClassFinder<APawn> AssassinClassRef(TEXT("/Game/Blueprint/Daeva/Assassin/BP_MMOAssassin"));
 	if (AssassinClassRef.Succeeded())
 	{
 		JobClassMap.Add(1, AssassinClassRef.Class);
@@ -67,8 +67,8 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, FString PlayerName, uint8 Cl
 		UClass* SpawnClass = JobClassMap[ClassType].Get();
 		if (GameInstance->GetMyPlayerId() == PlayerId)
 		{
-			//MyPlayer = GetWorld()->SpawnActor<AMMODaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
-			MyPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
+			MyPlayer = GetWorld()->SpawnActor<AMMODaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
+			//MyPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
 			if (MyPlayer != nullptr)
 			{
 				MyPlayer->SetMyId(PlayerId);
@@ -78,13 +78,13 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, FString PlayerName, uint8 Cl
 				if (PlayerController != nullptr)
 				{
 					PlayerController->Possess(MyPlayer);
-					//	UAOQuickSlotComponent* InventoryComp = MyPlayer->FindComponentByClass<UAOQuickSlotComponent>();
+						UAOQuickSlotComponent* InventoryComp = MyPlayer->FindComponentByClass<UAOQuickSlotComponent>();
 
-					/*	if (InventoryComp == nullptr)
+						if (InventoryComp == nullptr)
 						{
 							UE_LOG(LogTemp, Warning, TEXT("Inventory Is Nat Vaild"));
 							return;
-						}*/
+						}
 
 					UAOMainHUDWidget* MainHUD = PlayerController->GetMainHUD();
 					if (MainHUD == nullptr) return;
@@ -108,10 +108,10 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, FString PlayerName, uint8 Cl
 						SlotData.Count = Count;
 						FItemData TemplateData;
 
-						/*if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
+						if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
 						{
 							PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
-						}*/
+						}
 					}
 				}
 			}
