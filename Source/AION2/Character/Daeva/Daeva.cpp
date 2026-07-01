@@ -173,6 +173,8 @@ void ADaeva::OnRep_PlayerState()
 void ADaeva::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ADaeva, bWingVisible);
 }
 
 void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -252,11 +254,6 @@ void ADaeva::Multicast_PlayWingMontage_Implementation(EMontageID MontageID, floa
 	{
 		WingAnimInstance->Montage_Play(WingMontages[MontageID], PlayRate);
 	}
-}
-
-void ADaeva::Multicast_SetWingVisibility_Implementation(bool NewVisible)
-{
-	SetWingVisibility(NewVisible);
 }
 
 void ADaeva::Client_PlayCameraShake_Implementation()
@@ -448,7 +445,7 @@ void ADaeva::ResetForDungeonRespawn()
 	{
 		Multicast_PlayMontage(EMontageID::Rebirth, 1.3f);
 		Multicast_PlayWingMontage(EMontageID::Rebirth, 1.0f);
-		Multicast_SetWingVisibility(true);
+		SetWingVisibilityOnServer(true);
 		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 		{
 			FOnMontageEnded EndDelegate;
@@ -745,6 +742,14 @@ void ADaeva::InputShiftPressed()
 		return;
 	}
 
+	// 활강 대시
+	if (GetCharacterMovement()->MovementMode == MOVE_Custom &&
+		GetCharacterMovement()->CustomMovementMode == static_cast<uint8>(EAOMovementMode::Glide))
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::GlideDash));
+		return;
+	}
+
 	// 대시는 전투, 비전투 모두 가능.
 	GASInputPressed(static_cast<int32>(EAbilityID::Dash));
 
@@ -849,7 +854,7 @@ void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	if (HasAuthority())
 	{
-		Multicast_SetWingVisibility(false);
+		SetWingVisibilityOnServer(false);
 	}
 }
 
@@ -910,7 +915,7 @@ void ADaeva::HandleDeath()
 		// 사망 애니메이션은 Controller가 붙어 있어도 재생 가능
 		Multicast_PlayMontage(EMontageID::Die, 1.0f);
 		Multicast_PlayWingMontage(EMontageID::Die, 1.0f);
-		Multicast_SetWingVisibility(true);
+		SetWingVisibilityOnServer(true);
 
 		// 여기서는 제거하거나 주석 처리
 		// DetachFromControllerPendingDestroy();
@@ -1115,6 +1120,23 @@ void ADaeva::SetWingVisibility(bool NewVisible)
 	}
 }
 
+void ADaeva::SetWingVisibilityOnServer(bool NewVisible)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	bWingVisible = NewVisible;
+	OnRep_WingVisible();
+	ForceNetUpdate();
+}
+
+void ADaeva::OnRep_WingVisible()
+{
+	SetWingVisibility(bWingVisible);
+}
+
 void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 {
 	USkeletalMeshComponent* PartMesh = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
@@ -1198,7 +1220,6 @@ void ADaeva::BindOverheadStatusWidget()
 		StatusWidget->BindToPlayerState(AOPlayerState);
 	}
 }
-
 
 bool ADaeva::IsPlayerUIReady() const
 {
