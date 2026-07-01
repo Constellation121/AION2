@@ -194,11 +194,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	float AttackWarningElapsedTime = 0.0f;
-	
-
-
-public:
-	// MonsterBase¿¡¼­ »ó¼ÓµÊ.
-	int32 DungeonBossIndex = 3;
 
 };
