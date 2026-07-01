@@ -22,14 +22,17 @@
 #include "EnhancedInputComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
-
 #include "UI/AOWidgetComponentBase.h"
 #include "UI/AOPlayerHUDWidget.h"
 #include "Components/WidgetComponent.h"
 
 #include "Character/Monster/AOMonsterBase.h"
 
+#include "Network/PacketHeader.h"
+#include "AION2.h"
+
 const float TargetTraceRadius = 3000.0f;
+
 
 ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -925,9 +928,20 @@ void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
 		Data.NewValue
 	);
 
+	SendHp(Data.NewValue);
+
 	if (Data.NewValue <= 0.0f && !bIsDead)
 	{
 		HandleDeath();
+	}
+}
+
+void ADaeva::TestSetHealth(float NewHealth)
+{
+	if (ASC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Test] Setting Health to %.1f via Console Command"), NewHealth);
+		ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), NewHealth);
 	}
 }
 
@@ -1247,4 +1261,12 @@ void ADaeva::SetMyName(FString InName)
 {
 	//AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
 	//AOPlayerState->SetMyName(InName);
+}
+
+void ADaeva::SendHp(float NewHp)
+{
+	Protocol::C_ChangeHpPacket HpPacket;
+	HpPacket.set_playerid(MyId);
+	HpPacket.set_hp(NewHp);
+	SEND_PACKET(HpPacket, PKT_C_CHANGEHP);
 }
