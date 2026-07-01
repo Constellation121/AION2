@@ -252,7 +252,7 @@ private:
 	float MinZoomDistance = 100.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	float MaxZoomDistance = 1200.f;
+	float MaxZoomDistance = 1500.f;
 
 	UPROPERTY(EditDefaultsOnly, Category ="GAS|Mana")
 	float HitManaRegenAmount = 5.f;

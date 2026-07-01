@@ -44,11 +44,9 @@ AAOMonsterBase::AAOMonsterBase(const FObjectInitializer& ObjectInitializer)
 
 	// TargetWidgetComponent
 	TargetWidgetComponent = CreateDefaultSubobject<UAOWidgetComponentBase>(TEXT("TargetWidget"));
-	TargetWidgetComponent->SetupAttachment(RootComponent);
+	TargetWidgetComponent->SetupAttachment(GetMesh(), TEXT("Bip001-Spine2"));
 	TargetWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	TargetWidgetComponent->SetDrawSize(FVector2D(64.0f, 64.0f));
-	TargetWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
-	TargetWidgetComponent->SetRelativeScale3D(FVector(10.0f, 10.0f,10.0f));
 	TargetWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TargetWidgetComponent->bUseDistanceVisibility = false;
 	TargetWidgetComponent->SetVisibility(false, true);
@@ -70,9 +68,7 @@ AAOMonsterBase::AAOMonsterBase(const FObjectInitializer& ObjectInitializer)
 	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
 	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(150.0f, 80.0f));
-	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 500.0f));
-	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-	OverheadStatusWidgetComponent->SetRelativeScale3D(FVector(10.0f, 10.0f, 10.0f));
+	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 350.0f));
 	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	static ConstructorHelpers::FClassFinder<UAOMonsterHUDWidget_Targetable>
@@ -86,11 +82,6 @@ AAOMonsterBase::AAOMonsterBase(const FObjectInitializer& ObjectInitializer)
 	}
 
 	OverheadStatusWidgetComponent->SetMaxVisibleDistance(6000.0f);
-
-
-	TargetWidgetComponent->SetupAttachment(RootComponent);
-	TargetWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 30.0f));
-	TargetWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 #pragma endregion
 
 }
