@@ -142,6 +142,7 @@ int32 UAOGameInstance::GetLocalPort()
 	{
 		return Port;
 	}
+	
 	if (FParse::Value(FCommandLine::Get(), TEXT("Port="), Port))
 	{
 		return Port;
