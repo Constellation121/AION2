@@ -42,7 +42,7 @@ void UAODungeonEntranceWidget::OnEnterButtonClicked()
 	if (!GI) return;
 	uint64 PlayerId = GI->GetMyPlayerId();
 
-	Protocol::C_DungeonEnteracket EnterPacket;
+	Protocol::C_DungeonEnteracket  EnterPacket;
 	EnterPacket.set_playerid(PlayerId);
 	SEND_PACKET(EnterPacket, PKT_C_DUNGEONENTER);
 
