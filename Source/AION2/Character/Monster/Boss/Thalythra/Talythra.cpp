@@ -58,7 +58,7 @@ ATalythra::ATalythra(const FObjectInitializer& ObjectInitializer)
 	DungeonBossIndex = 3;
 
 	OverheadStatusWidgetComponent->SetRelativeScale3D(FVector(10.0f, 10.0f, 10.0f));
-	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 500.0f));
+	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 350.0f));
 	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 	
 
