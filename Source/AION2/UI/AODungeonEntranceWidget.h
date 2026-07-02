@@ -4,7 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Network/PacketHeader.h"
+#include "Types/DungeonRoomTypes.h"
+
 #include "AODungeonEntranceWidget.generated.h"
+
+class UButton;
+class UOverlay;
+class UAOClassSwitcherWidget;
+class UAOPlayerManager;
 
 /**
  *
@@ -15,55 +23,79 @@ class AION2_API UAODungeonEntranceWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void SetLeaderClass(uint8 InLeaderClass);
-	void SetLeaderName(FString InLeaderName);
+	void SetNotJoined();
+	void SetDungeonInfo(const Protocol::DungeonInfo& DungeonInfo);
+	void SetDungeonCreated(const Protocol::DungeonInfo& DungeonInfo);
+	void SetDungeonEntered(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);
+	void SetDungeonReady(int32 DungeonId, uint64 PlayerId);
 
-	void SetMember1Class(uint8 InLeaderClass);
-	void SetMember1Name(FString InLeaderName);
+private:
+	void ApplyEntranceState();
 
-	void SetReady();
+	void SetMemberSlots(const Protocol::DungeonInfo& DungeonInfo);
 
-	void SetImage(class UImage* TargetImage, uint8 ClassType);
+	// 멤버 하나의 Slot만 설정
+	void SetMemberSlot(int32 SlotIndex, const Protocol::DungeonPlayerInfo& PlayerInfo);
+
+	// 모든 목록을 지움
+	void ClearMemberSlots();
+
 
 protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* EnterButton;
+	TObjectPtr<UButton> EnterButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* CreateButton;
+	TObjectPtr<UButton> CreateButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* ReadyButton;
+	TObjectPtr<UButton> ReadyButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* StartButton;
+	TObjectPtr<UButton> StartButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UImage* LeaderClass;
+	TObjectPtr<UButton> ExitButton;
+
+	// Room에 들어가면 보이지 않게 될 Object들
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UOverlay> Overlay_OutRoom;
+
+	// Room에 들어가면 보일 Object들
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UOverlay> Overlay_PlayerRoomState;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* LeaderName;
+	TObjectPtr<UOverlay> Overlay_TitleAreaBottom;
 
 	UPROPERTY(meta = (BindWidget))
-	class UImage* Member1Class;
+	TObjectPtr<UOverlay> Overlay_InRoom;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Member1Name;
+	TObjectPtr<UOverlay> Overlay_InRoom_Member;
 
 	UPROPERTY(meta = (BindWidget))
-	class UImage* Member1Ready;
+	TObjectPtr<UOverlay> Overlay_InRoom_Leader;
+
+
+	// Room에 들어가면 하단에 보일 멤버 목록
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UAOClassSwitcherWidget> Member1;
 
 	UPROPERTY(meta = (BindWidget))
-	class UImage* Member2Class;
+	TObjectPtr<UAOClassSwitcherWidget> Member2;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Member2Name;
+	TObjectPtr<UAOClassSwitcherWidget> Member3;
 
-	UPROPERTY(EditAnywhere, Category = "Class")
-	class UTexture2D* AssassinImage;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UAOClassSwitcherWidget> Member4;
 
+	// 위에서 Bind된 MemberClassSlot Widget들을 편하게 관리하기 위해 Widget 생성자에서 Array로 묶음
+	UPROPERTY()
+	TArray<TObjectPtr<UAOClassSwitcherWidget>> MemberClassSlots;
 
 private:
 	UFUNCTION()
@@ -75,4 +107,12 @@ private:
 	UFUNCTION()
 	void OnStartButtonClicked();
 
+	UFUNCTION()
+	void OnReadyButtonClicked();
+
+	UFUNCTION()
+	void OnExitButtonClicked();
+
+private:
+	UAOPlayerManager* GetPlayerManager() const;
 };

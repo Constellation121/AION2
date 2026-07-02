@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Network/PacketHeader.h"
+#include "Types/DungeonRoomTypes.h"
 #include <unordered_map>
 #include "AOPlayerManager.generated.h"
 
@@ -32,6 +33,25 @@ public:
 	void HandleChatting(FString SenderName, FString SendMessage);
 	void HandleStorePurchase(Protocol::ItemData ItemInfo);
 
+#pragma region Dungeon State
+public:
+	void ClearMyDungeonRoomState();
+
+	bool TryUpdateMyDungeonRoomState(const Protocol::DungeonInfo& DungeonInfo);
+
+	// 방 목록 전체용 Update 함수
+	void UpdateMyDungeonRoomStateFromList(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonInfos);
+
+	void UpdateMyDungeonEnterState(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);
+	void UpdateMyDungeonReadyState(int32 DungeonId, uint64 PlayerId);
+
+	const FPlayerDungeonRoomState& GetMyDungeonRoomState() const { return MyDungeonRoomState; }
+
+private:
+	UPROPERTY()
+	FPlayerDungeonRoomState MyDungeonRoomState;
+
+#pragma endregion
 private:
 	//UPROPERTY()
 	//TObjectPtr<AMMODaeva> MyPlayer;
