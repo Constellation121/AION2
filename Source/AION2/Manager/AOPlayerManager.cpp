@@ -168,35 +168,6 @@ void UAOPlayerManager::HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator
 	}
 }
 
-void UAOPlayerManager::HandleDungeonCreate(int32 DungeonId)
-{
-	if (!GameInstance)
-		return;
-	uint64 PlayerId = GameInstance->GetMyPlayerId();
-	auto PlayerRef = Players.Find(PlayerId);
-	if (PlayerRef == nullptr)return;
-	auto Player = PlayerRef->Get();
-	if (Player)
-	{
-		Player->SetDungeonId(DungeonId);
-	}
-
-}
-
-void UAOPlayerManager::HandleDungeonEnter(int32 DungeonId)
-{
-
-}
-
-void UAOPlayerManager::HandleDungeonStart(FString ServerURL)
-{
-	AAOPlayerController* PC = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
-	if (PC)
-	{
-		PC->ClientTravel(ServerURL, ETravelType::TRAVEL_Absolute);
-	}
-}
-
 void UAOPlayerManager::HandleChatting(FString SenderName, FString SendMessage)
 {
 	AAOPlayerController* PlayerController = Cast<AAOPlayerController>(MyPlayer->GetController());
@@ -246,3 +217,129 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo)
 		}
 	}
 }
+
+
+#pragma region Dungeon State
+
+void UAOPlayerManager::HandleDungeonEnter(int32 DungeonId)
+{
+
+}
+
+void UAOPlayerManager::HandleDungeonStart(FString ServerURL)
+{
+	AAOPlayerController* PC = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PC)
+	{
+		PC->ClientTravel(ServerURL, ETravelType::TRAVEL_Absolute);
+	}
+}
+
+void UAOPlayerManager::HandleDungeonCreate(int32 DungeonId)
+{
+	if (!GameInstance)
+		return;
+	uint64 PlayerId = GameInstance->GetMyPlayerId();
+	auto PlayerRef = Players.Find(PlayerId);
+	if (PlayerRef == nullptr)return;
+	auto Player = PlayerRef->Get();
+	if (Player)
+	{
+		Player->SetDungeonId(DungeonId);
+	}
+
+}
+
+void UAOPlayerManager::ClearMyDungeonRoomState()
+{
+	MyDungeonRoomState = FPlayerDungeonRoomState();
+}
+
+bool UAOPlayerManager::TryUpdateMyDungeonRoomState(const Protocol::DungeonInfo& DungeonInfo)
+{
+	if (!GameInstance)
+	{
+		return false;
+	}
+
+	const uint64 MyPlayerId = GameInstance->GetMyPlayerId();
+
+	if (DungeonInfo.has_leaderinfo() && DungeonInfo.leaderinfo().memberid() == MyPlayerId)
+	{
+		MyDungeonRoomState.DungeonId = DungeonInfo.dungeonid();
+		MyDungeonRoomState.EntranceState = EDungeonEntranceState::Leader;
+		MyDungeonRoomState.ReadyState = EReadyState::Ready;
+		return true;
+	}
+
+	for (int32 Index = 0; Index < DungeonInfo.members_size(); ++Index)
+	{
+		const Protocol::DungeonPlayerInfo& MemberInfo = DungeonInfo.members(Index);
+
+		if (MemberInfo.memberid() == MyPlayerId)
+		{
+			MyDungeonRoomState.DungeonId = DungeonInfo.dungeonid();
+			MyDungeonRoomState.EntranceState = EDungeonEntranceState::Member;
+			MyDungeonRoomState.ReadyState = MemberInfo.isready() ? EReadyState::Ready : EReadyState::Preparing;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void UAOPlayerManager::UpdateMyDungeonRoomStateFromList(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonInfos)
+{
+	for (const Protocol::DungeonInfo& DungeonInfo : DungeonInfos)
+	{
+		if (TryUpdateMyDungeonRoomState(DungeonInfo))
+		{
+			return;
+		}
+	}
+
+	ClearMyDungeonRoomState();
+}
+
+void UAOPlayerManager::UpdateMyDungeonEnterState(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer)
+{
+	if (!GameInstance)
+	{
+		return;
+	}
+
+	if (EnterPlayer.memberid() != GameInstance->GetMyPlayerId())
+	{
+		return;
+	}
+
+	MyDungeonRoomState.DungeonId = DungeonId;
+	MyDungeonRoomState.EntranceState = EDungeonEntranceState::Member;
+	MyDungeonRoomState.ReadyState = EnterPlayer.isready() ? EReadyState::Ready : EReadyState::Preparing;
+}
+
+void UAOPlayerManager::UpdateMyDungeonReadyState(int32 DungeonId, uint64 PlayerId)
+{
+	if (!GameInstance)
+	{
+		return;
+	}
+
+	if (PlayerId != GameInstance->GetMyPlayerId())
+	{
+		return;
+	}
+
+	if (MyDungeonRoomState.DungeonId != DungeonId)
+	{
+		return;
+	}
+
+	MyDungeonRoomState.ReadyState = EReadyState::Ready;
+}
+
+
+
+#pragma endregion
+
+

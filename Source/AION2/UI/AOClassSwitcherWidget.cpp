@@ -4,6 +4,9 @@
 #include "UI/AOClassSwitcherWidget.h"
 #include "Components/WidgetSwitcher.h"
 
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
+
 
 void UAOClassSwitcherWidget::SetClassWidget(uint8 ClassType)
 {
@@ -34,3 +37,38 @@ void UAOClassSwitcherWidget::SetClassWidget(uint8 ClassType)
 		WidgetSwitcher_Class->SetActiveWidget(TargetWidget);
 	}
 }
+
+void UAOClassSwitcherWidget::SetReadyState(bool InReadyState)
+{
+	ESlateVisibility NewVisibility = InReadyState ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+
+	if (ReadyImage)
+	{
+		ReadyImage->SetVisibility(NewVisibility);
+	}
+
+	if (TB_Ready)
+	{
+		TB_Ready->SetVisibility(NewVisibility);
+	}
+}
+
+void UAOClassSwitcherWidget::SetLeaderState(bool InLeaderState)
+{
+	ESlateVisibility NewVisibility = InLeaderState ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+
+	if (LeaderIcon)
+	{
+		LeaderIcon->SetVisibility(NewVisibility);
+	}
+
+}
+
+void UAOClassSwitcherWidget::SetPlayerName(FText InName)
+{
+	if (TB_PlayerName)
+	{
+		TB_PlayerName->SetText(InName);
+	}
+}
+

@@ -11,7 +11,8 @@
 
 #include "UI/AOClassSwitcherWidget.h"
 #include "Game/AOGameInstance.h"
-
+#include "AODungeonEntranceWidget.h"
+#include "Manager/AOPlayerManager.h"
 
 
 
@@ -33,6 +34,7 @@ void UAODungeonRoomWidget::NativeConstruct()
 	};
 }
 
+
 void UAODungeonRoomWidget::SetDungeonInfo(const Protocol::DungeonInfo& InInfo)
 {
 	DungeonId = InInfo.dungeonid();
@@ -44,19 +46,11 @@ void UAODungeonRoomWidget::SetDungeonInfo(const Protocol::DungeonInfo& InInfo)
 		TB_LeaderName->SetText(FText::FromString(UTF8_TO_TCHAR(LeaderInfo.membername().c_str())));
 	}
 
-	if (TB_StatusText)
-	{
-		const bool bRecruiting = InInfo.status() == Protocol::RoomStatus::RECRUITING;
-		TB_StatusText->SetText(bRecruiting ? FText::FromString(TEXT("즉시 참가")) : FText::FromString(TEXT("진행중")));
-	}
-
 	SetLeaderClassType(static_cast<uint8>(LeaderInfo.memberclass()));
-
-	if (JoinButton)
-	{
-		JoinButton->SetIsEnabled(InInfo.status() == Protocol::RoomStatus::RECRUITING);
-	}
+	SetMemberClasses(InInfo);
+	ApplyParticipationState(InInfo);
 }
+
 
 
 void UAODungeonRoomWidget::HandleJoinClicked()
@@ -89,105 +83,68 @@ void UAODungeonRoomWidget::AddMemberClass(const Protocol::DungeonPlayerInfo& Mem
 
 void UAODungeonRoomWidget::SetMemberClasses(const Protocol::DungeonInfo& DungeonInfo)
 {
-	const int32 SlotCount = MemberClassSlots.Num();
-	const int32 MemberCount = FMath::Min(DungeonInfo.members_size(), SlotCount);
-
-	for (int32 Index = 0; Index < MemberCount; ++Index)
+	for (UAOClassSwitcherWidget* Slot : MemberClassSlots)
 	{
-		if (!MemberClassSlots[Index])
+		if (Slot)
 		{
-			continue;
+			Slot->SetClassWidget(0);
 		}
-
-		const Protocol::DungeonPlayerInfo& MemberInfo = DungeonInfo.members(Index);
-		MemberClassSlots[Index]->SetClassWidget(
-			static_cast<uint8>(MemberInfo.memberclass())
-		);
 	}
 
-	for (int32 Index = MemberCount; Index < SlotCount; ++Index)
+	for (int32 Index = 0; Index < DungeonInfo.members_size(); ++Index)
 	{
-		if (MemberClassSlots[Index])
-		{
-			MemberClassSlots[Index]->SetClassWidget(0); // Empty or ALL
-		}
+		AddMemberClass(DungeonInfo.members(Index));
 	}
 }
 
 void UAODungeonRoomWidget::ApplyParticipationState(const Protocol::DungeonInfo& DungeonInfo)
 {
+	const UAOPlayerManager* PlayerManager = nullptr;
 
-	const bool bIsLeader = IsLeaderOfRoom(DungeonInfo);
-	const bool bIsJoinedRoom = IsMyDungeonRoom(DungeonInfo);
+	if (const UGameInstance* GI = GetGameInstance())
+	{
+		PlayerManager = GI->GetSubsystem<UAOPlayerManager>();
+	}
+
+	const FPlayerDungeonRoomState State = PlayerManager
+		? PlayerManager->GetMyDungeonRoomState()
+		: FPlayerDungeonRoomState();
+
+	const bool bIsMyRoom = State.IsJoined() && State.DungeonId == DungeonInfo.dungeonid();
 	const bool bRecruiting = DungeonInfo.status() == Protocol::RoomStatus::RECRUITING;
 
 	if (Image_PlayerJoined)
 	{
 		Image_PlayerJoined->SetVisibility(
-			bIsJoinedRoom ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed
+			bIsMyRoom ? ESlateVisibility::Visible : ESlateVisibility::Collapsed
 		);
 	}
 
 	if (Overlay_NotJoin)
 	{
 		Overlay_NotJoin->SetVisibility(
-			bIsJoinedRoom ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed
+			bIsMyRoom ? ESlateVisibility::Hidden : ESlateVisibility::SelfHitTestInvisible
 		);
 	}
 
 	if (TB_StatusText)
 	{
-		if (bIsLeader || bIsJoinedRoom)
+		if (bIsMyRoom)
 		{
 			TB_StatusText->SetText(FText::FromString(TEXT("참가 중")));
 		}
-		else if (!bRecruiting)
-		{
-			TB_StatusText->SetText(FText::FromString(TEXT("진행 중")));
-		}
-		else
+		else if (bRecruiting)
 		{
 			TB_StatusText->SetText(FText::FromString(TEXT("즉시 참가")));
 		}
-	}
-}
-
-bool UAODungeonRoomWidget::IsMyDungeonRoom(const Protocol::DungeonInfo& DungeonInfo) const
-{
-	const UAOGameInstance* GI = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
-	if (!GI)
-	{
-		return false;
-	}
-
-	const uint64 MyPlayerId = GI->GetMyPlayerId();
-
-	if (DungeonInfo.has_leaderinfo() && DungeonInfo.leaderinfo().memberid() == MyPlayerId)
-	{
-		return true;
-	}
-
-	for (int32 Index = 0; Index < DungeonInfo.members_size(); ++Index)
-	{
-		if (DungeonInfo.members(Index).memberid() == MyPlayerId)
+		else
 		{
-			return true;
+			TB_StatusText->SetText(FText::FromString(TEXT("진행중")));
 		}
 	}
 
-	return false;
-}
-
-bool UAODungeonRoomWidget::IsLeaderOfRoom(const Protocol::DungeonInfo& DungeonInfo) const
-{
-	const UAOGameInstance* GI = Cast<UAOGameInstance>(GetWorld()->GetGameInstance());
-	if (!GI)
+	if (JoinButton)
 	{
-		return false;
+		JoinButton->SetIsEnabled(bRecruiting && !bIsMyRoom);
 	}
-
-
-	return DungeonInfo.has_leaderinfo()
-		&& DungeonInfo.leaderinfo().memberid() == GI->GetMyPlayerId();
 }
-

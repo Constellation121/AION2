@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "UI/AOUserWidgetBase.h"
 #include "Network/PacketHeader.h"
-
 #include "AODungeonRoomWidget.generated.h"
 
 
@@ -54,8 +53,6 @@ protected:
 private:
 	void ApplyParticipationState(const Protocol::DungeonInfo& DungeonInfo);
 
-	bool IsMyDungeonRoom(const Protocol::DungeonInfo& DungeonInfo) const;
-	bool IsLeaderOfRoom(const Protocol::DungeonInfo& DungeonInfo) const;
 
 protected:
 

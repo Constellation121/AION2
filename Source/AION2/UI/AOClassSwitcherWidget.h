@@ -6,6 +6,8 @@
 #include "UI/AOUserWidgetBase.h"
 #include "AOClassSwitcherWidget.generated.h"
 
+class UImage;
+class UTextBlock;
 /**
  * 
  */
@@ -16,6 +18,12 @@ class AION2_API UAOClassSwitcherWidget : public UAOUserWidgetBase
 	
 public:
 	void SetClassWidget(uint8 ClassType);
+	void SetReadyState(bool InReadyState);
+
+	// Leader인 ClassSwitcher에 보이는 아이콘을 보이도록 설정
+	void SetLeaderState(bool InLeaderState);
+
+	void SetPlayerName(FText InName);
 	
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -35,6 +43,22 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	class UUserWidget* TemplarClassWidget;
+
+	// Optional Player State:: IsLeader?
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UImage> LeaderIcon;
+
+	// Optional_UserName
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UTextBlock> TB_PlayerName;
+
+	// 준비되면 보일 것
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UImage> ReadyImage;
+
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UTextBlock> TB_Ready;
+
 
 
 };
