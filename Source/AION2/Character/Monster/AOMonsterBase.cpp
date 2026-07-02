@@ -109,9 +109,6 @@ void AAOMonsterBase::PossessedBy(AController* NewController)
 
 	// 서버에서 호출
     InitGAS();
-
-
-
 }
 
 void AAOMonsterBase::InitGAS()
