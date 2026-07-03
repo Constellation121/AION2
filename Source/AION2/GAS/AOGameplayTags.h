@@ -43,10 +43,14 @@
 #define ABILITY_MONSTER_TH_RANGEDATTACK   FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.TH.RangedAttack"))
 #define ABILITY_MONSTER_TH_MELEEATTACK    FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.TH.MELEEAttack"))
 
+#define ABILITY_MONSTER_WE_CANNON FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.WE.Cannon"))
+
 
 // Cooldown 
 #define COOLDOWN_MONSTER_TH_CHARGEATTACK FGameplayTag::RequestGameplayTag(TEXT("Cooldown.Monster.TH.ChargeAttack"))
 #define COOLDOWN_MONSTER_TH_TELEPORTATTACK FGameplayTag::RequestGameplayTag(TEXT("Cooldown.Monster.TH.TeleportAttack"))
+
+#define COOLDOWN_MONSTER_WE_RELOADING FGameplayTag::RequestGameplayTag(TEXT("Cooldown.Monster.WE.Reloading"))
 
 
 
@@ -65,3 +69,10 @@
 #define STATE_MONSTER_TH_CHARGEATTACK FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.ChargeAttack"))
 #define STATE_MONSTER_TH_TELEPORTATTACK FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.TeleportAttack"))
 #define STATE_MONSTER_TH_DEAD FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.Dead"))
+
+#define STATE_MONSTER_WE_IDLE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.Idle"))
+#define STATE_MONSTER_WE_CHASE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.Chase"))
+#define STATE_MONSTER_WE_RELOADING FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.Reloading"))
+#define STATE_MONSTER_WE_CANNON FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.Cannon"))
+#define STATE_MONSTER_WE_TARGETMOVING FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.TargetMoving"))
+#define STATE_MONSTER_WE_DEAD FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.Dead"))
