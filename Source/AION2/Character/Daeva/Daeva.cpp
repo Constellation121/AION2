@@ -112,6 +112,7 @@ void ADaeva::BeginPlay()
 
 	TargetZoomDistance = SpringArm->TargetArmLength;
 	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 0.25f, true);
+
 }
 
 void ADaeva::Tick(float DeltaTime)
@@ -197,13 +198,6 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Key4));
 		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyQ));
 		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
-
-		/*EnhancedInputComponent->BindAction(
-			ShiftAction,
-			ETriggerEvent::Completed,
-			this,
-			&ADaeva::InputShiftReleased
-		);*/
 
 		EnhancedInputComponent->BindAction(
 			MoveAction,
@@ -539,6 +533,7 @@ void ADaeva::InitGAS()
 		ASC->AddLooseGameplayTag(TEAM_DAEVA);
 	}
 
+
 	if (!SprintStaminaChangedDelegateHandle.IsValid())
 	{
 		SprintStaminaChangedDelegateHandle =
@@ -571,9 +566,7 @@ void ADaeva::ClearGAS()
 {
 	if (ASC && bMoveSpeedDelegateRegistered)
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(
-			UAOAttributeSet::GetMoveSpeedAttribute()
-		).Remove(MoveSpeedChangedDelegateHandle);
+		ASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetMoveSpeedAttribute()).Remove(MoveSpeedChangedDelegateHandle);
 
 		MoveSpeedChangedDelegateHandle.Reset();
 		bMoveSpeedDelegateRegistered = false;
@@ -581,9 +574,7 @@ void ADaeva::ClearGAS()
 
 	if (ASC && HealthChangedDelegateHandle.IsValid())
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(
-			UAOAttributeSet::GetHealthAttribute()
-		).Remove(HealthChangedDelegateHandle);
+		ASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetHealthAttribute()).Remove(HealthChangedDelegateHandle);
 
 		HealthChangedDelegateHandle.Reset();
 	}
@@ -685,7 +676,6 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 
 	PlayCameraShake(bDidShakeCamera);
 
-	// ���� ���� �� ���� ȸ��.
 	if (HasAuthority() && HitManaRegenEffect)
 	{
 		UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
