@@ -15,6 +15,9 @@ UCLASS()
 class AION2_API UGA_Monster_Attack : public UGameplayAbility
 {
 	GENERATED_BODY()
+
+public:
+	UGA_Monster_Attack();
 	
 public:
 	virtual void ActivateAbility(

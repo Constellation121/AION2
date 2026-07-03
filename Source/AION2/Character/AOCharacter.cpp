@@ -9,12 +9,33 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/OverlapResult.h"
 
 AAOCharacter::AAOCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UAOCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	bAlwaysRelevant = true;
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AAOCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HasAuthority())
+	{
+		SetupOwnedAttackColliders();
+	}
+}
+
+void AAOCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	RefreshOwnedAttackColliderOverlaps();
 }
 
 void AAOCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -207,6 +228,111 @@ void AAOCharacter::SpawnAttackProjectile(const FAttackData& AttackData, TSubclas
 	Projectile->FinishSpawning(SpawnTransform);
 }
 
+void AAOCharacter::SetOwnedAttackCollidersCollisionEnabled(const FAttackData& InAttackData, bool bEnabled)
+{
+	if (bEnabled)
+	{
+		HitActors.Reset();
+	}
+
+	bIsRefreshOwnedAttackColliders = bEnabled;
+	CurrentOwendAttackCollidersAttackData = InAttackData;
+}
+
+void AAOCharacter::RefreshOwnedAttackColliderOverlaps()
+{
+	if (!HasAuthority() || !bIsRefreshOwnedAttackColliders)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	FCollisionObjectQueryParams ObjectParams;
+	ObjectParams.AddObjectTypesToQuery(ECC_Pawn);
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	for (UPrimitiveComponent* Collider : OwnedAttackColliders)
+	{
+		if (!Collider)
+		{
+			continue;
+		}
+
+		TArray<FOverlapResult> Results;
+
+		const FVector Location = Collider->GetComponentLocation();
+		const FQuat Rotation = Collider->GetComponentQuat();
+
+		bool bHit = false;
+
+		if (UBoxComponent* Box = Cast<UBoxComponent>(Collider))
+		{
+			bHit = World->OverlapMultiByObjectType(Results, Location, Rotation, ObjectParams, FCollisionShape::MakeBox(Box->GetScaledBoxExtent()), QueryParams);
+
+			if (CVarDrawAttackTrace.GetValueOnGameThread())
+			{
+				DrawDebugBox(World, Location, Box->GetScaledBoxExtent(), Rotation, FColor::Red, false, 0.1f, 0, 2.f);
+			}
+		}
+		else if (USphereComponent* Sphere = Cast<USphereComponent>(Collider))
+		{
+			const float Radius = Sphere->GetScaledSphereRadius();
+
+			bHit = World->OverlapMultiByObjectType(Results, Location, FQuat::Identity, ObjectParams, FCollisionShape::MakeSphere(Radius), QueryParams);
+
+			if (CVarDrawAttackTrace.GetValueOnGameThread())
+			{
+				DrawDebugSphere(World, Location, Radius, 16, FColor::Red, false, 0.1f, 0, 2.f);
+			}
+		}
+		else if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(Collider))
+		{
+			const float Radius = Capsule->GetScaledCapsuleRadius();
+			const float HalfHeight = Capsule->GetScaledCapsuleHalfHeight();
+
+			bHit = World->OverlapMultiByObjectType(Results, Location, Rotation, ObjectParams, FCollisionShape::MakeCapsule(Radius, HalfHeight), QueryParams);
+
+			if (CVarDrawAttackTrace.GetValueOnGameThread())
+			{
+				DrawDebugCapsule(World, Location, HalfHeight, Radius, Rotation, FColor::Red, false, 0.1f, 0, 2.f);
+			}
+		}
+
+		if (!bHit)
+		{
+			continue;
+		}
+
+		for (const FOverlapResult& Result : Results)
+		{
+			AAOCharacter* HitCharacter = Cast<AAOCharacter>(Result.GetActor());
+			if (!HitCharacter || HitCharacter == this)
+				continue;
+
+			if (HitCharacter->IsDead())
+				continue;
+
+			if (!IsEnemy(HitCharacter))
+				continue;
+
+			if (HitActors.Contains(HitCharacter))
+				continue;
+
+			HitActors.Add(HitCharacter);
+
+			bool bDidCameraShake = false;
+			OnAttackSucceeded(CurrentOwendAttackCollidersAttackData, HitCharacter, FHitResult(), bDidCameraShake);
+		}
+	}
+}
+
 bool AAOCharacter::IsEnemy(AActor* TargetActor)
 {
 	AAOCharacter* AOCharacter = Cast<AAOCharacter>(TargetActor);
@@ -261,4 +387,24 @@ TArray<USkeletalMeshComponent*> AAOCharacter::GetAllMeshes()
 	Meshes.Add(GetMesh());
 
 	return Meshes;
+}
+
+void AAOCharacter::SetupOwnedAttackColliders()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	TArray<UPrimitiveComponent*> PrimitiveComponents;
+	GetComponents<UPrimitiveComponent>(PrimitiveComponents);
+	for (UPrimitiveComponent* Comp : PrimitiveComponents)
+	{
+		if (!Comp || !Comp->ComponentHasTag(TEXT("OwnedAttackCollider")))
+		{
+			continue;
+		}
+
+		OwnedAttackColliders.Add(Comp);
+	}
 }
