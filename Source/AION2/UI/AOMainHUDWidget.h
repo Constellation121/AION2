@@ -14,7 +14,7 @@
  */
 
 class UAOPlayerHUDWidget;
-class UAORaidHUDWidget;
+class UAODungeonHUDWidget;
 class UAOChattingWidget;
 class ADaeva;
 
@@ -27,7 +27,7 @@ public:
     void BindToPlayerState(AAOPlayerState* InPlayerState) override;
 
 public:
-    void SetRaidHUDVisible();
+    void SetDungeonHUDVisible();
     UAOPlayerHUDWidget* GetPlayerHUDWidget() const { return PlayerHUDWidget; }
 
 protected:
@@ -36,9 +36,9 @@ protected:
 
     // 마을에서는 없을 수도 있으니 BindWidgetOptional.
     UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly)
-    TObjectPtr<UAORaidHUDWidget> RaidHUDWidget;
+    TObjectPtr<UAODungeonHUDWidget> DungeonHUDWidget;
 
 public:
-    UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+    UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly)
     TObjectPtr<UAOChattingWidget> ChattingWidget;
 };

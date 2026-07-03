@@ -115,6 +115,30 @@ void UAODungeonRoomWidget::ClearDungeonInfo()
 	SetVisibility(ESlateVisibility::Collapsed);
 }
 
+void UAODungeonRoomWidget::AddOrUpdateMemberInfo(const Protocol::DungeonPlayerInfo& MemberInfo)
+{
+	const int32 SlotIndex = MemberInfo.index() - 1;
+
+	if (!MemberClassSlots.IsValidIndex(SlotIndex))
+	{
+		return;
+	}
+
+	UAOClassSwitcherWidget* Slot = MemberClassSlots[SlotIndex];
+	if (!Slot)
+	{
+		return;
+	}
+
+	Slot->SetCachedPlayerId(MemberInfo.memberid());
+	Slot->SetClassWidget(static_cast<uint8>(MemberInfo.memberclass()));
+	Slot->SetLeaderState(false);
+	Slot->SetReadyState(MemberInfo.isready());
+	Slot->SetPlayerName(
+		FText::FromString(UTF8_TO_TCHAR(MemberInfo.membername().c_str()))
+	);
+}
+
 void UAODungeonRoomWidget::SetDungeonReady(uint64 PlayerId)
 {
 	if (LeaderClassSlot && LeaderClassSlot->GetCachedPlayerId() == PlayerId)
@@ -151,22 +175,7 @@ void UAODungeonRoomWidget::SetLeaderClassType(uint8 ClassType)
 
 void UAODungeonRoomWidget::AddMemberInfo(const Protocol::DungeonPlayerInfo& MemberInfo)
 {
-	const int32 SlotIndex = MemberInfo.index() - 1;
-
-	if (!MemberClassSlots.IsValidIndex(SlotIndex))
-	{
-		return;
-	}
-
-	if (MemberClassSlots[SlotIndex])
-	{
-		MemberClassSlots[SlotIndex]->SetCachedPlayerId(MemberInfo.memberid());
-		MemberClassSlots[SlotIndex]->SetClassWidget(
-			static_cast<uint8>(MemberInfo.memberclass())
-		);
-		MemberClassSlots[SlotIndex]->SetLeaderState(false);
-		MemberClassSlots[SlotIndex]->SetReadyState(MemberInfo.isready());
-	}
+	AddOrUpdateMemberInfo(MemberInfo);
 }
 
 void UAODungeonRoomWidget::SetMemberInfos(const Protocol::DungeonInfo& DungeonInfo)

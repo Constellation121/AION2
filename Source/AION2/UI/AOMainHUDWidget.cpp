@@ -4,8 +4,7 @@
 #include "UI/AOMainHUDWidget.h"
 
 #include "UI/AOPlayerHUDWidget.h"
-#include "UI/AORaidHUDWidget.h"
-#include "Game/AORaidGameState.h"
+#include "UI/AODungeonHUDWidget.h"
 
 void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 {
@@ -16,18 +15,17 @@ void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 		PlayerHUDWidget->BindToPlayerState(InPlayerState);
 	}
 
-	if (RaidHUDWidget)
+	if (DungeonHUDWidget)
 	{
-		RaidHUDWidget->BindToPlayerState(InPlayerState);
+		DungeonHUDWidget->BindToPlayerState(InPlayerState);
 	}
 }
 
-void UAOMainHUDWidget::SetRaidHUDVisible()
+void UAOMainHUDWidget::SetDungeonHUDVisible()
 {
-	const bool bIsRaidLevel =
-		GetWorld() && GetWorld()->GetGameState<AAORaidGameState>() != nullptr;
-	if (RaidHUDWidget)
+	if (DungeonHUDWidget)
 	{
-		RaidHUDWidget->SetVisibility(bIsRaidLevel? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+		DungeonHUDWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
+
