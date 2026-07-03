@@ -199,6 +199,16 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyQ));
 		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
 
+		EnhancedInputComponent->BindAction(KeyXAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
+		EnhancedInputComponent->BindAction(KeyBAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
+
+		/*EnhancedInputComponent->BindAction(
+			ShiftAction,
+			ETriggerEvent::Completed,
+			this,
+			&ADaeva::InputShiftReleased
+		);*/
+
 		EnhancedInputComponent->BindAction(
 			MoveAction,
 			ETriggerEvent::Completed,
@@ -826,6 +836,15 @@ void ADaeva::InputMoveReleased()
 	RequestStopSprint();
 }
 
+void ADaeva::InputXPressed()
+{
+	
+}
+
+void ADaeva::InputBPressed()
+{
+}
+
 void ADaeva::OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount)
 {
 	const bool bIsCombat = NewCount > 0;
@@ -1280,4 +1299,11 @@ void ADaeva::SendHp(float NewHp)
 	HpPacket.set_playerid(MyId);
 	HpPacket.set_hp(NewHp);
 	SEND_PACKET(HpPacket, PKT_C_CHANGEHP);
+}
+
+void ADaeva::SendItem(int32 SlotIndex)
+{
+	Protocol::C_UseItemPacket UseItemPkt;
+	UseItemPkt.set_playerid(MyId);
+	SEND_PACKET(UseItemPkt, PKT_C_USEITEM);
 }

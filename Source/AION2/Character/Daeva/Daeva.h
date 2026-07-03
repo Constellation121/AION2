@@ -165,6 +165,9 @@ private:
 	void InputRBPressed();
 	void InputMoveReleased();
 
+	void InputXPressed();
+	void InputBPressed();
+
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
 	void OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted);
@@ -290,6 +293,7 @@ public:
 	void SetMyName(FString InName);
 
 	void SendHp(float NewHp);
+	void SendItem(int32 SlotIndex);
 private:
 	bool bPlayerUIReady = false;
 
@@ -332,6 +336,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> KeyEAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> KeyXAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> KeyBAction;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Montage", meta = (AllowPrivateAccess = "true"))

@@ -7,42 +7,46 @@ extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 enum : uint16
 {
+	// 회원가입 및 로그인
 	PKT_C_SIGNUP = 1000,
 	PKT_S_SIGNUP = 1001,
-
 	PKT_C_LOGIN = 1002,
 	PKT_S_SLOGIN = 1003,
 	PKT_S_FLOGIN = 1004,
+
+	// 아이템 및 상점
 	PKT_S_ITEM = 1005,
+	PKT_C_USEITEM = 1006,
+	PKT_S_USEITEM = 1007,
+	PKT_C_STOREPURCHASE = 1008,
+	PKT_S_STOREPURCHASE = 1009,
 
-	PKT_C_MAPLOADCOMPLETE = 1006,
-	PKT_S_SPAWN = 1007,
+	// 맵 이동 및 스폰
+	PKT_C_MAPLOADCOMPLETE = 1010,
+	PKT_S_SPAWN = 1011,
+	PKT_C_MOVE = 1012,
+	PKT_S_MOVE = 1013,
 
-	PKT_C_MOVE = 1008,
-	PKT_S_MOVE = 1009,
+	// 던전
+	PKT_C_DUNGEONWAITINTROOM = 1014,
+	PKT_S_DUNGEONWAITINTROOM = 1015,
+	PKT_C_DUNGEONCREATE = 1016,
+	PKT_S_DUNGEONCREATE = 1017,
+	PKT_C_DUNGEONENTER = 1018,
+	PKT_S_DUNGEONENTER = 1019,
+	PKT_C_DUNGEONREADY = 1020,
+	PKT_S_DUNGEONREADY = 1021,
+	PKT_C_DUNGEONSTART = 1022,
+	PKT_S_DUNGEONSTART = 1023,
+	PKT_S_DUNGEONFAIL = 1028,
 
-	PKT_C_DUNGEONWAITINTROOM = 1010,
-	PKT_S_DUNGEONWAITINTROOM = 1011,
+	// 캐릭터 상태 및 상호작용
+	PKT_C_CHANGEHP = 1024,
+	PKT_C_CHAT = 1025,
+	PKT_S_CHAT = 1026,
 
-	PKT_C_DUNGEONCREATE = 1012,
-	PKT_S_DUNGEONCREATE = 1013,
-
-	PKT_C_DUNGEONENTER = 1014,
-	PKT_S_DUNGEONENTER = 1015,
-
-	PKT_C_DUNGEONREADY = 1016,
-	PKT_S_DUNGEONREADY = 1017,
-
-	PKT_C_DUNGEONSTART = 1018,
-	PKT_S_DUNGEONSTART = 1019,
-
-	PKT_C_STOREPURCHASE = 1020,
-	PKT_S_STOREPURCHASE = 1021,
-
-	PKT_C_CHANGEHP = 1022,
-
-	PKT_C_CHAT = 1023,
-	PKT_S_CHAT = 1024,
+	// 연결 종료
+	PKT_S_DISCONNECT = 1027,
 
 	PKT_DS_DEDICATED = 1100,
 };
@@ -57,22 +61,31 @@ public:
 		for (int32 i = 1000; i < UINT16_MAX; i++)
 			GPacketHandler[i] = Handle_INVALID;
 
+		// 회원가입 및 로그인
 		GPacketHandler[PKT_C_SIGNUP] = [](PacketSessionRef& session, BYTE* buffer, int len) { return HandlePacket<Protocol::C_SignUpPacket>(HandleSignUp, session, buffer, len); };
 		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_LoginPacket>(HandleLogin, session, buffer, len); };
+
+		// 아이템 및 상점
+		GPacketHandler[PKT_C_STOREPURCHASE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_StorePurchasePacket>(HandleStorePurchase, session, buffer, len); };
+		GPacketHandler[PKT_C_USEITEM] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_UseItemPacket>(HandleUseItem, session, buffer, len); };
+
+		// 맵 이동 및 스폰
 		GPacketHandler[PKT_C_MAPLOADCOMPLETE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_MapLoadCompletePacket>(HandleMapComplete, session, buffer, len); };
 		GPacketHandler[PKT_C_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_MovePacket>(HandleMove, session, buffer, len); };
 
-		GPacketHandler[PKT_C_CHANGEHP] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_ChangeHpPacket>(HandleChangeHp, session, buffer, len); };
-
-		GPacketHandler[PKT_DS_DEDICATED] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DedicatedPacket>(HandleDedicated, session, buffer, len); };
-
+		// 던전
 		GPacketHandler[PKT_C_DUNGEONWAITINTROOM] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonWaitingRoomEnterPacket>(HandleDungeonWaitingRoom, session, buffer, len); };
 		GPacketHandler[PKT_C_DUNGEONCREATE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonCreatePacket>(HandleDungeonCreate, session, buffer, len); };
 		GPacketHandler[PKT_C_DUNGEONENTER] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonEnteracket>(HandleDungeonEnter, session, buffer, len); };
+		GPacketHandler[PKT_C_DUNGEONREADY] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonReadyacket>(HandleDungeonReady, session, buffer, len); };
 		GPacketHandler[PKT_C_DUNGEONSTART] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonStartacket>(HandleDungeonStart, session, buffer, len); };
 
-		GPacketHandler[PKT_C_STOREPURCHASE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_StorePurchasePacket>(HandleStorePurchase, session, buffer, len); };
+		// 캐릭터 상태 및 상호작용
+		GPacketHandler[PKT_C_CHANGEHP] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_ChangeHpPacket>(HandleChangeHp, session, buffer, len); };
 		GPacketHandler[PKT_C_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_ChatPacket>(HandleChat, session, buffer, len); };
+
+		// 기타 (데디케이트 서버)
+		GPacketHandler[PKT_DS_DEDICATED] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DedicatedPacket>(HandleDedicated, session, buffer, len); };
 
 	}
 
@@ -86,9 +99,11 @@ public:
 	static bool HandleDungeonWaitingRoom(PacketSessionRef& session, Protocol::C_DungeonWaitingRoomEnterPacket& pkt);
 	static bool HandleDungeonCreate(PacketSessionRef& session, Protocol::C_DungeonCreatePacket& pkt);
 	static bool HandleDungeonEnter(PacketSessionRef& session, Protocol::C_DungeonEnteracket& pkt);
+	static bool HandleDungeonReady(PacketSessionRef& session, Protocol::C_DungeonReadyacket& pkt);
 	static bool HandleDungeonStart(PacketSessionRef& session, Protocol::C_DungeonStartacket& pkt);
 
 	static bool HandleStorePurchase(PacketSessionRef& session, Protocol::C_StorePurchasePacket& pkt);
+	static bool HandleUseItem(PacketSessionRef& session, Protocol::C_UseItemPacket& pkt);
 	static bool HandleChat(PacketSessionRef& session, Protocol::C_ChatPacket& pkt);
 
 
@@ -122,10 +137,11 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonEnterPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONENTER); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonStartPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONSTART); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonReadyPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONREADY); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonFailPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONFAIL); };
 
 	static SendBufferRef MakeSendBuffer(Protocol::S_StorePurchasePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_STOREPURCHASE); };
-
 	static SendBufferRef MakeSendBuffer(Protocol::S_ChatPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_DisconnectPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DISCONNECT); };
 
 private:
 	template<typename PacketType, typename ProcessFunc> 

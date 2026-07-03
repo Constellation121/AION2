@@ -8,6 +8,8 @@
 #include "Player/AOPlayerController.h"
 #include "Manager/AOUIManager.h"
 #include "Character/ServerCharacter/MMODaeva.h"
+#include "UI/AODungeonEntranceWidget.h"
+
 
 // Sets default values
 AAODungeonEntrance::AAODungeonEntrance()
@@ -94,9 +96,24 @@ void AAODungeonEntrance::EnterDungeon()
 
 void AAODungeonEntrance::EnterDungeonWaitingRoom()
 {
+	// Exception Handler: 객체가 아직 없거나 유효하지 않은 상태면 Crash 막기
+	if (!UIManager || !PC)
+	{
+		return;
+	}
+
 	UIManager->HideWidget(DungeonWaitingRoomWidget);
 
 	DungeonRoomWidget = UIManager->ShowWidget(DungeonRoomClass, EUILayer::System);
+
+	UAODungeonEntranceWidget* DungeonEntranceWidget =
+		Cast<UAODungeonEntranceWidget>(DungeonRoomWidget);
+
+	if (DungeonEntranceWidget)
+	{
+		DungeonEntranceWidget->InitializeWaitingRoom();
+	}
+
 	if (PC)
 	{
 		PC->SetShowMouseCursor(true);
