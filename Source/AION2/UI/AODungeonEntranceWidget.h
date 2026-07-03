@@ -6,14 +6,13 @@
 #include "Blueprint/UserWidget.h"
 #include "Network/PacketHeader.h"
 #include "Types/DungeonRoomTypes.h"
-
 #include "AODungeonEntranceWidget.generated.h"
 
 class UButton;
 class UOverlay;
 class UAOClassSwitcherWidget;
 class UAOPlayerManager;
-
+class UAODungeonRoomWidget;
 /**
  *
  */
@@ -23,15 +22,37 @@ class AION2_API UAODungeonEntranceWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	/*
+	* PacketHandler에서 호출할 수 있도록 추가
+	* Server에서 /누군가 Action에 대한 packet/을 줬을 때,
+	* 현재 내가 보고 있는/참여 중인 방이면 멤버 슬롯 UI를 갱신.
+	*/
 	void SetNotJoined();
 	void SetDungeonInfo(const Protocol::DungeonInfo& DungeonInfo);
 	void SetDungeonCreated(const Protocol::DungeonInfo& DungeonInfo);
 	void SetDungeonEntered(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);
 	void SetDungeonReady(int32 DungeonId, uint64 PlayerId);
 
-private:
+	// Utils/AODungeonEntrance에서 호출하는 초기화
+	void InitializeWaitingRoom();
+
+	/*
+	*  DungeonRoomWidget의 OnJoinRequested에 Binding.
+	* 
+	*/
+	UFUNCTION()
+	void RequestEnterDungeon(int32 DungeonId);
+
+
+public:
+	// PacketHandler에서 호출할 수 있도록 public으로 설정
 	void ApplyEntranceState();
 
+	// 방 목록 Refresh.
+	void RefreshDungeonRooms(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonRooms
+	);
+
+private:
 	void SetMemberSlots(const Protocol::DungeonInfo& DungeonInfo);
 
 	// 멤버 하나의 Slot만 설정
@@ -40,6 +61,8 @@ private:
 	// 모든 목록을 지움
 	void ClearMemberSlots();
 
+	// 새로 들어오거나 재진입 시 방 목록을 초기화
+	void ClearDungeonRooms();
 
 protected:
 	virtual void NativeConstruct() override;
@@ -98,20 +121,46 @@ protected:
 	TArray<TObjectPtr<UAOClassSwitcherWidget>> MemberClassSlots;
 
 private:
+	// 들어갈 dungeonid, playerID를 넣어 Packet 전송
 	UFUNCTION()
 	void OnEnterButtonClicked();
 
 	UFUNCTION()
 	void OnCreateButtonClicked();
 
+	// dungeonid를 넣어 Packet 전송
 	UFUNCTION()
 	void OnStartButtonClicked();
 
+	/*
+	* 들어온 dungeonid, 준비한 playerID를 넣어 Packet 전송 
+	* (어느 대기방에 반영해야 하는지 알아야 하므로)
+	*/ 
 	UFUNCTION()
 	void OnReadyButtonClicked();
 
 	UFUNCTION()
 	void OnExitButtonClicked();
+
+
+private:
+	// 만들어줄 방
+	static constexpr int32 MaxDungeonRoomCount = 4;
+
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UAODungeonRoomWidget> WBP_DunzeonRoom_0;
+
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UAODungeonRoomWidget> WBP_DunzeonRoom_1;
+
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UAODungeonRoomWidget> WBP_DunzeonRoom_2;
+
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UAODungeonRoomWidget> WBP_DunzeonRoom_3;
+
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<UAODungeonRoomWidget>> DungeonRoomWidgets;
 
 private:
 	UAOPlayerManager* GetPlayerManager() const;

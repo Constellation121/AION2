@@ -197,8 +197,31 @@ bool FPacketHandler::Handle_S_CREATE(Protocol::S_DungeonCreatePacket& Pkt)
 
 bool FPacketHandler::Handle_S_ENTERWAITING(Protocol::S_DungeonWaitingRoomEnterPacket& Pkt)
 {
-	if (Pkt.dungeoninfos_size() <= 0) return false;
-	PlayerMng->UpdateMyDungeonRoomStateFromList(Pkt.dungeoninfos());
+	// 이전 코드
+	//if (Pkt.dungeoninfos_size() <= 0) return false;
+	//PlayerMng->UpdateMyDungeonRoomStateFromList(Pkt.dungeoninfos());
+	//return true;
+
+	if (PlayerMng)
+	{
+		PlayerMng->UpdateMyDungeonRoomStateFromList(Pkt.dungeoninfos());
+	}
+
+
+	UAOUIManager* UIManager = GameInstance
+		? GameInstance->GetSubsystem<UAOUIManager>()
+		: nullptr;
+
+	// 서버 결과에 따라 Widget 갱신 불러주기
+	if (UIManager)
+	{
+		if (UAODungeonEntranceWidget* DungeonWidget = UIManager->GetWidget<UAODungeonEntranceWidget>())
+		{
+			DungeonWidget->RefreshDungeonRooms(Pkt.dungeoninfos());
+			DungeonWidget->ApplyEntranceState();
+		}
+	}
+
 	return true;
 }
 
@@ -210,12 +233,32 @@ bool FPacketHandler::Handle_S_ENTER(Protocol::S_DungeonEnterPacket& Pkt)
 	//Protocol::ClassType NewPlayerClass = NewPlayer.memberclass();
 	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_Enter/LeaderName: %s"), *NewPlayerName);
 	PlayerMng->UpdateMyDungeonEnterState(DungeonId, Pkt.enterplayer());
+
+	// UI 갱신
+	if (UAOUIManager* UIManager = GameInstance ? GameInstance->GetSubsystem<UAOUIManager>() : nullptr)
+	{
+		if (UAODungeonEntranceWidget* DungeonWidget = UIManager->GetWidget<UAODungeonEntranceWidget>())
+		{
+			DungeonWidget->SetDungeonEntered(DungeonId, Pkt.enterplayer());
+		}
+	}
+
 	return true;
 }
 
 bool FPacketHandler::Handle_S_READY(Protocol::S_DungeonReadyPacket& Pkt)
 {
 	PlayerMng->UpdateMyDungeonReadyState(Pkt.dungeonid(), Pkt.playerid());
+
+	// UI 갱신
+	if (UAOUIManager* UIManager = GameInstance ? GameInstance->GetSubsystem<UAOUIManager>() : nullptr)
+	{
+		if (UAODungeonEntranceWidget* DungeonWidget = UIManager->GetWidget<UAODungeonEntranceWidget>())
+		{
+			DungeonWidget->SetDungeonReady(Pkt.dungeonid(), Pkt.playerid());
+		}
+	}
+
 	return true;
 }
 
