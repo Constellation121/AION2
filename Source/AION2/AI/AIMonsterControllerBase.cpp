@@ -66,11 +66,13 @@ void AAIMonsterControllerBase::Tick(float DeltaSeconds)
 		DistanceToTarget = TNumericLimits<float>::Max();
 	}
 
+	if (ControlledMonster->IsDead())
+	{
+		PhaseTag = PHASE_MONSTER_DEAD;
+	}
 
 	ControlledMonster->Set_Phase(PhaseTag);
 	ControlledMonster->Set_State(StateTag);
-
-
 }
 
 void AAIMonsterControllerBase::OnPossess(APawn* InPawn)
