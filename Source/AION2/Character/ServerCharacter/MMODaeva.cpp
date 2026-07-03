@@ -14,6 +14,8 @@ void AMMODaeva::BeginPlay()
 	Super::BeginPlay();
 	LastLoc = GetActorLocation();
 	LastRot = GetActorRotation();
+	TargetLoc = LastLoc;
+	TargetRot = LastRot;
 	bWasMovingLastSend = false;
 }
 

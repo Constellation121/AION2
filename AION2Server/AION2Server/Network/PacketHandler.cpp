@@ -310,6 +310,52 @@ bool PacketHandler::HandleStorePurchase(PacketSessionRef& session, Protocol::C_S
 	return true;
 }
 
+bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItemPacket& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+
+	DBConnection* dbConnect = GDBConnectionPool->Pop();
+	DBBind<2, 5> dbBind(*dbConnect, L"{CALL sp_UserItem(?, ?)}");
+	int32 characterId = pkt.playerid();
+	int32 slot = pkt.slotindex();
+	dbBind.BindParam(0, characterId);
+	dbBind.BindParam(1, slot);
+
+	int32 errorCode = -1;
+	int32 slotIndex = -1;
+	int32 ItemCount = -1;
+	std::string effectType = {};
+	int32 effectValue = 0;
+
+	std::wcout.imbue(std::locale("kor"));
+
+	dbBind.BindCol(0, errorCode);
+	dbBind.BindCol(1, slotIndex);
+	dbBind.BindCol(2, ItemCount);
+	dbBind.BindCol(3, effectType);
+	dbBind.BindCol(4, effectValue);
+
+	if (dbBind.Execute())
+	{
+		if (dbBind.Fetch())
+		{
+			std::cout << "ResultCode : " << errorCode << std::endl;
+		}
+	}
+	else
+	{
+		return false;
+	}
+	// TODO 아이템 실패 패킷 보내기
+	if (errorCode == -1) return false;
+	
+	Protocol::S_UseItemPacket useItemPacket;
+
+
+	return false;
+}
+
 bool PacketHandler::HandleChat(PacketSessionRef& session, Protocol::C_ChatPacket& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);

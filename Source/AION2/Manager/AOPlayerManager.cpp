@@ -78,13 +78,13 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, FString PlayerName, uint8 Cl
 				if (PlayerController != nullptr)
 				{
 					PlayerController->Possess(MyPlayer);
-						UAOQuickSlotComponent* InventoryComp = MyPlayer->FindComponentByClass<UAOQuickSlotComponent>();
+					UAOQuickSlotComponent* InventoryComp = MyPlayer->FindComponentByClass<UAOQuickSlotComponent>();
 
-						if (InventoryComp == nullptr)
-						{
-							UE_LOG(LogTemp, Warning, TEXT("Inventory Is Nat Vaild"));
-							return;
-						}
+					if (InventoryComp == nullptr)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Inventory Is Nat Vaild"));
+						return;
+					}
 
 					UAOMainHUDWidget* MainHUD = PlayerController->GetMainHUD();
 					if (MainHUD == nullptr) return;
@@ -120,7 +120,12 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, FString PlayerName, uint8 Cl
 		else
 		{
 			AMMODaeva* NewPlayer = GetWorld()->SpawnActor<AMMODaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
-			UE_LOG(LogTemp, Log, TEXT("Create NewPlayer: %d"), PlayerId);
+			if (NewPlayer)
+			{
+				NewPlayer->SetMyId(PlayerId);
+				NewPlayer->SetMyClass(ClassType);
+			}
+			UE_LOG(LogTemp, Log, TEXT("Create NewPlayer: %d, Location: %f, %f, %f "), PlayerId, SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
 			Players.Add(PlayerId, NewPlayer);
 		}
 
@@ -215,6 +220,19 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo)
 		{
 			PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
 		}
+	}
+}
+
+void UAOPlayerManager::HandleDisconnect(uint64 RemovePlayerId)
+{
+	auto PlayerRef = Players.Find(RemovePlayerId);
+	if (PlayerRef)
+	{
+		auto Player = PlayerRef->Get();
+		Player->Destroy();
+
+		Players.Remove(RemovePlayerId);
+		PlayerInfos.Remove(RemovePlayerId);
 	}
 }
 

@@ -30,6 +30,7 @@ public:
 	bool Handle_S_CHAT(Protocol::S_ChatPacket& Pkt);
 	bool Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt);
 
+	bool Handle_S_DISCONNECT(Protocol::S_DisconnectPacket& Pkt);
 private:
 	UAOLoginUserWidget* GetLoginWidget() const;
 

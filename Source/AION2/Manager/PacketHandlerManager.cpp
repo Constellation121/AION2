@@ -41,6 +41,9 @@ void InitPacketHandler()
 	GAOPacketHandler[PKT_S_DUNGEONREADY] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonReadyPacket>(&FPacketHandler::Handle_S_READY, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_DUNGEONSTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonStartPacket>(&FPacketHandler::Handle_S_START, Mng, Buf, Len); };
 
+	GAOPacketHandler[PKT_S_DISCONNECT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DisconnectPacket>(&FPacketHandler::Handle_S_DISCONNECT, Mng, Buf, Len); };
+
+
 
 #endif
 
@@ -247,5 +250,11 @@ bool FPacketHandler::Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt)
 	Protocol::ItemData Item = Pkt.iteminfo();
 
 	PlayerMng->HandleStorePurchase(Item);
+	return false;
+}
+
+bool FPacketHandler::Handle_S_DISCONNECT(Protocol::S_DisconnectPacket& Pkt)
+{
+	PlayerMng->HandleDisconnect(Pkt.playerid());
 	return false;
 }

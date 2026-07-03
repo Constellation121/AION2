@@ -50,7 +50,7 @@ void Session::Disconnect(const WCHAR* cause)
 
 	// TODO: Logout logic
 	std::wcout << "Disconnected: " << cause << "\n";
-
+	
 
 	RegisterDisConnect();
 }
@@ -202,6 +202,7 @@ void Session::ProcessDisconnect()
 {
 	GetService()->ReleaseSession(GetSessionRef());
 	// TODO: OnDisconnected override logic
+
 	std::cout << "Client Disconnected!" << std::endl;
 }
 
