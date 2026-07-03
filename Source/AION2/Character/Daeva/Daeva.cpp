@@ -112,6 +112,7 @@ void ADaeva::BeginPlay()
 
 	TargetZoomDistance = SpringArm->TargetArmLength;
 	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 0.25f, true);
+
 }
 
 void ADaeva::Tick(float DeltaTime)
@@ -542,6 +543,7 @@ void ADaeva::InitGAS()
 		ASC->AddLooseGameplayTag(TEAM_DAEVA);
 	}
 
+
 	if (!SprintStaminaChangedDelegateHandle.IsValid())
 	{
 		SprintStaminaChangedDelegateHandle =
@@ -574,9 +576,7 @@ void ADaeva::ClearGAS()
 {
 	if (ASC && bMoveSpeedDelegateRegistered)
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(
-			UAOAttributeSet::GetMoveSpeedAttribute()
-		).Remove(MoveSpeedChangedDelegateHandle);
+		ASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetMoveSpeedAttribute()).Remove(MoveSpeedChangedDelegateHandle);
 
 		MoveSpeedChangedDelegateHandle.Reset();
 		bMoveSpeedDelegateRegistered = false;
@@ -584,9 +584,7 @@ void ADaeva::ClearGAS()
 
 	if (ASC && HealthChangedDelegateHandle.IsValid())
 	{
-		ASC->GetGameplayAttributeValueChangeDelegate(
-			UAOAttributeSet::GetHealthAttribute()
-		).Remove(HealthChangedDelegateHandle);
+		ASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetHealthAttribute()).Remove(HealthChangedDelegateHandle);
 
 		HealthChangedDelegateHandle.Reset();
 	}
@@ -688,7 +686,6 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 
 	PlayCameraShake(bDidShakeCamera);
 
-	// ���� ���� �� ���� ȸ��.
 	if (HasAuthority() && HitManaRegenEffect)
 	{
 		UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
