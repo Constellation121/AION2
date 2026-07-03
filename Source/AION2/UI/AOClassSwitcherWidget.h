@@ -24,6 +24,10 @@ public:
 	void SetLeaderState(bool InLeaderState);
 
 	void SetPlayerName(FText InName);
+
+public:
+	FORCEINLINE uint64 GetCachedPlayerId() const { return CachedPlayerId; }
+	FORCEINLINE void SetCachedPlayerId(uint64 InId) { CachedPlayerId = InId; }
 	
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -60,5 +64,6 @@ protected:
 	TObjectPtr<UTextBlock> TB_Ready;
 
 
-
+private:
+	uint64 CachedPlayerId = 0;
 };

@@ -34,24 +34,109 @@ void UAODungeonRoomWidget::NativeConstruct()
 	};
 }
 
+void UAODungeonRoomWidget::SetLeaderInfo(const Protocol::DungeonPlayerInfo& InInfo)
+{
+	if (LeaderClassSlot)
+	{
+		LeaderClassSlot->SetCachedPlayerId(InInfo.memberid());
+		SetLeaderClassType(static_cast<uint8>(InInfo.memberclass()));
+		LeaderClassSlot->SetLeaderState(true);
+		LeaderClassSlot->SetReadyState(InInfo.isready());
+	}
+
+	// 리더 이름 설정 (방제와 같은 역할)
+	if (TB_LeaderName)
+	{
+		TB_LeaderName->SetText(FText::FromString(UTF8_TO_TCHAR(InInfo.membername().c_str())));
+	}
+}
+
 
 void UAODungeonRoomWidget::SetDungeonInfo(const Protocol::DungeonInfo& InInfo)
 {
+	// 정상적이지 않은 방 정보
+	if (InInfo.dungeonid() <= 0)
+	{
+		// 기본 빈 상태로 초기화
+		if (TB_LeaderName)
+		{
+			TB_LeaderName->SetText(FText::GetEmpty());
+		}
+
+		if (TB_StatusText)
+		{
+			TB_StatusText->SetText(FText::FromString(TEXT("즉시 참가")));
+		}
+
+		if (Image_PlayerJoined)
+		{
+			Image_PlayerJoined->SetVisibility(ESlateVisibility::Collapsed);
+		}
+
+		if (Overlay_NotJoin)
+		{
+			Overlay_NotJoin->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
+
+		// 클래스 상태 초기화
+		if (LeaderClassSlot)
+		{
+			LeaderClassSlot->SetCachedPlayerId(0);
+			LeaderClassSlot->SetClassWidget(0);
+			LeaderClassSlot->SetLeaderState(false);
+			LeaderClassSlot->SetReadyState(false);
+			LeaderClassSlot->SetPlayerName(FText::GetEmpty());
+		}
+
+
+		for (int i = 0; i < 3; i++)
+		{
+			MemberClassSlots[i]->SetCachedPlayerId(0);
+			MemberClassSlots[i]->SetClassWidget(0);
+			MemberClassSlots[i]->SetLeaderState(false);
+			MemberClassSlots[i]->SetReadyState(false);
+		}
+		return;
+	}
+
 	DungeonId = InInfo.dungeonid();
 
 	const Protocol::DungeonPlayerInfo& LeaderInfo = InInfo.leaderinfo();
 
-	if (TB_LeaderName)
-	{
-		TB_LeaderName->SetText(FText::FromString(UTF8_TO_TCHAR(LeaderInfo.membername().c_str())));
-	}
-
-	SetLeaderClassType(static_cast<uint8>(LeaderInfo.memberclass()));
-	SetMemberClasses(InInfo);
+	// 정보 넣어주기
+	SetLeaderInfo(LeaderInfo);
+	SetMemberInfos(InInfo);
 	ApplyParticipationState(InInfo);
 }
 
+void UAODungeonRoomWidget::ClearDungeonInfo()
+{
+	SetDungeonInfo(Protocol::DungeonInfo());
+	SetVisibility(ESlateVisibility::Collapsed);
+}
 
+void UAODungeonRoomWidget::SetDungeonReady(uint64 PlayerId)
+{
+	if (LeaderClassSlot && LeaderClassSlot->GetCachedPlayerId() == PlayerId)
+	{
+		LeaderClassSlot->SetReadyState(true);
+		return;
+	}
+
+	for (UAOClassSwitcherWidget* Slot : MemberClassSlots)
+	{
+		if (!Slot)
+		{
+			continue;
+		}
+
+		if (Slot->GetCachedPlayerId() == PlayerId)
+		{
+			Slot->SetReadyState(true);
+			return;
+		}
+	}
+}
 
 void UAODungeonRoomWidget::HandleJoinClicked()
 {
@@ -64,7 +149,7 @@ void UAODungeonRoomWidget::SetLeaderClassType(uint8 ClassType)
 	LeaderClassSlot->SetClassWidget(ClassType);
 }
 
-void UAODungeonRoomWidget::AddMemberClass(const Protocol::DungeonPlayerInfo& MemberInfo)
+void UAODungeonRoomWidget::AddMemberInfo(const Protocol::DungeonPlayerInfo& MemberInfo)
 {
 	const int32 SlotIndex = MemberInfo.index() - 1;
 
@@ -75,25 +160,31 @@ void UAODungeonRoomWidget::AddMemberClass(const Protocol::DungeonPlayerInfo& Mem
 
 	if (MemberClassSlots[SlotIndex])
 	{
+		MemberClassSlots[SlotIndex]->SetCachedPlayerId(MemberInfo.memberid());
 		MemberClassSlots[SlotIndex]->SetClassWidget(
 			static_cast<uint8>(MemberInfo.memberclass())
 		);
+		MemberClassSlots[SlotIndex]->SetLeaderState(false);
+		MemberClassSlots[SlotIndex]->SetReadyState(MemberInfo.isready());
 	}
 }
 
-void UAODungeonRoomWidget::SetMemberClasses(const Protocol::DungeonInfo& DungeonInfo)
+void UAODungeonRoomWidget::SetMemberInfos(const Protocol::DungeonInfo& DungeonInfo)
 {
 	for (UAOClassSwitcherWidget* Slot : MemberClassSlots)
 	{
 		if (Slot)
 		{
+			Slot->SetCachedPlayerId(0);
 			Slot->SetClassWidget(0);
+			Slot->SetLeaderState(false);
+			Slot->SetReadyState(false);
 		}
 	}
 
 	for (int32 Index = 0; Index < DungeonInfo.members_size(); ++Index)
 	{
-		AddMemberClass(DungeonInfo.members(Index));
+		AddMemberInfo(DungeonInfo.members(Index));
 	}
 }
 
@@ -116,7 +207,7 @@ void UAODungeonRoomWidget::ApplyParticipationState(const Protocol::DungeonInfo& 
 	if (Image_PlayerJoined)
 	{
 		Image_PlayerJoined->SetVisibility(
-			bIsMyRoom ? ESlateVisibility::Visible : ESlateVisibility::Collapsed
+			bIsMyRoom ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed
 		);
 	}
 

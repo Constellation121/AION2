@@ -7,18 +7,44 @@
 #include "Game/AOGameInstance.h"
 #include "UI/AOClassSwitcherWidget.h"
 #include "Manager/AOPlayerManager.h"
+#include "UI/AODungeonRoomWidget.h"
 #include "AION2.h"
 
 void UAODungeonEntranceWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// My Dungeon Room Member Class Switcher Widget을 쉽게 관리하기 위해 배열에 넣기.
 	MemberClassSlots = {
 	Member1,
 	Member2,
 	Member3,
 	Member4
 	};
+
+	// Dungeon Room Widget을 쉽게 관리하기 위해 배열에 넣기.
+	DungeonRoomWidgets = {
+	WBP_DunzeonRoom_0,
+	WBP_DunzeonRoom_1,
+	WBP_DunzeonRoom_2,
+	WBP_DunzeonRoom_3
+	};
+
+	ClearDungeonRooms();
+
+	// 처음에는 없는 것으로 생성
+	for (UAODungeonRoomWidget* RoomWidget : DungeonRoomWidgets)
+	{
+		if (!RoomWidget)
+		{
+			continue;
+		}
+
+		RoomWidget->SetVisibility(ESlateVisibility::Hidden);
+		RoomWidget->OnJoinRequested.RemoveAll(this);
+		RoomWidget->OnJoinRequested.AddDynamic(this, &UAODungeonEntranceWidget::RequestEnterDungeon);
+	}
+
 
 	// EnterButton 이벤트 바인딩
 	if (EnterButton)
@@ -65,6 +91,7 @@ void UAODungeonEntranceWidget::OnEnterButtonClicked()
 	if (const UAOGameInstance* GI = Cast<UAOGameInstance>(GetGameInstance()))
 	{
 		EnterPacket.set_playerid(GI->GetMyPlayerId());
+		EnterPacket.set_dungeonid(DungeonId);
 	}
 
 	SEND_PACKET(EnterPacket, PKT_C_DUNGEONENTER);
@@ -178,7 +205,66 @@ void UAODungeonEntranceWidget::SetDungeonEntered(int32 DungeonId, const Protocol
 
 void UAODungeonEntranceWidget::SetDungeonReady(int32 DungeonId, uint64 PlayerId)
 {
+	// 내가 현재 참가 중인 방의 Ready Packet인지를 거르기
+	// 내가 참가하지 않은 방의 Ready 상태는 보이지 않는다.
+	const UAOPlayerManager* PlayerManager = GetPlayerManager();
+	const FPlayerDungeonRoomState State = PlayerManager
+		? PlayerManager->GetMyDungeonRoomState()
+		: FPlayerDungeonRoomState();
+
+	if (!State.IsJoined() || State.DungeonId != DungeonId)
+	{
+		return;
+	}
+
+	for (UAOClassSwitcherWidget* Slot : MemberClassSlots)
+	{
+		if (Slot && Slot->GetCachedPlayerId() == PlayerId)
+		{
+			Slot->SetReadyState(true);
+			break;
+		}
+	}
+
+	// 내가 있는 RoomWidget에도 반영
+	for (UAODungeonRoomWidget* RoomWidget : DungeonRoomWidgets)
+	{
+		if (RoomWidget && RoomWidget->GetDungeonId() == DungeonId)
+		{
+			RoomWidget->SetDungeonReady(PlayerId);
+			break;
+		}
+	}
+
 	ApplyEntranceState();
+}
+
+void UAODungeonEntranceWidget::InitializeWaitingRoom()
+{
+	// 이전 목록 노출 방지 목적
+	SetNotJoined();
+	ClearDungeonRooms();
+}
+
+void UAODungeonEntranceWidget::RequestEnterDungeon(int32 DungeonId)
+{
+	if (DungeonId <= 0)
+	{
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("C++: Request Enter DungeonId: %d"), DungeonId);
+
+	Protocol::C_DungeonEnteracket EnterPacket;
+
+	if (const UAOGameInstance* GI = Cast<UAOGameInstance>(GetGameInstance()))
+	{
+		EnterPacket.set_playerid(GI->GetMyPlayerId());
+	}
+
+	EnterPacket.set_dungeonid(DungeonId);
+
+	SEND_PACKET(EnterPacket, PKT_C_DUNGEONENTER);
 }
 
 void UAODungeonEntranceWidget::ApplyEntranceState()
@@ -262,6 +348,7 @@ void UAODungeonEntranceWidget::SetMemberSlot(int32 SlotIndex, const Protocol::Du
 
 	if (MemberClassSlots[SlotIndex])
 	{
+		MemberClassSlots[SlotIndex]->SetCachedPlayerId(PlayerInfo.memberid());
 		MemberClassSlots[SlotIndex]->SetClassWidget(static_cast<uint8>(PlayerInfo.memberclass()));
 		MemberClassSlots[SlotIndex]->SetLeaderState(SlotIndex == 0);
 		MemberClassSlots[SlotIndex]->SetReadyState(PlayerInfo.isready());
@@ -278,9 +365,72 @@ void UAODungeonEntranceWidget::ClearMemberSlots()
 	{
 		if (Slot)
 		{
+			Slot->SetCachedPlayerId(0);
 			Slot->SetClassWidget(0);
 			Slot->SetLeaderState(false);
 			Slot->SetReadyState(false);
+		}
+	}
+}
+
+void UAODungeonEntranceWidget::ClearDungeonRooms()
+{
+	for (UAODungeonRoomWidget* RoomWidget : DungeonRoomWidgets)
+	{
+		if (!RoomWidget)
+		{
+			continue;
+		}
+
+		RoomWidget->ClearDungeonInfo();
+		RoomWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UAODungeonEntranceWidget::RefreshDungeonRooms(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonRooms
+)
+{
+	ClearDungeonRooms();
+
+	int32 RoomWidgetIndex = 0;
+
+	for (const Protocol::DungeonInfo& DungeonInfo : DungeonRooms)
+	{
+		if (RoomWidgetIndex >= MaxDungeonRoomCount)
+		{
+			break;
+		}
+
+		// 유효하지 않은 방을 걸러냄
+		if (DungeonInfo.dungeonid() <= 0)
+		{
+			continue;
+		}
+
+
+		// 삭제된 방이 있으면 건너뜀
+		UAODungeonRoomWidget* RoomWidget = DungeonRoomWidgets[RoomWidgetIndex];
+		if (!RoomWidget)
+		{
+			continue;
+		}
+
+		// 유효한 방만 Slot에 채움
+		RoomWidget->SetDungeonInfo(DungeonInfo);
+		RoomWidget->OnJoinRequested.RemoveAll(this);
+		RoomWidget->OnJoinRequested.AddDynamic(this, &UAODungeonEntranceWidget::RequestEnterDungeon);
+		RoomWidget->SetVisibility(ESlateVisibility::Visible);
+
+		++RoomWidgetIndex;
+	}
+
+	// 만약 빈 Slot이 있으면 숨김
+	for (; RoomWidgetIndex < DungeonRoomWidgets.Num(); ++RoomWidgetIndex)
+	{
+		if (UAODungeonRoomWidget* RoomWidget = DungeonRoomWidgets[RoomWidgetIndex])
+		{
+			RoomWidget->ClearDungeonInfo();
+			RoomWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }

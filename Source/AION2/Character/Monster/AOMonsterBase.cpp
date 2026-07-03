@@ -109,6 +109,11 @@ void AAOMonsterBase::PossessedBy(AController* NewController)
 
 	// 서버에서 호출
     InitGAS();
+
+
+	// 선환 추가 
+	SetGenericTeamId(FGenericTeamId(TEAM_PERCEPTION_DAEVA)); // 플레이어 팀
+
 }
 
 void AAOMonsterBase::InitGAS()

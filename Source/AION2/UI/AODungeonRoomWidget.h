@@ -6,6 +6,7 @@
 #include "UI/AOUserWidgetBase.h"
 #include "Network/PacketHeader.h"
 #include "AODungeonRoomWidget.generated.h"
+#include "../../../../../../../../Workspace/UE_5.6_Source/Engine/Plugins/Animation/DeformerGraph/Source/OptimusCore/Private/DataInterfaces/OptimusDataInterfaceSkinnedMeshRead.cpp"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDungeonRoomSlotClicked, int32, DungeonId);
@@ -23,10 +24,15 @@ UCLASS()
 class AION2_API UAODungeonRoomWidget : public UAOUserWidgetBase
 {
 	GENERATED_BODY()
-	
+
 public:
 	void SetDungeonInfo(const Protocol::DungeonInfo& InInfo);
 	int32 GetDungeonId() const { return DungeonId; }
+
+	void ClearDungeonInfo();
+	
+	// Ready를 반영
+	void SetDungeonReady(uint64 PlayerId);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDungeonRoomSlotClicked OnJoinRequested;
@@ -35,19 +41,26 @@ protected:
 	virtual void NativeConstruct() override;
 
 protected:
-	// 이 방 카드를 누름
+	void SetLeaderInfo(const Protocol::DungeonPlayerInfo& InInfo);
+
+	// 이미 존재하는 방에 새로 한 명만 들어옴-> 클래스 지정
+	void AddMemberInfo(const Protocol::DungeonPlayerInfo& MemberInfo);
+
+	// 던전 방을 새로 그림
+	void SetMemberInfos(const Protocol::DungeonInfo& DungeonInfo);
+
+protected:
+	// 
+	/*상위 Widget인 DungeonEntranceWidget이 Bind.
+	* 이 방 카드를 누름 => broadcast with dungeonId.
+	* 서버에 EnterPacket 전송
+	*/
 	UFUNCTION()
 	void HandleJoinClicked();
 
 	// 방장의 클래스 Widget 지정
 	UFUNCTION()
 	void SetLeaderClassType(uint8 ClassType);
-
-	// 이미 존재하는 방에 새로 한 명만 들어옴-> 클래스 지정
-	void AddMemberClass(const Protocol::DungeonPlayerInfo& MemberInfo);
-
-	// 던전 방을 새로 그림
-	void SetMemberClasses(const Protocol::DungeonInfo& DungeonInfo);
 
 	// 만약 Player가 참가 중인 Room이라면 UI 상태를 바꿔줘야 함
 private:

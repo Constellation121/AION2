@@ -17,6 +17,8 @@ public:
 	AAOCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
@@ -32,6 +34,8 @@ public:
 	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera);
 	virtual void TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser);
 	virtual void SpawnAttackProjectile(const FAttackData& AttackData, TSubclassOf<class AAOProjectile> ProjectileClass, const FName& SpawnSocket);
+	void SetOwnedAttackCollidersCollisionEnabled(const FAttackData& InAttackData, bool bEnabled);
+	void RefreshOwnedAttackColliderOverlaps();
 	bool IsEnemy(AActor* TargetActor);
 
 protected:
@@ -58,6 +62,9 @@ protected:
 public:
 	bool IsDead() const { return bIsDead; }
 
+private:
+	void SetupOwnedAttackColliders();
+
 protected:
 	UPROPERTY()
 	TObjectPtr<AAOCharacter> CurrentTarget;
@@ -69,4 +76,17 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayEffect> DamageEffect;
+
+private:
+	UPROPERTY()
+	bool bIsRefreshOwnedAttackColliders = false;
+
+	UPROPERTY()
+	TSet<TObjectPtr<AActor>> HitActors;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UPrimitiveComponent>> OwnedAttackColliders;
+
+	UPROPERTY()
+	FAttackData CurrentOwendAttackCollidersAttackData;
 };
