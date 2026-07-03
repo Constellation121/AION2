@@ -38,6 +38,9 @@
 // Monster Game Tag
 
 // Action 
+#define ABILITY_MONSTER_LT_BASEATTACK1    FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.LT.BaseAttack1"))
+#define ABILITY_MONSTER_LT_DEAD           FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.LT.Dead"))
+#define ABILITY_MONSTER_LT_PT1            FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.LT.PT1"))
 #define ABILITY_MONSTER_TH_CHARGEATTACK   FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.TH.ChargeAttack"))
 #define ABILITY_MONSTER_TH_TELEPORTATTACK FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.TH.TeleportAttack"))
 #define ABILITY_MONSTER_TH_RANGEDATTACK   FGameplayTag::RequestGameplayTag(TEXT("Ability.Monster.TH.RangedAttack"))
@@ -61,7 +64,7 @@
 #define PHASE_MONSTER_DEAD FGameplayTag::RequestGameplayTag(TEXT("Phase.Monster.Dead"))
 
 
-// State
+// State - TH
 #define STATE_MONSTER_TH_IDLE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.Idle"))
 #define STATE_MONSTER_TH_CHASE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.Chase"))
 #define STATE_MONSTER_TH_RANGEDSHOT FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.RangedShot"))
@@ -76,3 +79,13 @@
 #define STATE_MONSTER_WE_CANNON FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.Cannon"))
 #define STATE_MONSTER_WE_TARGETMOVING FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.TargetMoving"))
 #define STATE_MONSTER_WE_DEAD FGameplayTag::RequestGameplayTag(TEXT("State.Monster.WE.Dead"))
+
+// State - LT
+#define STATE_MONSTER_LT_IDLE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.LT.Idle"))
+#define STATE_MONSTER_LT_CHASE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.LT.Chase"))
+#define STATE_MONSTER_LT_BASEATTACK1 FGameplayTag::RequestGameplayTag(TEXT("State.Monster.LT.BaseAttack1"))
+#define STATE_MONSTER_LT_DEAD FGameplayTag::RequestGameplayTag(TEXT("State.Monster.LT.Dead"))
+
+// Montage - LT
+#define MONTAGE_LUTALIS_BASEATTACK1 FGameplayTag::RequestGameplayTag(TEXT("Montage.Lutalis.BaseAttack1"))
+#define MONTAGE_LUTALIS_PT1 FGameplayTag::RequestGameplayTag(TEXT("Montage.Lutalis.PT1"))
