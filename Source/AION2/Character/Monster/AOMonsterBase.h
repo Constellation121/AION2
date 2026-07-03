@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayAbilitySpecHandle.h"
 #include "GameplayTagContainer.h"
+#include "GenericTeamAgentInterface.h"
 #include "AOMonsterBase.generated.h"
 
 
@@ -17,7 +18,7 @@ class UAOMonsterHUDWidget_Targetable;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeadMontageEnd);
 
 UCLASS()
-class AION2_API AAOMonsterBase : public AAOCharacter
+class AION2_API AAOMonsterBase : public AAOCharacter , public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -55,6 +56,9 @@ public:
 	FORCEINLINE void Set_State(FGameplayTag _StateFlag) { State = _StateFlag; }
 
 	TObjectPtr<class UAOAttributeSet> GetAttributeSet() { return AttributeSet; }
+
+	virtual FGenericTeamId GetGenericTeamId() const override { return FGenericTeamId(TeamID); }
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override { TeamID = NewTeamID.GetId(); }
 
 
 protected:
@@ -128,6 +132,9 @@ protected :
 protected :
 	FDelegateHandle HealthChangedDelegateHandle;
 
+	// Seohwan ( aicontroller에서 적 및 동료 판별 기준 ) 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	uint8 TeamID = 1;
 
 	// Targeting UI
 public:
@@ -143,4 +150,5 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
+
 };
