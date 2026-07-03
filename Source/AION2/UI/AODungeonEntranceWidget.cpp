@@ -95,6 +95,10 @@ void UAODungeonEntranceWidget::OnEnterButtonClicked()
 		EnterPacket.set_dungeonid(0);
 	}
 
+	// 빠른 참가의 경우 서버에서 방 번호 및 참가 성공/실패 결과를 받아야 하기 때문에,
+	// 여기서 roomid를 정하지 않음
+
+
 	SEND_PACKET(EnterPacket, PKT_C_DUNGEONENTER);
 }
 
