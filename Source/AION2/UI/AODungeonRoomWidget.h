@@ -29,6 +29,9 @@ public:
 
 	void ClearDungeonInfo();
 
+	// 멤버가 들어오면 갱신
+	void AddOrUpdateMemberInfo(const Protocol::DungeonPlayerInfo& MemberInfo);
+
 	// Ready를 반영
 	void SetDungeonReady(uint64 PlayerId);
 

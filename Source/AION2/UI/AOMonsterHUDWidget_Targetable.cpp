@@ -16,9 +16,9 @@ void UAOMonsterHUDWidget_Targetable::SetHiddenUIVisibliblity(bool bInVisiblity)
 		Pb_HpBar->SetVisibility(NewVisibility);
 	}
 
-	if (Pb_StaminaBar)
+	if (Pb_GroggyBar)
 	{
-		Pb_StaminaBar->SetVisibility(NewVisibility);
+		Pb_GroggyBar->SetVisibility(NewVisibility);
 	}
 
 	if (Image_NameBG)

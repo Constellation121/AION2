@@ -113,7 +113,7 @@ void UAODungeonEntranceWidget::OnCreateButtonClicked()
 }
 void UAODungeonEntranceWidget::OnStartButtonClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("C++: Create Button Clicked!"));
+	UE_LOG(LogTemp, Warning, TEXT("C++: Start Button Clicked!"));
 
 	const UAOPlayerManager* PlayerManager = GetPlayerManager();
 	if (!PlayerManager)
@@ -202,6 +202,15 @@ void UAODungeonEntranceWidget::SetDungeonEntered(int32 DungeonId, const Protocol
 		if (PlayerManager->GetMyDungeonRoomState().DungeonId == DungeonId)
 		{
 			SetMemberSlot(EnterPlayer.index(), EnterPlayer);
+		}
+	}
+
+	for (UAODungeonRoomWidget* RoomWidget : DungeonRoomWidgets)
+	{
+		if (RoomWidget && RoomWidget->GetDungeonId() == DungeonId)
+		{
+			RoomWidget->AddOrUpdateMemberInfo(EnterPlayer);
+			break;
 		}
 	}
 
@@ -374,6 +383,7 @@ void UAODungeonEntranceWidget::ClearMemberSlots()
 			Slot->SetClassWidget(0);
 			Slot->SetLeaderState(false);
 			Slot->SetReadyState(false);
+			Slot->SetPlayerName(FText::GetEmpty());
 		}
 	}
 }

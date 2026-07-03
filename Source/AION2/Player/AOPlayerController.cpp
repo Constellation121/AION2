@@ -6,7 +6,6 @@
 #include "UI/AOMainHUDWidget.h"
 #include "Components/Widget.h"
 #include "Player/AOPlayerState.h"
-#include "Game/AORaidGameState.h"
 
 TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
 
