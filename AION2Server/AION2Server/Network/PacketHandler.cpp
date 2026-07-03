@@ -242,9 +242,19 @@ bool PacketHandler::HandleDungeonEnter(PacketSessionRef& session, Protocol::C_Du
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	PlayerRef player = gameSession->_player;
-
-	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleEnterDungeon, player);
+	int32 dungeonId = pkt.dungeonid();
+	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleEnterDungeon, player, dungeonId);
 	return true;
+}
+
+bool PacketHandler::HandleDungeonReady(PacketSessionRef& session, Protocol::C_DungeonReadyacket& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+	int32 dungeonId = pkt.dungeonid();
+
+	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleReadyPacket, player, dungeonId);
+	return false;
 }
 
 bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_DungeonStartacket& pkt)
@@ -319,13 +329,14 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 	DBBind<2, 5> dbBind(*dbConnect, L"{CALL sp_UserItem(?, ?)}");
 	int32 characterId = pkt.playerid();
 	int32 slot = pkt.slotindex();
+
 	dbBind.BindParam(0, characterId);
 	dbBind.BindParam(1, slot);
 
 	int32 errorCode = -1;
 	int32 slotIndex = -1;
 	int32 ItemCount = -1;
-	std::string effectType = {};
+	WCHAR effectType[51] = {0, };
 	int32 effectValue = 0;
 
 	std::wcout.imbue(std::locale("kor"));

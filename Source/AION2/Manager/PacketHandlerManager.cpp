@@ -40,6 +40,7 @@ void InitPacketHandler()
 	GAOPacketHandler[PKT_S_DUNGEONENTER] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonEnterPacket>(&FPacketHandler::Handle_S_ENTER, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_DUNGEONREADY] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonReadyPacket>(&FPacketHandler::Handle_S_READY, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_DUNGEONSTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonStartPacket>(&FPacketHandler::Handle_S_START, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEONFAIL] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonFailPacket>(&FPacketHandler::Handle_S_DUNGEONFAIL, Mng, Buf, Len); };
 
 	GAOPacketHandler[PKT_S_DISCONNECT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DisconnectPacket>(&FPacketHandler::Handle_S_DISCONNECT, Mng, Buf, Len); };
 
@@ -200,16 +201,10 @@ bool FPacketHandler::Handle_S_CREATE(Protocol::S_DungeonCreatePacket& Pkt)
 
 bool FPacketHandler::Handle_S_ENTERWAITING(Protocol::S_DungeonWaitingRoomEnterPacket& Pkt)
 {
-	// 이전 코드
-	//if (Pkt.dungeoninfos_size() <= 0) return false;
-	//PlayerMng->UpdateMyDungeonRoomStateFromList(Pkt.dungeoninfos());
-	//return true;
-
 	if (PlayerMng)
 	{
 		PlayerMng->UpdateMyDungeonRoomStateFromList(Pkt.dungeoninfos());
 	}
-
 
 	UAOUIManager* UIManager = GameInstance
 		? GameInstance->GetSubsystem<UAOUIManager>()
@@ -277,6 +272,12 @@ bool FPacketHandler::Handle_S_START(Protocol::S_DungeonStartPacket& Pkt)
 
 	PlayerMng->HandleDungeonStart(ConnectionURL);
 	return true;
+}
+
+bool FPacketHandler::Handle_S_DUNGEONFAIL(Protocol::S_DungeonFailPacket& Pkt)
+{
+
+	return false;
 }
 
 bool FPacketHandler::Handle_S_CHAT(Protocol::S_ChatPacket& Pkt)

@@ -38,7 +38,7 @@ public:
 
 	/*
 	*  DungeonRoomWidget의 OnJoinRequested에 Binding.
-	* 
+	*
 	*/
 	UFUNCTION()
 	void RequestEnterDungeon(int32 DungeonId);
@@ -51,6 +51,8 @@ public:
 	// 방 목록 Refresh.
 	void RefreshDungeonRooms(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonRooms
 	);
+
+	void ShowErrorMessage(Protocol::DungeonFailReason Reason);
 
 private:
 	void SetMemberSlots(const Protocol::DungeonInfo& DungeonInfo);
@@ -102,6 +104,9 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UOverlay> Overlay_InRoom_Leader;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr <class UTextBlock> ErrorMessage;
+
 
 	// Room에 들어가면 하단에 보일 멤버 목록
 	UPROPERTY(meta = (BindWidget))
@@ -133,9 +138,9 @@ private:
 	void OnStartButtonClicked();
 
 	/*
-	* 들어온 dungeonid, 준비한 playerID를 넣어 Packet 전송 
+	* 들어온 dungeonid, 준비한 playerID를 넣어 Packet 전송
 	* (어느 대기방에 반영해야 하는지 알아야 하므로)
-	*/ 
+	*/
 	UFUNCTION()
 	void OnReadyButtonClicked();
 
@@ -161,6 +166,11 @@ private:
 
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UAODungeonRoomWidget>> DungeonRoomWidgets;
+
+private:
+	FTimerHandle ErrorMessageTimerHandle;
+
+	void ClearErrorMessage();
 
 private:
 	UAOPlayerManager* GetPlayerManager() const;

@@ -38,6 +38,7 @@ enum : uint16
 	PKT_S_DUNGEONREADY = 1021,
 	PKT_C_DUNGEONSTART = 1022,
 	PKT_S_DUNGEONSTART = 1023,
+	PKT_S_DUNGEONFAIL = 1028,
 
 	// 캐릭터 상태 및 상호작용
 	PKT_C_CHANGEHP = 1024,
@@ -76,6 +77,7 @@ public:
 		GPacketHandler[PKT_C_DUNGEONWAITINTROOM] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonWaitingRoomEnterPacket>(HandleDungeonWaitingRoom, session, buffer, len); };
 		GPacketHandler[PKT_C_DUNGEONCREATE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonCreatePacket>(HandleDungeonCreate, session, buffer, len); };
 		GPacketHandler[PKT_C_DUNGEONENTER] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonEnteracket>(HandleDungeonEnter, session, buffer, len); };
+		GPacketHandler[PKT_C_DUNGEONREADY] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonReadyacket>(HandleDungeonReady, session, buffer, len); };
 		GPacketHandler[PKT_C_DUNGEONSTART] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonStartacket>(HandleDungeonStart, session, buffer, len); };
 
 		// 캐릭터 상태 및 상호작용
@@ -97,6 +99,7 @@ public:
 	static bool HandleDungeonWaitingRoom(PacketSessionRef& session, Protocol::C_DungeonWaitingRoomEnterPacket& pkt);
 	static bool HandleDungeonCreate(PacketSessionRef& session, Protocol::C_DungeonCreatePacket& pkt);
 	static bool HandleDungeonEnter(PacketSessionRef& session, Protocol::C_DungeonEnteracket& pkt);
+	static bool HandleDungeonReady(PacketSessionRef& session, Protocol::C_DungeonReadyacket& pkt);
 	static bool HandleDungeonStart(PacketSessionRef& session, Protocol::C_DungeonStartacket& pkt);
 
 	static bool HandleStorePurchase(PacketSessionRef& session, Protocol::C_StorePurchasePacket& pkt);
@@ -134,6 +137,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonEnterPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONENTER); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonStartPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONSTART); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonReadyPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONREADY); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonFailPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONFAIL); };
 
 	static SendBufferRef MakeSendBuffer(Protocol::S_StorePurchasePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_STOREPURCHASE); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_ChatPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); };

@@ -6,8 +6,6 @@
 #include "UI/AOUserWidgetBase.h"
 #include "Network/PacketHeader.h"
 #include "AODungeonRoomWidget.generated.h"
-#include "../../../../../../../../Workspace/UE_5.6_Source/Engine/Plugins/Animation/DeformerGraph/Source/OptimusCore/Private/DataInterfaces/OptimusDataInterfaceSkinnedMeshRead.cpp"
-
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDungeonRoomSlotClicked, int32, DungeonId);
 
@@ -18,7 +16,7 @@ class UAOClassSwitcherWidget;
 class UOverlay;
 
 /**
- * 
+ *
  */
 UCLASS()
 class AION2_API UAODungeonRoomWidget : public UAOUserWidgetBase
@@ -30,7 +28,7 @@ public:
 	int32 GetDungeonId() const { return DungeonId; }
 
 	void ClearDungeonInfo();
-	
+
 	// Ready¸¦ ¹Ý¿µ
 	void SetDungeonReady(uint64 PlayerId);
 

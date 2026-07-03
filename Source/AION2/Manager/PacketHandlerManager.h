@@ -26,6 +26,7 @@ public:
 	bool Handle_S_ENTER(Protocol::S_DungeonEnterPacket& Pkt);
 	bool Handle_S_READY(Protocol::S_DungeonReadyPacket& Pkt);
 	bool Handle_S_START(Protocol::S_DungeonStartPacket& Pkt);
+	bool Handle_S_DUNGEONFAIL(Protocol::S_DungeonFailPacket& Pkt);
 
 	bool Handle_S_CHAT(Protocol::S_ChatPacket& Pkt);
 	bool Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt);
