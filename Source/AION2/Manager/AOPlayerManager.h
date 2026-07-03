@@ -52,6 +52,7 @@ private:
 	FPlayerDungeonRoomState MyDungeonRoomState;
 
 #pragma endregion
+
 private:
 	//UPROPERTY()
 	//TObjectPtr<AMMODaeva> MyPlayer;

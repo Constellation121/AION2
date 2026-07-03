@@ -144,19 +144,19 @@ void DungeonWaitingRoom::HandleCreateDungeon(PlayerRef player)
 {
 	if (_dungeons.size() >= MAX_DUNGEON) return;
 
-	DedicatedSessionRef dedi = GDediSessionManager.GetFreeDediSession();
+	/*DedicatedSessionRef dedi = GDediSessionManager.GetFreeDediSession();
 	if (dedi == nullptr)
 	{
 		std::cout << "Full Dedi Servers!" << std::endl;
 		return;
-	}
+	}*/
 
 	int32 dungeonId = GetFreeDungeonId();
 	DungeonRef dungeon = std::make_shared<Dungeon>(dungeonId, player);
 	_dungeons[dungeonId] = dungeon;
 
-	dedi->SetUsing(true);
-	dungeon->SetDediSession(dedi);
+	//dedi->SetUsing(true);
+	//dungeon->SetDediSession(dedi);
 
 	Protocol::S_DungeonCreatePacket createPkt;
 	createPkt.mutable_dungeoninfo()->CopyFrom(dungeon->ToProto());

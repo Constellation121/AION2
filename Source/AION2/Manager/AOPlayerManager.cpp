@@ -228,6 +228,7 @@ void UAOPlayerManager::HandleDungeonEnter(int32 DungeonId)
 
 void UAOPlayerManager::HandleDungeonStart(FString ServerURL)
 {
+
 	AAOPlayerController* PC = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PC)
 	{
@@ -247,7 +248,6 @@ void UAOPlayerManager::HandleDungeonCreate(int32 DungeonId)
 	{
 		Player->SetDungeonId(DungeonId);
 	}
-
 }
 
 void UAOPlayerManager::ClearMyDungeonRoomState()
@@ -338,8 +338,4 @@ void UAOPlayerManager::UpdateMyDungeonReadyState(int32 DungeonId, uint64 PlayerI
 	MyDungeonRoomState.ReadyState = EReadyState::Ready;
 }
 
-
-
 #pragma endregion
-
-

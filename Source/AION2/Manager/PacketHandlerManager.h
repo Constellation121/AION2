@@ -20,10 +20,13 @@ public:
 	bool Handle_S_ITEM(Protocol::S_ItemDataPacket& Pkt);
 	bool Handle_S_SPAWN(Protocol::S_SpawnPacket& Pkt);
 	bool Handle_S_MOVE(Protocol::S_MovePacket& Pkt);
+
 	bool Handle_S_CREATE(Protocol::S_DungeonCreatePacket& Pkt);
+	bool Handle_S_ENTERWAITING(Protocol::S_DungeonWaitingRoomEnterPacket& Pkt);
 	bool Handle_S_ENTER(Protocol::S_DungeonEnterPacket& Pkt);
 	bool Handle_S_READY(Protocol::S_DungeonReadyPacket& Pkt);
 	bool Handle_S_START(Protocol::S_DungeonStartPacket& Pkt);
+
 	bool Handle_S_CHAT(Protocol::S_ChatPacket& Pkt);
 	bool Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt);
 
