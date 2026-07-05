@@ -22,6 +22,8 @@ class AAOPlayerState;
 class UAbilitySystemComponent;
 class UAOQuickSlotComponent;
 
+class UDA_AbilitySet;
+
 UENUM(BlueprintType)
 enum class EDaevaPartType : uint8
 {
@@ -134,6 +136,9 @@ public:
 	virtual FGenericTeamId GetGenericTeamId() const override { return FGenericTeamId(TeamID); }
 	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override { TeamID = NewTeamID.GetId(); }
 
+public:
+	// SuYeon: Daeva should deliver own ability set.
+	const UDA_AbilitySet* GetCombatAbilitySet() const { return CombatAbilitySet; }
 
 protected:
 	virtual void Move(const FInputActionValue& Value);
@@ -242,7 +247,7 @@ private:
 	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
 private:
-	// UI ����. Local Player�� ���� Head-up UI�� �߰��Ѵ�.
+	// SuYeon: Only Local Player Floats Head-up UI.
 	void BindOverheadStatusWidget();
 
 public:

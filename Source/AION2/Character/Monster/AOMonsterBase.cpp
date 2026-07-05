@@ -229,6 +229,14 @@ void AAOMonsterBase::HandleBossDeath()
 
 	bIsDead = true;
 
+	// 수연: 아직 시체만 남은 채로 Head-up Display를 Destroy. | 26.07.05
+	if (OverheadStatusWidgetComponent)
+	{
+		OverheadStatusWidgetComponent->DestroyComponent();
+		OverheadStatusWidgetComponent = nullptr;
+	}
+
+
 }
 
 void AAOMonsterBase::HandleBossDeathMontageEnd()
