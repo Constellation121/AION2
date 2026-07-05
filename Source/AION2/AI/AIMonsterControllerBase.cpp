@@ -105,7 +105,7 @@ void AAIMonsterControllerBase::TargetPerceptionOn(AActor* Actor, FAIStimulus Sti
 
 
 	// 감지 범위 안에 들어오거나 감지 상태가 갱신될때 마다 호출됨 
-	if (AAIMonsterControllerBase::TargetPerceptionOn)
+	if (Stimlus.WasSuccessfullySensed())
 	{
 		// 처음 보스를 마주할 때 보스가 전투준비 페이즈로 갈 수 있게 설정. 
 		if (HasDetectedTarget == false)
