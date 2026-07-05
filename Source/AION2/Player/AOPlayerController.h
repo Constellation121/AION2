@@ -7,6 +7,7 @@
 extern TAutoConsoleVariable<int32> CVarDrawAttackTrace;
 
 class UAOMainHUDWidget;
+class AAOMonsterBase;
 
 UENUM()
 enum class EInputType : uint8
@@ -26,6 +27,17 @@ public:
 public:
 	UFUNCTION(Server, Reliable)
 	void Server_SetShowColliderDebug();
+
+
+public:
+	// Unreal Dedicated Server AI 감지 흐름
+	UFUNCTION(Client, Reliable)
+	void Client_ShowBossHUD(AAOMonsterBase* Boss);
+
+	UFUNCTION(Client, Reliable)
+	void Client_HideBossHUDOnly(AAOMonsterBase* Boss);
+	void HideBossHUDOnly(AAOMonsterBase* Boss);
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -52,6 +64,19 @@ private:
 public:
 	UAOMainHUDWidget* GetMainHUD() const { return MainHUD; }
 
+public:
+	// BossHUD
+	void ShowBossHUD(AAOMonsterBase* Boss);
+	void HideBossHUDOnly();
+	void ClearBossHUD();
+
+
+	// AIMonsterControllerBase에서 호출
+	UFUNCTION(Client, Reliable)
+	void Client_ClearBossHUD(AAOMonsterBase* Boss);
+
+	void ClearBossHUD(AAOMonsterBase* Boss);
+
 private:
 	bool bShowColliderDebug = false;
 	bool bShowGASDebug = false;
@@ -75,4 +100,8 @@ protected:
 	TSubclassOf<UAOMainHUDWidget> MainHUDClass;
 
 	TObjectPtr<UAOMainHUDWidget> MainHUD;
+
+private:
+	UPROPERTY()
+	TObjectPtr<AAOMonsterBase> CurrentBossHUDTarget;
 };

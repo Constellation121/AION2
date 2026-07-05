@@ -10,6 +10,11 @@
 
 void UAOMonsterHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 {
+    if (!InASC || BoundASC == InASC)
+    {
+        return;
+    }
+
     Super::BindToASC(InASC);
 
     if (!BoundASC)

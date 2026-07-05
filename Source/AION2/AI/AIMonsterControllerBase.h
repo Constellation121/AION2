@@ -79,4 +79,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<AActor>> ArrayTargetPlayers;
 
+
+private:
+	// ArrayTargetPlayers는 “현재 전투/인식 대상”으로 두고, 
+	// Boss HUD를 한 번이라도 띄운 플레이어는 별도 배열로 추적
+	void AddBossHUDReceiver(AActor* Actor);
+
+	void ClearBossHUDForHUDReceivers();
+
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> BossHUDReceivers;
+
+	// Boss HUD 관련.
+	bool bBossHUDCleared = false;
+
 };
