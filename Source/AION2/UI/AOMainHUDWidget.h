@@ -27,7 +27,7 @@ public:
     void BindToPlayerState(AAOPlayerState* InPlayerState) override;
 
 public:
-    void SetDungeonHUDVisible();
+    void SetBossHUDVisible();
     UAOPlayerHUDWidget* GetPlayerHUDWidget() const { return PlayerHUDWidget; }
 
 protected:

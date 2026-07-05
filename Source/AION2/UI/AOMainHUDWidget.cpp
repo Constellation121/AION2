@@ -21,11 +21,11 @@ void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 	}
 }
 
-void UAOMainHUDWidget::SetDungeonHUDVisible()
+void UAOMainHUDWidget::SetBossHUDVisible()
 {
 	if (DungeonHUDWidget)
 	{
-		DungeonHUDWidget->SetVisibility(ESlateVisibility::Visible);
+		DungeonHUDWidget->SetBossHudVisible(ESlateVisibility::Visible);
 	}
 }
 
