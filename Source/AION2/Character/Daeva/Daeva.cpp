@@ -676,8 +676,6 @@ void ADaeva::OnMoveSpeedChanged(const FOnAttributeChangeData& Data)
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
-
-	UE_LOG(	LogTemp,Log,TEXT("[MoveSpeed] %.1f -> %.1f"),Data.OldValue,	Data.NewValue);
 }
 
 void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
@@ -704,7 +702,11 @@ void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, 
 			return;
 		}
 
-		SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(TEXT("Data.HitManaRegen")), HitManaRegenAmount);
+		if (AttackData.bRestoreManaOnHit)
+		{
+			SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(TEXT("Data.HitManaRegen")), HitManaRegenAmount);
+		}
+		
 		const float BeforeMana = ASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
 		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 		const float AfterMana = ASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
