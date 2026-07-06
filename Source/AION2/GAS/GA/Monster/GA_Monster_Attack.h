@@ -46,7 +46,7 @@ protected:
 	void OnMontageTaskCancelled();
 
 	UFUNCTION()
-	void OnCheckAttackHitEvent(FGameplayEventData Payload);
+	virtual void OnCheckAttackHitEvent(FGameplayEventData Payload);
 
 	UFUNCTION()
 	void AbilityEnd(); 

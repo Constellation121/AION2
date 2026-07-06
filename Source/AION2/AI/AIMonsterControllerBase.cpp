@@ -211,3 +211,16 @@ bool AAIMonsterControllerBase::RefreshPerceivedTargets()
 
 }
 
+void AAIMonsterControllerBase::ChangeCurrentTargetPlayer()
+{
+	if (ArrayTargetPlayers.IsEmpty())
+	{
+		return;
+	}
+
+	CurrentTargetPlayer = ArrayTargetPlayers[FMath::RandRange(0, ArrayTargetPlayers.Num() - 1)];
+	if (AAOCharacter* TargetPlayer = Cast<AAOCharacter>(CurrentTargetPlayer))
+	{
+		ControlledMonster->SetCurrentTarget(TargetPlayer);
+	}
+}

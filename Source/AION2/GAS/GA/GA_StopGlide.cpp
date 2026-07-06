@@ -33,24 +33,25 @@ void UGA_StopGlide::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
     MontageTask->ReadyForActivation();
 }
 
-void UGA_StopGlide::OnMontageTaskFinished()
+void UGA_StopGlide::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-    ADaeva* Daeva = Cast<ADaeva>(GetAvatarActorFromActorInfo());
-    if (Daeva->HasAuthority())
+    if (ADaeva* Daeva = Cast<ADaeva>(ActorInfo->AvatarActor.Get()))
     {
-        Daeva->SetWingVisibilityOnServer(false);
+        if (Daeva->HasAuthority())
+        {
+            Daeva->SetWingVisibilityOnServer(false);
+        }
     }
 
+    Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UGA_StopGlide::OnMontageTaskFinished()
+{
     EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void UGA_StopGlide::OnMontageTaskCancelled()
 {
-    ADaeva* Daeva = Cast<ADaeva>(GetAvatarActorFromActorInfo());
-    if (Daeva->HasAuthority())
-    {
-        Daeva->SetWingVisibilityOnServer(false);
-    }
-
     EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
