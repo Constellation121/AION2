@@ -63,9 +63,10 @@ public:
 	bool CheckMembersReady(DungeonRef dungeon);
 	bool CheckAlreadyIn(uint64 playerId, DungeonRef dungeon);
 
-	void WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
+	void HandleDungeonToken(DungeonRef dungeon);
 
-	void HandleMapComplete(int32 dungeonId);
+	void StartDungeonPacket(DungeonRef dungeon);
+	void WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
 private:
 	int32 GetFreeDungeonId();

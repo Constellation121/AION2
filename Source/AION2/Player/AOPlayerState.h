@@ -43,7 +43,7 @@ public:
 	void SetMyName(FString InName);
 
 	// H.Y.
-	void SetPlayerInfo(uint64 InPalyerId, const FString& InPlayerName, EDaevaClassType InCalssType);
+	void SetPlayerInfo(uint64 InPalyerId, const FString& InPlayerName, uint8 InCalssType);
 
 	// GetClass function.
 	FORCEINLINE EDaevaClassType GetMyClass() const{ return MyClassType; }

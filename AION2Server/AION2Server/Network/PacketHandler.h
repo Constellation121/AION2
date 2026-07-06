@@ -41,6 +41,7 @@ enum : uint16
 	PKT_S_DUNGEONFAIL = 1028,
 	PKT_C_DUNGEOMMAPCOMPLETE = 1029,
 	PKT_S_DUNGEONSETPLAYER = 1030,
+	PKT_S_DUNGEONDEDISTART = 1031,
 
 	// 캐릭터 상태 및 상호작용
 	PKT_C_CHANGEHP = 1024,
@@ -88,9 +89,6 @@ public:
 
 		// 기타 (데디케이트 서버)
 		GPacketHandler[PKT_DS_DEDICATED] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DedicatedPacket>(HandleDedicated, session, buffer, len); };
-
-		GPacketHandler[PKT_C_DUNGEOMMAPCOMPLETE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonMapLoadCompletePacket>(HandleDungeonMapComplete, session, buffer, len); };
-
 	}
 
 	static bool HandleSignUp(PacketSessionRef& session, Protocol::C_SignUpPacket& pkt);
@@ -105,7 +103,6 @@ public:
 	static bool HandleDungeonEnter(PacketSessionRef& session, Protocol::C_DungeonEnteracket& pkt);
 	static bool HandleDungeonReady(PacketSessionRef& session, Protocol::C_DungeonReadyacket& pkt);
 	static bool HandleDungeonStart(PacketSessionRef& session, Protocol::C_DungeonStartacket& pkt);
-	static bool HandleDungeonMapComplete(PacketSessionRef& session, Protocol::C_DungeonMapLoadCompletePacket& pkt);
 
 	static bool HandleStorePurchase(PacketSessionRef& session, Protocol::C_StorePurchasePacket& pkt);
 	static bool HandleUseItem(PacketSessionRef& session, Protocol::C_UseItemPacket& pkt);
@@ -151,9 +148,10 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_DisconnectPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DISCONNECT); };
 
 	static SendBufferRef MakeSendBuffer(Protocol::S_SetDungeonPlayerPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONSETPLAYER); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonStartDediPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONDEDISTART); };
 
 private:
-	template<typename PacketType, typename ProcessFunc> 
+	template<typename PacketType, typename ProcessFunc>
 	static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
 	{
 		PacketType pkt;

@@ -15,6 +15,7 @@
 #include "Item/AOItemDataBase.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
+#include "Game/AODungeonGameMode.h"
 
 UAOPlayerManager::UAOPlayerManager()
 {
@@ -272,12 +273,10 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 	}
 }
 
-void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::DPlayerInfo& Info)
+void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStartDediPacket& Info)
 {
-	uint64 PlayterId = Info.playerid();
-	auto PlayerRef = Players.Find(PlayterId);
-	auto Player = PlayerRef->Get();
-	//Player->      
+	AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->SetPrePlayerInfo(Info);
 }
 
 void UAOPlayerManager::HandleDisconnect(uint64 RemovePlayerId)
