@@ -45,7 +45,7 @@ void UGA_Monster_Chase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
         return;
     }
 
-    CachedAIController->ChangeCurrentTargetPlayer();
+    CachedAIController->ChangeCurrentTargetPlayerByNearest();
 
     AAOCharacter* Character = Cast<AAOCharacter>(Pawn);
     if (!IsValid(Character))

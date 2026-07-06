@@ -36,7 +36,7 @@ void UGA_Siliator_PT2::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		return;
 	}
 
-	AIController->ChangeCurrentTargetPlayer();
+	AIController->ChangeCurrentTargetPlayerByFarthest();
 
 	AAOCharacter* Target = AOCharacter->GetCurrentTarget();
 	if (!IsValid(Target))
