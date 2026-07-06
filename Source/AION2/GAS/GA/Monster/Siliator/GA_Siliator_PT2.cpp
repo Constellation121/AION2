@@ -1,4 +1,5 @@
 #include "GAS/GA/Monster/Siliator/GA_Siliator_PT2.h"
+#include "AI/AIMonsterControllerBase.h"
 #include "Character/AOCharacter.h"
 
 #include "Abilities/Tasks/AbilityTask_WaitDelay.h"
@@ -21,6 +22,21 @@ void UGA_Siliator_PT2::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
+
+	AAIMonsterControllerBase* AIController = Cast<AAIMonsterControllerBase>(AOCharacter->GetController());
+	if (!IsValid(AIController))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
+	if (!AIController->HasAuthority())
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
+	AIController->ChangeCurrentTargetPlayer();
 
 	AAOCharacter* Target = AOCharacter->GetCurrentTarget();
 	if (!IsValid(Target))

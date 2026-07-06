@@ -114,6 +114,76 @@ void AAOCharacter::CheckAttackHit(const FAttackData& AttackData)
 	}
 }
 
+void AAOCharacter::CheckAttackHitSector(const FAttackData& AttackData, const float SafeAngle)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	TArray<FHitResult> OutHitResults;
+
+	const float AttackRange = AttackData.TraceData.Range;
+	const float AttackRadius = AttackData.TraceData.Radius;
+
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(AttackTrace), false, this);
+
+	FVector SweepStart = GetActorTransform().TransformPosition(AttackData.TraceData.StartOffset);
+	FVector SweepEnd = SweepStart + AttackData.TraceData.Direction.GetSafeNormal() * AttackRange;
+	FVector CapsuleCenter = SweepStart + (SweepEnd - SweepStart) * 0.5f;
+
+	bool bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, SweepStart, SweepEnd, FQuat::Identity, CCHANNEL_ATTACK, FCollisionShape::MakeSphere(AttackRadius), Params);
+
+	if (CVarDrawAttackTrace.GetValueOnGameThread())
+	{
+		const float CapsuleHalfHeight = AttackRange * 0.5f;
+		FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+		Multicast_DrawDebugCapsuleCollider(CapsuleCenter, CapsuleHalfHeight, AttackRadius, DrawColor);
+	}
+
+	if (!bHitDetected)
+	{
+		return;
+	}
+
+	bool bDidShakeCamera = false;
+
+	FVector BackVector = -GetActorForwardVector();
+	BackVector.Z = 0.f;
+	BackVector.Normalize();
+
+	for (const FHitResult& HitResult : OutHitResults)
+	{
+		AAOCharacter* HitActor = Cast<AAOCharacter>(HitResult.GetActor());
+		if (!IsValid(HitActor))
+		{
+			continue;
+		}
+
+		if (HitActor->IsDead())
+		{
+			continue;
+		}
+
+		if (!IsEnemy(HitActor))
+		{
+			continue;
+		}
+
+		FVector ToTarget = HitActor->GetActorLocation() - GetActorLocation();
+		ToTarget.Z = 0.f;
+		ToTarget.Normalize();
+
+		const float Dot = FVector::DotProduct(BackVector, ToTarget);
+		if (Dot > FMath::Cos(FMath::DegreesToRadians(SafeAngle)))
+		{
+			continue;
+		}
+
+		OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
+	}
+}
+
 void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
 {
 	AAOCharacter* Target = Cast<AAOCharacter>(HitActor);

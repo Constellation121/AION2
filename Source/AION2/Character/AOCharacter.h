@@ -31,6 +31,7 @@ public:
 
 public:
 	virtual void CheckAttackHit(const FAttackData& AttackData);
+	virtual void CheckAttackHitSector(const FAttackData& AttackData, const float SafeAngle);
 	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera);
 	virtual void TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser);
 	virtual void SpawnAttackProjectile(const FAttackData& AttackData, TSubclassOf<class AAOProjectile> ProjectileClass, const FName& SpawnSocket);
