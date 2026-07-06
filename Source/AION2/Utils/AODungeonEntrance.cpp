@@ -51,6 +51,25 @@ void AAODungeonEntrance::BeginPlay()
 void AAODungeonEntrance::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (PC == nullptr && TriggerBox)
+	{
+		TArray<AActor*> OverlappingActors;
+		TriggerBox->GetOverlappingActors(OverlappingActors, ADaeva::StaticClass());
+		for (AActor* Actor : OverlappingActors)
+		{
+			ADaeva* CharacterActor = Cast<ADaeva>(Actor);
+			if (CharacterActor && CharacterActor->IsLocallyControlled())
+			{
+				AAOPlayerController* LocalPC = Cast<AAOPlayerController>(CharacterActor->GetController());
+				if (LocalPC)
+				{
+					FHitResult DummyHit;
+					OnOverlapBegin(TriggerBox, CharacterActor, nullptr, 0, false, DummyHit);
+					break;
+				}
+			}
+		}
+	}
 }
 
 void AAODungeonEntrance::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -58,7 +77,7 @@ void AAODungeonEntrance::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 	const FHitResult& SweepResult)
 {
 	ADaeva* CharacterActor = Cast<ADaeva>(OtherActor);
-	if (CharacterActor != nullptr)
+	if (CharacterActor != nullptr && CharacterActor->IsLocallyControlled())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Dungeon OnOverlapBegin"));
 		PC = Cast<AAOPlayerController>(CharacterActor->GetController());
@@ -66,7 +85,6 @@ void AAODungeonEntrance::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 		{
 			DungeonWaitingRoomWidget = UIManager->ShowWidget(DungeonWaitingRoomClass, EUILayer::PopUp);
 			EnableInput(PC);
-
 			if (InputComponent && DungeonWaitingRoomWidget)
 			{
 				OverlappedPlayer = OtherActor;
@@ -80,14 +98,16 @@ void AAODungeonEntrance::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActo
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	ADaeva* CharacterActor = Cast<ADaeva>(OtherActor);
-	if (CharacterActor != nullptr)
-		PC = Cast<AAOPlayerController>(CharacterActor->GetController());
-
-	if (PC)
+	if (CharacterActor != nullptr && CharacterActor->IsLocallyControlled())
 	{
-		DisableInput(PC);
-		PC->SetShowMouseCursor(false);
-		UIManager->HideWidget(DungeonWaitingRoomWidget);
+		PC = Cast<AAOPlayerController>(CharacterActor->GetController());
+		if (PC)
+		{
+			DisableInput(PC);
+			PC->SetShowMouseCursor(false);
+			UIManager->HideWidget(DungeonWaitingRoomWidget);
+			PC = nullptr;
+		}
 	}
 }
 
@@ -97,24 +117,22 @@ void AAODungeonEntrance::EnterDungeon()
 
 void AAODungeonEntrance::EnterDungeonWaitingRoom()
 {
-	// Exception Handler: 객체가 아직 없거나 유효하지 않은 상태면 Crash 막기
 	if (!UIManager || !PC)
 	{
 		return;
 	}
-	if(DungeonWaitingRoomWidget)
+	if (DungeonWaitingRoomWidget)
 		UIManager->HideWidget(DungeonWaitingRoomWidget);
-
 	DungeonRoomWidget = UIManager->ShowWidget(DungeonRoomClass, EUILayer::System);
-
-	UAODungeonEntranceWidget* DungeonEntranceWidget =
-		Cast<UAODungeonEntranceWidget>(DungeonRoomWidget);
-
+	UAODungeonEntranceWidget* DungeonEntranceWidget = Cast<UAODungeonEntranceWidget>(DungeonRoomWidget);
 	if (DungeonEntranceWidget)
 	{
 		DungeonEntranceWidget->InitializeWaitingRoom();
-	}
 
+		// UI 종료(Close Button 클릭) 델리게이트 이벤트 바인딩
+		DungeonEntranceWidget->OnWidgetClosed.RemoveAll(this);
+		DungeonEntranceWidget->OnWidgetClosed.AddDynamic(this, &AAODungeonEntrance::OnDungeonRoomWidgetClosed);
+	}
 	if (PC)
 	{
 		PC->SetShowMouseCursor(true);
@@ -123,5 +141,14 @@ void AAODungeonEntrance::EnterDungeonWaitingRoom()
 		{
 			Owner->SendDungeonWait();
 		}
+	}
+}
+
+void AAODungeonEntrance::OnDungeonRoomWidgetClosed()
+{
+	if (PC)
+	{
+		PC->SetShowMouseCursor(false);
+		DungeonWaitingRoomWidget = UIManager->ShowWidget(DungeonWaitingRoomClass, EUILayer::PopUp);
 	}
 }

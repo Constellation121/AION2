@@ -8,6 +8,8 @@
 #include "Types/DungeonRoomTypes.h"
 #include "AODungeonEntranceWidget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDungeonEntranceWidgetClosed);
+
 class UButton;
 class UOverlay;
 class UAOClassSwitcherWidget;
@@ -43,6 +45,17 @@ public:
 	UFUNCTION()
 	void RequestEnterDungeon(int32 DungeonId);
 
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnDungeonEntranceWidgetClosed OnWidgetClosed;
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> CloseButton;
+
+private:
+	UFUNCTION()
+	void OnCloseButtonClicked();
 
 public:
 	// PacketHandler에서 호출할 수 있도록 public으로 설정

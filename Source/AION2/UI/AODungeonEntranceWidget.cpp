@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "UI/AODungeonEntranceWidget.h"
@@ -8,6 +8,7 @@
 #include "Game/AOGameInstance.h"
 #include "UI/AOClassSwitcherWidget.h"
 #include "Manager/AOPlayerManager.h"
+#include "Manager/AOUIManager.h"
 #include "UI/AODungeonRoomWidget.h"
 #include "AION2.h"
 
@@ -77,6 +78,12 @@ void UAODungeonEntranceWidget::NativeConstruct()
 	{
 		ExitButton->OnClicked.RemoveAll(this);
 		ExitButton->OnClicked.AddDynamic(this, &UAODungeonEntranceWidget::OnExitButtonClicked);
+	}
+
+	if (CloseButton)
+	{
+		CloseButton->OnClicked.RemoveAll(this);
+		CloseButton->OnClicked.AddDynamic(this, &UAODungeonEntranceWidget::OnCloseButtonClicked);
 	}
 
 	// 처음에는 참가하지 않은 상태로 조정
@@ -183,6 +190,23 @@ void UAODungeonEntranceWidget::OnExitButtonClicked()
 	}
 }
 
+void UAODungeonEntranceWidget::OnCloseButtonClicked()
+{
+	if (const UGameInstance* GI = GetGameInstance())
+	{
+		if (UAOUIManager* UIManager = GI->GetSubsystem<UAOUIManager>())
+		{
+			UIManager->HideWidget(this);
+		}
+	}
+	else
+	{
+		SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	OnWidgetClosed.Broadcast();
+}
+
 UAOPlayerManager* UAODungeonEntranceWidget::GetPlayerManager() const
 {
 	if (const UGameInstance* GI = GetGameInstance())
@@ -195,6 +219,7 @@ UAOPlayerManager* UAODungeonEntranceWidget::GetPlayerManager() const
 
 void UAODungeonEntranceWidget::SetNotJoined()
 {
+	bIsEnter = false;
 	ClearMemberSlots();
 	ApplyEntranceState();
 }
@@ -213,6 +238,7 @@ void UAODungeonEntranceWidget::SetDungeonCreated(const Protocol::DungeonInfo& Du
 
 void UAODungeonEntranceWidget::SetDungeonEntered(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer)
 {
+	bIsEnter = false;
 	if (UAOPlayerManager* PlayerManager = GetPlayerManager())
 	{
 		if (PlayerManager->GetMyDungeonRoomState().DungeonId == DungeonId)
@@ -316,6 +342,7 @@ void UAODungeonEntranceWidget::SetDungeonExit(int32 DungeonId, uint64 ExitPlayer
 
 void UAODungeonEntranceWidget::InitializeWaitingRoom()
 {
+	bIsEnter = false;
 	// 이전 목록 노출 방지 목적
 	SetNotJoined();
 	ClearDungeonRooms();

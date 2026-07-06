@@ -248,12 +248,15 @@ bool FPacketHandler::Handle_S_ENTER(Protocol::S_DungeonEnterPacket& Pkt)
 	UE_LOG(LogTemp, Log, TEXT("PacketHandler - Handle_S_Enter/LeaderName: %s"), *NewPlayerName);
 	PlayerMng->UpdateMyDungeonEnterState(DungeonId, Pkt.enterplayer());
 	PlayerMng->TryUpdateMyDungeonRoomState(Pkt.dungeoninfo());
-	// UI 갱신
 	if (UAOUIManager* UIManager = GameInstance ? GameInstance->GetSubsystem<UAOUIManager>() : nullptr)
 	{
 		if (UAODungeonEntranceWidget* DungeonWidget = UIManager->GetWidget<UAODungeonEntranceWidget>())
 		{
 			DungeonWidget->SetDungeonEntered(DungeonId, Pkt.enterplayer());
+			if (PlayerMng->GetMyDungeonRoomState().DungeonId == DungeonId)
+			{
+				DungeonWidget->SetDungeonInfo(Pkt.dungeoninfo());
+			}
 		}
 	}
 
