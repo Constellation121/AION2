@@ -154,7 +154,7 @@ bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPack
 		session->Send(sendBuffer);
 
 		SendBufferRef itemSendBuffer = PacketHandler::MakeSendBuffer(itemPkt);
-		session->Send(itemSendBuffer);
+		session->Send(itemSendBuffer); 
 
 		GRoom->DoAsync(&Room::AddPlayer, player);
 	}
@@ -268,12 +268,6 @@ bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_Du
 	return true;
 }
 
-bool PacketHandler::HandleDungeonMapComplete(PacketSessionRef& session, Protocol::C_DungeonMapLoadCompletePacket& pkt)
-{
-	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleMapComplete, pkt.dungeonid());
-	return true;
-}
-
 bool PacketHandler::HandleStorePurchase(PacketSessionRef& session, Protocol::C_StorePurchasePacket& pkt)
 {
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
@@ -347,7 +341,7 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 	int32 errorCode = -1;
 	int32 slotIndex = -1;
 	int32 itemCount = -1;
-	WCHAR effectType[51] = {0, };
+	WCHAR effectType[51] = { 0, };
 	int32 effectValue = 0;
 
 	std::wcout.imbue(std::locale("kor"));
@@ -371,9 +365,15 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 	}
 
 	// TODO 아이템 실패 패킷 보내기
-	if (errorCode == -1) return false;
+	if (errorCode == -1)
+	{
+		GDBConnectionPool->Push(dbConnect);
+		return false;
+	}
+
 	char szEffectType[51] = { 0, };
-	
+	GDBConnectionPool->Push(dbConnect);
+
 	::wcstombs_s(nullptr, szEffectType, sizeof(szEffectType), effectType, _TRUNCATE);
 
 	Protocol::S_UseItemPacket useItemPacket;

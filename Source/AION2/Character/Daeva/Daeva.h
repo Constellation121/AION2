@@ -299,8 +299,14 @@ public:
 
 	void SendHp(float NewHp);
 	void SendItem(int32 SlotIndex);
+	void SetItemUse();
 private:
 	bool bPlayerUIReady = false;
+
+	FTimerHandle ItemCoolTimeHandler;
+	float ItemCoolTime = 5.0f;
+
+	bool bCanUseItem = true;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
