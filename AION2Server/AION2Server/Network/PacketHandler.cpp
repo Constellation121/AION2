@@ -238,7 +238,7 @@ bool PacketHandler::HandleDungeonCreate(PacketSessionRef& session, Protocol::C_D
 	return true;
 }
 
-bool PacketHandler::HandleDungeonEnter(PacketSessionRef& session, Protocol::C_DungeonEnteracket& pkt)
+bool PacketHandler::HandleDungeonEnter(PacketSessionRef& session, Protocol::C_DungeonEnterPacket& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	PlayerRef player = gameSession->_player;
@@ -247,7 +247,13 @@ bool PacketHandler::HandleDungeonEnter(PacketSessionRef& session, Protocol::C_Du
 	return true;
 }
 
-bool PacketHandler::HandleDungeonReady(PacketSessionRef& session, Protocol::C_DungeonReadyacket& pkt)
+bool PacketHandler::HandleDungeonExit(PacketSessionRef& session, Protocol::C_DungeonExitPacket& pkt)
+{
+
+	return false;
+}
+
+bool PacketHandler::HandleDungeonReady(PacketSessionRef& session, Protocol::C_DungeonReadyPacket& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	PlayerRef player = gameSession->_player;
@@ -257,7 +263,7 @@ bool PacketHandler::HandleDungeonReady(PacketSessionRef& session, Protocol::C_Du
 	return true;
 }
 
-bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_DungeonStartacket& pkt)
+bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_DungeonStartPacket& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	PlayerRef player = gameSession->_player;

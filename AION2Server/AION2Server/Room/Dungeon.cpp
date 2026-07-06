@@ -10,7 +10,6 @@
 #include "DB/DBConnectionPool.h"
 #include "DB/DBBind.h"
 
-#include <algorithm>
 #include <iostream>
 
 DungeonWaitingRoomRef GDungeonWaitingRoom = std::make_shared<DungeonWaitingRoom>();
@@ -147,6 +146,7 @@ void DungeonWaitingRoom::HandleCreateDungeon(PlayerRef player)
 	DedicatedSessionRef dedi = GDediSessionManager.GetFreeDediSession();
 	if (dedi == nullptr)
 	{
+		HandleFailDungeon(player, Protocol::DungeonFailReason::FullDungeon);
 		std::cout << "Full Dedi Servers!" << std::endl;
 		return;
 	}
@@ -180,8 +180,14 @@ void DungeonWaitingRoom::HandleEnterDungeon(PlayerRef player, int32 inDungeonId)
 				targetDungeon = dungeon;
 				break;
 			}
+			else
+			{
+				HandleCreateDungeon(player);
+				return;
+			}
 		}
 	}
+
 	else
 	{
 		auto it = _dungeons.find(inDungeonId);
@@ -202,13 +208,14 @@ void DungeonWaitingRoom::HandleEnterDungeon(PlayerRef player, int32 inDungeonId)
 		Protocol::S_DungeonEnterPacket enterPacket;
 		enterPacket.set_dungeonid(targetDungeon->GetId());
 		if (CheckAlreadyIn(player->GetId(), targetDungeon)) return;
-		Protocol::DungeonPlayerInfo* enterPlayerProto = enterPacket.mutable_enterplayer();
-		enterPlayerProto->set_memberid(player->GetId());
+		//Protocol::DungeonPlayerInfo* enterPlayerProto = enterPacket.mutable_enterplayer();
+		/*enterPlayerProto->set_memberid(player->GetId());
 		enterPlayerProto->set_membername(player->GetName());
 		enterPlayerProto->set_memberclass(player->GetClass());
 		enterPlayerProto->set_isready(false);
-		enterPlayerProto->set_index(static_cast<int32>(targetDungeon->GetMembers().size()));
-		//enterPlayerProto->set_dungeoninfo(targetDungeon->ToProto());
+		enterPlayerProto->set_index(static_cast<int32>(targetDungeon->GetMembers().size()));*/
+
+		enterPacket.mutable_dungeoninfo()->CopyFrom(targetDungeon->ToProto());
 
 		SendBufferRef enterBuffer = PacketHandler::MakeSendBuffer(enterPacket);
 		WaitingRoomBroadcast(enterBuffer);
@@ -229,6 +236,35 @@ void DungeonWaitingRoom::HandleReadyPacket(PlayerRef player, int32 dungeonId)
 
 	SendBufferRef readyBuffer = PacketHandler::MakeSendBuffer(readyPacket);
 	dungeon->Broadcast(readyBuffer);
+}
+
+void DungeonWaitingRoom::HandleExitPacket(PlayerRef player, int32 dungeonId)
+{
+	auto it = _dungeons.find(dungeonId);
+	if (it == _dungeons.end()) return;
+	DungeonRef dungeon = it->second;
+
+	if (player == dungeon->GetLeader())
+	{
+		DediSessionRef dedi = dungeon->GetDediSession();
+		dedi->SetUsing(false);
+		for (auto member : dungeon->GetMembers())
+		{
+			member->SetReady(false);
+		}
+		_dungeons.erase(dungeonId);
+		_freeDungeonIds.insert(dungeonId);
+	}
+	else
+	{
+		dungeon->RemoveMember(player);
+	}
+
+	Protocol::S_DungeonExitPacket exitPkt;
+	exitPkt.set_playerid(player->GetId());
+	exitPkt.mutable_dungeoninfo()->CopyFrom(dungeon->ToProto());
+	SendBufferRef exitBuffer = PacketHandler::MakeSendBuffer(exitPkt);
+	WaitingRoomBroadcast(exitBuffer, -1);
 }
 
 void DungeonWaitingRoom::HandleFailDungeon(PlayerRef player, Protocol::DungeonFailReason reason)

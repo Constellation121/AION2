@@ -102,8 +102,8 @@ void AAODungeonEntrance::EnterDungeonWaitingRoom()
 	{
 		return;
 	}
-
-	UIManager->HideWidget(DungeonWaitingRoomWidget);
+	if(DungeonWaitingRoomWidget)
+		UIManager->HideWidget(DungeonWaitingRoomWidget);
 
 	DungeonRoomWidget = UIManager->ShowWidget(DungeonRoomClass, EUILayer::System);
 

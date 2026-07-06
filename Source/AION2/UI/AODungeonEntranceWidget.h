@@ -32,7 +32,7 @@ public:
 	void SetDungeonCreated(const Protocol::DungeonInfo& DungeonInfo);
 	void SetDungeonEntered(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);
 	void SetDungeonReady(int32 DungeonId, uint64 PlayerId);
-
+	void SetDungeonExit(int32 DungeonId, uint64 ExitPlayerId, const Protocol::DungeonInfo& DungeonInfo);
 	// Utils/AODungeonEntrance에서 호출하는 초기화
 	void InitializeWaitingRoom();
 
@@ -174,4 +174,6 @@ private:
 
 private:
 	UAOPlayerManager* GetPlayerManager() const;
+
+	bool bIsEnter = false;
 };

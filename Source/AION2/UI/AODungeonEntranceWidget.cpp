@@ -85,9 +85,14 @@ void UAODungeonEntranceWidget::NativeConstruct()
 
 void UAODungeonEntranceWidget::OnEnterButtonClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("C++: Enter Button Clicked!"));
+	if (bIsEnter)
+	{
+		return;
+	}
 
-	Protocol::C_DungeonEnteracket  EnterPacket;
+	UE_LOG(LogTemp, Warning, TEXT("C++: Enter Button Clicked!"));
+	bIsEnter = true;
+	Protocol::C_DungeonEnterPacket  EnterPacket;
 
 	if (const UAOGameInstance* GI = Cast<UAOGameInstance>(GetGameInstance()))
 	{
@@ -109,7 +114,7 @@ void UAODungeonEntranceWidget::OnCreateButtonClicked()
 	Protocol::C_DungeonCreatePacket CreatePacket;
 
 	SEND_PACKET(CreatePacket, PKT_C_DUNGEONCREATE);
-	
+
 }
 void UAODungeonEntranceWidget::OnStartButtonClicked()
 {
@@ -128,9 +133,9 @@ void UAODungeonEntranceWidget::OnStartButtonClicked()
 	}
 
 
-	Protocol::C_DungeonStartacket StartPacket;
+	Protocol::C_DungeonStartPacket StartPacket;
 	StartPacket.set_dungeonid(State.DungeonId);
-	SEND_PACKET(StartPacket, PKT_C_DUNGEONSTART);	
+	SEND_PACKET(StartPacket, PKT_C_DUNGEONSTART);
 }
 
 void UAODungeonEntranceWidget::OnReadyButtonClicked()
@@ -147,23 +152,34 @@ void UAODungeonEntranceWidget::OnReadyButtonClicked()
 		return;
 	}
 
-	Protocol::C_DungeonReadyacket ReadyPacket;
+	Protocol::C_DungeonReadyPacket ReadyPacket;
 	ReadyPacket.set_dungeonid(State.DungeonId);
 	SEND_PACKET(ReadyPacket, PKT_C_DUNGEONREADY);
 }
 
 void UAODungeonEntranceWidget::OnExitButtonClicked()
 {
-
-	// TODO: 서버에 방 나가기 패킷이 생기면 여기서 송신.
-	// 지금은 로컬 상태를 먼저 Clear하면 서버 상태와 UI가 어긋날 수 있으니,
-	// 서버 ack를 받은 뒤 PlayerManager->ClearMyDungeonRoomState() + SetNotJoined() 하는 편이 안전
 	UE_LOG(LogTemp, Warning, TEXT("C++: Exit Button Clicked!"));
+	const UAOPlayerManager* PlayerManager = GetPlayerManager();
+	if (!PlayerManager)
+	{
+		return;
+	}
 
+	const FPlayerDungeonRoomState& State = PlayerManager->GetMyDungeonRoomState();
+	if (!State.IsMember() || State.DungeonId <= 0)
+	{
+		return;
+	}
 	if (ExitButton)
 	{
-		// Leader면 방 주인을 넘기기
-		// 이후 방 나가기
+		Protocol::C_DungeonExitPacket exitPacket;
+		exitPacket.set_dungeonid(State.DungeonId);
+		if (const UAOGameInstance* GI = Cast<UAOGameInstance>(GetGameInstance()))
+		{
+			exitPacket.set_playerid(GI->GetMyPlayerId());
+		}
+		SEND_PACKET(exitPacket, PKT_C_DUNGEONEXIT);
 	}
 }
 
@@ -253,6 +269,51 @@ void UAODungeonEntranceWidget::SetDungeonReady(int32 DungeonId, uint64 PlayerId)
 	ApplyEntranceState();
 }
 
+void UAODungeonEntranceWidget::SetDungeonExit(int32 DungeonId, uint64 ExitPlayerId, const Protocol::DungeonInfo& DungeonInfo)
+{
+	UAOPlayerManager* PlayerManager = GetPlayerManager();
+	if (!PlayerManager) return;
+	const FPlayerDungeonRoomState& MyState = PlayerManager->GetMyDungeonRoomState();
+	const bool bIsInSameRoom = MyState.IsJoined() && (MyState.DungeonId == DungeonId);
+
+	// 리더 나가면 방 없앰
+	const bool bIsRoomExploded = DungeonInfo.has_leaderinfo() ? (DungeonInfo.leaderinfo().memberid() == ExitPlayerId) : true;
+
+	if (bIsRoomExploded)
+	{
+		if (bIsInSameRoom)
+		{
+			PlayerManager->ClearMyDungeonRoomState();
+			SetNotJoined();
+		}
+		for (UAODungeonRoomWidget* RoomWidget : DungeonRoomWidgets)
+		{
+			if (RoomWidget && RoomWidget->GetDungeonId() == DungeonId)
+			{
+				RoomWidget->ClearDungeonInfo();
+				break;
+			}
+		}
+	}
+	// 그냐ㅕㅇ 멤버면 룸 새로고침
+	else
+	{
+		if (bIsInSameRoom)
+		{
+			SetDungeonInfo(DungeonInfo);
+		}
+		for (UAODungeonRoomWidget* RoomWidget : DungeonRoomWidgets)
+		{
+			if (RoomWidget && RoomWidget->GetDungeonId() == DungeonId)
+			{
+				RoomWidget->SetDungeonInfo(DungeonInfo);
+				break;
+			}
+		}
+	}
+	ApplyEntranceState();
+}
+
 void UAODungeonEntranceWidget::InitializeWaitingRoom()
 {
 	// 이전 목록 노출 방지 목적
@@ -269,7 +330,7 @@ void UAODungeonEntranceWidget::RequestEnterDungeon(int32 DungeonId)
 
 	UE_LOG(LogTemp, Warning, TEXT("C++: Request Enter DungeonId: %d"), DungeonId);
 
-	Protocol::C_DungeonEnteracket EnterPacket;
+	Protocol::C_DungeonEnterPacket EnterPacket;
 
 	if (const UAOGameInstance* GI = Cast<UAOGameInstance>(GetGameInstance()))
 	{
@@ -474,7 +535,7 @@ void UAODungeonEntranceWidget::ShowErrorMessage(Protocol::DungeonFailReason Reas
 	default:
 		break;
 	}
-
+	bIsEnter = false;
 	GetWorld()->GetTimerManager().ClearTimer(ErrorMessageTimerHandle);
 
 	GetWorld()->GetTimerManager().SetTimer(
