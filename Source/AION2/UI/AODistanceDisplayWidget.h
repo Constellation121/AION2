@@ -23,10 +23,8 @@ protected:
 
 protected:
 	// Distance¸¦ Ç¥½Ã
-	UPROPERTY(meta = (BindWidgetOptional), BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
 	TObjectPtr<UTextBlock> TB_DistanceFromPlayer;
-
-
 
 private:
 	// Time to Tick.
