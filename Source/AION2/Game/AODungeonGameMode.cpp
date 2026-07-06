@@ -88,6 +88,7 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 		NewPlayer->Destroy();
 		return;
 	}
+	UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success  (Key: %d)"), UniqueId);
 
 	Protocol::DPlayerInfo PlayerData = PendingPlayers[UniqueId];
 	PendingPlayers.Remove(UniqueId);
@@ -117,6 +118,7 @@ void AAODungeonGameMode::InitStartSpot_Implementation(AActor* StartSpot, AContro
 		FString PlayerName = PlayerData.playername().c_str();
 		if (PlayerState)
 		{
+			UE_LOG(LogTemp, Log, TEXT("[Dungeon] InitStartSpot: SetPlayerInfo (Key: %d), PlayerId: %d"), UniqueId, PlayerData.playerid());
 			PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass());
 		}
 	}
