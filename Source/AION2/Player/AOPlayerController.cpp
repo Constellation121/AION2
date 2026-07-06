@@ -30,48 +30,6 @@ void AAOPlayerController::Server_SetShowColliderDebug_Implementation()
 	}
 }
 
-void AAOPlayerController::ShowBossHUD(AAOMonsterBase* Boss)
-{
-	if (!IsLocalController() || !MainHUD || !Boss)
-	{
-		return;
-	}
-
-	CurrentBossHUDTarget = Boss;
-	MainHUD->SetBossHUDVisible(Boss);
-}
-
-void AAOPlayerController::Client_ShowBossHUD_Implementation(AAOMonsterBase* Boss)
-{
-	if (!IsLocalController() || !MainHUD || !Boss)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AAOPlayerController::Clinet ShowBossHUD: None, Line %d"), 47);
-		return;
-	}
-
-	ShowBossHUD(Boss);
-}
-
-void AAOPlayerController::Client_HideBossHUDOnly_Implementation(AAOMonsterBase* Boss)
-{
-	HideBossHUDOnly(Boss);
-}
-
-void AAOPlayerController::HideBossHUDOnly(AAOMonsterBase* Boss)
-{
-	if (!IsLocalController() || !MainHUD || !Boss)
-	{
-		return;
-	}
-
-	if (CurrentBossHUDTarget != Boss)
-	{
-		return;
-	}
-
-	MainHUD->HideBossHUDOnly();
-}
-
 void AAOPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -170,7 +128,6 @@ void AAOPlayerController::HandlePawnASCReady()
 
 void AAOPlayerController::CreateOrBindMainHUD()
 {
-
 	// Exception Handling
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
 	{
@@ -198,24 +155,23 @@ void AAOPlayerController::CreateOrBindMainHUD()
 	MainHUD->BindToPlayerState(AOPlayerState);
 }
 
-void AAOPlayerController::Client_ClearBossHUD_Implementation(AAOMonsterBase* Boss)
+void AAOPlayerController::ShowTargetMonsterHUD(AAOMonsterBase* InMonster)
 {
-	ClearBossHUD(Boss);
+	if (!IsLocalController() || !MainHUD || !InMonster)
+	{
+		return;
+	}
+
+	MainHUD->ShowTargetMonsterHUD(InMonster);
 }
 
-void AAOPlayerController::ClearBossHUD(AAOMonsterBase* Boss)
+void AAOPlayerController::HideTargetMonsterHUD()
 {
-	if (!IsLocalController() || !MainHUD || !Boss)
+	if (!IsLocalController() || !MainHUD)
 	{
 		return;
 	}
 
-	if (CurrentBossHUDTarget != Boss)
-	{
-		return;
-	}
-
-	CurrentBossHUDTarget = nullptr;
-	MainHUD->ClearBossHUD();
+	MainHUD->HideTargetMonsterHUD();
 }
 

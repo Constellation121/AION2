@@ -568,7 +568,7 @@ void ADaeva::InitGAS()
 		ApplyDashStaminaRegenEffect();
 	}
 
-	// UI ?앹꽦 諛?Bind.
+	// Notify to the PlayerController that the PlayerCharacter is ready.
 	NotifyPlayerUIReady();
 }
 
@@ -1195,6 +1195,7 @@ float ADaeva::CalcDistanceSquaredToScreenCenter(AActor* Other)
 void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 {
 	CurrentTarget = NewTarget;
+
 	if (PreviousTarget != CurrentTarget)
 	{
 		Server_SetCurrentTarget(CurrentTarget);
@@ -1202,12 +1203,24 @@ void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 		if (AAOMonsterBase* PreviousMonster = Cast<AAOMonsterBase>(PreviousTarget))
 		{
 			PreviousMonster->SetTargetWidgetVisible(false);
-
 		}
 
 		if (AAOMonsterBase* CurrentMonster = Cast<AAOMonsterBase>(CurrentTarget))
 		{
 			CurrentMonster->SetTargetWidgetVisible(true);
+		}
+
+		// Related to MonsterHUD.
+		if (AAOPlayerController* PC = Cast<AAOPlayerController>(GetController()))
+		{
+			if (AAOMonsterBase* CurrentMonster = Cast<AAOMonsterBase>(CurrentTarget))
+			{
+				PC->ShowTargetMonsterHUD(CurrentMonster);
+			}
+			else
+			{
+				PC->HideTargetMonsterHUD();
+			}
 		}
 	}
 }

@@ -30,16 +30,15 @@ public:
     void BindToPlayerState(AAOPlayerState* InPlayerState) override;
 
 public:
-    // Boss의 ASC 정보를 전달하면서, 전체 화면에 잡힐 Display를 보이도록 한다.
-    void SetBossHUDVisible(AAOMonsterBase* Boss);
-    UAOPlayerHUDWidget* GetPlayerHUDWidget() const { return PlayerHUDWidget; }
+    // Show Full-Screen Monster Stat visibility value & Bind ASC.
+    void ShowTargetMonsterHUD(AAOMonsterBase* InMonster);
 
+    // Hide Full-Screen Monster Stat visibility value & Unbind ASC.
+    void HideTargetMonsterHUD();
 
-    // 보스에게서 Player가 멀어졌을 때.
-    void HideBossHUDOnly();
-
-    // 보스가 죽었을 때
-    void ClearBossHUD();
+public:
+    // 외부에서 PlayerHUDWidget의 함수를 사용할 때.
+    FORCEINLINE UAOPlayerHUDWidget* GetPlayerHUDWidget() const { return PlayerHUDWidget; }
 
 protected:
     UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
