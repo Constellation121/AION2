@@ -74,6 +74,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAbilitySystemComponent> ASC;
 
+	//H.Y
+	UPROPERTY(EditDefaultsOnly, Category="GAS|Combat")
+	TSubclassOf<UGameplayEffect> GroggyDamageEffect;
+	//
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayEffect> DamageEffect;

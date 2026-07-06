@@ -19,10 +19,10 @@ void AAILutalisAIController::TargetPerceptionOn(AActor* Actor, FAIStimulus Stiml
 		if (HasDetectedTarget == false)
 		{
 			HasDetectedTarget = true;
-
+	
 			PhaseTag = PHASE_MONSTER_COMBAT;
 			ControlledMonster->Set_Phase(PHASE_MONSTER_COMBAT);
-
+	
 			ArrayTargetPlayers.Add(Actor);
 			CurrentTargetPlayer = Actor;
 		}

@@ -14,6 +14,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
+#include "Network/PacketHeader.h"
+#include "AION2.h"
+
 AAODungeonGameMode::AAODungeonGameMode()
 {
 	bUseSeamlessTravel = true;
@@ -165,7 +168,7 @@ void AAODungeonGameMode::NotifyBossDefeated(AAOMonsterBase* DefeatedBoss)
 
 	if (CurrentBossNumber < 3)
 	{
-		OpenGateForNextBoss(CurrentBossNumber);
+		//OpenGateForNextBoss(CurrentBossNumber);
 		GetWorldTimerManager().SetTimer(NextBossTimerHandle,this,&AAODungeonGameMode::StartNextBoss,3.0f,false);
 		return;
 	}
@@ -514,9 +517,9 @@ void AAODungeonGameMode::StartWipeRespawn()
 
 void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 {
-	APlayerStart* Checkpoint = FindBossRespawnPoint(CurrentBossNumber);
+	TArray<APlayerStart*> Checkpoints = FindBossRespawnPoint(CurrentBossNumber);
 
-	if (!Checkpoint)
+	if (Checkpoints.IsEmpty())
 	{
 		return;
 	}
@@ -531,17 +534,16 @@ void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 		}
 	}
 
-	for (APlayerController* PlayerController : PlayersToRespawn)
+	for (int32 PlayerIndex = 0; PlayerIndex < PlayersToRespawn.Num(); ++PlayerIndex)
 	{
+		APlayerController* PlayerController = PlayersToRespawn[PlayerIndex];
+
+		const int32 RespawnIndex = PlayerIndex % Checkpoints.Num();
+		APlayerStart* RespawnPoint = Checkpoints[RespawnIndex];
+
 		APawn* OldPawn = PlayerController->GetPawn();
 
-		if (OldPawn)
-		{
-			PlayerController->UnPossess();
-			OldPawn->Destroy();
-		}
-
-		RestartPlayerAtPlayerStart(PlayerController, Checkpoint);
+		RestartPlayerAtPlayerStart(PlayerController, RespawnPoint);
 
 		if (ADaeva* RespawnedPlayer = Cast<ADaeva>(PlayerController->GetPawn()))
 		{
@@ -554,7 +556,7 @@ void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 	RespawnTimerHandles.Empty();
 }
 
-APlayerStart* AAODungeonGameMode::FindBossRespawnPoint(int32 CurrentBossNumber) const
+TArray<APlayerStart*> AAODungeonGameMode::FindBossRespawnPoint(int32 CurrentBossNumber) const
 {
 	FName TargetTag;
 
@@ -573,11 +575,13 @@ APlayerStart* AAODungeonGameMode::FindBossRespawnPoint(int32 CurrentBossNumber) 
 		break;
 
 	default:
-		return nullptr;
+		return {};
 	}
 
 	TArray<AActor*> FoundPlayerStarts;
 	UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), FoundPlayerStarts);
+
+	TArray<APlayerStart*> RespawnPoints;
 
 	for (AActor* Actor : FoundPlayerStarts)
 	{
@@ -585,11 +589,11 @@ APlayerStart* AAODungeonGameMode::FindBossRespawnPoint(int32 CurrentBossNumber) 
 
 		if (PlayerStart && PlayerStart->ActorHasTag(TargetTag))
 		{
-			return PlayerStart;
+			RespawnPoints.Add(PlayerStart);
 		}
 	}
 
-	return nullptr;
+	return RespawnPoints;
 }
 
 APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
@@ -637,4 +641,11 @@ void AAODungeonGameMode::RequestReturnToVillage()
 	}
 
 	ReturnToVillage();
+}
+
+void AAODungeonGameMode::SendDungeonComplete()
+{
+	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
+	MapPkt.set_dungeonid(MyDungeonId);
+	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
 }

@@ -61,8 +61,11 @@ public:
 	void HandleFailDungeon(PlayerRef player, Protocol::DungeonFailReason reason);
 
 	bool CheckMembersReady(DungeonRef dungeon);
+	bool CheckAlreadyIn(uint64 playerId, DungeonRef dungeon);
 
 	void WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
+
+	void HandleMapComplete(int32 dungeonId);
 
 private:
 	int32 GetFreeDungeonId();

@@ -79,7 +79,7 @@ protected:
 
 	void StartWipeRespawn();
 	void RespawnAllDeadPlayersAtBossCheckpoint();
-	APlayerStart* FindBossRespawnPoint(int32 CurrentBossNumber) const;
+	TArray<APlayerStart*> FindBossRespawnPoint(int32 CurrentBossNumber) const;
 
 	// 캐릭터 직업
 	virtual APawn* SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot) override;
@@ -139,16 +139,22 @@ private :
 	FTimerHandle NextBossTimerHandle;
 
 protected:
-	UFUNCTION(BlueprintImplementableEvent, Category = "Dungeon|Event")
-	void OpenGateForNextBoss(int32 GateIndex);
+	/*UFUNCTION(BlueprintImplementableEvent, Category = "Dungeon|Event")
+	void OpenGateForNextBoss(int32 GateIndex);*/
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Dungeon|Event")
 	void GiveDungeonReward();
 	
+public:
+	void SetDungeonId(int32 DungeonId) { MyDungeonId = DungeonId; }
+
 public :
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void RequestReturnToVillage();
 
-
+	// 서버 전송
+private:
+	void SendDungeonComplete();
 	
+	int32 MyDungeonId = 0;
 };
