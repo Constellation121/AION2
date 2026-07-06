@@ -14,9 +14,12 @@
  */
 
 class UAOPlayerHUDWidget;
-class UAORaidHUDWidget;
+class UAODungeonHUDWidget;
 class UAOChattingWidget;
 class ADaeva;
+
+class UAbilitySystemComponent;
+class AAOMonsterBase;
 
 UCLASS()
 class AION2_API UAOMainHUDWidget : public UAOUserWidgetBase
@@ -27,8 +30,16 @@ public:
     void BindToPlayerState(AAOPlayerState* InPlayerState) override;
 
 public:
-    void SetRaidHUDVisible();
+    // Boss의 ASC 정보를 전달하면서, 전체 화면에 잡힐 Display를 보이도록 한다.
+    void SetBossHUDVisible(AAOMonsterBase* Boss);
     UAOPlayerHUDWidget* GetPlayerHUDWidget() const { return PlayerHUDWidget; }
+
+
+    // 보스에게서 Player가 멀어졌을 때.
+    void HideBossHUDOnly();
+
+    // 보스가 죽었을 때
+    void ClearBossHUD();
 
 protected:
     UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
@@ -36,9 +47,9 @@ protected:
 
     // 마을에서는 없을 수도 있으니 BindWidgetOptional.
     UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly)
-    TObjectPtr<UAORaidHUDWidget> RaidHUDWidget;
+    TObjectPtr<UAODungeonHUDWidget> DungeonHUDWidget;
 
 public:
-    UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
+    UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly)
     TObjectPtr<UAOChattingWidget> ChattingWidget;
 };

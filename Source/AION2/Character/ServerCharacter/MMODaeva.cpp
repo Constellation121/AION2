@@ -181,7 +181,10 @@ void AMMODaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			ETriggerEvent::Completed,
 			this,
 			&AMMODaeva::InputMoveReleased
-		);
+		);	
+		
+		EnhancedInputComponent->BindAction(KeyXAction, ETriggerEvent::Triggered, this, &AMMODaeva::SendItem, 0);
+		EnhancedInputComponent->BindAction(KeyBAction, ETriggerEvent::Triggered, this, &AMMODaeva::SendItem, 1);
 
 	}
 }

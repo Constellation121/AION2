@@ -210,3 +210,4 @@ bool AAIMonsterControllerBase::RefreshPerceivedTargets()
 	return true;
 
 }
+

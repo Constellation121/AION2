@@ -6,7 +6,8 @@
 #include "UI/AOMainHUDWidget.h"
 #include "Components/Widget.h"
 #include "Player/AOPlayerState.h"
-#include "Game/AORaidGameState.h"
+#include "Character/Monster/AOMonsterBase.h"
+
 
 TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
 
@@ -27,6 +28,48 @@ void AAOPlayerController::Server_SetShowColliderDebug_Implementation()
 	{
 		ConsoleCommand(TEXT("ao.Debug.DrawAttackTrace 0"));
 	}
+}
+
+void AAOPlayerController::ShowBossHUD(AAOMonsterBase* Boss)
+{
+	if (!IsLocalController() || !MainHUD || !Boss)
+	{
+		return;
+	}
+
+	CurrentBossHUDTarget = Boss;
+	MainHUD->SetBossHUDVisible(Boss);
+}
+
+void AAOPlayerController::Client_ShowBossHUD_Implementation(AAOMonsterBase* Boss)
+{
+	if (!IsLocalController() || !MainHUD || !Boss)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AAOPlayerController::Clinet ShowBossHUD: None, Line %d"), 47);
+		return;
+	}
+
+	ShowBossHUD(Boss);
+}
+
+void AAOPlayerController::Client_HideBossHUDOnly_Implementation(AAOMonsterBase* Boss)
+{
+	HideBossHUDOnly(Boss);
+}
+
+void AAOPlayerController::HideBossHUDOnly(AAOMonsterBase* Boss)
+{
+	if (!IsLocalController() || !MainHUD || !Boss)
+	{
+		return;
+	}
+
+	if (CurrentBossHUDTarget != Boss)
+	{
+		return;
+	}
+
+	MainHUD->HideBossHUDOnly();
 }
 
 void AAOPlayerController::BeginPlay()
@@ -154,3 +197,25 @@ void AAOPlayerController::CreateOrBindMainHUD()
 	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
 	MainHUD->BindToPlayerState(AOPlayerState);
 }
+
+void AAOPlayerController::Client_ClearBossHUD_Implementation(AAOMonsterBase* Boss)
+{
+	ClearBossHUD(Boss);
+}
+
+void AAOPlayerController::ClearBossHUD(AAOMonsterBase* Boss)
+{
+	if (!IsLocalController() || !MainHUD || !Boss)
+	{
+		return;
+	}
+
+	if (CurrentBossHUDTarget != Boss)
+	{
+		return;
+	}
+
+	CurrentBossHUDTarget = nullptr;
+	MainHUD->ClearBossHUD();
+}
+

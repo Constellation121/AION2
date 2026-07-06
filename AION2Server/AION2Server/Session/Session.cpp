@@ -50,8 +50,7 @@ void Session::Disconnect(const WCHAR* cause)
 
 	// TODO: Logout logic
 	std::wcout << "Disconnected: " << cause << "\n";
-	
-
+	OnDisconnected();;
 	RegisterDisConnect();
 }
 

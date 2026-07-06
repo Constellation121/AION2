@@ -99,7 +99,7 @@ Protocol::DungeonInfo Dungeon::ToProto()
 			memberProto->set_memberid(member->GetId());
 			memberProto->set_membername(member->GetName());
 			memberProto->set_memberclass(member->GetClass());
-			memberProto->set_isready(false);
+			memberProto->set_isready(member->GetReady());
 			memberProto->set_index(static_cast<int32>(i + 1));
 		}
 	}
@@ -144,19 +144,19 @@ void DungeonWaitingRoom::HandleCreateDungeon(PlayerRef player)
 {
 	if (_dungeons.size() >= MAX_DUNGEON) return;
 
-	//DedicatedSessionRef dedi = GDediSessionManager.GetFreeDediSession();
-	//if (dedi == nullptr)
-	//{
-	//	std::cout << "Full Dedi Servers!" << std::endl;
-	//	return;
-	//}
+	DedicatedSessionRef dedi = GDediSessionManager.GetFreeDediSession();
+	if (dedi == nullptr)
+	{
+		std::cout << "Full Dedi Servers!" << std::endl;
+		return;
+	}
 
 	int32 dungeonId = GetFreeDungeonId();
 	DungeonRef dungeon = std::make_shared<Dungeon>(dungeonId, player);
 	_dungeons[dungeonId] = dungeon;
 
-	//dedi->SetUsing(true);
-	//dungeon->SetDediSession(dedi);
+	dedi->SetUsing(true);
+	dungeon->SetDediSession(dedi);
 
 	Protocol::S_DungeonCreatePacket createPkt;
 	createPkt.mutable_dungeoninfo()->CopyFrom(dungeon->ToProto());
@@ -168,11 +168,14 @@ void DungeonWaitingRoom::HandleCreateDungeon(PlayerRef player)
 void DungeonWaitingRoom::HandleEnterDungeon(PlayerRef player, int32 inDungeonId)
 {
 	DungeonRef targetDungeon = nullptr;
+	auto IsAvailable = [](const DungeonRef& dungeon) {
+		return dungeon && dungeon->GetStatus() == Protocol::RoomStatus::RECRUITING && !dungeon->IsFull();
+		};
 	if (inDungeonId <= 0)
 	{
 		for (auto& [dungeonId, dungeon] : _dungeons)
 		{
-			if (dungeon->GetStatus() == Protocol::RoomStatus::RECRUITING && !dungeon->IsFull())
+			if (IsAvailable(dungeon))
 			{
 				targetDungeon = dungeon;
 				break;
@@ -181,32 +184,31 @@ void DungeonWaitingRoom::HandleEnterDungeon(PlayerRef player, int32 inDungeonId)
 	}
 	else
 	{
-		targetDungeon = _dungeons[inDungeonId];
-		if (targetDungeon->GetStatus() == Protocol::RoomStatus::RECRUITING && !targetDungeon->IsFull())
+		auto it = _dungeons.find(inDungeonId);
+		if (it != _dungeons.end() && IsAvailable(it->second))
 		{
-
+			targetDungeon = it->second;
 		}
 		else
 		{
-			targetDungeon = nullptr;
 			HandleCreateDungeon(player);
 			return;
 		}
 	}
-
 	if (targetDungeon == nullptr) return;
-
+	
 	if (targetDungeon->AddMember(player))
-	{
+	{		
 		Protocol::S_DungeonEnterPacket enterPacket;
 		enterPacket.set_dungeonid(targetDungeon->GetId());
-
+		if(CheckAlreadyIn(player->GetId(), targetDungeon)) return;
 		Protocol::DungeonPlayerInfo* enterPlayerProto = enterPacket.mutable_enterplayer();
 		enterPlayerProto->set_memberid(player->GetId());
 		enterPlayerProto->set_membername(player->GetName());
 		enterPlayerProto->set_memberclass(player->GetClass());
 		enterPlayerProto->set_isready(false);
 		enterPlayerProto->set_index(static_cast<int32>(targetDungeon->GetMembers().size()));
+		//enterPlayerProto->set_dungeoninfo(targetDungeon->ToProto());
 
 		SendBufferRef enterBuffer = PacketHandler::MakeSendBuffer(enterPacket);
 		WaitingRoomBroadcast(enterBuffer);
@@ -251,13 +253,25 @@ bool DungeonWaitingRoom::CheckMembersReady(DungeonRef dungeon)
 	return true;
 }
 
+bool DungeonWaitingRoom::CheckAlreadyIn(uint64 playerId, DungeonRef dungeon)
+{
+	for (auto& p: dungeon->GetMembers())
+	{
+		if(p->GetId() == playerId)
+			return false;
+	}
+	return true;
+}
+
+
+
 void DungeonWaitingRoom::HandleDungeonStart(PlayerRef player, int32 dungeonId)
 {
 	auto it = _dungeons.find(dungeonId);
 	if (it == _dungeons.end()) return;
 
 	DungeonRef dungeon = it->second;
-	if (dungeon->GetLeader() != player) return;
+	//if (dungeon->GetLeader() != player) return;
 
 	if (!CheckMembersReady(dungeon))
 	{
@@ -320,6 +334,27 @@ void DungeonWaitingRoom::WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 e
 			session->Send(sendBuffer);
 		}
 	}
+}
+
+void DungeonWaitingRoom::HandleMapComplete(int32 dungeonId)
+{
+	auto it = _dungeons.find(dungeonId);
+	if (it == _dungeons.end()) return;
+
+	DungeonRef dungeon = it->second;
+	if (!dungeon) return;
+	auto dedi = dungeon->GetDediSession();
+
+	Protocol::S_SetDungeonPlayerPacket pkt;
+	for (auto member : dungeon->GetMembers())
+	{
+		Protocol::DPlayerInfo* playerInfo = pkt.add_playerinfo();
+		playerInfo->set_playerid(member->GetId());
+		playerInfo->set_playername(member->GetName());
+		playerInfo->set_playerclass(member->GetClass());
+	}
+	SendBufferRef buffer = PacketHandler::MakeSendBuffer(pkt);
+	dedi->Send(buffer);
 }
 
 int32 DungeonWaitingRoom::GetFreeDungeonId()

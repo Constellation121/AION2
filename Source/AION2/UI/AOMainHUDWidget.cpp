@@ -4,8 +4,10 @@
 #include "UI/AOMainHUDWidget.h"
 
 #include "UI/AOPlayerHUDWidget.h"
-#include "UI/AORaidHUDWidget.h"
-#include "Game/AORaidGameState.h"
+#include "UI/AODungeonHUDWidget.h"
+#include "Character/Monster/AOMonsterBase.h"
+#include "AbilitySystemComponent.h"
+
 
 void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 {
@@ -16,18 +18,34 @@ void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 		PlayerHUDWidget->BindToPlayerState(InPlayerState);
 	}
 
-	if (RaidHUDWidget)
+	if (DungeonHUDWidget)
 	{
-		RaidHUDWidget->BindToPlayerState(InPlayerState);
+		DungeonHUDWidget->BindToPlayerState(InPlayerState);
 	}
 }
 
-void UAOMainHUDWidget::SetRaidHUDVisible()
+void UAOMainHUDWidget::SetBossHUDVisible(AAOMonsterBase* Boss)
 {
-	const bool bIsRaidLevel =
-		GetWorld() && GetWorld()->GetGameState<AAORaidGameState>() != nullptr;
-	if (RaidHUDWidget)
+	if (!DungeonHUDWidget || !Boss)
 	{
-		RaidHUDWidget->SetVisibility(bIsRaidLevel? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+		return;
+	}
+
+	DungeonHUDWidget->SetBossHUDVisible(ESlateVisibility::Visible, Boss);
+}
+
+void UAOMainHUDWidget::HideBossHUDOnly()
+{
+	if (DungeonHUDWidget)
+	{
+		DungeonHUDWidget->HideBossHUDOnly();
+	}
+}
+
+void UAOMainHUDWidget::ClearBossHUD()
+{
+	if (DungeonHUDWidget)
+	{
+		DungeonHUDWidget->ClearBossHUD();
 	}
 }
