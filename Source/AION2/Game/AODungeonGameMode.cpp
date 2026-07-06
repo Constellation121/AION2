@@ -100,7 +100,7 @@ void AAODungeonGameMode::StartDungeon()
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Start Dungeon"));
 
 	// 현재 테스트 때문에 3번째 보스부터 시작!
-	StartBossPhase(3);
+	StartBossPhase(1);
 }
 
 void AAODungeonGameMode::StartBossPhase(int32 BossNumber)
@@ -607,7 +607,11 @@ APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPl
 		return Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
 	}
 
-	const TSubclassOf<APawn>* PawnClass = JobClassMap.Find(PlayerState->GetMyClass());
+	const EDaevaClassType ClassType = PlayerState->GetMyClass();
+
+	UE_LOG(LogTemp, Warning,TEXT("[Spawn] %s | Authority: %d | ClassType: %d"),*NewPlayer->GetName(),HasAuthority(),static_cast<uint8>(ClassType));
+
+	const TSubclassOf<APawn>* PawnClass = JobClassMap.Find(ClassType);
 
 	if (!PawnClass || !(*PawnClass))
 	{

@@ -8,6 +8,7 @@
 #include "Character/Monster/AOMonsterBase.h"
 #include "GAS/AOGameplayTags.h"
 #include "Character/Daeva/Daeva.h"
+#include "Player/AOPlayerController.h"
 
 AAIMonsterControllerBase::AAIMonsterControllerBase()
 {
@@ -66,11 +67,20 @@ void AAIMonsterControllerBase::Tick(float DeltaSeconds)
 		DistanceToTarget = TNumericLimits<float>::Max();
 	}
 
+	if (ControlledMonster->IsDead())
+	{
+		PhaseTag = PHASE_MONSTER_DEAD;
+
+		// BossHUD 날리는 용
+		if (!bBossHUDCleared)
+		{
+			ClearBossHUDForHUDReceivers();
+			bBossHUDCleared = true;
+		}
+	}
 
 	ControlledMonster->Set_Phase(PhaseTag);
 	ControlledMonster->Set_State(StateTag);
-
-
 }
 
 void AAIMonsterControllerBase::OnPossess(APawn* InPawn)
@@ -114,11 +124,23 @@ void AAIMonsterControllerBase::TargetPerceptionOn(AActor* Actor, FAIStimulus Sti
 			HasDetectedTarget = true;
 		}
 
+
+
 		// 해당 플레이어가 시야에 처음 인식되었을 때 
 		if (ArrayTargetPlayers.Find(Actor) == -1)
 		{
 			pPlayer->OnPlayerDead.AddUniqueDynamic(this, &AAIMonsterControllerBase::OnTargetDead);
 			ArrayTargetPlayers.Add(Actor);
+		}
+
+		// Boss HUD
+		if (ControlledMonster && ControlledMonster->DungeonBossIndex >= 1)
+		{
+			if (AAOPlayerController* PC = Cast<AAOPlayerController>(pPlayer->GetController()))
+			{
+				AddBossHUDReceiver(pPlayer);
+				PC->Client_ShowBossHUD(ControlledMonster);
+			}
 		}
 	}
 
@@ -126,6 +148,14 @@ void AAIMonsterControllerBase::TargetPerceptionOn(AActor* Actor, FAIStimulus Sti
 	else
 	{
 
+		// UI
+		if (ControlledMonster && ControlledMonster->DungeonBossIndex >= 1)
+		{
+			if (AAOPlayerController* PC = Cast<AAOPlayerController>(pPlayer->GetController()))
+			{
+				PC->Client_HideBossHUDOnly(ControlledMonster);
+			}
+		}
 	}
 
 
@@ -206,5 +236,45 @@ bool AAIMonsterControllerBase::RefreshPerceivedTargets()
 	}
 
 	return true;
+
+}
+
+void AAIMonsterControllerBase::AddBossHUDReceiver(AActor* Actor)
+{
+	if (!Actor)
+	{
+		return;
+	}
+
+	BossHUDReceivers.AddUnique(Actor);
+}
+
+void AAIMonsterControllerBase::ClearBossHUDForHUDReceivers()
+{
+	if (!HasAuthority() || !ControlledMonster)
+	{
+		return;
+	}
+
+	for (AActor* TargetActor : ArrayTargetPlayers)
+	{
+		ADaeva* Player = Cast<ADaeva>(TargetActor);
+		if (!Player)
+		{
+			continue;
+		}
+
+		AAOPlayerController* PC = Cast<AAOPlayerController>(Player->GetController());
+		if (!PC)
+		{
+			continue;
+		}
+
+		// 만약 PlayerController가 이미 다른 Boss를 보고 있다면, 
+		// 무조건 Clear하면 안되므로 이 객체도 넘겨야 함
+		PC->Client_ClearBossHUD(ControlledMonster);
+	}
+
+	BossHUDReceivers.Reset();
 
 }

@@ -276,7 +276,13 @@ bool FPacketHandler::Handle_S_START(Protocol::S_DungeonStartPacket& Pkt)
 
 bool FPacketHandler::Handle_S_DUNGEONFAIL(Protocol::S_DungeonFailPacket& Pkt)
 {
-
+	if (UAOUIManager* UIManager = GameInstance ? GameInstance->GetSubsystem<UAOUIManager>() : nullptr)
+	{
+		if (UAODungeonEntranceWidget* DungeonWidget = UIManager->GetWidget<UAODungeonEntranceWidget>())
+		{
+			DungeonWidget->ShowErrorMessage(Pkt.reason());
+		}
+	}
 	return false;
 }
 
