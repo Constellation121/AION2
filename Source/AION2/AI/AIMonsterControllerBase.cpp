@@ -213,12 +213,82 @@ bool AAIMonsterControllerBase::RefreshPerceivedTargets()
 
 void AAIMonsterControllerBase::ChangeCurrentTargetPlayer()
 {
-	if (ArrayTargetPlayers.IsEmpty())
+	if (ArrayTargetPlayers.IsEmpty() || !ControlledMonster)
 	{
 		return;
 	}
 
 	CurrentTargetPlayer = ArrayTargetPlayers[FMath::RandRange(0, ArrayTargetPlayers.Num() - 1)];
+	if (AAOCharacter* TargetPlayer = Cast<AAOCharacter>(CurrentTargetPlayer))
+	{
+		ControlledMonster->SetCurrentTarget(TargetPlayer);
+	}
+}
+
+void AAIMonsterControllerBase::ChangeCurrentTargetPlayerByNearest()
+{
+	if (ArrayTargetPlayers.IsEmpty() || !ControlledMonster)
+	{
+		return;
+	}
+
+	AActor* FarthestTarget = nullptr;
+	float MinDistSq = 123456789.f;
+
+	const FVector MonsterLocation = ControlledMonster->GetActorLocation();
+
+	for (AActor* Target : ArrayTargetPlayers)
+	{
+		if (!IsValid(Target))
+		{
+			continue;
+		}
+
+		const float DistSq = FVector::DistSquared(MonsterLocation, Target->GetActorLocation());
+
+		if (DistSq < MinDistSq)
+		{
+			MinDistSq = DistSq;
+			FarthestTarget = Target;
+		}
+	}
+
+	CurrentTargetPlayer = FarthestTarget;
+	if (AAOCharacter* TargetPlayer = Cast<AAOCharacter>(CurrentTargetPlayer))
+	{
+		ControlledMonster->SetCurrentTarget(TargetPlayer);
+	}
+}
+
+void AAIMonsterControllerBase::ChangeCurrentTargetPlayerByFarthest()
+{
+	if (ArrayTargetPlayers.IsEmpty() || !ControlledMonster)
+	{
+		return;
+	}
+
+	AActor* FarthestTarget = nullptr;
+	float MaxDistSq = -1.f;
+
+	const FVector MonsterLocation = ControlledMonster->GetActorLocation();
+
+	for (AActor* Target : ArrayTargetPlayers)
+	{
+		if (!IsValid(Target))
+		{
+			continue;
+		}
+
+		const float DistSq = FVector::DistSquared(MonsterLocation, Target->GetActorLocation());
+
+		if (DistSq > MaxDistSq)
+		{
+			MaxDistSq = DistSq;
+			FarthestTarget = Target;
+		}
+	}
+
+	CurrentTargetPlayer = FarthestTarget;
 	if (AAOCharacter* TargetPlayer = Cast<AAOCharacter>(CurrentTargetPlayer))
 	{
 		ControlledMonster->SetCurrentTarget(TargetPlayer);

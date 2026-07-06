@@ -44,6 +44,8 @@ public:
 	UFUNCTION()
 	virtual bool RefreshPerceivedTargets();
 	virtual void ChangeCurrentTargetPlayer();
+	virtual void ChangeCurrentTargetPlayerByNearest();
+	virtual void ChangeCurrentTargetPlayerByFarthest();
 
 protected:
 	// State AI Tree ( 상태 트리 AI ) 
