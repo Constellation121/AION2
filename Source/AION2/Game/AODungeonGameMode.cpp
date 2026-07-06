@@ -1,4 +1,4 @@
-﻿#include "Game/AODungeonGameMode.h"
+#include "Game/AODungeonGameMode.h"
 
 #include "Character/AOCharacter.h"
 #include "Character/Daeva/Daeva.h"
@@ -63,8 +63,6 @@ void AAODungeonGameMode::PreLogin(const FString& Options, const FString& Address
 
 void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	Super::PostLogin(NewPlayer);
-
 	if (NewPlayer == nullptr || NewPlayer->PlayerState == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[Dungeon] PostLogin: PlayerController or PlayerState is null"));
@@ -88,40 +86,24 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 		NewPlayer->Destroy();
 		return;
 	}
-	UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success  (Key: %d)"), UniqueId);
 
 	Protocol::DPlayerInfo PlayerData = PendingPlayers[UniqueId];
+	AAOPlayerState* PlayerState = NewPlayer->GetPlayerState<AAOPlayerState>();
+	if (PlayerState)
+	{
+		FString PlayerName = PlayerData.playername().c_str();
+		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass());
+		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d"), UniqueId, PlayerData.playerid());
+	}
+
 	PendingPlayers.Remove(UniqueId);
+
+	Super::PostLogin(NewPlayer);
 }
 
 void AAODungeonGameMode::InitStartSpot_Implementation(AActor* StartSpot, AController* NewPlayer)
 {
 	Super::InitStartSpot(StartSpot, NewPlayer);
-	if (NewPlayer == nullptr || NewPlayer->PlayerState == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Dungeon] InitStartSpot: Player or PlayerState is null"));
-		return;
-	}
-
-	const FUniqueNetIdRepl& NetId = NewPlayer->PlayerState->GetUniqueId();
-	if (!NetId.IsValid())
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Dungeon] InitStartSpot: Player has invalid UniqueNetId"));
-		return;
-	}
-	int32 UniqueId = NetId->GetTypeHash();
-	if (PendingPlayers.Find(UniqueId))
-	{
-		Protocol::DPlayerInfo PlayerData = PendingPlayers[UniqueId];
-		AAOPlayerState* PlayerState = NewPlayer->GetPlayerState<AAOPlayerState>();
-
-		FString PlayerName = PlayerData.playername().c_str();
-		if (PlayerState)
-		{
-			UE_LOG(LogTemp, Log, TEXT("[Dungeon] InitStartSpot: SetPlayerInfo (Key: %d), PlayerId: %d"), UniqueId, PlayerData.playerid());
-			PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass());
-		}
-	}
 }
 
 void AAODungeonGameMode::FindPlacedBosses()
