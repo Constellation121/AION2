@@ -65,6 +65,7 @@ public:
 
 	void HandleDungeonToken(DungeonRef dungeon);
 
+	void StartDungeonPacket(DungeonRef dungeon);
 	void WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
 private:

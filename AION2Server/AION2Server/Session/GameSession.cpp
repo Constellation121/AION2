@@ -46,8 +46,7 @@ const std::string GameSession::GetToken()
 	std::stringstream ss;
 	ss << std::hex << std::setfill('0') << std::setw(16) << dis(gen) << std::setw(16) << dis(gen);
 	_token = ss.str();
-	if (!_token.empty())
-		return _token;
-	return "";
+	
+	return ss.str();
 
 }

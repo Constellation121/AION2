@@ -59,9 +59,27 @@ void AAODungeonGameMode::PreLogin(const FString& Options, const FString& Address
 void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
-	int32 UniqueId = NewPlayer->GetUniqueID();
+
+	if (NewPlayer == nullptr || NewPlayer->PlayerState == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Dungeon] PostLogin: PlayerController or PlayerState is null"));
+		if (NewPlayer) NewPlayer->Destroy();
+		return;
+	}
+
+	const FUniqueNetIdRepl& NetId = NewPlayer->PlayerState->GetUniqueId();
+
+	if (!NetId.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Dungeon] PostLogin: Player has invalid UniqueNetId"));
+		NewPlayer->Destroy();
+		return;
+	}
+	int32 UniqueId = NetId->GetTypeHash();
+
 	if (PendingPlayers.Contains(UniqueId) == false)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PostLogin: Player not found in PendingPlayers (Key: %d)"), UniqueId);
 		NewPlayer->Destroy();
 		return;
 	}
@@ -73,8 +91,19 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 void AAODungeonGameMode::InitStartSpot_Implementation(AActor* StartSpot, AController* NewPlayer)
 {
 	Super::InitStartSpot(StartSpot, NewPlayer);
-	if (NewPlayer == nullptr) return;
-	int32 UniqueId = NewPlayer->GetUniqueID();
+	if (NewPlayer == nullptr || NewPlayer->PlayerState == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Dungeon] InitStartSpot: Player or PlayerState is null"));
+		return;
+	}
+
+	const FUniqueNetIdRepl& NetId = NewPlayer->PlayerState->GetUniqueId();
+	if (!NetId.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Dungeon] InitStartSpot: Player has invalid UniqueNetId"));
+		return;
+	}
+	int32 UniqueId = NetId->GetTypeHash();
 	if (PendingPlayers.Find(UniqueId))
 	{
 		Protocol::DPlayerInfo PlayerData = PendingPlayers[UniqueId];
@@ -138,7 +167,7 @@ void AAODungeonGameMode::InitializePlacedBosses()
 			continue;
 		}
 
-		// Boss1µµ StartDungeon¿¡¼­ ÄÑ±â ¶§¹®¿¡ ½ÃÀÛ ½Ã ÀüºÎ ²¨ µÐ´Ù.
+		// Boss1ë„ StartDungeonì—ì„œ ì¼œê¸° ë•Œë¬¸ì— ì‹œìž‘ ì‹œ ì „ë¶€ êº¼ ë‘”ë‹¤.
 		Boss->SetDungeonBossActive(false);
 	}
 }
@@ -152,7 +181,7 @@ void AAODungeonGameMode::StartDungeon()
 
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Start Dungeon"));
 
-	// ÇöÀç Å×½ºÆ® ¶§¹®¿¡ 3¹øÂ° º¸½ººÎÅÍ ½ÃÀÛ!
+	// í˜„ìž¬ í…ŒìŠ¤íŠ¸ ë•Œë¬¸ì— 3ë²ˆì§¸ ë³´ìŠ¤ë¶€í„° ì‹œìž‘!
 	StartBossPhase(1);
 }
 
@@ -210,8 +239,8 @@ void AAODungeonGameMode::NotifyBossDefeated(AAOMonsterBase* DefeatedBoss)
 
 	SetDefeatedPhase(CurrentBossNumber);
 
-	// »ç¸Á ¾Ö´Ï¸ÞÀÌ¼ÇÀ» º¸¿©ÁÙ °Å¸é ¿©±â¼­ ¹Ù·Î ²ôÁö ¸»°í,
-	// ¸ùÅ¸ÁÖ Á¾·á ½ÃÁ¡¿¡ SetDungeonBossActive(false)¸¦ È£ÃâÇÏ¸é µÈ´Ù.
+	// ì‚¬ë§ ì• ë‹ˆë©”ì´ì…˜ì„ ë³´ì—¬ì¤„ ê±°ë©´ ì—¬ê¸°ì„œ ë°”ë¡œ ë„ì§€ ë§ê³ ,
+	// ëª½íƒ€ì£¼ ì¢…ë£Œ ì‹œì ì— SetDungeonBossActive(false)ë¥¼ í˜¸ì¶œí•˜ë©´ ëœë‹¤.
 	DefeatedBoss->SetDungeonBossActive(false);
 
 	CurrentBoss = nullptr;
