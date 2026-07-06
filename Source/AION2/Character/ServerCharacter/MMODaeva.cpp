@@ -156,6 +156,11 @@ void AMMODaeva::SendDungeonWait()
 	SEND_PACKET(EnterWaitPacket, PKT_C_DUNGEONWAITINTROOM);
 }
 
+void AMMODaeva::SetHp(int32 Hp)
+{
+
+}
+
 void AMMODaeva::ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel)
 {
 	TargetLoc = NewLoc;

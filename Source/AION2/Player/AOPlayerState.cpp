@@ -78,7 +78,7 @@ void AAOPlayerState::SetMyName(FString InName)
 }
 
 
-void AAOPlayerState::SetPlayerInfo(uint64 InPlayerId, const FString& InPlayerName, EDaevaClassType InClassType)
+void AAOPlayerState::SetPlayerInfo(uint64 InPlayerId, const FString& InPlayerName, uint8 InClassType)
 {
     if (!HasAuthority())
     {
@@ -87,7 +87,7 @@ void AAOPlayerState::SetPlayerInfo(uint64 InPlayerId, const FString& InPlayerNam
 
     MyId = InPlayerId;
     MyName = InPlayerName;
-    MyClassType = InClassType;
+    MyClassType = (EDaevaClassType)InClassType;
 
     UE_LOG(LogTemp, Warning,TEXT("[Dungeon] PlayerInfo Set | Id: %llu | Name: %s | ClassType: %d"), MyId,*MyName, static_cast<int32>(MyClassType));
 }

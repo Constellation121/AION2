@@ -1303,7 +1303,16 @@ void ADaeva::SendHp(float NewHp)
 
 void ADaeva::SendItem(int32 SlotIndex)
 {
+	if (!bCanUseItem) return;
+	bCanUseItem = false;
+	GetWorldTimerManager().SetTimer(ItemCoolTimeHandler, this, &ThisClass::SetItemUse, ItemCoolTime, false);
+
 	Protocol::C_UseItemPacket UseItemPkt;
 	UseItemPkt.set_playerid(MyId);
 	SEND_PACKET(UseItemPkt, PKT_C_USEITEM);
+}
+
+void ADaeva::SetItemUse()
+{
+	bCanUseItem = true;
 }

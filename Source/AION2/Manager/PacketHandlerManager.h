@@ -44,7 +44,7 @@ public:
 	bool Handle_S_DISCONNECT(Protocol::S_DisconnectPacket& Pkt);
 
 	// 데디케이트 서버
-	bool Handle_S_DUNGEONSETPLAYER(Protocol::S_SetDungeonPlayerPacket Pkt);
+	bool Handle_S_DUNGEONSETPLAYER(Protocol::S_DungeonStartDediPacket Pkt);
 
 private:
 	UAOLoginUserWidget* GetLoginWidget() const;

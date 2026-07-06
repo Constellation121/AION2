@@ -12,7 +12,6 @@
 /**
  *
  */
-class ADaeva;
 class AMMODaeva;
 UCLASS()
 class AION2_API UAOPlayerManager : public UGameInstanceSubsystem
@@ -36,7 +35,7 @@ public:
 	void HandleStorePurchase(Protocol::ItemData ItemInfo);
 	void HandleUseItem(const Protocol::S_UseItemPacket& Pkt);
 	
-	void HandleDungeonSetPlayerInfo(const Protocol::DPlayerInfo& Info);
+	void HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStartDediPacket& Info);
 
 	void HandleDisconnect(uint64 RemovePlayerId);
 
@@ -61,10 +60,8 @@ private:
 #pragma endregion
 
 private:
-	//UPROPERTY()
-	//TObjectPtr<AMMODaeva> MyPlayer;
 	UPROPERTY()
-	TObjectPtr<ADaeva> MyPlayer;
+	TObjectPtr<AMMODaeva> MyPlayer;
 
 	UPROPERTY()
 	TMap<uint64, TObjectPtr<AMMODaeva>> Players;

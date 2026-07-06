@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Game/AOGameMode.h"
 #include "Player/AOPlayerState.h"
+#include "Network/PacketHeader.h"
 #include "AODungeonGameMode.generated.h"
 
 class AAOMonsterBase;
@@ -38,7 +39,9 @@ public :
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
+	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+	virtual void InitStartSpot_Implementation(AActor* StartSpot, AController* NewPlayer) override;
 public:
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void StartDungeon();
@@ -147,14 +150,25 @@ protected:
 	
 public:
 	void SetDungeonId(int32 DungeonId) { MyDungeonId = DungeonId; }
+	void SetPrePlayerInfo(Protocol::S_DungeonStartDediPacket& PlayerInfo);
 
 public :
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void RequestReturnToVillage();
 
-	// 서버 전송
+	// 서버 전송	 
+	// 미리 스폰된 플레이어들
+	UPROPERTY()
+	TArray<class APawn*> SpawnedPlayers;
 private:
 	void SendDungeonComplete();
 	
 	int32 MyDungeonId = 0;
+	Protocol::DPlayerInfo* ValidateToken(FString Token);
+
+	// 서버에서 받은 클라이언트 인증 토큰
+	TMap<FString, Protocol::DPlayerInfo> PrePlayers;
+
+	// 로그인 토큰 인증용
+	TMap<int32, Protocol::DPlayerInfo> PendingPlayers;
 };

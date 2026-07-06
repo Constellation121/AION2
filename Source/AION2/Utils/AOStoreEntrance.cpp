@@ -96,12 +96,27 @@ void AAOStoreEntrance::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, c
 
 void AAOStoreEntrance::EnterStore()
 {
-	UIManager->HideWidget(StorePopUpWidget);
-
-	StoreWidget = UIManager->ShowWidget(StoreWidgetClass, EUILayer::System);
-	if (PC)
+	if(!bIsOpenStore)
 	{
-		PC->CurrentMouseCursor = EMouseCursor::Default;
-		PC->SetShowMouseCursor(true);
+		UIManager->HideWidget(StorePopUpWidget);
+
+		StoreWidget = UIManager->ShowWidget(StoreWidgetClass, EUILayer::System);
+		if (PC)
+		{
+			//PC->CurrentMouseCursor = EMouseCursor::Default;
+			PC->SetShowMouseCursor(true);
+		}
+	}
+	else
+	{
+		if(StoreWidget)
+			UIManager->HideWidget(StoreWidget);
+
+		StorePopUpWidget = UIManager->ShowWidget(StorePopUpClass, EUILayer::PopUp);
+		if (PC)
+		{
+			//PC->CurrentMouseCursor = EMouseCursor::Default;
+			PC->SetShowMouseCursor(false);
+		}
 	}
 }

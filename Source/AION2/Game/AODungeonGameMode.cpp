@@ -38,11 +38,61 @@ void AAODungeonGameMode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AAODungeonGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
+{
+	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
+
+	FString ClientToken = UGameplayStatics::ParseOption(Options, TEXT("Token"));
+
+	Protocol::DPlayerInfo* ClientInfo = ValidateToken(ClientToken);
+	if (ClientInfo == nullptr)
+	{
+		// disconnect
+		return;
+	}
+	int32 Key = UniqueId->GetTypeHash();
+	PendingPlayers.Add(Key, *ClientInfo);
+
+	PrePlayers.Remove(ClientToken);
+}
+
+void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+	int32 UniqueId = NewPlayer->GetUniqueID();
+	if (PendingPlayers.Contains(UniqueId) == false)
+	{
+		NewPlayer->Destroy();
+		return;
+	}
+
+	Protocol::DPlayerInfo PlayerData = PendingPlayers[UniqueId];
+	PendingPlayers.Remove(UniqueId);
+}
+
+void AAODungeonGameMode::InitStartSpot_Implementation(AActor* StartSpot, AController* NewPlayer)
+{
+	Super::InitStartSpot(StartSpot, NewPlayer);
+	if (NewPlayer == nullptr) return;
+	int32 UniqueId = NewPlayer->GetUniqueID();
+	if (PendingPlayers.Find(UniqueId))
+	{
+		Protocol::DPlayerInfo PlayerData = PendingPlayers[UniqueId];
+		AAOPlayerState* PlayerState = NewPlayer->GetPlayerState<AAOPlayerState>();
+
+		FString PlayerName = PlayerData.playername().c_str();
+		if (PlayerState)
+		{
+			PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass());
+		}
+	}
+}
+
 void AAODungeonGameMode::FindPlacedBosses()
 {
 	TArray<AActor*> FoundActors;
 
-	UGameplayStatics::GetAllActorsOfClass(this,AAOMonsterBase::StaticClass(),FoundActors);
+	UGameplayStatics::GetAllActorsOfClass(this, AAOMonsterBase::StaticClass(), FoundActors);
 
 	for (AActor* Actor : FoundActors)
 	{
@@ -72,7 +122,7 @@ void AAODungeonGameMode::FindPlacedBosses()
 	{
 		if (!PlacedBosses.Contains(BossIndex))
 		{
-			UE_LOG(	LogTemp,Error,TEXT("[Dungeon] Boss %d is not placed in this map."),	BossIndex);
+			UE_LOG(LogTemp, Error, TEXT("[Dungeon] Boss %d is not placed in this map."), BossIndex);
 		}
 	}
 }
@@ -110,7 +160,7 @@ void AAODungeonGameMode::StartBossPhase(int32 BossNumber)
 {
 	if (BossNumber < 1 || BossNumber > 3)
 	{
-		UE_LOG(LogTemp,	Error,TEXT("[Dungeon] Invalid BossNumber: %d"),BossNumber);
+		UE_LOG(LogTemp, Error, TEXT("[Dungeon] Invalid BossNumber: %d"), BossNumber);
 		return;
 	}
 
@@ -120,7 +170,7 @@ void AAODungeonGameMode::StartBossPhase(int32 BossNumber)
 
 	ActivateBoss(BossNumber);
 
-	UE_LOG(LogTemp,Warning,TEXT("[Dungeon] Boss %d Combat Start"),BossNumber);
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Boss %d Combat Start"), BossNumber);
 }
 
 void AAODungeonGameMode::ActivateBoss(int32 BossNumber)
@@ -129,7 +179,7 @@ void AAODungeonGameMode::ActivateBoss(int32 BossNumber)
 
 	if (!Boss)
 	{
-		UE_LOG(	LogTemp,Error,TEXT("[Dungeon] Boss %d not found."),	BossNumber);
+		UE_LOG(LogTemp, Error, TEXT("[Dungeon] Boss %d not found."), BossNumber);
 		return;
 	}
 
@@ -137,7 +187,7 @@ void AAODungeonGameMode::ActivateBoss(int32 BossNumber)
 
 	Boss->SetDungeonBossActive(true);
 
-	UE_LOG(LogTemp,Warning,TEXT("[Dungeon] Boss %d Activated: %s"),BossNumber,*Boss->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Boss %d Activated: %s"), BossNumber, *Boss->GetName());
 }
 
 void AAODungeonGameMode::NotifyBossDefeated(AAOMonsterBase* DefeatedBoss)
@@ -154,7 +204,7 @@ void AAODungeonGameMode::NotifyBossDefeated(AAOMonsterBase* DefeatedBoss)
 
 	if (DefeatedBoss != CurrentBoss)
 	{
-		UE_LOG(LogTemp,Warning,	TEXT("[Dungeon] Defeated boss is not current boss: %s"),*DefeatedBoss->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Defeated boss is not current boss: %s"), *DefeatedBoss->GetName());
 		return;
 	}
 
@@ -169,7 +219,7 @@ void AAODungeonGameMode::NotifyBossDefeated(AAOMonsterBase* DefeatedBoss)
 	if (CurrentBossNumber < 3)
 	{
 		OpenGateForNextBoss(CurrentBossNumber);
-		GetWorldTimerManager().SetTimer(NextBossTimerHandle,this,&AAODungeonGameMode::StartNextBoss,3.0f,false);
+		GetWorldTimerManager().SetTimer(NextBossTimerHandle, this, &AAODungeonGameMode::StartNextBoss, 3.0f, false);
 		return;
 	}
 
@@ -247,7 +297,7 @@ void AAODungeonGameMode::NotifyPlayerDied(APlayerController* DeadPlayerControlle
 	const int32 ActivePlayerCount = GetActiveDungeonPlayerCount();
 	const int32 AlivePlayerCount = GetAliveDungeonPlayerCount();
 
-	UE_LOG(LogTemp,	Warning, TEXT("[Dungeon] Player Dead. Alive: %d / %d"), AlivePlayerCount, ActivePlayerCount);
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Player Dead. Alive: %d / %d"), AlivePlayerCount, ActivePlayerCount);
 
 	if (AlivePlayerCount <= 0)
 	{
@@ -512,7 +562,7 @@ void AAODungeonGameMode::StartWipeRespawn()
 {
 	ClearAllRespawnTimers();
 	GetWorldTimerManager().ClearTimer(WipeRespawnTimerHandle);
-	GetWorldTimerManager().SetTimer(WipeRespawnTimerHandle,	this,&AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint,RespawnDelay,false);
+	GetWorldTimerManager().SetTimer(WipeRespawnTimerHandle, this, &AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint, RespawnDelay, false);
 }
 
 void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
@@ -612,7 +662,7 @@ APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPl
 
 	const EDaevaClassType ClassType = PlayerState->GetMyClass();
 
-	UE_LOG(LogTemp, Warning,TEXT("[Spawn] %s | Authority: %d | ClassType: %d"),*NewPlayer->GetName(),HasAuthority(),static_cast<uint8>(ClassType));
+	UE_LOG(LogTemp, Warning, TEXT("[Spawn] %s | Authority: %d | ClassType: %d"), *NewPlayer->GetName(), HasAuthority(), static_cast<uint8>(ClassType));
 
 	const TSubclassOf<APawn>* PawnClass = JobClassMap.Find(ClassType);
 
@@ -628,7 +678,22 @@ APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPl
 	APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(*PawnClass, StartSpot->GetActorTransform(), SpawnParams);
 
 	UE_LOG(LogTemp, Warning, TEXT("%s Spawned as %s"), *NewPlayer->GetName(), SpawnedPawn ? *SpawnedPawn->GetName() : TEXT("NULL"));
+	SpawnedPlayers.Add(SpawnedPawn);
 	return SpawnedPawn;
+}
+
+void AAODungeonGameMode::SetPrePlayerInfo(Protocol::S_DungeonStartDediPacket& PlayerInfo)
+{
+	for (int i = 0; i < PlayerInfo.preplayersinfos_size(); ++i)
+	{
+		Protocol::DediDungeonInfo DungeonInfo = PlayerInfo.preplayersinfos(i);
+		FString Token = UTF8_TO_TCHAR(DungeonInfo.clienttoken().c_str());
+		Protocol::DPlayerInfo DPlayerInfo;
+		DPlayerInfo.set_playerid(DungeonInfo.clientid());
+		DPlayerInfo.set_playername(DungeonInfo.clientname());
+		DPlayerInfo.set_playerclass(DungeonInfo.clientclass());
+		PrePlayers.Add(Token, DPlayerInfo);
+	}
 }
 
 void AAODungeonGameMode::RequestReturnToVillage()
@@ -647,4 +712,14 @@ void AAODungeonGameMode::SendDungeonComplete()
 	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
 	MapPkt.set_dungeonid(MyDungeonId);
 	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
+}
+
+Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
+{
+	auto ClientInfo = PrePlayers.Find(Token);
+	if (ClientInfo)
+	{
+		return ClientInfo;
+	}
+	return nullptr;
 }
