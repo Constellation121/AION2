@@ -14,33 +14,19 @@ AAILutalisAIController::AAILutalisAIController()
 
 void AAILutalisAIController::TargetPerceptionOn(AActor* Actor, FAIStimulus Stimlus)
 {
-	// 수연 super를 상속 받아서 맨 앞에 넣어줘야 Boss HUD가 보임
-	Super::TargetPerceptionOn(Actor, Stimlus);
-
-	if (HasAuthority() == false || !Stimlus.WasSuccessfullySensed())
+	if (HasAuthority())
 	{
-		return;
+		if (HasDetectedTarget == false)
+		{
+			HasDetectedTarget = true;
+	
+			PhaseTag = PHASE_MONSTER_COMBAT;
+			ControlledMonster->Set_Phase(PHASE_MONSTER_COMBAT);
+	
+			ArrayTargetPlayers.Add(Actor);
+			CurrentTargetPlayer = Actor;
+		}
 	}
-
-	if (ControlledMonster)
-	{
-		PhaseTag = PHASE_MONSTER_COMBAT;
-		ControlledMonster->Set_Phase(PHASE_MONSTER_COMBAT);
-	}
-
-	//if (HasAuthority())
-	//{
-	//	if (HasDetectedTarget == false)
-	//	{
-	//		HasDetectedTarget = true;
-	//
-	//		PhaseTag = PHASE_MONSTER_COMBAT;
-	//		ControlledMonster->Set_Phase//(PHASE_MONSTER_COMBAT);
-	//
-	//		ArrayTargetPlayers.Add(Actor);
-	//		CurrentTargetPlayer = Actor;
-	//	}
-	//}
 }
 
 
