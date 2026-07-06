@@ -21,6 +21,7 @@ AAODungeonGameMode::AAODungeonGameMode()
 {
 	bUseSeamlessTravel = true;
 	PrimaryActorTick.bCanEverTick = true;
+	DefaultPawnClass = APawn::StaticClass();
 }
 
 void AAODungeonGameMode::BeginPlay()
@@ -103,7 +104,7 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 
 void AAODungeonGameMode::InitStartSpot_Implementation(AActor* StartSpot, AController* NewPlayer)
 {
-	Super::InitStartSpot(StartSpot, NewPlayer);
+	Super::InitStartSpot_Implementation(StartSpot, NewPlayer);
 }
 
 void AAODungeonGameMode::FindPlacedBosses()
