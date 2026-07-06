@@ -61,7 +61,7 @@ public:
     float GlideDashSpeed = 2400.f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide|Dash")
-    float GlideDashDuration = 0.8f;
+    float GlideDashDuration = 0.5f;
 
 public:
     UPROPERTY(Transient)
