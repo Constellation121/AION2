@@ -16,6 +16,7 @@ void GameSession::OnDisconnected()
 
 	if (_player)
 	{
+		std::cout << "Disconnected Player" << std::endl;
 		GRoom->DoAsync(&Room::HandleLeavePlayer, _player);
 		GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleLeaveWaitingRoom, _player);
 	}

@@ -2987,6 +2987,7 @@ class S_DungeonEnterPacket final :
 
   enum : int {
     kEnterPlayerFieldNumber = 2,
+    kDungeonInfoFieldNumber = 3,
     kDungeonIdFieldNumber = 1,
   };
   // .Protocol.DungeonPlayerInfo enterPlayer = 2;
@@ -3007,6 +3008,24 @@ class S_DungeonEnterPacket final :
       ::Protocol::DungeonPlayerInfo* enterplayer);
   ::Protocol::DungeonPlayerInfo* unsafe_arena_release_enterplayer();
 
+  // .Protocol.DungeonInfo dungeonInfo = 3;
+  bool has_dungeoninfo() const;
+  private:
+  bool _internal_has_dungeoninfo() const;
+  public:
+  void clear_dungeoninfo();
+  const ::Protocol::DungeonInfo& dungeoninfo() const;
+  PROTOBUF_NODISCARD ::Protocol::DungeonInfo* release_dungeoninfo();
+  ::Protocol::DungeonInfo* mutable_dungeoninfo();
+  void set_allocated_dungeoninfo(::Protocol::DungeonInfo* dungeoninfo);
+  private:
+  const ::Protocol::DungeonInfo& _internal_dungeoninfo() const;
+  ::Protocol::DungeonInfo* _internal_mutable_dungeoninfo();
+  public:
+  void unsafe_arena_set_allocated_dungeoninfo(
+      ::Protocol::DungeonInfo* dungeoninfo);
+  ::Protocol::DungeonInfo* unsafe_arena_release_dungeoninfo();
+
   // int32 dungeonId = 1;
   void clear_dungeonid();
   int32_t dungeonid() const;
@@ -3025,6 +3044,7 @@ class S_DungeonEnterPacket final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::Protocol::DungeonPlayerInfo* enterplayer_;
+    ::Protocol::DungeonInfo* dungeoninfo_;
     int32_t dungeonid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -6745,6 +6765,91 @@ inline void S_DungeonEnterPacket::set_allocated_enterplayer(::Protocol::DungeonP
   }
   _impl_.enterplayer_ = enterplayer;
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_DungeonEnterPacket.enterPlayer)
+}
+
+// .Protocol.DungeonInfo dungeonInfo = 3;
+inline bool S_DungeonEnterPacket::_internal_has_dungeoninfo() const {
+  return this != internal_default_instance() && _impl_.dungeoninfo_ != nullptr;
+}
+inline bool S_DungeonEnterPacket::has_dungeoninfo() const {
+  return _internal_has_dungeoninfo();
+}
+inline const ::Protocol::DungeonInfo& S_DungeonEnterPacket::_internal_dungeoninfo() const {
+  const ::Protocol::DungeonInfo* p = _impl_.dungeoninfo_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::DungeonInfo&>(
+      ::Protocol::_DungeonInfo_default_instance_);
+}
+inline const ::Protocol::DungeonInfo& S_DungeonEnterPacket::dungeoninfo() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonEnterPacket.dungeonInfo)
+  return _internal_dungeoninfo();
+}
+inline void S_DungeonEnterPacket::unsafe_arena_set_allocated_dungeoninfo(
+    ::Protocol::DungeonInfo* dungeoninfo) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.dungeoninfo_);
+  }
+  _impl_.dungeoninfo_ = dungeoninfo;
+  if (dungeoninfo) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_DungeonEnterPacket.dungeonInfo)
+}
+inline ::Protocol::DungeonInfo* S_DungeonEnterPacket::release_dungeoninfo() {
+  
+  ::Protocol::DungeonInfo* temp = _impl_.dungeoninfo_;
+  _impl_.dungeoninfo_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::DungeonInfo* S_DungeonEnterPacket::unsafe_arena_release_dungeoninfo() {
+  // @@protoc_insertion_point(field_release:Protocol.S_DungeonEnterPacket.dungeonInfo)
+  
+  ::Protocol::DungeonInfo* temp = _impl_.dungeoninfo_;
+  _impl_.dungeoninfo_ = nullptr;
+  return temp;
+}
+inline ::Protocol::DungeonInfo* S_DungeonEnterPacket::_internal_mutable_dungeoninfo() {
+  
+  if (_impl_.dungeoninfo_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::DungeonInfo>(GetArenaForAllocation());
+    _impl_.dungeoninfo_ = p;
+  }
+  return _impl_.dungeoninfo_;
+}
+inline ::Protocol::DungeonInfo* S_DungeonEnterPacket::mutable_dungeoninfo() {
+  ::Protocol::DungeonInfo* _msg = _internal_mutable_dungeoninfo();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_DungeonEnterPacket.dungeonInfo)
+  return _msg;
+}
+inline void S_DungeonEnterPacket::set_allocated_dungeoninfo(::Protocol::DungeonInfo* dungeoninfo) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.dungeoninfo_);
+  }
+  if (dungeoninfo) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(dungeoninfo));
+    if (message_arena != submessage_arena) {
+      dungeoninfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, dungeoninfo, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.dungeoninfo_ = dungeoninfo;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_DungeonEnterPacket.dungeonInfo)
 }
 
 // -------------------------------------------------------------------

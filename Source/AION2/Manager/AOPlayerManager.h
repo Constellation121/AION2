@@ -34,6 +34,7 @@ public:
 
 	void HandleChatting(FString SenderName, FString SendMessage);
 	void HandleStorePurchase(Protocol::ItemData ItemInfo);
+	void HandleUseItem(const Protocol::S_UseItemPacket& Pkt);
 
 	void HandleDisconnect(uint64 RemovePlayerId);
 

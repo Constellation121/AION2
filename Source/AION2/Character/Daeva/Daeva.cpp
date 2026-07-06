@@ -198,8 +198,8 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyQ));
 		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
 
-		EnhancedInputComponent->BindAction(KeyXAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
-		EnhancedInputComponent->BindAction(KeyBAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
+		EnhancedInputComponent->BindAction(KeyXAction, ETriggerEvent::Triggered, this, &ADaeva::SendItem, 0);
+		EnhancedInputComponent->BindAction(KeyBAction, ETriggerEvent::Triggered, this, &ADaeva::SendItem, 1);
 
 		/*EnhancedInputComponent->BindAction(
 			ShiftAction,

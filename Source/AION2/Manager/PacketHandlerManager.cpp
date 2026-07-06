@@ -297,6 +297,12 @@ bool FPacketHandler::Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt)
 	return false;
 }
 
+bool FPacketHandler::Handle_S_USEITEM(Protocol::S_UseItemPacket& Pkt)
+{
+	PlayerMng->HandleUseItem(Pkt);
+	return false;
+}
+
 bool FPacketHandler::Handle_S_DISCONNECT(Protocol::S_DisconnectPacket& Pkt)
 {
 	PlayerMng->HandleDisconnect(Pkt.playerid());

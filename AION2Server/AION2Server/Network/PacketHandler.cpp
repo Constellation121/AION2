@@ -273,7 +273,7 @@ bool PacketHandler::HandleStorePurchase(PacketSessionRef& session, Protocol::C_S
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
 
 	// 플레이어 아이디, 아이템 아이디 넘기고 잔액을 받음
-	DBBind<2, 5> dbBind(*dbConnect, L"{CALL sp_PurchaseItem(?, ?)}");
+	DBBind<2, 6> dbBind(*dbConnect, L"{CALL sp_PurchaseItem(?, ?)}");
 
 	int32 characterId = pkt.playerid();
 	int32 itemId = pkt.itemid();
@@ -289,8 +289,13 @@ bool PacketHandler::HandleStorePurchase(PacketSessionRef& session, Protocol::C_S
 	int32 count = 0;
 
 	std::wcout.imbue(std::locale("kor"));
+
 	dbBind.BindCol(0, errorCode);
 	dbBind.BindCol(1, remainingGold);
+	dbBind.BindCol(2, itemInstanceId);
+	dbBind.BindCol(3, itemTemplateId);
+	dbBind.BindCol(4, SlotIndex);
+	dbBind.BindCol(5, count);
 
 	if (dbBind.Execute())
 	{
@@ -326,7 +331,7 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 	PlayerRef player = gameSession->_player;
 
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
-	DBBind<2, 5> dbBind(*dbConnect, L"{CALL sp_UserItem(?, ?)}");
+	DBBind<2, 5> dbBind(*dbConnect, L"{CALL sp_UseItem(?, ?)}");
 	int32 characterId = pkt.playerid();
 	int32 slot = pkt.slotindex();
 
@@ -335,7 +340,7 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 
 	int32 errorCode = -1;
 	int32 slotIndex = -1;
-	int32 ItemCount = -1;
+	int32 itemCount = -1;
 	WCHAR effectType[51] = {0, };
 	int32 effectValue = 0;
 
@@ -343,7 +348,7 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 
 	dbBind.BindCol(0, errorCode);
 	dbBind.BindCol(1, slotIndex);
-	dbBind.BindCol(2, ItemCount);
+	dbBind.BindCol(2, itemCount);
 	dbBind.BindCol(3, effectType);
 	dbBind.BindCol(4, effectValue);
 
@@ -358,12 +363,21 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 	{
 		return false;
 	}
+
 	// TODO 아이템 실패 패킷 보내기
 	if (errorCode == -1) return false;
+	char szEffectType[51] = { 0, };
 	
+	::wcstombs_s(nullptr, szEffectType, sizeof(szEffectType), effectType, _TRUNCATE);
+
 	Protocol::S_UseItemPacket useItemPacket;
+	useItemPacket.set_slotindex(slotIndex);
+	useItemPacket.set_count(itemCount);
+	useItemPacket.set_effecttype(szEffectType);
+	useItemPacket.set_effectvalue(effectValue);
 
-
+	SendBufferRef useItemBuffer = PacketHandler::MakeSendBuffer(useItemPacket);
+	session->Send(useItemBuffer);
 	return false;
 }
 

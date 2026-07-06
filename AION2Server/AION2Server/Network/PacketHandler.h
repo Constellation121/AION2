@@ -140,6 +140,8 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonFailPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONFAIL); };
 
 	static SendBufferRef MakeSendBuffer(Protocol::S_StorePurchasePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_STOREPURCHASE); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_UseItemPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_USEITEM); };
+
 	static SendBufferRef MakeSendBuffer(Protocol::S_ChatPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DisconnectPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DISCONNECT); };
 

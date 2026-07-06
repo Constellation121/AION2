@@ -13,6 +13,8 @@
 #include "AOChattingWidget.h"
 #include "AOQuickSlotComponent.h"
 #include "Item/AOItemDataBase.h"
+#include "AbilitySystemComponent.h"
+#include "GAS/AttributeSet/AOAttributeSet.h"
 
 UAOPlayerManager::UAOPlayerManager()
 {
@@ -110,6 +112,7 @@ void UAOPlayerManager::HandleSpawn(uint64 PlayerId, FString PlayerName, uint8 Cl
 
 						if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
 						{
+							InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
 							PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
 						}
 					}
@@ -218,7 +221,53 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo)
 
 		if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
 		{
+			InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
 			PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
+		}
+	}
+}
+
+void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
+{
+	int32 SlotIndex = Pkt.slotindex();
+	UAOQuickSlotComponent* QuickSlotComp = MyPlayer->GetQuickSlotComponent();
+	if (QuickSlotComp)
+	{
+		FAOSlotData SlotData;
+		FItemData TemplateData;
+		if (QuickSlotComp->GetItemDataFromSlot(SlotIndex, SlotData, TemplateData))
+		{
+			QuickSlotComp->InitializeQuickSlot(SlotIndex, SlotData.ItemTemplateId, SlotData.ItemInstancedId, Pkt.count());
+
+			AAOPlayerController* PC = Cast<AAOPlayerController>(MyPlayer->GetController());
+			if (!PC)return;
+
+			UAOMainHUDWidget* MainHUD = PC->GetMainHUD();
+			if (!MainHUD)return;
+
+			UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
+			if (!PlayerHUD)return;
+
+			FAOSlotData UpdatedSlotData = SlotData;
+			UpdatedSlotData.Count = Pkt.count();
+			PlayerHUD->UpdateItemQuickSlot(Pkt.slotindex(), UpdatedSlotData, TemplateData);
+
+		}
+	}
+
+	UAbilitySystemComponent* ASC = MyPlayer->GetAbilitySystemComponent();
+	if (ASC)
+	{
+		if (Pkt.effecttype() == "GE_Health")
+		{
+			float CurrentHealth = ASC->GetNumericAttribute(UAOAttributeSet::GetHealthAttribute());
+			float MaxHealth = ASC->GetNumericAttribute(UAOAttributeSet::GetMaxHealthAttribute());
+			float NewHealth = FMath::Min(CurrentHealth + Pkt.effectvalue(), MaxHealth);
+
+			// 캐릭터의 Health 어트리뷰트 베이스 값 갱신 (자동으로 OnHealthChanged 트리거)
+			ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), NewHealth);
+
+			UE_LOG(LogTemp, Log, TEXT("[UseItem] Healed %s HP: %.1f -> %.1f"), *MyPlayer->GetName(), CurrentHealth, NewHealth);
 		}
 	}
 }

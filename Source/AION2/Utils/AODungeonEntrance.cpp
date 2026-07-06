@@ -54,8 +54,8 @@ void AAODungeonEntrance::Tick(float DeltaTime)
 }
 
 void AAODungeonEntrance::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                        const FHitResult& SweepResult)
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult)
 {
 	ADaeva* CharacterActor = Cast<ADaeva>(OtherActor);
 	if (CharacterActor != nullptr)
@@ -77,16 +77,17 @@ void AAODungeonEntrance::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 }
 
 void AAODungeonEntrance::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (Cast<ADaeva>(OtherActor))
+	ADaeva* CharacterActor = Cast<ADaeva>(OtherActor);
+	if (CharacterActor != nullptr)
+		PC = Cast<AAOPlayerController>(CharacterActor->GetController());
+
+	if (PC)
 	{
-		if (PC)
-		{
-			DisableInput(PC);
-			PC->SetShowMouseCursor(false);
-			UIManager->HideWidget(DungeonWaitingRoomWidget);
-		}
+		DisableInput(PC);
+		PC->SetShowMouseCursor(false);
+		UIManager->HideWidget(DungeonWaitingRoomWidget);
 	}
 }
 
