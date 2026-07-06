@@ -28,17 +28,6 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_SetShowColliderDebug();
 
-
-public:
-	// Unreal Dedicated Server AI 감지 흐름
-	UFUNCTION(Client, Reliable)
-	void Client_ShowBossHUD(AAOMonsterBase* Boss);
-
-	UFUNCTION(Client, Reliable)
-	void Client_HideBossHUDOnly(AAOMonsterBase* Boss);
-	void HideBossHUDOnly(AAOMonsterBase* Boss);
-
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -62,20 +51,17 @@ private:
 	void CreateOrBindMainHUD();
 
 public:
+	// ! 신혜님 UI 코드에서 많이 사용 중이라 삭제하면 안됨 !: 추후 분리하든가 할 것.
 	UAOMainHUDWidget* GetMainHUD() const { return MainHUD; }
 
+
 public:
-	// BossHUD
-	void ShowBossHUD(AAOMonsterBase* Boss);
-	void HideBossHUDOnly();
-	void ClearBossHUD();
+	// === Monster HUD. ===
+	// Show Full-Screen Monster Stat visibility value & Bind ASC.
+	void ShowTargetMonsterHUD(AAOMonsterBase* InMonster);
 
-
-	// AIMonsterControllerBase에서 호출
-	UFUNCTION(Client, Reliable)
-	void Client_ClearBossHUD(AAOMonsterBase* Boss);
-
-	void ClearBossHUD(AAOMonsterBase* Boss);
+	// Hide Full-Screen Monster Stat visibility value & Unbind ASC.
+	void HideTargetMonsterHUD();
 
 private:
 	bool bShowColliderDebug = false;
@@ -96,12 +82,8 @@ private:
 
 protected:
 	// UI 관련
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RaidHUD)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DungeonHUD)
 	TSubclassOf<UAOMainHUDWidget> MainHUDClass;
 
 	TObjectPtr<UAOMainHUDWidget> MainHUD;
-
-private:
-	UPROPERTY()
-	TObjectPtr<AAOMonsterBase> CurrentBossHUDTarget;
 };

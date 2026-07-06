@@ -331,7 +331,7 @@ void AAOMonsterBase::SetTargetWidgetVisible(bool bVisible)
 		if (UAOMonsterHUDWidget_Targetable* StatusWidget =
 			Cast<UAOMonsterHUDWidget_Targetable>(OverheadStatusWidgetComponent->GetUserWidgetObject()))
 		{
-			StatusWidget->SetHiddenUIVisibliblity(bVisible);
+			StatusWidget->SetMonsterHUDVisibility(bVisible);
 		}
 	}
 }
