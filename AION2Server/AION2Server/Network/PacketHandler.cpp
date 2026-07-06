@@ -254,7 +254,7 @@ bool PacketHandler::HandleDungeonReady(PacketSessionRef& session, Protocol::C_Du
 	int32 dungeonId = pkt.dungeonid();
 
 	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleReadyPacket, player, dungeonId);
-	return false;
+	return true;
 }
 
 bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_DungeonStartacket& pkt)
@@ -265,6 +265,12 @@ bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_Du
 
 	int32 dungeonId = pkt.dungeonid();
 	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonStart, player, dungeonId);
+	return true;
+}
+
+bool PacketHandler::HandleDungeonMapComplete(PacketSessionRef& session, Protocol::C_DungeonMapLoadCompletePacket& pkt)
+{
+	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleMapComplete, pkt.dungeonid());
 	return true;
 }
 
@@ -378,7 +384,7 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 
 	SendBufferRef useItemBuffer = PacketHandler::MakeSendBuffer(useItemPacket);
 	session->Send(useItemBuffer);
-	return false;
+	return true;
 }
 
 bool PacketHandler::HandleChat(PacketSessionRef& session, Protocol::C_ChatPacket& pkt)

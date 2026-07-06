@@ -336,6 +336,27 @@ void DungeonWaitingRoom::WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 e
 	}
 }
 
+void DungeonWaitingRoom::HandleMapComplete(int32 dungeonId)
+{
+	auto it = _dungeons.find(dungeonId);
+	if (it == _dungeons.end()) return;
+
+	DungeonRef dungeon = it->second;
+	if (!dungeon) return;
+	auto dedi = dungeon->GetDediSession();
+
+	Protocol::S_SetDungeonPlayerPacket pkt;
+	for (auto member : dungeon->GetMembers())
+	{
+		Protocol::DPlayerInfo* playerInfo = pkt.add_playerinfo();
+		playerInfo->set_playerid(member->GetId());
+		playerInfo->set_playername(member->GetName());
+		playerInfo->set_playerclass(member->GetClass());
+	}
+	SendBufferRef buffer = PacketHandler::MakeSendBuffer(pkt);
+	dedi->Send(buffer);
+}
+
 int32 DungeonWaitingRoom::GetFreeDungeonId()
 {
 	if (!_freeDungeonIds.empty())

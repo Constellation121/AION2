@@ -50,13 +50,13 @@ void UAOPlayerManager::Initialize(FSubsystemCollectionBase& Collection)
 	PlayerClass = ADaeva::StaticClass();
 }
 
-void UAOPlayerManager::HandleLogin(uint64 PlayerId, uint8 ClassType)
+void UAOPlayerManager::HandleLogin(const uint64 PlayerId, const uint8 ClassType)
 {
 	GameInstance->SetMyPlayerId(PlayerId);
 	GameInstance->SetMyPlayerClass(ClassType);
 }
 
-void UAOPlayerManager::HandleSpawn(uint64 PlayerId, FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation)
+void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation)
 {
 	if (!GameInstance)
 		return;
@@ -270,6 +270,14 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 			UE_LOG(LogTemp, Log, TEXT("[UseItem] Healed %s HP: %.1f -> %.1f"), *MyPlayer->GetName(), CurrentHealth, NewHealth);
 		}
 	}
+}
+
+void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::DPlayerInfo& Info)
+{
+	uint64 PlayterId = Info.playerid();
+	auto PlayerRef = Players.Find(PlayterId);
+	auto Player = PlayerRef->Get();
+	//Player->      
 }
 
 void UAOPlayerManager::HandleDisconnect(uint64 RemovePlayerId)

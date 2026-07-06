@@ -8,6 +8,7 @@
 #include "Player/AOPlayerController.h"
 #include "Manager/AOUIManager.h"
 #include "AONetworkManager.h"
+#include "Game/AODungeonGameMode.h"
 
 PacketHandlerFunc GAOPacketHandler[UINT16_MAX];
 
@@ -19,7 +20,9 @@ void InitPacketHandler()
 
 #if UE_SERVER
 	// 서버 핸들러
+	GAOPacketHandler[PKT_S_DUNGEONSETPLAYER] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_SetDungeonPlayerPacket>(&FPacketHandler::Handle_S_DUNGEONSETPLAYER, Mng, Buf, Len); };
 
+	GAOPacketHandler[PKT_S_DUNGEONCREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_DEDICREATE, Mng, Buf, Len); };
 #else
 
 #if UE_BUILD_DEVELOPMENT
@@ -199,6 +202,14 @@ bool FPacketHandler::Handle_S_CREATE(Protocol::S_DungeonCreatePacket& Pkt)
 	return true;
 }
 
+bool FPacketHandler::Handle_S_DEDICREATE(Protocol::S_DungeonCreatePacket& Pkt)
+{
+	AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GameInstance->GetWorld()->GetAuthGameMode());
+	Protocol::DungeonInfo dungeonInfo = Pkt.dungeoninfo();
+	GameMode->SetDungeonId(dungeonInfo.dungeonid());
+	return false;
+}
+
 bool FPacketHandler::Handle_S_ENTERWAITING(Protocol::S_DungeonWaitingRoomEnterPacket& Pkt)
 {
 	if (PlayerMng)
@@ -283,7 +294,7 @@ bool FPacketHandler::Handle_S_DUNGEONFAIL(Protocol::S_DungeonFailPacket& Pkt)
 			DungeonWidget->ShowErrorMessage(Pkt.reason());
 		}
 	}
-	return false;
+	return true;
 }
 
 bool FPacketHandler::Handle_S_CHAT(Protocol::S_ChatPacket& Pkt)
@@ -292,7 +303,7 @@ bool FPacketHandler::Handle_S_CHAT(Protocol::S_ChatPacket& Pkt)
 	FString ChatMsg = UTF8_TO_TCHAR(Pkt.chat().c_str());
 
 	PlayerMng->HandleChatting(SenderName, ChatMsg);
-	return false;
+	return true;
 }
 
 bool FPacketHandler::Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt)
@@ -300,17 +311,27 @@ bool FPacketHandler::Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt)
 	Protocol::ItemData Item = Pkt.iteminfo();
 
 	PlayerMng->HandleStorePurchase(Item);
-	return false;
+	return true;
 }
 
 bool FPacketHandler::Handle_S_USEITEM(Protocol::S_UseItemPacket& Pkt)
 {
 	PlayerMng->HandleUseItem(Pkt);
-	return false;
+	return true;
 }
 
 bool FPacketHandler::Handle_S_DISCONNECT(Protocol::S_DisconnectPacket& Pkt)
 {
 	PlayerMng->HandleDisconnect(Pkt.playerid());
-	return false;
+	return true;
+}
+
+
+bool FPacketHandler::Handle_S_DUNGEONSETPLAYER(Protocol::S_SetDungeonPlayerPacket Pkt)
+{
+	for (int i = 0; i < Pkt.playerinfo_size(); ++i)
+	{
+		PlayerMng->HandleDungeonSetPlayerInfo(Pkt.playerinfo(i));
+	}
+	return true;
 }

@@ -31,6 +31,7 @@ public:
 	// 던전
 	bool Handle_S_ENTERWAITING(Protocol::S_DungeonWaitingRoomEnterPacket& Pkt);
 	bool Handle_S_CREATE(Protocol::S_DungeonCreatePacket& Pkt);
+	bool Handle_S_DEDICREATE(Protocol::S_DungeonCreatePacket& Pkt); 
 	bool Handle_S_ENTER(Protocol::S_DungeonEnterPacket& Pkt);
 	bool Handle_S_READY(Protocol::S_DungeonReadyPacket& Pkt);
 	bool Handle_S_START(Protocol::S_DungeonStartPacket& Pkt);
@@ -41,6 +42,9 @@ public:
 
 	// 연결 종료
 	bool Handle_S_DISCONNECT(Protocol::S_DisconnectPacket& Pkt);
+
+	// 데디케이트 서버
+	bool Handle_S_DUNGEONSETPLAYER(Protocol::S_SetDungeonPlayerPacket Pkt);
 
 private:
 	UAOLoginUserWidget* GetLoginWidget() const;

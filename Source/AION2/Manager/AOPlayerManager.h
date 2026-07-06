@@ -23,10 +23,10 @@ private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 public:
-	void HandleLogin(uint64 PlayerId, uint8 ClassType);
-	void HandleSpawn(uint64 PlayerId, FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation);
+	void HandleLogin(const uint64 PlayerId, const uint8 ClassType);
+	void HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation);
 	void HandleItem(Protocol::S_ItemDataPacket Items);
-	void HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel);
+	void HnadleMove(const uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel);
 
 	void HandleDungeonCreate(int32 DungeonId);
 	void HandleDungeonEnter(int32 DungeonId);
@@ -35,6 +35,8 @@ public:
 	void HandleChatting(FString SenderName, FString SendMessage);
 	void HandleStorePurchase(Protocol::ItemData ItemInfo);
 	void HandleUseItem(const Protocol::S_UseItemPacket& Pkt);
+	
+	void HandleDungeonSetPlayerInfo(const Protocol::DPlayerInfo& Info);
 
 	void HandleDisconnect(uint64 RemovePlayerId);
 

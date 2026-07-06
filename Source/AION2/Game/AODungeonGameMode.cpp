@@ -14,6 +14,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
+#include "Network/PacketHeader.h"
+#include "AION2.h"
+
 AAODungeonGameMode::AAODungeonGameMode()
 {
 	bUseSeamlessTravel = true;
@@ -637,4 +640,11 @@ void AAODungeonGameMode::RequestReturnToVillage()
 	}
 
 	ReturnToVillage();
+}
+
+void AAODungeonGameMode::SendDungeonComplete()
+{
+	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
+	MapPkt.set_dungeonid(MyDungeonId);
+	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
 }

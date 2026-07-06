@@ -65,6 +65,8 @@ public:
 
 	void WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
+	void HandleMapComplete(int32 dungeonId);
+
 private:
 	int32 GetFreeDungeonId();
 

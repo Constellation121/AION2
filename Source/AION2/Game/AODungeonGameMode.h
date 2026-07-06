@@ -145,10 +145,16 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Dungeon|Event")
 	void GiveDungeonReward();
 	
+public:
+	void SetDungeonId(int32 DungeonId) { MyDungeonId = DungeonId; }
+
 public :
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void RequestReturnToVillage();
 
-
+	// 서버 전송
+private:
+	void SendDungeonComplete();
 	
+	int32 MyDungeonId = 0;
 };
