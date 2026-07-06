@@ -42,15 +42,20 @@ void AAODungeonGameMode::PreLogin(const FString& Options, const FString& Address
 {
 	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
 
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PreLogin - Options: %s, Address: %s"), *Options, *Address);
+
 	FString ClientToken = UGameplayStatics::ParseOption(Options, TEXT("Token"));
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PreLogin - Extracted Token: '%s'"), *ClientToken);
 
 	Protocol::DPlayerInfo* ClientInfo = ValidateToken(ClientToken);
 	if (ClientInfo == nullptr)
 	{
+		UE_LOG(LogTemp, Error, TEXT("[Dungeon] PreLogin - Token validation FAILED for Token: '%s'"), *ClientToken);
 		// disconnect
 		return;
 	}
 	int32 Key = UniqueId->GetTypeHash();
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PreLogin - Token validation SUCCESS. Adding Key to PendingPlayers: %d"), Key);
 	PendingPlayers.Add(Key, *ClientInfo);
 
 	PrePlayers.Remove(ClientToken);
@@ -713,10 +718,12 @@ APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPl
 
 void AAODungeonGameMode::SetPrePlayerInfo(Protocol::S_DungeonStartDediPacket& PlayerInfo)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] SetPrePlayerInfo - Total players: %d"), PlayerInfo.preplayersinfos_size());
 	for (int i = 0; i < PlayerInfo.preplayersinfos_size(); ++i)
 	{
 		Protocol::DediDungeonInfo DungeonInfo = PlayerInfo.preplayersinfos(i);
 		FString Token = UTF8_TO_TCHAR(DungeonInfo.clienttoken().c_str());
+		UE_LOG(LogTemp, Warning, TEXT("[Dungeon] SetPrePlayerInfo - Adding PrePlayer: Name: %s, Token: %s"), UTF8_TO_TCHAR(DungeonInfo.clientname().c_str()), *Token);
 		Protocol::DPlayerInfo DPlayerInfo;
 		DPlayerInfo.set_playerid(DungeonInfo.clientid());
 		DPlayerInfo.set_playername(DungeonInfo.clientname());
