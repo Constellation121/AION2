@@ -1,4 +1,4 @@
-#include "Game/AODungeonGameMode.h"
+﻿#include "Game/AODungeonGameMode.h"
 
 #include "Character/AOCharacter.h"
 #include "Character/Daeva/Daeva.h"
@@ -716,7 +716,7 @@ APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPl
 	return SpawnedPawn;
 }
 
-void AAODungeonGameMode::SetPrePlayerInfo(Protocol::S_DungeonStartDediPacket& PlayerInfo)
+void AAODungeonGameMode::SetPrePlayerInfo(const Protocol::S_DungeonStartDediPacket& PlayerInfo)
 {
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] SetPrePlayerInfo - Total players: %d"), PlayerInfo.preplayersinfos_size());
 	for (int i = 0; i < PlayerInfo.preplayersinfos_size(); ++i)

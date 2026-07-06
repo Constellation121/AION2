@@ -1,4 +1,4 @@
-﻿// AOPacketHandler.cpp
+// AOPacketHandler.cpp
 #include "Manager/PacketHandlerManager.h"
 #include "PacketHandler.h"
 #include "Manager/AOPlayerManager.h"
@@ -282,7 +282,7 @@ bool FPacketHandler::Handle_S_START(Protocol::S_DungeonStartPacket& Pkt)
 	FString ServerIp = UTF8_TO_TCHAR(Pkt.dungeonip().c_str());
 	int32 ServerPort = Pkt.port();
 
-	FString ConnectionURL = FString::Printf(TEXT("%s:%d>Token=%s"), *ServerIp, ServerPort, UTF8_TO_TCHAR(Pkt.clienttoken().c_str()));
+	FString ConnectionURL = FString::Printf(TEXT("%s:%d?Token=%s"), *ServerIp, ServerPort, UTF8_TO_TCHAR(Pkt.clienttoken().c_str()));
 
 	PlayerMng->HandleDungeonStart(ConnectionURL);
 	return true;

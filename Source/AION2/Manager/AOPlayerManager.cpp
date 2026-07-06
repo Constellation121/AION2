@@ -276,7 +276,7 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStartDediPacket& Info)
 {
 	AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GetWorld()->GetAuthGameMode());
-	      
+	GameMode->SetPrePlayerInfo(Info);
 }
 
 void UAOPlayerManager::HandleDisconnect(uint64 RemovePlayerId)
