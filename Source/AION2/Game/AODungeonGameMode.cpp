@@ -444,6 +444,7 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 
 	if (ADaeva* RespawnedPlayer = Cast<ADaeva>(PlayerController->GetPawn()))
 	{
+		RespawnedPlayer->RestorePlayerInfoFromPlayerState();
 		RespawnedPlayer->ResetForDungeonRespawn();
 	}
 
@@ -617,6 +618,7 @@ void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 
 		if (ADaeva* RespawnedPlayer = Cast<ADaeva>(PlayerController->GetPawn()))
 		{
+			RespawnedPlayer->RestorePlayerInfoFromPlayerState();
 			RespawnedPlayer->ResetForDungeonRespawn();
 		}
 	}

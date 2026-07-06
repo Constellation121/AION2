@@ -239,6 +239,10 @@ public:
 	UFUNCTION()
 	void OnRep_WingVisible();
 
+	//H.Y (PlayerState 복원)
+public :
+	void RestorePlayerInfoFromPlayerState();
+
 private:
 	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);
 	void PlayCameraShake(bool& bDidShakeCamera);

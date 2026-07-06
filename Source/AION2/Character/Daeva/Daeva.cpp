@@ -1148,6 +1148,16 @@ void ADaeva::OnRep_WingVisible()
 	SetWingVisibility(bWingVisible);
 }
 
+void ADaeva::RestorePlayerInfoFromPlayerState()
+{
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+
+	if (!AOPlayerState)
+	{
+		return;
+	}
+}
+
 void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 {
 	USkeletalMeshComponent* PartMesh = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
