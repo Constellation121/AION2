@@ -37,6 +37,8 @@ public:
 	
 	void HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStartDediPacket& Info);
 
+	void HandleDungeonEnd();
+
 	void HandleDisconnect(uint64 RemovePlayerId);
 
 #pragma region Dungeon State

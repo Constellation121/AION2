@@ -438,7 +438,7 @@ void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId)
 
 	DungeonRef dungeon = it->second;
 	if (!dungeon) return;
-	Protocol::S_DungeonEndPacket endPacket;
+	Protocol::S_RequestDungeonCompletePacket endPacket;
 	SendBufferRef endBuffer = PacketHandler::MakeSendBuffer(endPacket);
 
 	for (auto& member : dungeon->GetMembers())

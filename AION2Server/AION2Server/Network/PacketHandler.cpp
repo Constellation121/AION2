@@ -277,7 +277,7 @@ bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_Du
 	return true;
 }
 
-bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_DungeonEndPacket& pkt)
+bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_RequestDungeonCompletePacket& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	PlayerRef player = gameSession->_player;

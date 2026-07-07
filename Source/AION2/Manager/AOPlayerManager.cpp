@@ -13,6 +13,7 @@
 #include "Item/AOItemDataBase.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
+#include "Kismet/GameplayStatics.h"
 #include "Game/AODungeonGameMode.h"
 
 UAOPlayerManager::UAOPlayerManager()
@@ -284,6 +285,12 @@ void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStart
 {
 	AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GetWorld()->GetAuthGameMode());
 	GameMode->SetPrePlayerInfo(Info);
+}
+
+void UAOPlayerManager::HandleDungeonEnd()
+{
+	//FSoftObjectPath LevelPath(FString::Printf(TEXT("/Game/Map/Lobby")))
+	UGameplayStatics::OpenLevel(this, TEXT("/Game/Map/Village"));
 }
 
 void UAOPlayerManager::HandleDisconnect(uint64 RemovePlayerId)

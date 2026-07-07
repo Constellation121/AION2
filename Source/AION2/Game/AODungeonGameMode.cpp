@@ -31,6 +31,7 @@ void AAODungeonGameMode::BeginPlay()
 	InitializePlacedBosses();
 
 	StartDungeon();
+	SendDungeonCompleteRequest();
 }
 
 void AAODungeonGameMode::Tick(float DeltaTime)

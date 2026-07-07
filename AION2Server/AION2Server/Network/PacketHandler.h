@@ -50,8 +50,8 @@ enum : uint16
 	PKT_S_DUNGEONDEDISTART = 1031,
 
 	// 던전 종료
-	PKT_C_DUNGEONEND = 1040,
-	PKT_S_DUNGEONEND = 1041,
+	PKT_C_REQUEST_DUNGEON_COMPLETE = 1040,
+	PKT_S_REQUEST_DUNGEON_COMPLETE = 1041,
 
 	// 캐릭터 상태 및 상호작용
 	PKT_C_CHANGEHP = 1024,
@@ -101,7 +101,7 @@ public:
 		GPacketHandler[PKT_C_DUNGEONREADY] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonReadyPacket>(HandleDungeonReady, session, buffer, len); };
 		GPacketHandler[PKT_C_DUNGEONSTART] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonStartPacket>(HandleDungeonStart, session, buffer, len); };
 		GPacketHandler[PKT_C_DUNGEONEXIT] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonExitPacket>(HandleDungeonExit, session, buffer, len); };
-		GPacketHandler[PKT_C_DUNGEONEND] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_DungeonEndPacket>(HandleDungeonEnd, session, buffer, len); };
+		GPacketHandler[PKT_C_REQUEST_DUNGEON_COMPLETE] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_RequestDungeonCompletePacket>(HandleDungeonEnd, session, buffer, len); };
 
 		// 캐릭터 상태 및 상호작용
 		GPacketHandler[PKT_C_CHANGEHP] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_ChangeHpPacket>(HandleChangeHp, session, buffer, len); };
@@ -129,7 +129,7 @@ public:
 	static bool HandleDungeonExit(PacketSessionRef& session, Protocol::C_DungeonExitPacket& pkt);
 	static bool HandleDungeonReady(PacketSessionRef& session, Protocol::C_DungeonReadyPacket& pkt);
 	static bool HandleDungeonStart(PacketSessionRef& session, Protocol::C_DungeonStartPacket& pkt);
-	static bool HandleDungeonEnd(PacketSessionRef& session, Protocol::C_DungeonEndPacket& pkt);
+	static bool HandleDungeonEnd(PacketSessionRef& session, Protocol::C_RequestDungeonCompletePacket& pkt);
 
 
 	static bool HandleStorePurchase(PacketSessionRef& session, Protocol::C_StorePurchasePacket& pkt);
@@ -175,7 +175,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonFailPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONFAIL); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_SetDungeonPlayerPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONSETPLAYER); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonStartDediPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONDEDISTART); };
-	static SendBufferRef MakeSendBuffer(Protocol::S_DungeonEndPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_DUNGEONEND); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_RequestDungeonCompletePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_REQUEST_DUNGEON_COMPLETE); };
 
 	static SendBufferRef MakeSendBuffer(Protocol::S_StorePurchasePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_STOREPURCHASE); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_UseItemPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_USEITEM); };

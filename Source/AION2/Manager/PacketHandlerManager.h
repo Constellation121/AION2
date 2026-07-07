@@ -36,6 +36,7 @@ public:
 	bool Handle_S_READY(Protocol::S_DungeonReadyPacket& Pkt);
 	bool Handle_S_START(Protocol::S_DungeonStartPacket& Pkt);
 	bool Handle_S_EXIT(Protocol::S_DungeonExitPacket& Pkt);
+	bool Handle_S_DUNGEONEND(Protocol::S_RequestDungeonCompletePacket& Pkt);
 	bool Handle_S_DUNGEONFAIL(Protocol::S_DungeonFailPacket& Pkt);
 
 	// 캐릭터 상태 및 상호작용

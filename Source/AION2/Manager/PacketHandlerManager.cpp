@@ -52,6 +52,8 @@ void InitPacketHandler()
 	GAOPacketHandler[PKT_S_DUNGEONSTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonStartPacket>(&FPacketHandler::Handle_S_START, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_DUNGEONEXIT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonExitPacket>(&FPacketHandler::Handle_S_EXIT, Mng, Buf, Len); };
 
+	GAOPacketHandler[PKT_S_REQUEST_DUNGEON_COMPLETE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_RequestDungeonCompletePacket>(&FPacketHandler::Handle_S_DUNGEONEND, Mng, Buf, Len); };
+
 	GAOPacketHandler[PKT_S_DUNGEONFAIL] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonFailPacket>(&FPacketHandler::Handle_S_DUNGEONFAIL, Mng, Buf, Len); };
 
 	GAOPacketHandler[PKT_S_MAILLIST] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_MailListPacket>(&FPacketHandler::Handle_S_MAILLIST, Mng, Buf, Len); };
@@ -335,6 +337,14 @@ bool FPacketHandler::Handle_S_EXIT(Protocol::S_DungeonExitPacket& Pkt)
 	return true;
 }
 
+bool FPacketHandler::Handle_S_DUNGEONEND(Protocol::S_RequestDungeonCompletePacket& Pkt)
+{
+	if (!PlayerMng)
+		return false;
+	PlayerMng->HandleDungeonEnd();
+	return false;
+}
+
 bool FPacketHandler::Handle_S_DUNGEONFAIL(Protocol::S_DungeonFailPacket& Pkt)
 {
 	if (UAOUIManager* UIManager = GameInstance ? GameInstance->GetSubsystem<UAOUIManager>() : nullptr)
@@ -363,7 +373,7 @@ bool FPacketHandler::Handle_S_MAILLIST(Protocol::S_MailListPacket& Pkt)
 	for (int i = 0; i < Pkt.maillists_size(); ++i)
 	{
 		const Protocol::MailListInfo& mailInfo = Pkt.maillists(i);
-		
+
 		FMailData MailData;
 		MailData.MailUID = mailInfo.mailid();
 		MailData.Title = UTF8_TO_TCHAR(mailInfo.title().c_str());
@@ -371,10 +381,10 @@ bool FPacketHandler::Handle_S_MAILLIST(Protocol::S_MailListPacket& Pkt)
 		MailData.ExpiredDate = UTF8_TO_TCHAR(mailInfo.expireddate().c_str());
 		MailData.bIsReceived = mailInfo.hasitem();
 		MailData.bIsRead = false;
-		
+
 		MailList.Add(MailData);
 	}
-	
+
 	UAOUIManager* UIManager = GetUIManager();
 	if (UIManager && GameInstance)
 	{

@@ -380,33 +380,33 @@ struct S_DungeonFailPacketDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_DungeonFailPacketDefaultTypeInternal _S_DungeonFailPacket_default_instance_;
-PROTOBUF_CONSTEXPR C_DungeonEndPacket::C_DungeonEndPacket(
+PROTOBUF_CONSTEXPR C_RequestDungeonCompletePacket::C_RequestDungeonCompletePacket(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.dungeonid_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct C_DungeonEndPacketDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR C_DungeonEndPacketDefaultTypeInternal()
+struct C_RequestDungeonCompletePacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_RequestDungeonCompletePacketDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~C_DungeonEndPacketDefaultTypeInternal() {}
+  ~C_RequestDungeonCompletePacketDefaultTypeInternal() {}
   union {
-    C_DungeonEndPacket _instance;
+    C_RequestDungeonCompletePacket _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_DungeonEndPacketDefaultTypeInternal _C_DungeonEndPacket_default_instance_;
-PROTOBUF_CONSTEXPR S_DungeonEndPacket::S_DungeonEndPacket(
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_RequestDungeonCompletePacketDefaultTypeInternal _C_RequestDungeonCompletePacket_default_instance_;
+PROTOBUF_CONSTEXPR S_RequestDungeonCompletePacket::S_RequestDungeonCompletePacket(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.playeritems_)*/{}
   , /*decltype(_impl_.hp_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct S_DungeonEndPacketDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR S_DungeonEndPacketDefaultTypeInternal()
+struct S_RequestDungeonCompletePacketDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR S_RequestDungeonCompletePacketDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~S_DungeonEndPacketDefaultTypeInternal() {}
+  ~S_RequestDungeonCompletePacketDefaultTypeInternal() {}
   union {
-    S_DungeonEndPacket _instance;
+    S_RequestDungeonCompletePacket _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_DungeonEndPacketDefaultTypeInternal _S_DungeonEndPacket_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_RequestDungeonCompletePacketDefaultTypeInternal _S_RequestDungeonCompletePacket_default_instance_;
 PROTOBUF_CONSTEXPR C_StorePurchasePacket::C_StorePurchasePacket(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.playerid_)*/uint64_t{0u}
@@ -851,20 +851,20 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::S_DungeonFailPacket, _impl_.dungeonid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_DungeonFailPacket, _impl_.reason_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_DungeonEndPacket, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_RequestDungeonCompletePacket, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_DungeonEndPacket, _impl_.dungeonid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_RequestDungeonCompletePacket, _impl_.dungeonid_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_DungeonEndPacket, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_RequestDungeonCompletePacket, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_DungeonEndPacket, _impl_.hp_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_DungeonEndPacket, _impl_.playeritems_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_RequestDungeonCompletePacket, _impl_.hp_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_RequestDungeonCompletePacket, _impl_.playeritems_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_StorePurchasePacket, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -1033,8 +1033,8 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 178, -1, -1, sizeof(::Protocol::C_DungeonExitPacket)},
   { 186, -1, -1, sizeof(::Protocol::S_DungeonExitPacket)},
   { 194, -1, -1, sizeof(::Protocol::S_DungeonFailPacket)},
-  { 202, -1, -1, sizeof(::Protocol::C_DungeonEndPacket)},
-  { 209, -1, -1, sizeof(::Protocol::S_DungeonEndPacket)},
+  { 202, -1, -1, sizeof(::Protocol::C_RequestDungeonCompletePacket)},
+  { 209, -1, -1, sizeof(::Protocol::S_RequestDungeonCompletePacket)},
   { 217, -1, -1, sizeof(::Protocol::C_StorePurchasePacket)},
   { 225, -1, -1, sizeof(::Protocol::S_StorePurchasePacket)},
   { 233, -1, -1, sizeof(::Protocol::C_ChangeHpPacket)},
@@ -1080,8 +1080,8 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_C_DungeonExitPacket_default_instance_._instance,
   &::Protocol::_S_DungeonExitPacket_default_instance_._instance,
   &::Protocol::_S_DungeonFailPacket_default_instance_._instance,
-  &::Protocol::_C_DungeonEndPacket_default_instance_._instance,
-  &::Protocol::_S_DungeonEndPacket_default_instance_._instance,
+  &::Protocol::_C_RequestDungeonCompletePacket_default_instance_._instance,
+  &::Protocol::_S_RequestDungeonCompletePacket_default_instance_._instance,
   &::Protocol::_C_StorePurchasePacket_default_instance_._instance,
   &::Protocol::_S_StorePurchasePacket_default_instance_._instance,
   &::Protocol::_C_ChangeHpPacket_default_instance_._instance,
@@ -1149,39 +1149,40 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "tocol.DungeonInfo\022\020\n\010playerId\030\002 \001(\004\"U\n\023S"
   "_DungeonFailPacket\022\021\n\tdungeonId\030\001 \001(\005\022+\n"
   "\006reason\030\002 \001(\0162\033.Protocol.DungeonFailReas"
-  "on\"\'\n\022C_DungeonEndPacket\022\021\n\tdungeonId\030\001 "
-  "\001(\005\"I\n\022S_DungeonEndPacket\022\n\n\002hp\030\001 \001(\005\022\'\n"
-  "\013playerItems\030\002 \003(\0132\022.Protocol.ItemData\"9"
-  "\n\025C_StorePurchasePacket\022\016\n\006itemId\030\001 \001(\005\022"
-  "\020\n\010playerId\030\002 \001(\004\"K\n\025S_StorePurchasePack"
-  "et\022$\n\010itemInfo\030\001 \001(\0132\022.Protocol.ItemData"
-  "\022\014\n\004gold\030\002 \001(\005\"0\n\020C_ChangeHpPacket\022\020\n\010pl"
-  "ayerId\030\001 \001(\004\022\n\n\002hp\030\002 \001(\005\".\n\014C_ChatPacket"
-  "\022\020\n\010playerId\030\001 \001(\004\022\014\n\004chat\030\002 \001(\t\".\n\014S_Ch"
-  "atPacket\022\020\n\010playerId\030\001 \001(\t\022\014\n\004chat\030\002 \001(\t"
-  "\"&\n\022S_DisconnectPacket\022\020\n\010playerId\030\001 \001(\004"
-  "\"6\n\017C_UseItemPacket\022\020\n\010playerId\030\001 \001(\004\022\021\n"
-  "\tslotIndex\030\002 \001(\005\"n\n\017S_UseItemPacket\022\020\n\010p"
-  "layerId\030\001 \001(\004\022\021\n\tslotIndex\030\002 \001(\005\022\r\n\005coun"
-  "t\030\003 \001(\005\022\022\n\neffectType\030\004 \001(\t\022\023\n\013effectVal"
-  "ue\030\005 \001(\005\"3\n\036C_DungeonMapLoadCompletePack"
-  "et\022\021\n\tdungeonId\030\001 \001(\005\"E\n\030S_SetDungeonPla"
-  "yerPacket\022)\n\nplayerInfo\030\001 \003(\0132\025.Protocol"
-  ".DPlayerInfo\"\237\001\n\020C_SendMailPacket\022\020\n\010sen"
-  "derId\030\001 \001(\004\022\022\n\nsenderName\030\002 \001(\t\022\024\n\014recei"
-  "verName\030\003 \001(\t\022\r\n\005title\030\004 \001(\t\022\017\n\007content\030"
-  "\005 \001(\t\022\014\n\004gold\030\006 \001(\005\022\016\n\006itemId\030\007 \001(\005\022\021\n\ti"
-  "temCount\030\010 \001(\005\"\024\n\022S_NotifyMailPacket\"$\n\020"
-  "C_MailListPacket\022\020\n\010playerId\030\001 \001(\004\"=\n\020S_"
-  "MailListPacket\022)\n\tMailLists\030\001 \003(\0132\026.Prot"
-  "ocol.MailListInfo\"%\n\023C_MailContentPacket"
-  "\022\016\n\006MailId\030\001 \001(\004\"\375\001\n\023S_MailContentPacket"
-  "\022\016\n\006MailId\030\001 \001(\004\022\020\n\010senderId\030\002 \001(\004\022\022\n\nse"
-  "nderName\030\003 \001(\t\022\024\n\014receiverName\030\004 \001(\t\022\r\n\005"
-  "title\030\005 \001(\t\022\017\n\007content\030\006 \001(\t\022\014\n\004gold\030\007 \001"
-  "(\005\022\016\n\006itemId\030\010 \001(\005\022\021\n\titemCount\030\t \001(\005\022\022\n"
-  "\nIsReceived\030\n \001(\010\022\016\n\006isRead\030\013 \001(\010\022\020\n\010sen"
-  "dDate\030\014 \001(\t\022\023\n\013ExpiredDate\030\r \001(\tb\006proto3"
+  "on\"3\n\036C_RequestDungeonCompletePacket\022\021\n\t"
+  "dungeonId\030\001 \001(\005\"U\n\036S_RequestDungeonCompl"
+  "etePacket\022\n\n\002hp\030\001 \001(\005\022\'\n\013playerItems\030\002 \003"
+  "(\0132\022.Protocol.ItemData\"9\n\025C_StorePurchas"
+  "ePacket\022\016\n\006itemId\030\001 \001(\005\022\020\n\010playerId\030\002 \001("
+  "\004\"K\n\025S_StorePurchasePacket\022$\n\010itemInfo\030\001"
+  " \001(\0132\022.Protocol.ItemData\022\014\n\004gold\030\002 \001(\005\"0"
+  "\n\020C_ChangeHpPacket\022\020\n\010playerId\030\001 \001(\004\022\n\n\002"
+  "hp\030\002 \001(\005\".\n\014C_ChatPacket\022\020\n\010playerId\030\001 \001"
+  "(\004\022\014\n\004chat\030\002 \001(\t\".\n\014S_ChatPacket\022\020\n\010play"
+  "erId\030\001 \001(\t\022\014\n\004chat\030\002 \001(\t\"&\n\022S_Disconnect"
+  "Packet\022\020\n\010playerId\030\001 \001(\004\"6\n\017C_UseItemPac"
+  "ket\022\020\n\010playerId\030\001 \001(\004\022\021\n\tslotIndex\030\002 \001(\005"
+  "\"n\n\017S_UseItemPacket\022\020\n\010playerId\030\001 \001(\004\022\021\n"
+  "\tslotIndex\030\002 \001(\005\022\r\n\005count\030\003 \001(\005\022\022\n\neffec"
+  "tType\030\004 \001(\t\022\023\n\013effectValue\030\005 \001(\005\"3\n\036C_Du"
+  "ngeonMapLoadCompletePacket\022\021\n\tdungeonId\030"
+  "\001 \001(\005\"E\n\030S_SetDungeonPlayerPacket\022)\n\npla"
+  "yerInfo\030\001 \003(\0132\025.Protocol.DPlayerInfo\"\237\001\n"
+  "\020C_SendMailPacket\022\020\n\010senderId\030\001 \001(\004\022\022\n\ns"
+  "enderName\030\002 \001(\t\022\024\n\014receiverName\030\003 \001(\t\022\r\n"
+  "\005title\030\004 \001(\t\022\017\n\007content\030\005 \001(\t\022\014\n\004gold\030\006 "
+  "\001(\005\022\016\n\006itemId\030\007 \001(\005\022\021\n\titemCount\030\010 \001(\005\"\024"
+  "\n\022S_NotifyMailPacket\"$\n\020C_MailListPacket"
+  "\022\020\n\010playerId\030\001 \001(\004\"=\n\020S_MailListPacket\022)"
+  "\n\tMailLists\030\001 \003(\0132\026.Protocol.MailListInf"
+  "o\"%\n\023C_MailContentPacket\022\016\n\006MailId\030\001 \001(\004"
+  "\"\375\001\n\023S_MailContentPacket\022\016\n\006MailId\030\001 \001(\004"
+  "\022\020\n\010senderId\030\002 \001(\004\022\022\n\nsenderName\030\003 \001(\t\022\024"
+  "\n\014receiverName\030\004 \001(\t\022\r\n\005title\030\005 \001(\t\022\017\n\007c"
+  "ontent\030\006 \001(\t\022\014\n\004gold\030\007 \001(\005\022\016\n\006itemId\030\010 \001"
+  "(\005\022\021\n\titemCount\030\t \001(\005\022\022\n\nIsReceived\030\n \001("
+  "\010\022\016\n\006isRead\030\013 \001(\010\022\020\n\010sendDate\030\014 \001(\t\022\023\n\013E"
+  "xpiredDate\030\r \001(\tb\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -1189,7 +1190,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 3240, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 3264, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 44,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -6416,29 +6417,29 @@ void S_DungeonFailPacket::InternalSwap(S_DungeonFailPacket* other) {
 
 // ===================================================================
 
-class C_DungeonEndPacket::_Internal {
+class C_RequestDungeonCompletePacket::_Internal {
  public:
 };
 
-C_DungeonEndPacket::C_DungeonEndPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+C_RequestDungeonCompletePacket::C_RequestDungeonCompletePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:Protocol.C_DungeonEndPacket)
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_RequestDungeonCompletePacket)
 }
-C_DungeonEndPacket::C_DungeonEndPacket(const C_DungeonEndPacket& from)
+C_RequestDungeonCompletePacket::C_RequestDungeonCompletePacket(const C_RequestDungeonCompletePacket& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  C_DungeonEndPacket* const _this = this; (void)_this;
+  C_RequestDungeonCompletePacket* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.dungeonid_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _this->_impl_.dungeonid_ = from._impl_.dungeonid_;
-  // @@protoc_insertion_point(copy_constructor:Protocol.C_DungeonEndPacket)
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_RequestDungeonCompletePacket)
 }
 
-inline void C_DungeonEndPacket::SharedCtor(
+inline void C_RequestDungeonCompletePacket::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
@@ -6448,8 +6449,8 @@ inline void C_DungeonEndPacket::SharedCtor(
   };
 }
 
-C_DungeonEndPacket::~C_DungeonEndPacket() {
-  // @@protoc_insertion_point(destructor:Protocol.C_DungeonEndPacket)
+C_RequestDungeonCompletePacket::~C_RequestDungeonCompletePacket() {
+  // @@protoc_insertion_point(destructor:Protocol.C_RequestDungeonCompletePacket)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -6457,16 +6458,16 @@ C_DungeonEndPacket::~C_DungeonEndPacket() {
   SharedDtor();
 }
 
-inline void C_DungeonEndPacket::SharedDtor() {
+inline void C_RequestDungeonCompletePacket::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
-void C_DungeonEndPacket::SetCachedSize(int size) const {
+void C_RequestDungeonCompletePacket::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void C_DungeonEndPacket::Clear() {
-// @@protoc_insertion_point(message_clear_start:Protocol.C_DungeonEndPacket)
+void C_RequestDungeonCompletePacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_RequestDungeonCompletePacket)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -6475,7 +6476,7 @@ void C_DungeonEndPacket::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* C_DungeonEndPacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* C_RequestDungeonCompletePacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
@@ -6512,9 +6513,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* C_DungeonEndPacket::_InternalSerialize(
+uint8_t* C_RequestDungeonCompletePacket::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_DungeonEndPacket)
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_RequestDungeonCompletePacket)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -6528,12 +6529,12 @@ uint8_t* C_DungeonEndPacket::_InternalSerialize(
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_DungeonEndPacket)
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_RequestDungeonCompletePacket)
   return target;
 }
 
-size_t C_DungeonEndPacket::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Protocol.C_DungeonEndPacket)
+size_t C_RequestDungeonCompletePacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_RequestDungeonCompletePacket)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -6548,17 +6549,17 @@ size_t C_DungeonEndPacket::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_DungeonEndPacket::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_RequestDungeonCompletePacket::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    C_DungeonEndPacket::MergeImpl
+    C_RequestDungeonCompletePacket::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_DungeonEndPacket::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_RequestDungeonCompletePacket::GetClassData() const { return &_class_data_; }
 
 
-void C_DungeonEndPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<C_DungeonEndPacket*>(&to_msg);
-  auto& from = static_cast<const C_DungeonEndPacket&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_DungeonEndPacket)
+void C_RequestDungeonCompletePacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_RequestDungeonCompletePacket*>(&to_msg);
+  auto& from = static_cast<const C_RequestDungeonCompletePacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_RequestDungeonCompletePacket)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -6569,24 +6570,24 @@ void C_DungeonEndPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, con
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void C_DungeonEndPacket::CopyFrom(const C_DungeonEndPacket& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_DungeonEndPacket)
+void C_RequestDungeonCompletePacket::CopyFrom(const C_RequestDungeonCompletePacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_RequestDungeonCompletePacket)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool C_DungeonEndPacket::IsInitialized() const {
+bool C_RequestDungeonCompletePacket::IsInitialized() const {
   return true;
 }
 
-void C_DungeonEndPacket::InternalSwap(C_DungeonEndPacket* other) {
+void C_RequestDungeonCompletePacket::InternalSwap(C_RequestDungeonCompletePacket* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_.dungeonid_, other->_impl_.dungeonid_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata C_DungeonEndPacket::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata C_RequestDungeonCompletePacket::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
       file_level_metadata_Protocol_2eproto[26]);
@@ -6594,22 +6595,22 @@ void C_DungeonEndPacket::InternalSwap(C_DungeonEndPacket* other) {
 
 // ===================================================================
 
-class S_DungeonEndPacket::_Internal {
+class S_RequestDungeonCompletePacket::_Internal {
  public:
 };
 
-void S_DungeonEndPacket::clear_playeritems() {
+void S_RequestDungeonCompletePacket::clear_playeritems() {
   _impl_.playeritems_.Clear();
 }
-S_DungeonEndPacket::S_DungeonEndPacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+S_RequestDungeonCompletePacket::S_RequestDungeonCompletePacket(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:Protocol.S_DungeonEndPacket)
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_RequestDungeonCompletePacket)
 }
-S_DungeonEndPacket::S_DungeonEndPacket(const S_DungeonEndPacket& from)
+S_RequestDungeonCompletePacket::S_RequestDungeonCompletePacket(const S_RequestDungeonCompletePacket& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  S_DungeonEndPacket* const _this = this; (void)_this;
+  S_RequestDungeonCompletePacket* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.playeritems_){from._impl_.playeritems_}
     , decltype(_impl_.hp_){}
@@ -6617,10 +6618,10 @@ S_DungeonEndPacket::S_DungeonEndPacket(const S_DungeonEndPacket& from)
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _this->_impl_.hp_ = from._impl_.hp_;
-  // @@protoc_insertion_point(copy_constructor:Protocol.S_DungeonEndPacket)
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_RequestDungeonCompletePacket)
 }
 
-inline void S_DungeonEndPacket::SharedCtor(
+inline void S_RequestDungeonCompletePacket::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
@@ -6631,8 +6632,8 @@ inline void S_DungeonEndPacket::SharedCtor(
   };
 }
 
-S_DungeonEndPacket::~S_DungeonEndPacket() {
-  // @@protoc_insertion_point(destructor:Protocol.S_DungeonEndPacket)
+S_RequestDungeonCompletePacket::~S_RequestDungeonCompletePacket() {
+  // @@protoc_insertion_point(destructor:Protocol.S_RequestDungeonCompletePacket)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -6640,17 +6641,17 @@ S_DungeonEndPacket::~S_DungeonEndPacket() {
   SharedDtor();
 }
 
-inline void S_DungeonEndPacket::SharedDtor() {
+inline void S_RequestDungeonCompletePacket::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.playeritems_.~RepeatedPtrField();
 }
 
-void S_DungeonEndPacket::SetCachedSize(int size) const {
+void S_RequestDungeonCompletePacket::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void S_DungeonEndPacket::Clear() {
-// @@protoc_insertion_point(message_clear_start:Protocol.S_DungeonEndPacket)
+void S_RequestDungeonCompletePacket::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_RequestDungeonCompletePacket)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -6660,7 +6661,7 @@ void S_DungeonEndPacket::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* S_DungeonEndPacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* S_RequestDungeonCompletePacket::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
@@ -6710,9 +6711,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* S_DungeonEndPacket::_InternalSerialize(
+uint8_t* S_RequestDungeonCompletePacket::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_DungeonEndPacket)
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_RequestDungeonCompletePacket)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -6734,12 +6735,12 @@ uint8_t* S_DungeonEndPacket::_InternalSerialize(
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_DungeonEndPacket)
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_RequestDungeonCompletePacket)
   return target;
 }
 
-size_t S_DungeonEndPacket::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Protocol.S_DungeonEndPacket)
+size_t S_RequestDungeonCompletePacket::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_RequestDungeonCompletePacket)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -6761,17 +6762,17 @@ size_t S_DungeonEndPacket::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_DungeonEndPacket::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_RequestDungeonCompletePacket::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    S_DungeonEndPacket::MergeImpl
+    S_RequestDungeonCompletePacket::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_DungeonEndPacket::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_RequestDungeonCompletePacket::GetClassData() const { return &_class_data_; }
 
 
-void S_DungeonEndPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<S_DungeonEndPacket*>(&to_msg);
-  auto& from = static_cast<const S_DungeonEndPacket&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_DungeonEndPacket)
+void S_RequestDungeonCompletePacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<S_RequestDungeonCompletePacket*>(&to_msg);
+  auto& from = static_cast<const S_RequestDungeonCompletePacket&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_RequestDungeonCompletePacket)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -6783,25 +6784,25 @@ void S_DungeonEndPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, con
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void S_DungeonEndPacket::CopyFrom(const S_DungeonEndPacket& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_DungeonEndPacket)
+void S_RequestDungeonCompletePacket::CopyFrom(const S_RequestDungeonCompletePacket& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_RequestDungeonCompletePacket)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool S_DungeonEndPacket::IsInitialized() const {
+bool S_RequestDungeonCompletePacket::IsInitialized() const {
   return true;
 }
 
-void S_DungeonEndPacket::InternalSwap(S_DungeonEndPacket* other) {
+void S_RequestDungeonCompletePacket::InternalSwap(S_RequestDungeonCompletePacket* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.playeritems_.InternalSwap(&other->_impl_.playeritems_);
   swap(_impl_.hp_, other->_impl_.hp_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata S_DungeonEndPacket::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata S_RequestDungeonCompletePacket::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
       file_level_metadata_Protocol_2eproto[27]);
@@ -10793,13 +10794,13 @@ template<> PROTOBUF_NOINLINE ::Protocol::S_DungeonFailPacket*
 Arena::CreateMaybeMessage< ::Protocol::S_DungeonFailPacket >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_DungeonFailPacket >(arena);
 }
-template<> PROTOBUF_NOINLINE ::Protocol::C_DungeonEndPacket*
-Arena::CreateMaybeMessage< ::Protocol::C_DungeonEndPacket >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Protocol::C_DungeonEndPacket >(arena);
+template<> PROTOBUF_NOINLINE ::Protocol::C_RequestDungeonCompletePacket*
+Arena::CreateMaybeMessage< ::Protocol::C_RequestDungeonCompletePacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_RequestDungeonCompletePacket >(arena);
 }
-template<> PROTOBUF_NOINLINE ::Protocol::S_DungeonEndPacket*
-Arena::CreateMaybeMessage< ::Protocol::S_DungeonEndPacket >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Protocol::S_DungeonEndPacket >(arena);
+template<> PROTOBUF_NOINLINE ::Protocol::S_RequestDungeonCompletePacket*
+Arena::CreateMaybeMessage< ::Protocol::S_RequestDungeonCompletePacket >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_RequestDungeonCompletePacket >(arena);
 }
 template<> PROTOBUF_NOINLINE ::Protocol::C_StorePurchasePacket*
 Arena::CreateMaybeMessage< ::Protocol::C_StorePurchasePacket >(Arena* arena) {
