@@ -229,6 +229,16 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo)
 void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 {
 	int32 SlotIndex = Pkt.slotindex();
+	for (auto& Pair : MyItems)
+	{
+		 Protocol::ItemData& Item = Pair.Value;
+		if (Item.slotindex() == SlotIndex)
+		{
+			int32 ItemId = Item.iteminstancedid();
+			MyItems.Find(ItemId)->set_count(Pkt.count());
+		}
+	}
+
 	UAOQuickSlotComponent* QuickSlotComp = MyPlayer->GetQuickSlotComponent();
 	if (QuickSlotComp)
 	{

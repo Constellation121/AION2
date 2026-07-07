@@ -402,7 +402,6 @@ void DungeonWaitingRoom::StartDungeonPacket(DungeonRef dungeon)
 	std::string token;
 	for (auto member : dungeon->GetMembers())
 	{
-		auto session = member->_ownerSession;
 		if (auto session = member->_ownerSession.lock())
 		{
 			Protocol::S_DungeonStartPacket startPkt;
@@ -417,7 +416,6 @@ void DungeonWaitingRoom::StartDungeonPacket(DungeonRef dungeon)
 	}
 	{
 		auto leader = dungeon->GetLeader();
-		auto leaderSession = leader->_ownerSession;
 		if (auto leaderSession = leader->_ownerSession.lock())
 		{
 			Protocol::S_DungeonStartPacket startPkt;
@@ -431,6 +429,27 @@ void DungeonWaitingRoom::StartDungeonPacket(DungeonRef dungeon)
 		}
 	}
 }
+
+
+void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId)
+{
+	auto it = _dungeons.find(dungeonId);
+	if (it == _dungeons.end()) return;
+
+	DungeonRef dungeon = it->second;
+	if (!dungeon) return;
+	Protocol::S_DungeonEndPacket endPacket;
+	SendBufferRef endBuffer = PacketHandler::MakeSendBuffer(endPacket);
+
+	for (auto& member : dungeon->GetMembers())
+	{
+		if (auto session = member->_ownerSession.lock())
+		{
+			session->Send(endBuffer);
+		}
+	}
+}
+
 
 void DungeonWaitingRoom::WaitingRoomBroadcast(SendBufferRef sendBuffer, uint64 exceptId)
 {
