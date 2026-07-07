@@ -260,7 +260,7 @@ void AAODungeonGameMode::ClearDungeon()
 	
 	GiveDungeonReward();
 
-	SendDungeonComplete();
+	SendDungeonCompleteRequest();
 }
 
 void AAODungeonGameMode::FailDungeon()
