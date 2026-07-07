@@ -8,6 +8,7 @@ extern TAutoConsoleVariable<int32> CVarDrawAttackTrace;
 
 class UAOMainHUDWidget;
 class AAOMonsterBase;
+class AAOPlayerState;
 
 UENUM()
 enum class EInputType : uint8
@@ -47,11 +48,11 @@ public:
 	void HandlePawnASCReady();
 
 private:
-	// UI
-	void CreateOrBindMainHUD();
+	// UI: Parameter is the verified playerstate in this PlayerController.s 
+	void CreateOrBindMainHUD(AAOPlayerState* AOPlayerState);
 
 public:
-	// ! ½ÅÇı´Ô UI ÄÚµå¿¡¼­ ¸¹ÀÌ »ç¿ë ÁßÀÌ¶ó »èÁ¦ÇÏ¸é ¾ÈµÊ !: ÃßÈÄ ºĞ¸®ÇÏµç°¡ ÇÒ °Í.
+	// ! ì‹ í˜œë‹˜ UI ì½”ë“œì—ì„œ ë§ì´ ì‚¬ìš© ì¤‘ì´ë¼ ì‚­ì œí•˜ë©´ ì•ˆë¨ !: ì¶”í›„ ë¶„ë¦¬í•˜ë“ ê°€ í•  ê²ƒ.
 	UAOMainHUDWidget* GetMainHUD() const { return MainHUD; }
 
 
@@ -81,7 +82,7 @@ private:
 	TObjectPtr<class UInputAction> GASDebugAction;
 
 protected:
-	// UI °ü·Ã
+	// UI ê´€ë ¨
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DungeonHUD)
 	TSubclassOf<UAOMainHUDWidget> MainHUDClass;
 

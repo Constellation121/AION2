@@ -4,6 +4,16 @@
 #include "UI/AOSkillQuickSlotWidget.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Data/DA_AbilitySet.h"
+
+void UAOSkillQuickSlotWidget::InitSkillSlot(const FGAData& InAbilityData)
+{
+    CooldownTag = InAbilityData.CooldownTag;
+    EffectWidgetClass = InAbilityData.EffectWidgetClass;
+
+    SetSkillIcon(InAbilityData.Icon);
+    SetSkillLevel(InAbilityData.AbilityLevel);
+}
 
 void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
 {
@@ -37,6 +47,12 @@ void UAOSkillQuickSlotWidget::StopCooldown()
 {
 }
 
-void UAOSkillQuickSlotWidget::ShowEffectWidget(TSubclassOf<UUserWidget> EffectWidgetClass)
+void UAOSkillQuickSlotWidget::ShowEffectWidget()
 {
+    if (!EffectWidgetClass)
+    {
+        return;
+    }
+
+    // EffectWidgetClass로 위젯 생성/표시
 }

@@ -2,8 +2,68 @@
 
 
 #include "UI/AOQuickSkillHUD.h"
+#include "UI/AOSkillQuickSlotWidget.h"
+
+#include "Data/DA_AbilitySet.h"
 
 #include "Character/Daeva/Daeva.h"
+
+
+void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
+{
+    Super::BindToASC(InASC);
+
+    // Exception Handling => Logging.
+
+    ADaeva* Daeva = Cast<ADaeva>(BoundASC->GetAvatarActor());
+
+    if (!Daeva)
+    {
+        Daeva = Cast<ADaeva>(GetOwningPlayerPawn());
+    }
+
+    if (!Daeva)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("QuickSkillHUD Bind failed: Daeva is null. ASC=%s Avatar=%s"),
+            *GetNameSafe(BoundASC),
+            *GetNameSafe(BoundASC->GetAvatarActor()));
+        return;
+    }
+
+    const UDA_AbilitySet* AbilitySet = Daeva->GetCombatAbilitySet();
+    if (!AbilitySet)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("QuickSkillHUD Bind failed: AbilitySet is null. Daeva=%s Class=%s"),
+            *GetNameSafe(Daeva),
+            *GetNameSafe(Daeva->GetClass()));
+        return;
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("QuickSkillHUD Bind success. Daeva=%s AbilitySet=%s SlotMapNum=%d"),
+        *GetNameSafe(Daeva),
+        *GetNameSafe(AbilitySet),
+        SkillSlotByAbilityID.Num());
+
+
+    for (const TPair<int32, TObjectPtr<UAOSkillQuickSlotWidget>>& Pair : SkillSlotByAbilityID)
+    {
+        const int32 AbilityID = Pair.Key;
+        UAOSkillQuickSlotWidget* SlotWidget = Pair.Value;
+
+        if (!SlotWidget)
+        {
+            continue;
+        }
+
+        FGAData AbilityData;
+        if (!AbilitySet->GetAbilityDataByInputID(AbilityID, AbilityData))
+        {
+            continue;
+        }
+
+        SlotWidget->InitSkillSlot(AbilityData);
+    }
+}
 
 void UAOQuickSkillHUD::NativeConstruct()
 {

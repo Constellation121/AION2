@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "CoreMinimal.h"
 #include "Character/AOCharacter.h"
@@ -247,8 +247,12 @@ private:
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
 	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
-private:
-	// SuYeon: Only Local Player Floats Head-up UI.
+public:
+	/*
+	* SuYeon: Only Local Player Floats Head-up UI.
+	* Public because it is called from player controller
+	* after the playercontroller finds all of the Daeva's ASC condition is ready.
+	*/
 	void BindOverheadStatusWidget();
 
 public:

@@ -10,7 +10,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "AOMonsterHUDWidget.h"
-
+#include "UI/AOQuickSkillHUD.h"
 
 void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 {
@@ -19,6 +19,11 @@ void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
     if (!BoundASC)
     {
         return;
+    }
+
+    if (QuickSkillHUD)
+    {
+        QuickSkillHUD->BindToASC(BoundASC);
     }
 
     BindASCDelegates();

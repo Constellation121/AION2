@@ -137,8 +137,6 @@ void ADaeva::PossessedBy(AController* NewController)
 		}
 	}
 
-	BindOverheadStatusWidget();
-
 	// 선환 추가 
 	SetGenericTeamId(FGenericTeamId(TEAM_PERCEPTION_DAEVA)); // 플레이어 팀
 
@@ -168,7 +166,7 @@ void ADaeva::OnRep_PlayerState()
 		}
 	}
 
-	BindOverheadStatusWidget();
+	
 }
 
 void ADaeva::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -1259,8 +1257,6 @@ void ADaeva::NotifyPlayerUIReady()
 	}
 
 	bPlayerUIReady = true;
-
-	BindOverheadStatusWidget();
 
 	OnPlayerUIReady.Broadcast(AOPlayerState, ASC, this);
 }

@@ -7,6 +7,7 @@
 #include "Components/Widget.h"
 #include "Player/AOPlayerState.h"
 #include "Character/Monster/AOMonsterBase.h"
+#include "Character/Daeva/Daeva.h"
 
 
 TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
@@ -34,7 +35,7 @@ void AAOPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Å¬¶óÀÌ¾ðÆ®ÀÏ ¶§¸¸ ÁöÁ¤
+	// í´ë¼ì´ì–¸íŠ¸ì¼ ë•Œë§Œ ì§€ì •
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
 	{
 		return;
@@ -118,15 +119,45 @@ void AAOPlayerController::ShowDebugGAS()
 
 void AAOPlayerController::HandlePawnASCReady()
 {
+	/* Suyeon: More strict validation Check => else: retry next Tick(26.07.07) */
+
+	// Exception Handling 
+	// => Validation Check: Is LocalPlayer && DedicatedServer => Can Show UI
+	// Existed Validation Check
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
 	{
 		return;
 	}
 
-	CreateOrBindMainHUD();
+	// === Validation Check below are the new ones ===
+
+	// => Validation Check: Is the local pawn is daeva?
+	ADaeva* Daeva = Cast<ADaeva>(GetPawn());
+	if (!Daeva)
+	{
+		return;
+	}
+
+	// => Validation Check: The Daeva has ASC?
+	AAOPlayerState* AOPlayerState = Daeva->GetPlayerState<AAOPlayerState>();
+	UAbilitySystemComponent* ASC = Daeva->GetAbilitySystemComponent();
+
+
+	// => Validation Check: The ASC of Dave is Ready?
+	if (!AOPlayerState || !ASC)
+	{
+		GetWorldTimerManager().SetTimerForNextTick(
+			this,
+			&AAOPlayerController::HandlePawnASCReady
+		);
+		return;
+	}
+
+	CreateOrBindMainHUD(AOPlayerState);
+	Daeva->BindOverheadStatusWidget();
 }
 
-void AAOPlayerController::CreateOrBindMainHUD()
+void AAOPlayerController::CreateOrBindMainHUD(AAOPlayerState* AOPlayerState)
 {
 	// Exception Handling
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())

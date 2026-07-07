@@ -22,7 +22,7 @@ protected:
 
 
 protected:
-	// Distance¸¦ Ç¥½Ã
+	// Distanceë¥¼ í‘œì‹œ
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
 	TObjectPtr<UTextBlock> TB_DistanceFromPlayer;
 
