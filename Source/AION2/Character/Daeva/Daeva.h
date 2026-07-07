@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "CoreMinimal.h"
 #include "Character/AOCharacter.h"
@@ -22,6 +22,7 @@ class UAOWidgetComponentBase;
 class AAOPlayerState;
 class UAbilitySystemComponent;
 class UAOQuickSlotComponent;
+class UAOPlayerHUDWidget;
 
 class UDA_AbilitySet;
 
@@ -82,7 +83,11 @@ enum class EAbilityID : uint8
 	GlideDash
 };
 
-// UI: Player ASC�� �غ�Ǹ� bind
+/*
+* UI: Notify Player UI Ready
+* Not using anymore in the HUD Logic
+* but leaving it in case someone is using it.
+*/
 DECLARE_MULTICAST_DELEGATE_ThreeParams(
 	FOnPlayerUIReady,
 	AAOPlayerState*,
@@ -251,8 +256,12 @@ private:
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
 	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
 
-private:
-	// SuYeon: Only Local Player Floats Head-up UI.
+public:
+	/*
+	* SuYeon: Only Local Player Floats Head-up UI.
+	* Public because it is called from player controller
+	* after the playercontroller finds all of the Daeva's ASC condition is ready.
+	*/
 	void BindOverheadStatusWidget();
 
 public:
@@ -290,10 +299,25 @@ private:
 	float TargetZoomDistance;
 
 public:
-	// UI: On Player ASC Ready => UI Binds.
+	/*
+	* UI: Notify Player UI Ready
+	* Not using anymore in the HUD Logic
+	* but leaving it in case someone is using it.
+	*/
 	FOnPlayerUIReady OnPlayerUIReady;
 
+	/*
+	* UI: Notify Player UI Ready
+	* Not using anymore in the HUD Logic
+	* but leaving it in case someone is using it.
+	*/
 	bool IsPlayerUIReady() const;
+	
+	/*
+	* UI: Notify Player UI Ready
+	* Not using anymore in the HUD Logic
+	* but leaving it in case someone is using it.
+	*/
 	void NotifyPlayerUIReady();
 
 public:
@@ -415,8 +439,6 @@ protected:
 	
 	uint64 MyId = -1;
 
-
-
 	// Seonhwan 여기서 데바의 색깔 구슬 카운트 하기  
 private:
 	UPROPERTY()
@@ -462,5 +484,23 @@ public:
 	EOrbColor Get_LastOrbColor() { return LastOrbColor; }
 	EOrbColor Get_CurrentDaevaHasSheildColor() { return HasShieldColor; }
 
+private:
+	/* SuYeon */
+	/*
+	* 이미 성공 처리된 상태(같은 Daeva의 ASC가 Bound됨)을 체크하기 위해 추가
+	* 원래 WidgetcomponentBase에서 해줘야 하는데 일단 구현 성공부터 보기 위해 추가했음
+	*/
+	TWeakObjectPtr<UAbilitySystemComponent> BoundOverheadStatusASC;
+
+	// 혹시 몰라서 WidgetComponent의 instnace도 비교하도록 추가. (방금 생성된 새로운 개체일 수 있음)
+	TWeakObjectPtr<UAOPlayerHUDWidget> BoundOverheadStatusWidget;
+
+
+private:
+	// OverHeadWidget, BottomStatusHUD의 Pawn Ready Tick 재시도 횟수 Count.
+	int32 PawnASCBindRetryCount = 0;
+
+	// 일단 넉넉하게 180 => 3초로 잡기. 잘 되면 점점 줄여서 60을 목표로.
+	int32 PawnASCBindMaxRetryCount = 180;
 
 };

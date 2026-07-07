@@ -1,13 +1,16 @@
 #include "Player/AOPlayerController.h"
+#include "Player/AOPlayerState.h"
+
+#include "Character/Monster/AOMonsterBase.h"
+#include "Character/Daeva/Daeva.h"
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
+#include "AbilitySystemComponent.h"
+
 #include "UI/AOMainHUDWidget.h"
 #include "Components/Widget.h"
-#include "Player/AOPlayerState.h"
-#include "Character/Monster/AOMonsterBase.h"
-
 
 TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
 
@@ -34,7 +37,7 @@ void AAOPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Ŭ���̾�Ʈ�� ���� ����
+	// 클라이언트일 때만 지정
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
 	{
 		return;
@@ -118,23 +121,80 @@ void AAOPlayerController::ShowDebugGAS()
 
 void AAOPlayerController::HandlePawnASCReady()
 {
+	/* Suyeon: More strict validation Check => else: retry next Tick(26.07.07) */
+
+	// Exception Handling 
+	// => Validation Check: Is LocalPlayer && DedicatedServer => Can Show UI
+	// Existed Validation Check
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
 	{
 		return;
 	}
 
-	CreateOrBindMainHUD();
+	// === Validation Check below are the new ones ===
+
+	// => Validation Check: Is the local pawn is daeva?
+	ADaeva* Daeva = Cast<ADaeva>(GetPawn());
+	if (!Daeva)
+	{
+		return;
+	}
+
+	// => Validation Check: The Daeva has ASC?
+	AAOPlayerState* AOPlayerState = Daeva->GetPlayerState<AAOPlayerState>();
+	UAbilitySystemComponent* ASC = Daeva->GetAbilitySystemComponent();
+
+
+	// => Validation Check: The ASC of Dave is Ready?
+	if (!AOPlayerState || !ASC)
+	{
+		// Then retry for 60 Tick.
+		if (++PawnASCReadyRetryCount <= PawnASCMaxRetryCount)
+		{
+			GetWorldTimerManager().SetTimerForNextTick(
+				this,
+				&AAOPlayerController::HandlePawnASCReady
+			);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("HandlePawnASCReady retry exceeded. PlayerState=%s ASC=%s"),
+				*GetNameSafe(AOPlayerState),
+				*GetNameSafe(ASC));
+		}
+
+		// Leaving this block because of the upper retry block.
+		return;
+	}
+
+	if (BoundHUDDaeva.Get() == Daeva && BoundHUDASC.Get() == ASC)
+	{
+		return;
+	}
+
+
+	/*
+	* 동일한 처리가 이미 성공했다면
+	* : 이미 Bound된 Daeva가 있고, 해당 Daeva의 ASC가 지금 Bind된 ASC와 같다면) return 해주는 용도.
+	* Respawn이나 Pawn 교체가 있으면 새 Pawn에 다시 Binding 불가능할 수도 있음
+	* 아래 부분은 원래 MainHUD에 bool 처리를 맡겨야 하는데,
+	* Error 없이 보이는 구현이 우선이므로 여기서 진행
+	*/
+	BoundHUDDaeva = Daeva;
+	BoundHUDASC = ASC;
+
+	// 다음에 Pawn이 재생성되면 다시 시도될 수 있으므로 Initialize.
+	PawnASCReadyRetryCount = 0;
+
+	// Finally called.
+	CreateOrBindMainHUD(AOPlayerState);
+	Daeva->BindOverheadStatusWidget();
 }
 
-void AAOPlayerController::CreateOrBindMainHUD()
+void AAOPlayerController::CreateOrBindMainHUD(AAOPlayerState* AOPlayerState)
 {
 	// Exception Handling
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
-	{
-		return;
-	}
-
-	if (!MainHUDClass)
 	{
 		return;
 	}
@@ -144,14 +204,13 @@ void AAOPlayerController::CreateOrBindMainHUD()
 		MainHUD = CreateWidget<UAOMainHUDWidget>(this, MainHUDClass);
 		if (!MainHUD)
 		{
-			UE_LOG(LogTemp, Error, TEXT("PlayerContoroller Is Not Vaild"));
+			UE_LOG(LogTemp, Error, TEXT("PlayerContoroller Is Not Vaild -  AAOPlayerController::CreateOrBindMainHUD"));
 			return;
 		}
 
 		MainHUD->AddToViewport();
 	}
 
-	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
 	MainHUD->BindToPlayerState(AOPlayerState);
 }
 
