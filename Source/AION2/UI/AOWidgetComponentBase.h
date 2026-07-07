@@ -18,8 +18,11 @@ public:
 	UAOWidgetComponentBase();
 
 
-protected:
-	// Widget이 초기화될 때 호출되는 함수.
+public:
+	/*
+	* Widget이 초기화될 때 호출되는 함수.
+	* Public For: Validation Check when the Widget is binded to ASC.
+	*/
 	virtual void InitWidget() override;
 
 

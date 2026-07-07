@@ -11,33 +11,38 @@
 
 void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
 {
+    UE_LOG(LogTemp, Warning, TEXT("QuickSkillHUD BindToASC ENTER. InASC=%s"),
+        *GetNameSafe(InASC));
+
     Super::BindToASC(InASC);
+
+    if (!BoundASC)
+    {
+        UE_LOG(LogTemp, Error, TEXT("QuickSkillHUD BoundASC is null after Super."));
+        return;
+    }
+
 
     // Exception Handling => Logging.
 
-    ADaeva* Daeva = Cast<ADaeva>(BoundASC->GetAvatarActor());
-
+    const ADaeva* Daeva = Cast<ADaeva>(BoundASC->GetAvatarActor());
     if (!Daeva)
     {
         Daeva = Cast<ADaeva>(GetOwningPlayerPawn());
     }
 
-    if (!Daeva)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("QuickSkillHUD Bind failed: Daeva is null. ASC=%s Avatar=%s"),
-            *GetNameSafe(BoundASC),
-            *GetNameSafe(BoundASC->GetAvatarActor()));
-        return;
-    }
+    const UDA_AbilitySet* AbilitySet = Daeva ? Daeva->GetCombatAbilitySet() : nullptr;
 
-    const UDA_AbilitySet* AbilitySet = Daeva->GetCombatAbilitySet();
-    if (!AbilitySet)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("QuickSkillHUD Bind failed: AbilitySet is null. Daeva=%s Class=%s"),
-            *GetNameSafe(Daeva),
-            *GetNameSafe(Daeva->GetClass()));
-        return;
-    }
+    UE_LOG(LogTemp, Warning,
+        TEXT("QuickSkillHUD: Avatar=%s, AvatarClass=%s, AbilitySet=%s, AbilityCount=%d"),
+        *GetNameSafe(Daeva),
+        Daeva ? *GetNameSafe(Daeva->GetClass()) : TEXT("None"),
+        *GetNameSafe(AbilitySet),
+        AbilitySet ? AbilitySet->GetAbilities().Num() : -1);
+
+
+
+
 
     UE_LOG(LogTemp, Warning, TEXT("QuickSkillHUD Bind success. Daeva=%s AbilitySet=%s SlotMapNum=%d"),
         *GetNameSafe(Daeva),

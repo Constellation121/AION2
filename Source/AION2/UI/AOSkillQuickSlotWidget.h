@@ -19,7 +19,7 @@ class UUserWidget;
  * 표시 / 상태만 담당
  *  (이 Slot의 담당 AbilityID는 상위인 QuickSlotSkillHUD가 이미 알고 있으므로)
  * 
- * [이 Widget이 표시/가져야 할 것] (누적 가능한)
+ * [이 Widget이 표시/가져야 할 것] => 여러 AbilityID를 등록 가능하도록.
  * => Icon, Level, CooldownTag, EffectWidgetClass, ASC(Bound)
  * 
  * [이 Widget이 시행해야 할 것]
@@ -52,8 +52,7 @@ private:
 	void SetSkillLevel(int32 InLevel);
 
 protected:
-	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
-	TObjectPtr<UButton> SkillButton;
+	// Button은 상위 class를 물려받아 "SlotButton"으로 존재.
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 	TObjectPtr<UImage> SkillImage;
