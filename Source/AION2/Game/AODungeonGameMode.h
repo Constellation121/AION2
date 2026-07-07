@@ -162,8 +162,11 @@ public :
 	UPROPERTY()
 	TArray<class APawn*> SpawnedPlayers;
 private:
-	void SendDungeonComplete();
-	
+	// H.Y
+	//void SendDungeonComplete();
+	void SendDungeonComplete(bool bIsClear);
+	//
+
 	int32 MyDungeonId = 0;
 	Protocol::DPlayerInfo* ValidateToken(FString Token);
 
@@ -172,4 +175,7 @@ private:
 
 	// 로그인 토큰 인증용
 	TMap<int32, Protocol::DPlayerInfo> PendingPlayers;
+
+private :
+	bool bDungeonResultSent = false;
 };

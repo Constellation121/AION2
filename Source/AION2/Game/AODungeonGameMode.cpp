@@ -258,10 +258,10 @@ void AAODungeonGameMode::ClearDungeon()
 	ClearAllRespawnTimers();
 
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Dungeon Clear"));
-
+	
 	GiveDungeonReward();
 
-	//RequestReturnToVillage();
+	SendDungeonComplete(true);
 }
 
 void AAODungeonGameMode::FailDungeon()
@@ -763,12 +763,21 @@ void AAODungeonGameMode::RequestReturnToVillage()
 	ReturnToVillage();
 }
 
-void AAODungeonGameMode::SendDungeonComplete()
+//void AAODungeonGameMode::SendDungeonComplete()
+//{
+//	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
+//	MapPkt.set_dungeonid(MyDungeonId);
+//	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
+//}
+
+//H.Y
+void AAODungeonGameMode::SendDungeonComplete(bool bIsClear)
 {
 	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
 	MapPkt.set_dungeonid(MyDungeonId);
 	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
 }
+//
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
 {
