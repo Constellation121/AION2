@@ -56,13 +56,13 @@ private:
     FDelegateHandle GroggyChangedHandle;
 
 protected:
-    UPROPERTY(meta = (BindWidget), BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UProgressBar> Pb_HpBar;
 
     UPROPERTY(meta = (BindWidgetOptional), BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UProgressBar> Pb_GroggyBar;
 
-    UPROPERTY(meta = (BindWidget), BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(meta = (BindWidgetOptional), BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UTextBlock> TB_MonsterName;
 
 

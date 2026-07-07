@@ -187,6 +187,7 @@ void Session::ProcessConnect()
 		std::wcout << L"Client Connected! IP: " << GetService()->GetNetAddress().GetIpAddress()
 			<< L", Port: " << GetService()->GetNetAddress().GetPort() << std::endl;
 	}
+
 	else
 	{
 		std::wcout << L"Dedi Connected! IP: " << GetService()->GetNetAddress().GetIpAddress()

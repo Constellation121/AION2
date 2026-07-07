@@ -2,42 +2,32 @@
 
 
 #include "UI/AODungeonHUDWidget.h"
-#include "UI/AOMonsterHUDWidget.h"
+#include "UI/AOMonsterHUDWidget_Targetable.h"
+
 #include "Character/Monster/AOMonsterBase.h"
 
-
-void UAODungeonHUDWidget::SetBossHUDVisible(ESlateVisibility InVisibility, AAOMonsterBase* Boss)
+void UAODungeonHUDWidget::ShowTargetMonsterHUD(AAOMonsterBase* InMonster)
 {
-	if (!BossHUDWidget)
+	if (!InMonster || !MonsterHUDWidget)
 	{
 		return;
 	}
 
-	BossHUDWidget->SetVisibility(InVisibility);
+	// TODO(suyeon): MonsterDisplayName을 설정해주는 Logic으로, 나중에 Data-Oriented로 바꾸면 변경해야 함.
+	MonsterHUDWidget->SetMonsterIndex(InMonster->DungeonBossIndex);
 
-	if (Boss)
-	{
-		BossHUDWidget->SetMonsterIndex(Boss->DungeonBossIndex);
-		BossHUDWidget->BindToASC(Boss->GetAbilitySystemComponent());
-	}
+	// Bind Monster Ability.
+	MonsterHUDWidget->BindToAbilitySystemActor(InMonster);
+
+	MonsterHUDWidget->SetMonsterHUDVisibility(true);
 }
 
-void UAODungeonHUDWidget::HideBossHUDOnly()
+void UAODungeonHUDWidget::HideTargetMonsterHUD()
 {
-	if (BossHUDWidget)
+	if (MonsterHUDWidget)
 	{
-		BossHUDWidget->SetVisibility(ESlateVisibility::Hidden);
+		MonsterHUDWidget->SetMonsterHUDVisibility(false);
+		MonsterHUDWidget->ClearBinding();
 	}
-}
-
-void UAODungeonHUDWidget::ClearBossHUD()
-{
-	if (!BossHUDWidget)
-	{
-		return;
-	}
-
-	BossHUDWidget->UnbindFromASC();
-	BossHUDWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 

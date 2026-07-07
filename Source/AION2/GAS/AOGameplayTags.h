@@ -64,7 +64,7 @@
 #define PHASE_MONSTER_DEAD FGameplayTag::RequestGameplayTag(TEXT("Phase.Monster.Dead"))
 
 
-// State - TH
+// State - SH
 #define STATE_MONSTER_TH_IDLE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.Idle"))
 #define STATE_MONSTER_TH_CHASE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.Chase"))
 #define STATE_MONSTER_TH_RANGEDSHOT FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.RangedShot"))
@@ -89,3 +89,17 @@
 // Montage - LT
 #define MONTAGE_LUTALIS_BASEATTACK1 FGameplayTag::RequestGameplayTag(TEXT("Montage.Lutalis.BaseAttack1"))
 #define MONTAGE_LUTALIS_PT1 FGameplayTag::RequestGameplayTag(TEXT("Montage.Lutalis.PT1"))
+
+
+
+// Gimmick 
+// 기믹 실행 트리거 (붙었다가 기믹 끝나면 제거됨)
+//GIMMICK_MONSTER_TH_HP65_PENDING
+#define GIMMICK_MONSTER_TH_HP70_DONE FGameplayTag::RequestGameplayTag(TEXT("Gimmick.Monster.TH.HP70.Done"))
+
+// 실행 이력 (한 번 발동했으면 영구히 남아 재발동 차단)
+//GIMMICK_MONSTER_TH_HP65_DONE
+#define GIMMICK_MONSTER_TH_HP70_PENDING FGameplayTag::RequestGameplayTag(TEXT("Gimmick.Monster.TH.HP70.Pending"))
+
+
+

@@ -18,34 +18,27 @@ void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 		PlayerHUDWidget->BindToPlayerState(InPlayerState);
 	}
 
+	// TODO(suyeon): 던전 HUD에 각 파티원 Stat 추가
 	if (DungeonHUDWidget)
 	{
 		DungeonHUDWidget->BindToPlayerState(InPlayerState);
 	}
 }
 
-void UAOMainHUDWidget::SetBossHUDVisible(AAOMonsterBase* Boss)
-{
-	if (!DungeonHUDWidget || !Boss)
-	{
-		return;
-	}
-
-	DungeonHUDWidget->SetBossHUDVisible(ESlateVisibility::Visible, Boss);
-}
-
-void UAOMainHUDWidget::HideBossHUDOnly()
+void UAOMainHUDWidget::ShowTargetMonsterHUD(AAOMonsterBase* InMonster)
 {
 	if (DungeonHUDWidget)
 	{
-		DungeonHUDWidget->HideBossHUDOnly();
+		DungeonHUDWidget->ShowTargetMonsterHUD(InMonster);
 	}
 }
 
-void UAOMainHUDWidget::ClearBossHUD()
+void UAOMainHUDWidget::HideTargetMonsterHUD()
 {
 	if (DungeonHUDWidget)
 	{
-		DungeonHUDWidget->ClearBossHUD();
+		DungeonHUDWidget->HideTargetMonsterHUD();
 	}
 }
+
+
