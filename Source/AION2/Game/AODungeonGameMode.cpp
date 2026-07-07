@@ -771,10 +771,10 @@ void AAODungeonGameMode::SendDungeonComplete()
 
 void AAODungeonGameMode::SendDungeonCompleteRequest()
 {
-	Protocol::C_RequestDungeonCompletePacket RequestPkt;
-	RequestPkt.set_dungeonid(MyDungeonId);
+	//Protocol::C_RequestDungeonCompletePacket RequestPkt;
+	//RequestPkt.set_dungeonid(MyDungeonId);
 
-	SEND_PACKET(RequestPkt, PKT_C_REQUEST_DUNGEON_COMPLETE);
+	//SEND_PACKET(RequestPkt, PKT_C_REQUEST_DUNGEON_COMPLETE);
 }
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
