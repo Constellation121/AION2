@@ -110,7 +110,6 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 
 
 	// 선환 추가 
-		// 선환 추가 
 	PlayerOrb = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerOrb"));
 	PlayerOrb->SetupAttachment(GetCapsuleComponent());
 
@@ -888,7 +887,7 @@ void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	}
 }
 
-void ADaeva::HandleDeath()
+void ADaeva::HandleDeath(EDeathReason DeathReason)
 {
 	if (bIsDead)
 	{
@@ -928,9 +927,11 @@ void ADaeva::HandleDeath()
 		{
 			if (AAODungeonGameMode* DungeonGameMode = GetWorld()->GetAuthGameMode<AAODungeonGameMode>())
 			{
+				const bool bIsFallDeath = (DeathReason == EDeathReason::Fall);
+
 				UE_LOG(LogTemp,Warning,TEXT("[Death] Notify Dungeon GameMode: %s"),*PlayerController->GetName());
 
-				DungeonGameMode->NotifyPlayerDied(PlayerController);
+				DungeonGameMode->NotifyPlayerDied(PlayerController,bIsFallDeath);
 			}
 			else
 			{
@@ -1168,6 +1169,23 @@ void ADaeva::OnRep_WingVisible()
 	SetWingVisibility(bWingVisible);
 }
 
+void ADaeva::RestorePlayerInfoFromPlayerState()
+{
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+
+	if (!AOPlayerState)
+	{
+		return;
+	}
+}
+
+void ADaeva::FellOutOfWorld(const UDamageType& DmgType)
+{
+	if (!HasAuthority()) return;
+	if (bIsDead) return;
+	HandleDeath();
+}
+
 void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
 {
 	USkeletalMeshComponent* PartMesh = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
@@ -1318,6 +1336,9 @@ void ADaeva::BindOverheadStatusWidget()
 		* 
 		* 거의 가능성 없는 부분이라고 생각하지만 일단 최대한 방어적으로 넣었음.
   		*/
+
+		// /성공 후 끝/이 아니라 현재 WidgetComponent의 현재 UserWidget이 항상 현재 ASC에 묶이도록.
+		StatusWidget->BindToPlayerState(AOPlayerState);
 
 		return;
 	}

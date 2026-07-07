@@ -26,6 +26,14 @@ class UAOPlayerHUDWidget;
 
 class UDA_AbilitySet;
 
+// 낙사 처리용.
+UENUM(BlueprintType)
+enum class EDeathReason : uint8
+{
+	Normal,
+	Fall
+};
+
 UENUM(BlueprintType)
 enum class EDaevaPartType : uint8
 {
@@ -185,7 +193,7 @@ protected:
 	void OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 public:
-	virtual void HandleDeath();
+	virtual void HandleDeath(EDeathReason DeathReason = EDeathReason::Normal);
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 
 	UFUNCTION(Exec)
@@ -248,6 +256,14 @@ public:
 	void SetWingVisibilityOnServer(bool NewVisible);
 	UFUNCTION()
 	void OnRep_WingVisible();
+
+	//H.Y (PlayerState 복원).
+public :
+	void RestorePlayerInfoFromPlayerState();
+
+	virtual void FellOutOfWorld(const UDamageType& DmgType) override; // 낙사 처리.
+
+	//
 
 private:
 	void CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName);

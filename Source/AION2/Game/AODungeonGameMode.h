@@ -53,7 +53,8 @@ public:
 	void ReturnToVillage();
 
 	// Player Health 0 or Died Call
-	void NotifyPlayerDied(APlayerController* DeadPlayerController);
+	void NotifyPlayerDied(APlayerController* DeadPlayerController, bool bIsFallDeath = false);
+	TMap<TObjectPtr<APlayerController>, int32> PendingRespawnBossIndices;
 
 protected:
 	void FindPlacedBosses();
@@ -162,7 +163,8 @@ public :
 	TArray<class APawn*> SpawnedPlayers;
 private:
 	void SendDungeonComplete();
-	
+	void SendDungeonCompleteRequest();
+
 	int32 MyDungeonId = 0;
 	Protocol::DPlayerInfo* ValidateToken(FString Token);
 
@@ -171,4 +173,7 @@ private:
 
 	// 로그인 토큰 인증용
 	TMap<int32, Protocol::DPlayerInfo> PendingPlayers;
+
+private :
+	bool bDungeonResultSent = false;
 };
