@@ -123,6 +123,7 @@ public:
 	UFUNCTION(Client, Unreliable)
 	void Client_PlayCameraShake();
 
+
 public:
 	bool HasMoveInput();
 	virtual void SearchTarget() override;
@@ -285,7 +286,7 @@ private:
 	float TargetZoomDistance;
 
 public:
-	// UI: Player ASC�� �غ�Ǹ� UI Bind.
+	// UI: On Player ASC Ready => UI Binds.
 	FOnPlayerUIReady OnPlayerUIReady;
 
 	bool IsPlayerUIReady() const;
