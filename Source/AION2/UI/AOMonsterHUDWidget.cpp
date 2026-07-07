@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AOMonsterHUDWidget.h"
 
@@ -40,7 +40,7 @@ void UAOMonsterHUDWidget::NativeDestruct()
 
 void UAOMonsterHUDWidget::SetMonsterIndex(int32 InMonsterIndex)
 {
-    // TODO: 몬스터 이름 HardCoding. 나중에 바꾸기.
+    // TODO(suyeon): 몬스터 이름 HardCoding. 나중에 바꾸기.
     static FString MonsterName = TEXT("");
     switch (InMonsterIndex)
     {
@@ -61,7 +61,10 @@ void UAOMonsterHUDWidget::SetMonsterIndex(int32 InMonsterIndex)
         break;
     }
 
-    TB_MonsterName->SetText(FText::FromString(MonsterName));
+    if (TB_MonsterName)
+    {
+        TB_MonsterName->SetText(FText::FromString(MonsterName));
+    }
 }
 
 void UAOMonsterHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)

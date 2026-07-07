@@ -51,6 +51,11 @@ void UAOClassSwitcherWidget::SetReadyState(bool InReadyState)
 	{
 		TB_Ready->SetVisibility(NewVisibility);
 	}
+
+	if (TB_PlayerName)
+	{
+		TB_PlayerName->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void UAOClassSwitcherWidget::SetLeaderState(bool InLeaderState)
@@ -69,6 +74,7 @@ void UAOClassSwitcherWidget::SetPlayerName(FText InName)
 	if (TB_PlayerName)
 	{
 		TB_PlayerName->SetText(InName);
+		TB_PlayerName->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

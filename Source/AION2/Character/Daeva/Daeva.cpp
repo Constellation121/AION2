@@ -6,6 +6,7 @@
 #include "Data/DA_AbilitySet.h"
 #include "Physics/Collision.h"
 #include "Player/AOPlayerController.h"
+#include "InputCoreTypes.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -30,6 +31,8 @@
 
 #include "Network/PacketHeader.h"
 #include "AION2.h"
+
+#include "NiagaraComponent.h"
 
 const float TargetTraceRadius = 3000.0f;
 
@@ -104,6 +107,30 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	}
 
 	QuickSlotComponent = CreateDefaultSubobject<UAOQuickSlotComponent>(TEXT("QuickSlotComponent"));
+
+
+	// 선환 추가 
+	PlayerOrb = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerOrb"));
+	PlayerOrb->SetupAttachment(GetCapsuleComponent());
+
+	BlueOrb = CreateDefaultSubobject<UNiagaraComponent>(TEXT("BlueOrb"));
+	BlueOrb->SetupAttachment(PlayerOrb);
+	BlueOrb->SetAutoActivate(false); // 처음엔 꺼두기 
+
+	PurpleOrb = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PurpleOrb"));
+	PurpleOrb->SetupAttachment(PlayerOrb);
+	PurpleOrb->SetAutoActivate(false); // 처음엔 꺼두기 
+
+
+	PlayerAoeField = CreateDefaultSubobject<USceneComponent>(TEXT("AoeIndicator"));
+	PlayerAoeField->SetupAttachment(GetCapsuleComponent());
+
+	AoeField = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FieldRange"));
+	AoeField->SetupAttachment(PlayerAoeField);
+
+	// 이거 false로 고치기.
+	AoeField->SetVisibility(false, true);
+
 }
 
 void ADaeva::BeginPlay()
@@ -126,18 +153,8 @@ void ADaeva::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+
 	InitGAS();
-
-	// LocalController일 때만 UI 만들도록 설정
-	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(NewController))
-	{
-		if (AOController->IsLocalController())
-		{
-			AOController->HandlePawnASCReady();
-		}
-	}
-
-	BindOverheadStatusWidget();
 
 	// 선환 추가 
 	SetGenericTeamId(FGenericTeamId(TEAM_PERCEPTION_DAEVA)); // 플레이어 팀
@@ -158,7 +175,7 @@ void ADaeva::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitGAS();
-
+	
 	// LocalController일 때만 UI 만들도록 설정
 	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
 	{
@@ -168,6 +185,7 @@ void ADaeva::OnRep_PlayerState()
 		}
 	}
 
+	// LocalPlayer가 아닐 때도 OverheadStatusWidget은 Client에서 보여야 함 (다른 유저)
 	BindOverheadStatusWidget();
 }
 
@@ -568,7 +586,7 @@ void ADaeva::InitGAS()
 		ApplyDashStaminaRegenEffect();
 	}
 
-	// UI ?앹꽦 諛?Bind.
+	// Notify to the PlayerController that the PlayerCharacter is ready.
 	NotifyPlayerUIReady();
 }
 
@@ -946,7 +964,7 @@ void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
 		Data.NewValue
 	);
 
-	SendHp(Data.NewValue);
+	//SendHp(Data.NewValue);
 
 	if (Data.NewValue <= 0.0f && !bIsDead)
 	{
@@ -962,6 +980,7 @@ void ADaeva::TestSetHealth(float NewHealth)
 		ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), NewHealth);
 	}
 }
+
 
 void ADaeva::StartSprint()
 {
@@ -1214,6 +1233,7 @@ float ADaeva::CalcDistanceSquaredToScreenCenter(AActor* Other)
 void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 {
 	CurrentTarget = NewTarget;
+
 	if (PreviousTarget != CurrentTarget)
 	{
 		Server_SetCurrentTarget(CurrentTarget);
@@ -1221,39 +1241,118 @@ void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 		if (AAOMonsterBase* PreviousMonster = Cast<AAOMonsterBase>(PreviousTarget))
 		{
 			PreviousMonster->SetTargetWidgetVisible(false);
-
 		}
 
 		if (AAOMonsterBase* CurrentMonster = Cast<AAOMonsterBase>(CurrentTarget))
 		{
 			CurrentMonster->SetTargetWidgetVisible(true);
 		}
+
+		// Related to MonsterHUD.
+		if (AAOPlayerController* PC = Cast<AAOPlayerController>(GetController()))
+		{
+			if (AAOMonsterBase* CurrentMonster = Cast<AAOMonsterBase>(CurrentTarget))
+			{
+				PC->ShowTargetMonsterHUD(CurrentMonster);
+			}
+			else
+			{
+				PC->HideTargetMonsterHUD();
+			}
+		}
 	}
 }
 
 void ADaeva::BindOverheadStatusWidget()
 {
+	/* Suyeon: More strict validation Check => else: retry next Tick(26.07.07) */
 
+	// Exception Handling 
+	// => Validation Check: Is LocalPlayer && DedicatedServer => Can Show UI
+	// Existed Validation Check
 	if (GetNetMode() == NM_DedicatedServer || !OverheadStatusWidgetComponent)
 	{
 		return;
 	}
 
+	// Validation Check: If (PlayerState && ASC ready?)
+	// else: retry next Tick.
 	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
-	if (!AOPlayerState)
+	if (!AOPlayerState || !AOPlayerState->GetAbilitySystemComponent())
 	{
+		// 최대 횟수를 지정해 retry.
+		if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
+		{
+			GetWorldTimerManager().SetTimerForNextTick(
+				this,
+				&ADaeva::BindOverheadStatusWidget
+			);
+		}
+
 		return;
 	}
 
-	if (UAOPlayerHUDWidget* StatusWidget = Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject()))
-	{
-		StatusWidget->BindToPlayerState(AOPlayerState);
-	}
-}
+	UAOPlayerHUDWidget* StatusWidget =
+		Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
 
-bool ADaeva::IsPlayerUIReady() const
-{
-	return bPlayerUIReady && ASC != nullptr && GetPlayerState<AAOPlayerState>() != nullptr;
+	// Validation Check: If (OverheadStatusWidgetComponent is ready)
+	// else: retry next Tick.
+	if (!StatusWidget)
+	{
+		OverheadStatusWidgetComponent->InitWidget();
+
+		StatusWidget =
+			Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
+
+		if (!StatusWidget)
+		{
+			// 최대 횟수를 지정해 retry.
+			if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
+			{
+				GetWorldTimerManager().SetTimerForNextTick(
+					this,
+					&ADaeva::BindOverheadStatusWidget
+				);
+			}
+
+			return;
+		}
+	}
+
+	UAbilitySystemComponent* PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
+
+	// 이미 성공한 처리일 경우 return: Bound된 ASC가 같은지 + 지금 지정된 WidgetInstance가 같은지.
+	if (BoundOverheadStatusASC.Get() == PlayerStateASC &&
+		BoundOverheadStatusWidget.Get() == StatusWidget)
+	{
+		/*
+		* BoundOverheadStatusWidget는 이미 생성자에서 명시적으로는 한 번만 생성하고 있지만, 
+		* 외부에서 아래의 작업을 하면 깨진다. 
+		* Runtime에서 SetWidgetClass() 다시 호출 
+		* 외부에서 SetWidget()으로 다른 WidgetInstance 주입
+		* component의 unregister/register 호출로 내부 Widget 재 초기화
+		* level streaming, actor reconstruction, PIE 재시작성 흐름 blueprint construction script 변경 등으로 Component는 있는데 내부 Widget이 새로 잡힘
+		* 스스로 InitWidget() 호출 했을 때 기존 객체가 없으면 새로 생성됨
+		* 
+		* 거의 가능성 없는 부분이라고 생각하지만 일단 최대한 방어적으로 넣었음.
+  		*/
+
+		// /성공 후 끝/이 아니라 현재 WidgetComponent의 현재 UserWidget이 항상 현재 ASC에 묶이도록.
+		StatusWidget->BindToPlayerState(AOPlayerState);
+
+		return;
+	}
+
+	// else: 기존에 검사를 수행하는 조건에 다시 지정
+	BoundOverheadStatusASC = PlayerStateASC;
+	BoundOverheadStatusWidget = StatusWidget;
+
+
+	// 다음에 Pawn이 재생성되면 다시 시도될 수 있으므로 Initialize.
+	PawnASCBindRetryCount = 0;
+
+	// Finally Called.
+	StatusWidget->BindToPlayerState(AOPlayerState);
 }
 
 void ADaeva::NotifyPlayerUIReady()
@@ -1265,8 +1364,6 @@ void ADaeva::NotifyPlayerUIReady()
 	}
 
 	bPlayerUIReady = true;
-
-	BindOverheadStatusWidget();
 
 	OnPlayerUIReady.Broadcast(AOPlayerState, ASC, this);
 }
@@ -1336,4 +1433,96 @@ void ADaeva::SendItem(int32 SlotIndex)
 void ADaeva::SetItemUse()
 {
 	bCanUseItem = true;
+}
+
+
+
+void ADaeva::EatOrb(EOrbColor NewColor)
+{
+	if (NewColor == LastOrbColor)
+	{
+		// 같은 색 연속 -> 스택 증가 
+		++OrbStack;
+	}
+
+
+	else
+	{
+		// 다른 색 -> 초기화 후 1로 시작. 
+		OrbStack = 1;
+		LastOrbColor = NewColor;
+	}
+
+
+	// 같은 2번 연속 먹었을 때만 효과 발동 
+	if (OrbStack >= 2)
+	{
+		// 여기서 효과 발동
+
+		switch (NewColor)
+		{
+		case EOrbColor::BLUE:
+		{
+			Set_BlueOrb_RenderOnOff(true);
+		}
+		break;
+		case EOrbColor::PURPLE:
+		{
+			Set_PurpleOrb_RenderOnOff(true);
+		}
+		break;
+		}
+
+
+	}
+
+
+}
+
+
+
+void ADaeva::Set_AOE_RenderOnOff_Implementation(bool _bOnOff)
+{
+	AoeField->SetVisibility(_bOnOff, true);
+
+}
+
+void ADaeva::Set_BlueOrb_RenderOnOff_Implementation(bool _bOnOff)
+{
+	if (_bOnOff == true)
+	{
+		BlueOrb->Activate(_bOnOff);
+	}
+
+	else
+	{
+		BlueOrb->DeactivateImmediate();
+	}
+
+}
+
+
+
+void ADaeva::Set_PurpleOrb_RenderOnOff_Implementation(bool _bOnOff)
+{
+	if (_bOnOff == true)
+	{
+		PurpleOrb->Activate(_bOnOff);
+	}
+
+
+	else
+	{
+		PurpleOrb->DeactivateImmediate();
+	}
+
+}
+
+
+void ADaeva::Reset_OrbStackAndColor()
+{
+	OrbStack = 0;
+	LastOrbColor = EOrbColor::None;
+
+
 }

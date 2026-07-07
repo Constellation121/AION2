@@ -8,6 +8,8 @@
 #include "Types/DungeonRoomTypes.h"
 #include "AODungeonEntranceWidget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDungeonEntranceWidgetClosed);
+
 class UButton;
 class UOverlay;
 class UAOClassSwitcherWidget;
@@ -31,8 +33,8 @@ public:
 	void SetDungeonInfo(const Protocol::DungeonInfo& DungeonInfo);
 	void SetDungeonCreated(const Protocol::DungeonInfo& DungeonInfo);
 	void SetDungeonEntered(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);
-	void SetDungeonReady(int32 DungeonId, uint64 PlayerId);
-
+	void SetDungeonReady(int32 DungeonId, uint64 PlayerId, bool bIsReady);
+	void SetDungeonExit(int32 DungeonId, uint64 ExitPlayerId, const Protocol::DungeonInfo& DungeonInfo);
 	// Utils/AODungeonEntrance에서 호출하는 초기화
 	void InitializeWaitingRoom();
 
@@ -43,6 +45,17 @@ public:
 	UFUNCTION()
 	void RequestEnterDungeon(int32 DungeonId);
 
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnDungeonEntranceWidgetClosed OnWidgetClosed;
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> CloseButton;
+
+private:
+	UFUNCTION()
+	void OnCloseButtonClicked();
 
 public:
 	// PacketHandler에서 호출할 수 있도록 public으로 설정
@@ -174,4 +187,6 @@ private:
 
 private:
 	UAOPlayerManager* GetPlayerManager() const;
+
+	bool bIsEnter = false;
 };
