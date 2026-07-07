@@ -33,7 +33,7 @@ public:
 	void SetDungeonInfo(const Protocol::DungeonInfo& DungeonInfo);
 	void SetDungeonCreated(const Protocol::DungeonInfo& DungeonInfo);
 	void SetDungeonEntered(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);
-	void SetDungeonReady(int32 DungeonId, uint64 PlayerId);
+	void SetDungeonReady(int32 DungeonId, uint64 PlayerId, bool bIsReady);
 	void SetDungeonExit(int32 DungeonId, uint64 ExitPlayerId, const Protocol::DungeonInfo& DungeonInfo);
 	// Utils/AODungeonEntrance에서 호출하는 초기화
 	void InitializeWaitingRoom();

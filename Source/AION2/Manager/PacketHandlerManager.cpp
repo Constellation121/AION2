@@ -272,7 +272,7 @@ bool FPacketHandler::Handle_S_READY(Protocol::S_DungeonReadyPacket& Pkt)
 	{
 		if (UAODungeonEntranceWidget* DungeonWidget = UIManager->GetWidget<UAODungeonEntranceWidget>())
 		{
-			DungeonWidget->SetDungeonReady(Pkt.dungeonid(), Pkt.playerid());
+			DungeonWidget->SetDungeonReady(Pkt.dungeonid(), Pkt.playerid(), Pkt.isready());
 		}
 	}
 

@@ -372,7 +372,7 @@ void UAOPlayerManager::UpdateMyDungeonRoomStateFromList(const google::protobuf::
 		}
 	}
 
-	ClearMyDungeonRoomState();
+	//ClearMyDungeonRoomState();
 }
 
 void UAOPlayerManager::UpdateMyDungeonEnterState(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer)

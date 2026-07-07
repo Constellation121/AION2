@@ -249,7 +249,10 @@ bool PacketHandler::HandleDungeonEnter(PacketSessionRef& session, Protocol::C_Du
 
 bool PacketHandler::HandleDungeonExit(PacketSessionRef& session, Protocol::C_DungeonExitPacket& pkt)
 {
-
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+	int32 dungeonId = pkt.dungeonid();
+	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleExitPacket, player, dungeonId);
 	return false;
 }
 

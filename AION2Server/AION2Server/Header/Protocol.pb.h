@@ -3340,6 +3340,7 @@ class S_DungeonReadyPacket final :
   enum : int {
     kPlayerIdFieldNumber = 1,
     kDungeonIdFieldNumber = 2,
+    kIsReadyFieldNumber = 3,
   };
   // uint64 playerId = 1;
   void clear_playerid();
@@ -3359,6 +3360,15 @@ class S_DungeonReadyPacket final :
   void _internal_set_dungeonid(int32_t value);
   public:
 
+  // bool isReady = 3;
+  void clear_isready();
+  bool isready() const;
+  void set_isready(bool value);
+  private:
+  bool _internal_isready() const;
+  void _internal_set_isready(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_DungeonReadyPacket)
  private:
   class _Internal;
@@ -3369,6 +3379,7 @@ class S_DungeonReadyPacket final :
   struct Impl_ {
     uint64_t playerid_;
     int32_t dungeonid_;
+    bool isready_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -7580,6 +7591,26 @@ inline void S_DungeonReadyPacket::_internal_set_dungeonid(int32_t value) {
 inline void S_DungeonReadyPacket::set_dungeonid(int32_t value) {
   _internal_set_dungeonid(value);
   // @@protoc_insertion_point(field_set:Protocol.S_DungeonReadyPacket.dungeonId)
+}
+
+// bool isReady = 3;
+inline void S_DungeonReadyPacket::clear_isready() {
+  _impl_.isready_ = false;
+}
+inline bool S_DungeonReadyPacket::_internal_isready() const {
+  return _impl_.isready_;
+}
+inline bool S_DungeonReadyPacket::isready() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DungeonReadyPacket.isReady)
+  return _internal_isready();
+}
+inline void S_DungeonReadyPacket::_internal_set_isready(bool value) {
+  
+  _impl_.isready_ = value;
+}
+inline void S_DungeonReadyPacket::set_isready(bool value) {
+  _internal_set_isready(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_DungeonReadyPacket.isReady)
 }
 
 // -------------------------------------------------------------------

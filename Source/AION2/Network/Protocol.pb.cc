@@ -285,6 +285,7 @@ PROTOBUF_CONSTEXPR S_DungeonReadyPacket::S_DungeonReadyPacket(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.playerid_)*/uint64_t{0u}
   , /*decltype(_impl_.dungeonid_)*/0
+  , /*decltype(_impl_.isready_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_DungeonReadyPacketDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_DungeonReadyPacketDefaultTypeInternal()
@@ -678,6 +679,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_DungeonReadyPacket, _impl_.playerid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_DungeonReadyPacket, _impl_.dungeonid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DungeonReadyPacket, _impl_.isready_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_DungeonStartPacket, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -828,22 +830,22 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 129, -1, -1, sizeof(::Protocol::S_DungeonEnterPacket)},
   { 138, -1, -1, sizeof(::Protocol::C_DungeonReadyPacket)},
   { 145, -1, -1, sizeof(::Protocol::S_DungeonReadyPacket)},
-  { 153, -1, -1, sizeof(::Protocol::C_DungeonStartPacket)},
-  { 160, -1, -1, sizeof(::Protocol::S_DungeonStartDediPacket)},
-  { 167, -1, -1, sizeof(::Protocol::S_DungeonStartPacket)},
-  { 177, -1, -1, sizeof(::Protocol::C_DungeonExitPacket)},
-  { 185, -1, -1, sizeof(::Protocol::S_DungeonExitPacket)},
-  { 193, -1, -1, sizeof(::Protocol::S_DungeonFailPacket)},
-  { 201, -1, -1, sizeof(::Protocol::C_StorePurchasePacket)},
-  { 209, -1, -1, sizeof(::Protocol::S_StorePurchasePacket)},
-  { 217, -1, -1, sizeof(::Protocol::C_ChangeHpPacket)},
-  { 225, -1, -1, sizeof(::Protocol::C_ChatPacket)},
-  { 233, -1, -1, sizeof(::Protocol::S_ChatPacket)},
-  { 241, -1, -1, sizeof(::Protocol::S_DisconnectPacket)},
-  { 248, -1, -1, sizeof(::Protocol::C_UseItemPacket)},
-  { 256, -1, -1, sizeof(::Protocol::S_UseItemPacket)},
-  { 267, -1, -1, sizeof(::Protocol::C_DungeonMapLoadCompletePacket)},
-  { 274, -1, -1, sizeof(::Protocol::S_SetDungeonPlayerPacket)},
+  { 154, -1, -1, sizeof(::Protocol::C_DungeonStartPacket)},
+  { 161, -1, -1, sizeof(::Protocol::S_DungeonStartDediPacket)},
+  { 168, -1, -1, sizeof(::Protocol::S_DungeonStartPacket)},
+  { 178, -1, -1, sizeof(::Protocol::C_DungeonExitPacket)},
+  { 186, -1, -1, sizeof(::Protocol::S_DungeonExitPacket)},
+  { 194, -1, -1, sizeof(::Protocol::S_DungeonFailPacket)},
+  { 202, -1, -1, sizeof(::Protocol::C_StorePurchasePacket)},
+  { 210, -1, -1, sizeof(::Protocol::S_StorePurchasePacket)},
+  { 218, -1, -1, sizeof(::Protocol::C_ChangeHpPacket)},
+  { 226, -1, -1, sizeof(::Protocol::C_ChatPacket)},
+  { 234, -1, -1, sizeof(::Protocol::S_ChatPacket)},
+  { 242, -1, -1, sizeof(::Protocol::S_DisconnectPacket)},
+  { 249, -1, -1, sizeof(::Protocol::C_UseItemPacket)},
+  { 257, -1, -1, sizeof(::Protocol::S_UseItemPacket)},
+  { 268, -1, -1, sizeof(::Protocol::C_DungeonMapLoadCompletePacket)},
+  { 275, -1, -1, sizeof(::Protocol::S_SetDungeonPlayerPacket)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -920,36 +922,36 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "dungeonId\030\001 \001(\005\0220\n\013enterPlayer\030\002 \001(\0132\033.P"
   "rotocol.DungeonPlayerInfo\022*\n\013dungeonInfo"
   "\030\003 \001(\0132\025.Protocol.DungeonInfo\")\n\024C_Dunge"
-  "onReadyPacket\022\021\n\tdungeonId\030\001 \001(\005\";\n\024S_Du"
+  "onReadyPacket\022\021\n\tdungeonId\030\001 \001(\005\"L\n\024S_Du"
   "ngeonReadyPacket\022\020\n\010playerId\030\001 \001(\004\022\021\n\tdu"
-  "ngeonId\030\002 \001(\005\")\n\024C_DungeonStartPacket\022\021\n"
-  "\tdungeonId\030\001 \001(\005\"N\n\030S_DungeonStartDediPa"
-  "cket\0222\n\017prePlayersInfos\030\001 \003(\0132\031.Protocol"
-  ".DediDungeonInfo\"_\n\024S_DungeonStartPacket"
-  "\022\021\n\tdungeonId\030\001 \001(\005\022\023\n\013clientToken\030\002 \001(\t"
-  "\022\021\n\tdungeonIP\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\":\n\023C_D"
-  "ungeonExitPacket\022\021\n\tdungeonId\030\001 \001(\005\022\020\n\010p"
-  "layerId\030\002 \001(\004\"S\n\023S_DungeonExitPacket\022*\n\013"
-  "dungeonInfo\030\001 \001(\0132\025.Protocol.DungeonInfo"
-  "\022\020\n\010playerId\030\002 \001(\004\"U\n\023S_DungeonFailPacke"
-  "t\022\021\n\tdungeonId\030\001 \001(\005\022+\n\006reason\030\002 \001(\0162\033.P"
-  "rotocol.DungeonFailReason\"9\n\025C_StorePurc"
-  "hasePacket\022\016\n\006itemId\030\001 \001(\005\022\020\n\010playerId\030\002"
-  " \001(\004\"K\n\025S_StorePurchasePacket\022$\n\010itemInf"
-  "o\030\001 \001(\0132\022.Protocol.ItemData\022\014\n\004gold\030\002 \001("
-  "\005\"0\n\020C_ChangeHpPacket\022\020\n\010playerId\030\001 \001(\004\022"
-  "\n\n\002hp\030\002 \001(\005\".\n\014C_ChatPacket\022\020\n\010playerId\030"
-  "\001 \001(\004\022\014\n\004chat\030\002 \001(\t\".\n\014S_ChatPacket\022\020\n\010p"
-  "layerId\030\001 \001(\t\022\014\n\004chat\030\002 \001(\t\"&\n\022S_Disconn"
-  "ectPacket\022\020\n\010playerId\030\001 \001(\004\"6\n\017C_UseItem"
-  "Packet\022\020\n\010playerId\030\001 \001(\004\022\021\n\tslotIndex\030\002 "
-  "\001(\005\"n\n\017S_UseItemPacket\022\020\n\010playerId\030\001 \001(\004"
-  "\022\021\n\tslotIndex\030\002 \001(\005\022\r\n\005count\030\003 \001(\005\022\022\n\nef"
-  "fectType\030\004 \001(\t\022\023\n\013effectValue\030\005 \001(\005\"3\n\036C"
-  "_DungeonMapLoadCompletePacket\022\021\n\tdungeon"
-  "Id\030\001 \001(\005\"E\n\030S_SetDungeonPlayerPacket\022)\n\n"
-  "playerInfo\030\001 \003(\0132\025.Protocol.DPlayerInfob"
-  "\006proto3"
+  "ngeonId\030\002 \001(\005\022\017\n\007isReady\030\003 \001(\010\")\n\024C_Dung"
+  "eonStartPacket\022\021\n\tdungeonId\030\001 \001(\005\"N\n\030S_D"
+  "ungeonStartDediPacket\0222\n\017prePlayersInfos"
+  "\030\001 \003(\0132\031.Protocol.DediDungeonInfo\"_\n\024S_D"
+  "ungeonStartPacket\022\021\n\tdungeonId\030\001 \001(\005\022\023\n\013"
+  "clientToken\030\002 \001(\t\022\021\n\tdungeonIP\030\003 \001(\t\022\014\n\004"
+  "port\030\004 \001(\005\":\n\023C_DungeonExitPacket\022\021\n\tdun"
+  "geonId\030\001 \001(\005\022\020\n\010playerId\030\002 \001(\004\"S\n\023S_Dung"
+  "eonExitPacket\022*\n\013dungeonInfo\030\001 \001(\0132\025.Pro"
+  "tocol.DungeonInfo\022\020\n\010playerId\030\002 \001(\004\"U\n\023S"
+  "_DungeonFailPacket\022\021\n\tdungeonId\030\001 \001(\005\022+\n"
+  "\006reason\030\002 \001(\0162\033.Protocol.DungeonFailReas"
+  "on\"9\n\025C_StorePurchasePacket\022\016\n\006itemId\030\001 "
+  "\001(\005\022\020\n\010playerId\030\002 \001(\004\"K\n\025S_StorePurchase"
+  "Packet\022$\n\010itemInfo\030\001 \001(\0132\022.Protocol.Item"
+  "Data\022\014\n\004gold\030\002 \001(\005\"0\n\020C_ChangeHpPacket\022\020"
+  "\n\010playerId\030\001 \001(\004\022\n\n\002hp\030\002 \001(\005\".\n\014C_ChatPa"
+  "cket\022\020\n\010playerId\030\001 \001(\004\022\014\n\004chat\030\002 \001(\t\".\n\014"
+  "S_ChatPacket\022\020\n\010playerId\030\001 \001(\t\022\014\n\004chat\030\002"
+  " \001(\t\"&\n\022S_DisconnectPacket\022\020\n\010playerId\030\001"
+  " \001(\004\"6\n\017C_UseItemPacket\022\020\n\010playerId\030\001 \001("
+  "\004\022\021\n\tslotIndex\030\002 \001(\005\"n\n\017S_UseItemPacket\022"
+  "\020\n\010playerId\030\001 \001(\004\022\021\n\tslotIndex\030\002 \001(\005\022\r\n\005"
+  "count\030\003 \001(\005\022\022\n\neffectType\030\004 \001(\t\022\023\n\013effec"
+  "tValue\030\005 \001(\005\"3\n\036C_DungeonMapLoadComplete"
+  "Packet\022\021\n\tdungeonId\030\001 \001(\005\"E\n\030S_SetDungeo"
+  "nPlayerPacket\022)\n\nplayerInfo\030\001 \003(\0132\025.Prot"
+  "ocol.DPlayerInfob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -957,7 +959,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 2527, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 2544, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 36,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -4631,12 +4633,13 @@ S_DungeonReadyPacket::S_DungeonReadyPacket(const S_DungeonReadyPacket& from)
   new (&_impl_) Impl_{
       decltype(_impl_.playerid_){}
     , decltype(_impl_.dungeonid_){}
+    , decltype(_impl_.isready_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.playerid_, &from._impl_.playerid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.dungeonid_) -
-    reinterpret_cast<char*>(&_impl_.playerid_)) + sizeof(_impl_.dungeonid_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.isready_) -
+    reinterpret_cast<char*>(&_impl_.playerid_)) + sizeof(_impl_.isready_));
   // @@protoc_insertion_point(copy_constructor:Protocol.S_DungeonReadyPacket)
 }
 
@@ -4647,6 +4650,7 @@ inline void S_DungeonReadyPacket::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.playerid_){uint64_t{0u}}
     , decltype(_impl_.dungeonid_){0}
+    , decltype(_impl_.isready_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -4675,8 +4679,8 @@ void S_DungeonReadyPacket::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.playerid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.dungeonid_) -
-      reinterpret_cast<char*>(&_impl_.playerid_)) + sizeof(_impl_.dungeonid_));
+      reinterpret_cast<char*>(&_impl_.isready_) -
+      reinterpret_cast<char*>(&_impl_.playerid_)) + sizeof(_impl_.isready_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -4698,6 +4702,14 @@ const char* S_DungeonReadyPacket::_InternalParse(const char* ptr, ::_pbi::ParseC
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.dungeonid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool isReady = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.isready_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -4743,6 +4755,12 @@ uint8_t* S_DungeonReadyPacket::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_dungeonid(), target);
   }
 
+  // bool isReady = 3;
+  if (this->_internal_isready() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_isready(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -4769,6 +4787,11 @@ size_t S_DungeonReadyPacket::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_dungeonid());
   }
 
+  // bool isReady = 3;
+  if (this->_internal_isready() != 0) {
+    total_size += 1 + 1;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -4793,6 +4816,9 @@ void S_DungeonReadyPacket::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, c
   if (from._internal_dungeonid() != 0) {
     _this->_internal_set_dungeonid(from._internal_dungeonid());
   }
+  if (from._internal_isready() != 0) {
+    _this->_internal_set_isready(from._internal_isready());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -4811,8 +4837,8 @@ void S_DungeonReadyPacket::InternalSwap(S_DungeonReadyPacket* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(S_DungeonReadyPacket, _impl_.dungeonid_)
-      + sizeof(S_DungeonReadyPacket::_impl_.dungeonid_)
+      PROTOBUF_FIELD_OFFSET(S_DungeonReadyPacket, _impl_.isready_)
+      + sizeof(S_DungeonReadyPacket::_impl_.isready_)
       - PROTOBUF_FIELD_OFFSET(S_DungeonReadyPacket, _impl_.playerid_)>(
           reinterpret_cast<char*>(&_impl_.playerid_),
           reinterpret_cast<char*>(&other->_impl_.playerid_));

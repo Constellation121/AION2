@@ -107,10 +107,6 @@ void UAODungeonEntranceWidget::OnEnterButtonClicked()
 		EnterPacket.set_dungeonid(0);
 	}
 
-	// 빠른 참가의 경우 서버에서 방 번호 및 참가 성공/실패 결과를 받아야 하기 때문에,
-	// 여기서 roomid를 정하지 않음
-
-
 	SEND_PACKET(EnterPacket, PKT_C_DUNGEONENTER);
 }
 
@@ -259,7 +255,7 @@ void UAODungeonEntranceWidget::SetDungeonEntered(int32 DungeonId, const Protocol
 	ApplyEntranceState();
 }
 
-void UAODungeonEntranceWidget::SetDungeonReady(int32 DungeonId, uint64 PlayerId)
+void UAODungeonEntranceWidget::SetDungeonReady(int32 DungeonId, uint64 PlayerId, bool bIsReady)
 {
 	// 내가 현재 참가 중인 방의 Ready Packet인지를 거르기
 	// 내가 참가하지 않은 방의 Ready 상태는 보이지 않는다.
@@ -276,8 +272,11 @@ void UAODungeonEntranceWidget::SetDungeonReady(int32 DungeonId, uint64 PlayerId)
 	for (UAOClassSwitcherWidget* Slot : MemberClassSlots)
 	{
 		if (Slot && Slot->GetCachedPlayerId() == PlayerId)
-		{
-			Slot->SetReadyState(true);
+		{		
+			if (bIsReady)
+				Slot->SetReadyState(true);
+			else
+				Slot->SetReadyState(false);
 			break;
 		}
 	}
@@ -490,12 +489,16 @@ void UAODungeonEntranceWidget::ClearDungeonRooms()
 	}
 }
 
-void UAODungeonEntranceWidget::RefreshDungeonRooms(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonRooms
-)
+void UAODungeonEntranceWidget::RefreshDungeonRooms(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonRooms)
 {
 	ClearDungeonRooms();
 
 	int32 RoomWidgetIndex = 0;
+
+	const UAOPlayerManager* PlayerManager = GetPlayerManager();
+	const FPlayerDungeonRoomState State = PlayerManager
+		? PlayerManager->GetMyDungeonRoomState()
+		: FPlayerDungeonRoomState();
 
 	for (const Protocol::DungeonInfo& DungeonInfo : DungeonRooms)
 	{
@@ -508,6 +511,11 @@ void UAODungeonEntranceWidget::RefreshDungeonRooms(const google::protobuf::Repea
 		if (DungeonInfo.dungeonid() <= 0)
 		{
 			continue;
+		}
+
+		if (State.IsJoined() && State.DungeonId == DungeonInfo.dungeonid())
+		{
+			SetDungeonInfo(DungeonInfo);
 		}
 
 
@@ -551,12 +559,12 @@ void UAODungeonEntranceWidget::ShowErrorMessage(Protocol::DungeonFailReason Reas
 	{
 	case Protocol::DungeonFailReason::Ready:
 	{
-		ErrorMessage->SetText(FText::FromString("모든 참가자가 준비 중이어야 합니다."));
+		ErrorMessage->SetText(FText::FromString(TEXT("모든 참가자가 준비 중이어야 합니다.")));
 		break;
 	}
 	case Protocol::DungeonFailReason::FullDungeon:
 	{
-		ErrorMessage->SetText(FText::FromString("모든 참가자가 준비 중이어야 합니다."));
+		ErrorMessage->SetText(FText::FromString(TEXT("모든 참가자가 준비 중이어야 합니다.")));
 		break;
 	}
 	default:

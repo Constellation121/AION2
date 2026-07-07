@@ -26,6 +26,11 @@ Dungeon::Dungeon(int32 dungeonId, PlayerRef leader)
 bool Dungeon::AddMember(PlayerRef player)
 {
 	if (IsFull()) return false;
+	for (auto& m : _members)
+	{
+		if (m->GetId() == player->GetId())
+			return false;
+	}
 	_members.push_back(player);
 	return true;
 }
@@ -224,7 +229,14 @@ void DungeonWaitingRoom::HandleEnterDungeon(PlayerRef player, int32 inDungeonId)
 
 void DungeonWaitingRoom::HandleReadyPacket(PlayerRef player, int32 dungeonId)
 {
-	player->SetReady(true);
+	if(player->GetReady())
+	{
+		player->SetReady(false);
+	}
+	else
+	{
+		player->SetReady(true);
+	}
 
 	auto it = _dungeons.find(dungeonId);
 	if (it == _dungeons.end()) return;
@@ -233,7 +245,7 @@ void DungeonWaitingRoom::HandleReadyPacket(PlayerRef player, int32 dungeonId)
 	Protocol::S_DungeonReadyPacket readyPacket;
 	readyPacket.set_dungeonid(dungeonId);
 	readyPacket.set_playerid(player->GetId());
-
+	readyPacket.set_isready(player->GetReady());
 	SendBufferRef readyBuffer = PacketHandler::MakeSendBuffer(readyPacket);
 	dungeon->Broadcast(readyBuffer);
 }
