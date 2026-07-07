@@ -869,7 +869,7 @@ void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	}
 }
 
-void ADaeva::HandleDeath(EDeathReason DeathReason = EDeathReason::Normal)
+void ADaeva::HandleDeath(EDeathReason DeathReason)
 {
 	if (bIsDead)
 	{
