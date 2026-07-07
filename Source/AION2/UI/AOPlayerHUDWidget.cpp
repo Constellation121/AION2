@@ -11,22 +11,47 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "AOMonsterHUDWidget.h"
+#include "UI/AOQuickSkillHUD.h"
 
-#include "Network/PacketHeader.h"
-#include "Game/AOGameInstance.h"
-
+// TODO(SuYeon): Delegate마다, 만약 다른 ASC와 연동되어있다면 로그를 출력하거나 하는 방어적 코드 추가 +Monster의 것에도 추가할 것.
 
 void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 {
-	Super::BindToASC(InASC);
+    // Validation Check
+    if (!InASC)
+    {
+        return;
+    }
+
+    const bool bSameASC = BoundASC == InASC;
+
+    Super::BindToASC(InASC);
 
 	if (!BoundASC)
 	{
 		return;
 	}
 
-	BindASCDelegates();
-	BroadcastInitialAttributes();
+
+    if (bSameASC && HealthChangedHandle.IsValid())
+    {
+        BroadcastInitialAttributes();
+        return;
+    }
+
+    UnbindASCDelegates();
+
+    if (QuickSkillHUD)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("PlayerHUD BindToASC. ASC=%s, QuickSkillHUD=%s"),
+            *GetNameSafe(InASC),
+            *GetNameSafe(QuickSkillHUD));
+
+        QuickSkillHUD->BindToASC(BoundASC);
+    }
+
+    BindASCDelegates();
+    BroadcastInitialAttributes();
 }
 
 void UAOPlayerHUDWidget::UnbindFromASC()
@@ -109,10 +134,13 @@ void UAOPlayerHUDWidget::HandleMaxStaminaChanged(const FOnAttributeChangeData& D
 
 void UAOPlayerHUDWidget::BindASCDelegates()
 {
-	// Health Bind
-	HealthChangedHandle = BoundASC->GetGameplayAttributeValueChangeDelegate(
-		UAOAttributeSet::GetHealthAttribute()
-	).AddUObject(this, &UAOPlayerHUDWidget::HandleHealthChanged);
+    // 방어적으로 시작.
+    UnbindASCDelegates();
+
+    // Health Bind
+    HealthChangedHandle = BoundASC->GetGameplayAttributeValueChangeDelegate(
+        UAOAttributeSet::GetHealthAttribute()
+    ).AddUObject(this, &UAOPlayerHUDWidget::HandleHealthChanged);
 
 	MaxHealthChangedHandle = BoundASC->GetGameplayAttributeValueChangeDelegate(
 		UAOAttributeSet::GetMaxHealthAttribute()
@@ -144,12 +172,12 @@ void UAOPlayerHUDWidget::UnbindASCDelegates()
 		return;
 	}
 
-	// Health ����
-	if (HealthChangedHandle.IsValid())
-	{
-		BoundASC->GetGameplayAttributeValueChangeDelegate(
-			UAOAttributeSet::GetHealthAttribute()
-		).Remove(HealthChangedHandle);
+    // Health Bind.
+    if (HealthChangedHandle.IsValid())
+    {
+        BoundASC->GetGameplayAttributeValueChangeDelegate(
+            UAOAttributeSet::GetHealthAttribute()
+        ).Remove(HealthChangedHandle);
 
 		HealthChangedHandle.Reset();
 	}
