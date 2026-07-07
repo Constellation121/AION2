@@ -945,7 +945,7 @@ void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
 		Data.NewValue
 	);
 
-	SendHp(Data.NewValue);
+	//SendHp(Data.NewValue);
 
 	if (Data.NewValue <= 0.0f && !bIsDead)
 	{

@@ -87,6 +87,7 @@ protected:
 
 	TObjectPtr<UAOMainHUDWidget> MainHUD;
 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSoftClassPtr<class UMainMailWidget> MainMailWidgetClass;
 

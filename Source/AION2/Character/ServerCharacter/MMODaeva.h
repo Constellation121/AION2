@@ -80,7 +80,6 @@ protected:
 private:
 	void MMOInputSpacePressed();
 	void MMOInputShiftPressed();
-	void MMOInputShiftReleased();
 
 private:
 	int32 DungeonId;

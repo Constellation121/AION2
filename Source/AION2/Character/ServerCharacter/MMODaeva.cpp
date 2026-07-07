@@ -227,7 +227,6 @@ void AMMODaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		EnhancedInputComponent->BindAction(SpaceAction, ETriggerEvent::Started, this, &AMMODaeva::MMOInputSpacePressed);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMMODaeva::MMOInputShiftPressed);
-		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMMODaeva::MMOInputShiftReleased);
 	}
 }
 
@@ -310,12 +309,6 @@ void AMMODaeva::PlayDash()
 	EMontageID SelectedMontageID = EMontageID::Dash;
 	float MontagePlayRate = 1.0f;
 
-	if (ASC && ASC->HasMatchingGameplayTag(STATE_COMBAT))
-	{
-		SelectedMontageID = EMontageID::CombatDash;
-		MontagePlayRate = 1.3f;
-	}
-
 	UAnimMontage* DashMontage = GetMontageByID(SelectedMontageID);
 	if (!DashMontage)
 	{
@@ -325,10 +318,8 @@ void AMMODaeva::PlayDash()
 	bool bForward = HasMoveInput();
 	FName SectionName = bForward ? FName("Forward") : FName("Back");
 
-	// 1. Play locally immediately
 	PlayMontageWithSection(SelectedMontageID, MontagePlayRate, SectionName);
 
-	// 2. Set end delegate
 	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 	{
 		FOnMontageEnded EndDelegate;
@@ -336,7 +327,6 @@ void AMMODaeva::PlayDash()
 		AnimInstance->Montage_SetEndDelegate(EndDelegate, DashMontage);
 	}
 
-	// 3. Apply tag and consume stamina locally
 	if (ASC)
 	{
 		ASC->AddLooseGameplayTag(STATE_DASHING);
@@ -385,20 +375,4 @@ void AMMODaeva::MMOInputShiftPressed()
 	{
 		PlayDash();
 	}
-
-	// 전투 중에는 Sprint 금지
-	if (ASC && ASC->HasMatchingGameplayTag(STATE_COMBAT))
-	{
-		return;
-	}
-
-	if (bHasMoveInput)
-	{
-		RequestStartSprint();
-	}
-}
-
-void AMMODaeva::MMOInputShiftReleased()
-{
-	InputShiftReleased();
 }
