@@ -31,6 +31,8 @@
 #include "Network/PacketHeader.h"
 #include "AION2.h"
 
+#include "NiagaraComponent.h"
+
 const float TargetTraceRadius = 3000.0f;
 
 
@@ -104,6 +106,31 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	}
 
 	QuickSlotComponent = CreateDefaultSubobject<UAOQuickSlotComponent>(TEXT("QuickSlotComponent"));
+
+
+	// 선환 추가 
+		// 선환 추가 
+	PlayerOrb = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerOrb"));
+	PlayerOrb->SetupAttachment(GetCapsuleComponent());
+
+	BlueOrb = CreateDefaultSubobject<UNiagaraComponent>(TEXT("BlueOrb"));
+	BlueOrb->SetupAttachment(PlayerOrb);
+	BlueOrb->SetAutoActivate(false); // 처음엔 꺼두기 
+
+	PurpleOrb = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PurpleOrb"));
+	PurpleOrb->SetupAttachment(PlayerOrb);
+	PurpleOrb->SetAutoActivate(false); // 처음엔 꺼두기 
+
+
+	PlayerAoeField = CreateDefaultSubobject<USceneComponent>(TEXT("AoeIndicator"));
+	PlayerAoeField->SetupAttachment(GetCapsuleComponent());
+
+	AoeField = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FieldRange"));
+	AoeField->SetupAttachment(PlayerAoeField);
+
+	// 이거 false로 고치기.
+	AoeField->SetVisibility(false, true);
+
 }
 
 void ADaeva::BeginPlay()
@@ -959,6 +986,7 @@ void ADaeva::TestSetHealth(float NewHealth)
 	}
 }
 
+
 void ADaeva::StartSprint()
 {
 	if (!ASC || !HasAuthority())
@@ -1326,4 +1354,96 @@ void ADaeva::SendItem(int32 SlotIndex)
 void ADaeva::SetItemUse()
 {
 	bCanUseItem = true;
+}
+
+
+
+void ADaeva::EatOrb(EOrbColor NewColor)
+{
+	if (NewColor == LastOrbColor)
+	{
+		// 같은 색 연속 -> 스택 증가 
+		++OrbStack;
+	}
+
+
+	else
+	{
+		// 다른 색 -> 초기화 후 1로 시작. 
+		OrbStack = 1;
+		LastOrbColor = NewColor;
+	}
+
+
+	// 같은 2번 연속 먹었을 때만 효과 발동 
+	if (OrbStack >= 2)
+	{
+		// 여기서 효과 발동
+
+		switch (NewColor)
+		{
+		case EOrbColor::BLUE:
+		{
+			Set_BlueOrb_RenderOnOff(true);
+		}
+		break;
+		case EOrbColor::PURPLE:
+		{
+			Set_PurpleOrb_RenderOnOff(true);
+		}
+		break;
+		}
+
+
+	}
+
+
+}
+
+
+
+void ADaeva::Set_AOE_RenderOnOff_Implementation(bool _bOnOff)
+{
+	AoeField->SetVisibility(_bOnOff, true);
+
+}
+
+void ADaeva::Set_BlueOrb_RenderOnOff_Implementation(bool _bOnOff)
+{
+	if (_bOnOff == true)
+	{
+		BlueOrb->Activate(_bOnOff);
+	}
+
+	else
+	{
+		BlueOrb->DeactivateImmediate();
+	}
+
+}
+
+
+
+void ADaeva::Set_PurpleOrb_RenderOnOff_Implementation(bool _bOnOff)
+{
+	if (_bOnOff == true)
+	{
+		PurpleOrb->Activate(_bOnOff);
+	}
+
+
+	else
+	{
+		PurpleOrb->DeactivateImmediate();
+	}
+
+}
+
+
+void ADaeva::Reset_OrbStackAndColor()
+{
+	OrbStack = 0;
+	LastOrbColor = EOrbColor::None;
+
+
 }
