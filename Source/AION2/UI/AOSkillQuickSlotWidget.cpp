@@ -24,7 +24,11 @@ void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
 
     // 두 번째 인자는 기존 ImageBrush의 Size를 
     // 새로 배정된 Texture의 Size에 맞출 것인지를 묻는 것.
-	SkillImage->SetBrushFromTexture(Icon, false);
+    if (Icon)
+    {
+        SkillImage->SetBrushFromTexture(Icon, false);
+        SkillImage->SetOpacity(1.0f);
+    }
 
     // SizeBox로 감싸둬도 괜찮다!
 }
