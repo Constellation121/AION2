@@ -260,7 +260,7 @@ void AAODungeonGameMode::ClearDungeon()
 	
 	GiveDungeonReward();
 
-	SendDungeonComplete(true);
+	SendDungeonComplete();
 }
 
 void AAODungeonGameMode::FailDungeon()
@@ -762,21 +762,20 @@ void AAODungeonGameMode::RequestReturnToVillage()
 	ReturnToVillage();
 }
 
-//void AAODungeonGameMode::SendDungeonComplete()
-//{
-//	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
-//	MapPkt.set_dungeonid(MyDungeonId);
-//	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
-//}
-
-//H.Y
-void AAODungeonGameMode::SendDungeonComplete(bool bIsClear)
+void AAODungeonGameMode::SendDungeonComplete()
 {
 	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
 	MapPkt.set_dungeonid(MyDungeonId);
 	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
 }
-//
+
+void AAODungeonGameMode::SendDungeonCompleteRequest()
+{
+	Protocol::C_RequestDungeonCompletePacket RequestPkt;
+	RequestPkt.set_dungeonid(MyDungeonId);
+
+	SEND_PACKET(RequestPkt, PKT_C_REQUEST_DUNGEON_COMPLETE);
+}
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
 {

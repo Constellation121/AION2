@@ -162,10 +162,8 @@ public :
 	UPROPERTY()
 	TArray<class APawn*> SpawnedPlayers;
 private:
-	// H.Y
-	//void SendDungeonComplete();
-	void SendDungeonComplete(bool bIsClear);
-	//
+	void SendDungeonComplete();
+	void SendDungeonCompleteRequest();
 
 	int32 MyDungeonId = 0;
 	Protocol::DPlayerInfo* ValidateToken(FString Token);
