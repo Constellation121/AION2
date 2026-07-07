@@ -8,6 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayAbilitySpecHandle.h"
 #include "GenericTeamAgentInterface.h"
+#include "Types/AOTypes.h"
 #include "Daeva.generated.h"
 
 class USkeletalMeshComponent;
@@ -184,6 +185,9 @@ public:
 
 	UFUNCTION(Exec)
 	void TestSetHealth(float NewHealth);
+
+	// SeonHwan 추가 
+	void EatOrb(EOrbColor NewColor);
 
 protected:
 	FDelegateHandle HealthChangedDelegateHandle;
@@ -410,4 +414,53 @@ private:
 protected:
 	
 	uint64 MyId = -1;
+
+
+
+	// Seonhwan 여기서 데바의 색깔 구슬 카운트 하기  
+private:
+	UPROPERTY()
+	EOrbColor LastOrbColor = EOrbColor::None;
+
+	UPROPERTY()
+	int8 OrbStack = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Orb", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> PlayerOrb;
+
+	UPROPERTY(EditAnywhere, Category = "Orb", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UNiagaraComponent> BlueOrb;
+
+	UPROPERTY(EditAnywhere, Category = "Orb", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UNiagaraComponent> PurpleOrb;
+
+
+	UPROPERTY(EditAnywhere, Category = "AOE", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> PlayerAoeField;
+
+	UPROPERTY(EditAnywhere, Category = "AOE", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStaticMeshComponent> AoeField;
+
+
+	UPROPERTY(EditAnywhere, Category = "OrbGimmickColor", meta = (AllowPrivateAccess = "true"))
+	EOrbColor HasShieldColor;
+
+
+public:
+	UFUNCTION(NetMulticast, Unreliable)
+	void Set_BlueOrb_RenderOnOff(bool _bOnOff);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void Set_PurpleOrb_RenderOnOff(bool _bOnOff);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void Set_AOE_RenderOnOff(bool _bOnOff);
+
+	void Reset_OrbStackAndColor();
+	void Set_HasSheildColor(EOrbColor _OrbShieldColor) { HasShieldColor = _OrbShieldColor; }
+
+	EOrbColor Get_LastOrbColor() { return LastOrbColor; }
+	EOrbColor Get_CurrentDaevaHasSheildColor() { return HasShieldColor; }
+
+
 };

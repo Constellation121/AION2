@@ -127,7 +127,7 @@ public:
 	void Die();
 
 protected :
-	void OnHealthChanged(const FOnAttributeChangeData& Data);
+	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 
 protected :
 	FDelegateHandle HealthChangedDelegateHandle;
