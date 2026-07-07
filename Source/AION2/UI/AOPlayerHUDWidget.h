@@ -86,5 +86,4 @@ protected:
 
     UPROPERTY(meta = (BindWidgetOptional), BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UProgressBar> Pb_StaminaBar;
-
 };

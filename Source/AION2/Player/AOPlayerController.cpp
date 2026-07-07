@@ -2,11 +2,13 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "InputCoreTypes.h"
 
 #include "UI/AOMainHUDWidget.h"
-#include "Components/Widget.h"
 #include "Player/AOPlayerState.h"
 #include "Character/Monster/AOMonsterBase.h"
+#include "Manager/AOUIManager.h"
+#include "UI/Mail/MainMailWidget.h"
 
 
 TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
@@ -34,7 +36,7 @@ void AAOPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Å¬¶óÀÌ¾ðÆ®ÀÏ ¶§¸¸ ÁöÁ¤
+	// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (GetNetMode() == NM_DedicatedServer || !IsLocalController())
 	{
 		return;
@@ -173,5 +175,38 @@ void AAOPlayerController::HideTargetMonsterHUD()
 	}
 
 	MainHUD->HideTargetMonsterHUD();
+}
+
+void AAOPlayerController::ToggleMailWidget()
+{
+	if (!IsLocalController()) return;
+
+	UAOUIManager* UIManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOUIManager>() : nullptr;
+	if (!UIManager) return;
+
+	UMainMailWidget* MainMailWidget = UIManager->GetWidget<UMainMailWidget>();
+	if (MainMailWidget && MainMailWidget->IsInViewport())
+	{
+		UIManager->HideWidget(MainMailWidget);
+		
+		FInputModeGameOnly InputMode;
+		SetInputMode(InputMode);
+		bShowMouseCursor = false;
+	}
+	else
+	{
+		if (!MainMailWidgetClass.IsNull())
+		{
+			UUserWidget* Widget = UIManager->ShowWidget(MainMailWidgetClass, EUILayer::Default);
+			if (Widget)
+			{
+				FInputModeGameAndUI InputMode;
+				InputMode.SetWidgetToFocus(Widget->TakeWidget());
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				SetInputMode(InputMode);
+				bShowMouseCursor = true;
+			}
+		}
+	}
 }
 

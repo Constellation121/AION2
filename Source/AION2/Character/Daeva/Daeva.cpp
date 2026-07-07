@@ -6,6 +6,7 @@
 #include "Data/DA_AbilitySet.h"
 #include "Physics/Collision.h"
 #include "Player/AOPlayerController.h"
+#include "InputCoreTypes.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
