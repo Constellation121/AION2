@@ -53,7 +53,8 @@ public:
 	void ReturnToVillage();
 
 	// Player Health 0 or Died Call
-	void NotifyPlayerDied(APlayerController* DeadPlayerController);
+	void NotifyPlayerDied(APlayerController* DeadPlayerController, bool bIsFallDeath = false);
+	TMap<TObjectPtr<APlayerController>, int32> PendingRespawnBossIndices;
 
 protected:
 	void FindPlacedBosses();
