@@ -1451,6 +1451,20 @@ void ADaeva::EatOrb(EOrbColor NewColor)
 		// 다른 색 -> 초기화 후 1로 시작. 
 		OrbStack = 1;
 		LastOrbColor = NewColor;
+
+		switch (NewColor)
+		{
+		case EOrbColor::PURPLE:
+		{
+			Set_BlueOrb_RenderOnOff(false);
+		}
+		break;
+		case EOrbColor::BLUE:
+		{
+			Set_PurpleOrb_RenderOnOff(false);
+		}
+		break;
+		}
 	}
 
 
