@@ -887,7 +887,7 @@ void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	}
 }
 
-void ADaeva::HandleDeath()
+void ADaeva::HandleDeath(EDeathReason DeathReason)
 {
 	if (bIsDead)
 	{
@@ -927,9 +927,11 @@ void ADaeva::HandleDeath()
 		{
 			if (AAODungeonGameMode* DungeonGameMode = GetWorld()->GetAuthGameMode<AAODungeonGameMode>())
 			{
+				const bool bIsFallDeath = (DeathReason == EDeathReason::Fall);
+
 				UE_LOG(LogTemp,Warning,TEXT("[Death] Notify Dungeon GameMode: %s"),*PlayerController->GetName());
 
-				DungeonGameMode->NotifyPlayerDied(PlayerController);
+				DungeonGameMode->NotifyPlayerDied(PlayerController,bIsFallDeath);
 			}
 			else
 			{
@@ -1165,6 +1167,23 @@ void ADaeva::SetWingVisibilityOnServer(bool NewVisible)
 void ADaeva::OnRep_WingVisible()
 {
 	SetWingVisibility(bWingVisible);
+}
+
+void ADaeva::RestorePlayerInfoFromPlayerState()
+{
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+
+	if (!AOPlayerState)
+	{
+		return;
+	}
+}
+
+void ADaeva::FellOutOfWorld(const UDamageType& DmgType)
+{
+	if (!HasAuthority()) return;
+	if (bIsDead) return;
+	HandleDeath();
 }
 
 void ADaeva::CreatePart(EDaevaPartType PartType, const TCHAR* ComponentName)
