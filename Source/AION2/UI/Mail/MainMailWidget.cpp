@@ -4,11 +4,13 @@
 #include "UI/Mail/MainMailWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Components/Image.h"
 #include "Components/WidgetSwitcher.h"
 #include "MailListRowWidget.h"
 #include "Components/ScrollBox.h"
 #include "Network/PacketHeader.h"
 #include "Manager/AOUIManager.h"
+#include "AOQuickSlotComponent.h"
 #include  "AION2.h"
 
 
@@ -23,6 +25,15 @@ void UMainMailWidget::NativeConstruct()
 	if (ScrollBox)
 	{
 		ScrollBox->ClearChildren();
+	}
+
+	if (DetailGold)
+	{
+		DetailGold->OnClicked.AddUniqueDynamic(this, &UMainMailWidget::OnGoldClicked);
+	}
+	if (DetailItem)
+	{
+		DetailItem->OnClicked.AddUniqueDynamic(this, &UMainMailWidget::OnItemClicked);
 	}
 }
 
@@ -86,6 +97,8 @@ void UMainMailWidget::UpdateMailList(const TArray<FMailData>& InMailList)
 
 void UMainMailWidget::UpdateMailContent(const FMailData& InDetailData)
 {
+	CurrentMailData = InDetailData;
+
 	// 캐시 데이터 업데이트
 	for (FMailData& Data : MailListCache)
 	{
@@ -101,10 +114,6 @@ void UMainMailWidget::UpdateMailContent(const FMailData& InDetailData)
 	{
 		DetailTitle->SetText(FText::FromString(InDetailData.Title));
 	}
-	else if (Title)
-	{
-		Title->SetText(FText::FromString(InDetailData.Title));
-	}
 
 	if (DetailContent)
 	{
@@ -116,16 +125,21 @@ void UMainMailWidget::UpdateMailContent(const FMailData& InDetailData)
 		DetailSender->SetText(FText::FromString(InDetailData.SenderName));
 	}
 
-	if (DetailGold)
+	// 골드 표시 제어
+	if (DetailGold || GoldSection)
 	{
 		if (InDetailData.Gold > 0)
 		{
-			DetailGold->SetText(FText::FromString(FString::Printf(TEXT("%d"), InDetailData.Gold)));
+			if (DetailGoldText)
+			{
+				DetailGoldText->SetText(FText::FromString(FString::Printf(TEXT("%d"), InDetailData.Gold)));
+			}
+			
 			if (GoldSection)
 			{
 				GoldSection->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			}
-			else
+			else if (DetailGold)
 			{
 				DetailGold->SetVisibility(ESlateVisibility::Visible);
 			}
@@ -136,18 +150,50 @@ void UMainMailWidget::UpdateMailContent(const FMailData& InDetailData)
 			{
 				GoldSection->SetVisibility(ESlateVisibility::Collapsed);
 			}
-			else
+			else if (DetailGold)
 			{
 				DetailGold->SetVisibility(ESlateVisibility::Collapsed);
 			}
 		}
 	}
 
-	if (DetailItem)
+	// 아이템 표시 제어
+	if (DetailItem || ItemSection)
 	{
 		if (InDetailData.ItemId > 0 && InDetailData.ItemCount > 0)
 		{
-			DetailItem->SetText(FText::FromString(FString::Printf(TEXT("%d"), InDetailData.ItemId)));
+			FString DispItemName = FString::Printf(TEXT("Item: %d"), InDetailData.ItemId);
+			UTexture2D* IconTexture = nullptr;
+
+			if (APlayerController* PC = GetOwningPlayer())
+			{
+				if (APawn* Pawn = PC->GetPawn())
+				{
+					UAOQuickSlotComponent* QuickSlotComp = Pawn->FindComponentByClass<UAOQuickSlotComponent>();
+					if (QuickSlotComp)
+					{
+						FItemData ItemTemplateData;
+						if (QuickSlotComp->FindItemTemplateData(InDetailData.ItemId, ItemTemplateData))
+						{
+							DispItemName = ItemTemplateData.ItemName.ToString();
+							IconTexture = ItemTemplateData.ItemIcon;
+						}
+					}
+				}
+			}
+
+			if (IconTexture)
+			{
+				if (DetailItem)
+				{
+					FButtonStyle Style = DetailItem->GetStyle();
+					Style.Normal.SetResourceObject(IconTexture);
+					Style.Hovered.SetResourceObject(IconTexture);
+					Style.Pressed.SetResourceObject(IconTexture);
+					DetailItem->SetStyle(Style);
+				}
+			}
+
 			if (DetailItemCount)
 			{
 				DetailItemCount->SetText(FText::FromString(FString::Printf(TEXT("x%d"), InDetailData.ItemCount)));
@@ -158,7 +204,7 @@ void UMainMailWidget::UpdateMailContent(const FMailData& InDetailData)
 			{
 				ItemSection->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			}
-			else
+			else if (DetailItem)
 			{
 				DetailItem->SetVisibility(ESlateVisibility::Visible);
 			}
@@ -173,7 +219,7 @@ void UMainMailWidget::UpdateMailContent(const FMailData& InDetailData)
 			{
 				ItemSection->SetVisibility(ESlateVisibility::Collapsed);
 			}
-			else
+			else if (DetailItem)
 			{
 				DetailItem->SetVisibility(ESlateVisibility::Collapsed);
 			}
@@ -191,4 +237,14 @@ void UMainMailWidget::RequestDetailContentFromServer(int64 MailUID)
 	Protocol::C_MailContentPacket ReqContent;
 	ReqContent.set_mailid(MailUID);
 	SEND_PACKET(ReqContent, PKT_C_MAILCONTENT);
+}
+
+void UMainMailWidget::OnGoldClicked()
+{
+	OnClaimGold(CurrentMailData.Gold);
+}
+
+void UMainMailWidget::OnItemClicked()
+{
+	OnClaimItem(CurrentMailData.ItemId, CurrentMailData.ItemCount);
 }

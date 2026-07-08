@@ -51,4 +51,9 @@ protected:
 public:
     UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly)
     TObjectPtr<UAOChattingWidget> ChattingWidget;
+
+    UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly)
+    TObjectPtr<class UGoldWidget> GoldWidget;
+
+
 };

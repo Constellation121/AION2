@@ -22,7 +22,7 @@ private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 public:
-	void HandleLogin(const uint64 PlayerId, const uint8 ClassType);
+	void HandleLogin(const uint64 PlayerId, const uint8 ClassType, int32 Gold);
 	void HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation);
 	void HandleItem(Protocol::S_ItemDataPacket Items);
 	void HnadleMove(const uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel);
@@ -32,7 +32,7 @@ public:
 	void HandleDungeonStart(FString ServerURL);
 
 	void HandleChatting(FString SenderName, FString SendMessage);
-	void HandleStorePurchase(Protocol::ItemData ItemInfo);
+	void HandleStorePurchase(Protocol::ItemData ItemInfo, int32 Gold);
 	void HandleUseItem(const Protocol::S_UseItemPacket& Pkt);
 	
 	void HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStartDediPacket& Info);
@@ -78,7 +78,8 @@ private:
 
 	TMap<int32, Protocol::ItemData> MyItems;
 
+	int32 MyGold;
+
 private:
 	class UAOGameInstance* GameInstance;
-	UWorld* World;
 };

@@ -20,16 +20,16 @@ class AION2_API UMailListRowWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	UButton* MailSelectButton;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	UTextBlock* SenderName;
 	
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	UTextBlock* Title;
 
-	UPROPERTY(meta = (BindWidget, Optional = true))
+	UPROPERTY(meta = (BindWidgetOptional))
 	UTextBlock* ExpiredDate;
 
 private:

@@ -124,8 +124,8 @@ bool FPacketHandler::Handle_S_SLOGIN(Protocol::S_LoginSuccessPacket& pkt)
 	{
 		uint64 PlayerId = pkt.playerinfo().playerid();
 		uint8 ClassType = static_cast<uint8>(pkt.playerinfo().playerclass());
-
-		PlayerMng->HandleLogin(PlayerId, ClassType);
+		int32 Gold = pkt.gold();
+		PlayerMng->HandleLogin(PlayerId, ClassType, Gold);
 		if (GameInstance)
 		{
 			GameInstance->OnReadyoOpenLevel();
@@ -440,8 +440,8 @@ bool FPacketHandler::Handle_S_MAILCONTENT(Protocol::S_MailContentPacket& Pkt)
 bool FPacketHandler::Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt)
 {
 	Protocol::ItemData Item = Pkt.iteminfo();
-
-	PlayerMng->HandleStorePurchase(Item);
+	int32 Gold = Pkt.gold();
+	PlayerMng->HandleStorePurchase(Item, Gold);
 	return true;
 }
 
