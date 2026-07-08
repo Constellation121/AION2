@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AOPlayerManager.h"
@@ -441,3 +441,19 @@ void UAOPlayerManager::UpdateMyDungeonReadyState(int32 DungeonId, uint64 PlayerI
 }
 
 #pragma endregion
+
+void UAOPlayerManager::HandleDash(const uint64 PlayerId)
+{
+	if (!GameInstance)
+		return;
+	UE_LOG(LogTemp, Log, TEXT("HandleDash: %d"), PlayerId);
+
+	if (GameInstance->GetMyPlayerId() == PlayerId) return;
+	auto PlayerRef = Players.Find(PlayerId);
+	if (PlayerRef == nullptr) return;
+	AMMODaeva* MMOPlayer = *PlayerRef;
+	if (MMOPlayer)
+	{
+		MMOPlayer->ReceiveDashPacket();
+	}
+}

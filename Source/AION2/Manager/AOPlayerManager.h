@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -26,6 +26,7 @@ public:
 	void HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation);
 	void HandleItem(Protocol::S_ItemDataPacket Items);
 	void HnadleMove(const uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel);
+	void HandleDash(const uint64 PlayerId);
 
 	void HandleDungeonCreate(int32 DungeonId);
 	void HandleDungeonEnter(int32 DungeonId);
@@ -47,7 +48,7 @@ public:
 
 	bool TryUpdateMyDungeonRoomState(const Protocol::DungeonInfo& DungeonInfo);
 
-	// ¹æ ¸ñ·Ï ÀüÃ¼¿ë Update ÇÔ¼ö
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ Update ï¿½Ô¼ï¿½
 	void UpdateMyDungeonRoomStateFromList(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonInfos);
 
 	void UpdateMyDungeonEnterState(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);

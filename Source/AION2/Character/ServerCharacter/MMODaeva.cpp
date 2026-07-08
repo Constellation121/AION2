@@ -168,7 +168,7 @@ void AMMODaeva::ToggleMailWidget()
 
 	Protocol::C_MailListPacket ReqList;
 	ReqList.set_playerid(MyId);
-	SEND_PACKET(ReqList, PKT_C_MAILLIST);
+	SEND_PACKET(ReqList, PKT_C_MAIL_LIST);
 }
 
 bool AMMODaeva::IsCurrentMoving()
@@ -186,7 +186,7 @@ void AMMODaeva::SendDungeonWait()
 	UE_LOG(LogTemp, Log, TEXT("DunzeonWaitingRoom Enter"));
 
 	Protocol::C_DungeonWaitingRoomEnterPacket EnterWaitPacket;
-	SEND_PACKET(EnterWaitPacket, PKT_C_DUNGEONWAITINTROOM);
+	SEND_PACKET(EnterWaitPacket, PKT_C_DUNGEON_ENTER_WAITING_ROOM);
 }
 
 void AMMODaeva::SetHp(int32 Hp)
@@ -225,20 +225,10 @@ void AMMODaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(KeyXAction, ETriggerEvent::Triggered, this, &AMMODaeva::SendItem, 0);
 		EnhancedInputComponent->BindAction(KeyBAction, ETriggerEvent::Triggered, this, &AMMODaeva::SendItem, 1);
 
-		EnhancedInputComponent->BindAction(SpaceAction, ETriggerEvent::Started, this, &AMMODaeva::MMOInputSpacePressed);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMMODaeva::MMOInputShiftPressed);
 	}
 }
 
-void AMMODaeva::Landed(const FHitResult& Hit)
-{
-	Super::Landed(Hit);
-
-	if (ASC)
-	{
-		ASC->RemoveLooseGameplayTag(STATE_JUMPING);
-	}
-}
 
 void AMMODaeva::PlayMontageWithSection(EMontageID MontageID, float PlayRate, FName SectionName)
 {
@@ -339,7 +329,6 @@ void AMMODaeva::PlayDash()
 		}
 	}
 
-	// 4. Update Cooldown locally
 	LastDashTime = GetWorld()->GetTimeSeconds();
 }
 
@@ -348,18 +337,6 @@ void AMMODaeva::OnDashMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	if (ASC)
 	{
 		ASC->RemoveLooseGameplayTag(STATE_DASHING);
-	}
-}
-
-void AMMODaeva::MMOInputSpacePressed()
-{
-	if (CanJump())
-	{
-		if (ASC)
-		{
-			ASC->AddLooseGameplayTag(STATE_JUMPING);
-		}
-		Jump();
 	}
 }
 
@@ -374,5 +351,32 @@ void AMMODaeva::MMOInputShiftPressed()
 	if (CanDash())
 	{
 		PlayDash();
+		Protocol::C_DashPacket DashPacket;
+		DashPacket.set_playerid(MyId);
+		SEND_PACKET(DashPacket, PKT_C_DASH);
+	}
+}
+
+void AMMODaeva::ReceiveDashPacket()
+{
+	EMontageID SelectedMontageID = EMontageID::Dash;
+	float MontagePlayRate = 1.0f;
+
+	UAnimMontage* DashMontage = GetMontageByID(SelectedMontageID);
+	if (!DashMontage)
+	{
+		return;
+	}
+
+	bool bForward = HasMoveInput();
+	FName SectionName = bForward ? FName("Forward") : FName("Back");
+
+	PlayMontageWithSection(SelectedMontageID, MontagePlayRate, SectionName);
+
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	{
+		FOnMontageEnded EndDelegate;
+		EndDelegate.BindUObject(this, &AMMODaeva::OnDashMontageEnded);
+		AnimInstance->Montage_SetEndDelegate(EndDelegate, DashMontage);
 	}
 }

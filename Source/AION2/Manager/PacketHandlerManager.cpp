@@ -25,40 +25,41 @@ void InitPacketHandler()
 
 #if UE_SERVER
 	// 서버 핸들러
-	GAOPacketHandler[PKT_S_DUNGEONCREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_DEDICREATE, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEONCREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_DEDI_CREATE, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_DUNGEONDEDISTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonStartDediPacket>(&FPacketHandler::Handle_S_DUNGEONSETPLAYER, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEONDEDISTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonStartDediPacket>(&FPacketHandler::Handle_S_DUNGEON_SET_PLAYER, Mng, Buf, Len); };
 #else
 
 #if UE_BUILD_DEVELOPMENT
 	// 템플릿을 사용하여 자동 파싱 및 핸들러 맵핑
 	GAOPacketHandler[PKT_S_SIGNUP] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_SignUpResultPacket>(&FPacketHandler::Handle_S_SIGNUP, Mng, Buf, Len); };
-	GAOPacketHandler[PKT_S_FLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_LoginFailPacket>(&FPacketHandler::Handle_S_FLOGIN, Mng, Buf, Len); };
-	GAOPacketHandler[PKT_S_SLOGIN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_LoginSuccessPacket>(&FPacketHandler::Handle_S_SLOGIN, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_LOGIN_FAIL] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_LoginFailPacket>(&FPacketHandler::Handle_S_LOGIN_FAIL, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_LOGIN_SUCCEED] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_LoginSuccessPacket>(&FPacketHandler::Handle_S_LOGIN_SUCCEED, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_ITEM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_ItemDataPacket>(&FPacketHandler::Handle_S_ITEM, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_SPAWN] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_SpawnPacket>(&FPacketHandler::Handle_S_SPAWN, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_MOVE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_MovePacket>(&FPacketHandler::Handle_S_MOVE, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DASH] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DashPacket>(&FPacketHandler::Handle_S_DASH, Mng, Buf, Len); };
 
 	GAOPacketHandler[PKT_S_CHAT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_ChatPacket>(&FPacketHandler::Handle_S_CHAT, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_STOREPURCHASE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_StorePurchasePacket>(&FPacketHandler::Handle_S_STORE, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_STORE_PURCHASE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_StorePurchasePacket>(&FPacketHandler::Handle_S_STORE, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_USEITEM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_UseItemPacket>(&FPacketHandler::Handle_S_USEITEM, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_USE_ITEM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_UseItemPacket>(&FPacketHandler::Handle_S_USE_ITEM, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_DUNGEONCREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_CREATE, Mng, Buf, Len); };
-	GAOPacketHandler[PKT_S_DUNGEONWAITINTROOM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonWaitingRoomEnterPacket>(&FPacketHandler::Handle_S_ENTERWAITING, Mng, Buf, Len); };
-	GAOPacketHandler[PKT_S_DUNGEONENTER] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonEnterPacket>(&FPacketHandler::Handle_S_ENTER, Mng, Buf, Len); };
-	GAOPacketHandler[PKT_S_DUNGEONREADY] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonReadyPacket>(&FPacketHandler::Handle_S_READY, Mng, Buf, Len); };
-	GAOPacketHandler[PKT_S_DUNGEONSTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonStartPacket>(&FPacketHandler::Handle_S_START, Mng, Buf, Len); };
-	GAOPacketHandler[PKT_S_DUNGEONEXIT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonExitPacket>(&FPacketHandler::Handle_S_EXIT, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_CREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_CREATE, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_ENTER_WAITING_ROOM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonWaitingRoomEnterPacket>(&FPacketHandler::Handle_S_ENTER_WAITING, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_ENTER] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonEnterPacket>(&FPacketHandler::Handle_S_ENTER, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_READY] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonReadyPacket>(&FPacketHandler::Handle_S_READY, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_START] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonStartPacket>(&FPacketHandler::Handle_S_START, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_EXIT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonExitPacket>(&FPacketHandler::Handle_S_EXIT, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_REQUEST_DUNGEON_COMPLETE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_RequestDungeonCompletePacket>(&FPacketHandler::Handle_S_DUNGEONEND, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_COMPLETE_REQUEST] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_RequestDungeonCompletePacket>(&FPacketHandler::Handle_S_DUNGEON_END, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_DUNGEONFAIL] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonFailPacket>(&FPacketHandler::Handle_S_DUNGEONFAIL, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_FAIL] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DungeonFailPacket>(&FPacketHandler::Handle_S_DUNGEON_FAIL, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_MAILLIST] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_MailListPacket>(&FPacketHandler::Handle_S_MAILLIST, Mng, Buf, Len); };
-	GAOPacketHandler[PKT_S_MAILCONTENT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_MailContentPacket>(&FPacketHandler::Handle_S_MAILCONTENT, Mng, Buf, Len); };
-
+	GAOPacketHandler[PKT_S_MAIL_SEND] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_MailSendPacket>(&FPacketHandler::Handle_S_MAIL_SEND, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_MAIL_LIST] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_MailListPacket>(&FPacketHandler::Handle_S_MAIL_LIST, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_MAIL_CONTENT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_MailContentPacket>(&FPacketHandler::Handle_S_MAIL_CONTENT, Mng, Buf, Len); };
 
 	GAOPacketHandler[PKT_S_DISCONNECT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DisconnectPacket>(&FPacketHandler::Handle_S_DISCONNECT, Mng, Buf, Len); };
 
@@ -118,7 +119,7 @@ bool FPacketHandler::Handle_S_SIGNUP(Protocol::S_SignUpResultPacket& Pkt)
 	return false;
 }
 
-bool FPacketHandler::Handle_S_SLOGIN(Protocol::S_LoginSuccessPacket& pkt)
+bool FPacketHandler::Handle_S_LOGIN_SUCCEED(Protocol::S_LoginSuccessPacket& pkt)
 {
 	if (PlayerMng && pkt.has_playerinfo())
 	{
@@ -135,7 +136,7 @@ bool FPacketHandler::Handle_S_SLOGIN(Protocol::S_LoginSuccessPacket& pkt)
 	return false;
 }
 
-bool FPacketHandler::Handle_S_FLOGIN(Protocol::S_LoginFailPacket& Pkt)
+bool FPacketHandler::Handle_S_LOGIN_FAIL(Protocol::S_LoginFailPacket& Pkt)
 {
 	if (UAOLoginUserWidget* LoginWidget = GetLoginWidget())
 	{
@@ -203,6 +204,14 @@ bool FPacketHandler::Handle_S_MOVE(Protocol::S_MovePacket& Pkt)
 	return true;
 }
 
+bool FPacketHandler::Handle_S_DASH(Protocol::S_DashPacket& Pkt)
+{
+	if (!PlayerMng) return false;
+	PlayerMng->HandleDash(Pkt.playerid());
+	return true;
+}
+
+
 bool FPacketHandler::Handle_S_CREATE(Protocol::S_DungeonCreatePacket& Pkt)
 {
 	if (!GameInstance)
@@ -230,7 +239,7 @@ bool FPacketHandler::Handle_S_CREATE(Protocol::S_DungeonCreatePacket& Pkt)
 }
 # pragma endregion
 
-bool FPacketHandler::Handle_S_DEDICREATE(Protocol::S_DungeonCreatePacket& Pkt)
+bool FPacketHandler::Handle_S_DEDI_CREATE(Protocol::S_DungeonCreatePacket& Pkt)
 {
 	AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GameInstance->GetWorld()->GetAuthGameMode());
 	Protocol::DungeonInfo dungeonInfo = Pkt.dungeoninfo();
@@ -239,7 +248,7 @@ bool FPacketHandler::Handle_S_DEDICREATE(Protocol::S_DungeonCreatePacket& Pkt)
 }
 
 #pragma region Dungeon State
-bool FPacketHandler::Handle_S_ENTERWAITING(Protocol::S_DungeonWaitingRoomEnterPacket& Pkt)
+bool FPacketHandler::Handle_S_ENTER_WAITING(Protocol::S_DungeonWaitingRoomEnterPacket& Pkt)
 {
 	if (PlayerMng)
 	{
@@ -337,7 +346,7 @@ bool FPacketHandler::Handle_S_EXIT(Protocol::S_DungeonExitPacket& Pkt)
 	return true;
 }
 
-bool FPacketHandler::Handle_S_DUNGEONEND(Protocol::S_RequestDungeonCompletePacket& Pkt)
+bool FPacketHandler::Handle_S_DUNGEON_END(Protocol::S_RequestDungeonCompletePacket& Pkt)
 {
 	if (!PlayerMng)
 		return false;
@@ -345,7 +354,7 @@ bool FPacketHandler::Handle_S_DUNGEONEND(Protocol::S_RequestDungeonCompletePacke
 	return false;
 }
 
-bool FPacketHandler::Handle_S_DUNGEONFAIL(Protocol::S_DungeonFailPacket& Pkt)
+bool FPacketHandler::Handle_S_DUNGEON_FAIL(Protocol::S_DungeonFailPacket& Pkt)
 {
 	if (UAOUIManager* UIManager = GameInstance ? GameInstance->GetSubsystem<UAOUIManager>() : nullptr)
 	{
@@ -367,7 +376,25 @@ bool FPacketHandler::Handle_S_CHAT(Protocol::S_ChatPacket& Pkt)
 	return true;
 }
 
-bool FPacketHandler::Handle_S_MAILLIST(Protocol::S_MailListPacket& Pkt)
+#pragma region Mail
+
+bool FPacketHandler::Handle_S_MAIL_SEND(Protocol::S_MailSendPacket& Pkt)
+{
+	int8 FailReason = static_cast<int8>(Pkt.errorcode());
+	UAOUIManager* UIManager = GetUIManager();
+	if (UIManager)
+	{
+		UMainMailWidget* MainMailWidget = UIManager->GetWidget<UMainMailWidget>();
+		if (MainMailWidget)
+		{
+			MainMailWidget->ShowErrorMessage(FailReason);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool FPacketHandler::Handle_S_MAIL_LIST(Protocol::S_MailListPacket& Pkt)
 {
 	TArray<FMailData> MailList;
 	for (int i = 0; i < Pkt.maillists_size(); ++i)
@@ -409,7 +436,7 @@ bool FPacketHandler::Handle_S_MAILLIST(Protocol::S_MailListPacket& Pkt)
 	return true;
 }
 
-bool FPacketHandler::Handle_S_MAILCONTENT(Protocol::S_MailContentPacket& Pkt)
+bool FPacketHandler::Handle_S_MAIL_CONTENT(Protocol::S_MailContentPacket& Pkt)
 {
 	FMailData DetailData;
 	DetailData.MailUID = Pkt.mailid();
@@ -435,7 +462,7 @@ bool FPacketHandler::Handle_S_MAILCONTENT(Protocol::S_MailContentPacket& Pkt)
 
 	return true;
 }
-
+#pragma endregion
 
 bool FPacketHandler::Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt)
 {
@@ -445,7 +472,7 @@ bool FPacketHandler::Handle_S_STORE(Protocol::S_StorePurchasePacket& Pkt)
 	return true;
 }
 
-bool FPacketHandler::Handle_S_USEITEM(Protocol::S_UseItemPacket& Pkt)
+bool FPacketHandler::Handle_S_USE_ITEM(Protocol::S_UseItemPacket& Pkt)
 {
 	PlayerMng->HandleUseItem(Pkt);
 	return true;
@@ -458,7 +485,7 @@ bool FPacketHandler::Handle_S_DISCONNECT(Protocol::S_DisconnectPacket& Pkt)
 }
 
 
-bool FPacketHandler::Handle_S_DUNGEONSETPLAYER(Protocol::S_DungeonStartDediPacket Pkt)
+bool FPacketHandler::Handle_S_DUNGEON_SET_PLAYER(Protocol::S_DungeonStartDediPacket Pkt)
 {
 	PlayerMng->HandleDungeonSetPlayerInfo(Pkt);
 	return true;

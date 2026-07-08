@@ -32,6 +32,12 @@ public:
 	UPROPERTY(meta = (BindWidgetOptional))
 	UTextBlock* ExpiredDate;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Mail UI")
+	FSlateColor UnreadColor = FSlateColor(FLinearColor(0.5f, 0.5f, 0.5f, 1.0f));
+
+	UPROPERTY(EditDefaultsOnly, Category = "Mail UI")
+	FSlateColor ReadColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+
 private:
 	FMailData RowData;
 	

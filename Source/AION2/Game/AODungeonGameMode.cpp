@@ -783,7 +783,7 @@ void AAODungeonGameMode::SendDungeonComplete()
 {
 	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
 	MapPkt.set_dungeonid(MyDungeonId);
-	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
+	SEND_PACKET(MapPkt, PKT_C_DUNGEON_MAP_COMPLETE);
 }
 
 void AAODungeonGameMode::SendDungeonCompleteRequest()
@@ -791,7 +791,7 @@ void AAODungeonGameMode::SendDungeonCompleteRequest()
 	Protocol::C_RequestDungeonCompletePacket RequestPkt;
 	RequestPkt.set_dungeonid(MyDungeonId);
 
-	SEND_PACKET(RequestPkt, PKT_C_REQUEST_DUNGEON_COMPLETE);
+	SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
 }
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)

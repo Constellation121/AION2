@@ -1463,7 +1463,7 @@ void ADaeva::SendHp(float NewHp)
 	Protocol::C_ChangeHpPacket HpPacket;
 	HpPacket.set_playerid(MyId);
 	HpPacket.set_hp(NewHp);
-	SEND_PACKET(HpPacket, PKT_C_CHANGEHP);
+	SEND_PACKET(HpPacket, PKT_C_CHANGE_HP);
 }
 
 void ADaeva::SendItem(int32 SlotIndex)
@@ -1474,7 +1474,7 @@ void ADaeva::SendItem(int32 SlotIndex)
 
 	Protocol::C_UseItemPacket UseItemPkt;
 	UseItemPkt.set_playerid(MyId);
-	SEND_PACKET(UseItemPkt, PKT_C_USEITEM);
+	SEND_PACKET(UseItemPkt, PKT_C_USE_ITEM);
 }
 
 void ADaeva::SetItemUse()
