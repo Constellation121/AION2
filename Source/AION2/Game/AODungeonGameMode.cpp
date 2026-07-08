@@ -763,6 +763,25 @@ void AAODungeonGameMode::RequestReturnToVillage()
 	ReturnToVillage();
 }
 
+#if WITH_EDITOR
+void AAODungeonGameMode::ForceClearDungeon()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (CurrentPhase == EDungeonPhase::Cleared)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Already Cleared"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Force Clear Dungeon"));
+	ClearDungeon();
+}
+#endif
+
 void AAODungeonGameMode::SendDungeonComplete()
 {
 	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
@@ -772,10 +791,10 @@ void AAODungeonGameMode::SendDungeonComplete()
 
 void AAODungeonGameMode::SendDungeonCompleteRequest()
 {
-	Protocol::C_RequestDungeonCompletePacket RequestPkt;
-	RequestPkt.set_dungeonid(MyDungeonId);
+	//Protocol::C_RequestDungeonCompletePacket RequestPkt;
+	//RequestPkt.set_dungeonid(MyDungeonId);
 
-	SEND_PACKET(RequestPkt, PKT_C_REQUEST_DUNGEON_COMPLETE);
+	//SEND_PACKET(RequestPkt, PKT_C_REQUEST_DUNGEON_COMPLETE);
 }
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
