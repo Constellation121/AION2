@@ -51,7 +51,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Montage")
 	UAnimMontage* GetMontageByTag(const FGameplayTag& MontageTag) const;
 
-
 	// 몬스터 AI 컨트롤러에서 Phase 설정 뒤 Replicate. 
 	FORCEINLINE void Set_Phase(FGameplayTag _PhaseFlag) { Phase = _PhaseFlag; }
 	FORCEINLINE void Set_State(FGameplayTag _StateFlag) { State = _StateFlag; }

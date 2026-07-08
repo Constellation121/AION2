@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Room.h"
 #include "Player.h"
 #include "Protocol.pb.h"
@@ -199,3 +199,12 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 		}
 	}
 }
+
+void Room::HandlePlayerDash(Protocol::C_DashPacket pkt, PlayerRef player)
+{
+	Protocol::S_DashPacket dashPkt;
+	dashPkt.set_playerid(player->_playerId);
+	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(dashPkt);
+	Broadcast(sendBuffer, player->_playerId);
+}
+

@@ -19,6 +19,8 @@
 #define STATE_GLIDING FGameplayTag::RequestGameplayTag(TEXT("State.Gliding"))
 #define STATE_SPRINT FGameplayTag::RequestGameplayTag(TEXT("State.Sprint"))
 
+#define COMBO_AVAILABLE_KEYE FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.KeyE"))
+
 #define COMBO_AVAILABLE_LB2 FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.LB2"))
 #define COMBO_AVAILABLE_LB3 FGameplayTag::RequestGameplayTag(TEXT("Combo.Available.LB3"))
 

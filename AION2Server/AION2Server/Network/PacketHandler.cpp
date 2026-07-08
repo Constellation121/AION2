@@ -193,6 +193,18 @@ bool PacketHandler::HandleMove(PacketSessionRef& session, Protocol::C_MovePacket
 	return true;
 }
 
+bool PacketHandler::HandleDash(PacketSessionRef& session, Protocol::C_DashPacket& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+	if (player == nullptr)
+		return false;
+
+	GRoom->DoAsync(&Room::HandlePlayerDash, pkt, player);
+	return true;
+}
+
+
 bool PacketHandler::HandleChangeHp(PacketSessionRef& session, Protocol::C_ChangeHpPacket& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
@@ -275,6 +287,17 @@ bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_Du
 	int32 dungeonId = pkt.dungeonid();
 	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonStart, player, dungeonId);
 	return true;
+}
+
+bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_RequestDungeonCompletePacket& pkt)
+{
+	DedicatedSessionRef dediSession = static_pointer_cast<DedicatedSession>(session);
+
+	//GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleCreateDungeon, player);
+	int32 dungeonId = pkt.dungeonid();
+	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId);
+	dediSession->SetUsing(false);
+	return false;
 }
 
 bool PacketHandler::HandleStorePurchase(PacketSessionRef& session, Protocol::C_StorePurchasePacket& pkt)
@@ -409,6 +432,70 @@ bool PacketHandler::HandleChat(PacketSessionRef& session, Protocol::C_ChatPacket
 	return true;
 }
 
+bool PacketHandler::HandleMailSend(PacketSessionRef& session, Protocol::C_SendMailPacket& pkt)
+{
+	DBConnection* dbConnect = GDBConnectionPool->Pop();
+	
+	DBBind<8, 0> dbBind(*dbConnect, L"{? = CALL sp_SendMail(?, ?, ?, ?, ?, ?, ?)}");
+
+	int32 returnValue = 0;
+	int32 senderId = static_cast<int32>(pkt.senderid());
+	int32 gold = pkt.gold();
+	int32 itemId = pkt.itemid();
+	int32 itemCount = pkt.itemcount();
+
+	WCHAR wReceiverName[51] = { 0, };
+	WCHAR wTitle[51] = { 0, };
+	
+	::mbstowcs_s(nullptr, wReceiverName, 51, pkt.receivername().c_str(), _TRUNCATE);
+	::mbstowcs_s(nullptr, wTitle, 51, pkt.title().c_str(), _TRUNCATE);
+
+	int32 contentLen = static_cast<int32>(pkt.content().length());
+	std::vector<WCHAR> wContent(contentLen + 1, 0);
+	::mbstowcs_s(nullptr, wContent.data(), wContent.size(), pkt.content().c_str(), _TRUNCATE);
+
+	dbBind.BindParam(0, returnValue, SQL_PARAM_OUTPUT);
+	dbBind.BindParam(1, senderId);
+	dbBind.BindParam(2, wReceiverName);
+	dbBind.BindParam(3, wTitle);
+	dbBind.BindParam(4, wContent.data());
+	dbBind.BindParam(5, gold);
+	dbBind.BindParam(6, itemId);
+	dbBind.BindParam(7, itemCount);
+
+	bool isSuccess = false;
+	Protocol::MailFailReason reason = Protocol::MailFailReason::NONE_ERROR;
+	if (dbBind.Execute())
+	{
+	}
+	else
+	{
+		isSuccess = (returnValue == 0);
+		if (!isSuccess)
+		{
+			if (returnValue == -2)
+			{
+				reason = Protocol::MailFailReason::NONE_RECEIVER;
+			}
+			else
+			{
+				reason = Protocol::MailFailReason::NONE_GOLD;
+			}
+		}
+	}
+
+	GDBConnectionPool->Push(dbConnect);
+
+	Protocol::S_MailSendPacket resultPkt;
+	resultPkt.set_success(isSuccess);
+	resultPkt.set_errorcode(reason);
+
+	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(resultPkt);
+	session->Send(sendBuffer);
+
+	return true;
+}
+
 bool PacketHandler::HandleMailList(PacketSessionRef& session, Protocol::C_MailListPacket& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
@@ -442,7 +529,7 @@ bool PacketHandler::HandleMailList(PacketSessionRef& session, Protocol::C_MailLi
 		while (dbBind.Fetch())
 		{
 			Protocol::MailListInfo* mailInfos = listPacket.add_maillists();
-			
+
 			char szTitle[51] = { 0, };
 			char szSender[51] = { 0, };
 			char szExpire[51] = { 0, };
