@@ -23,29 +23,33 @@ void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
         return;
     }
 
-    const bool bSameASC = BoundASC == InASC;
+    const bool bASCChanged = BoundASC != InASC;
 
-    Super::BindToASC(InASC);
+	if (bASCChanged)
+	{
+		// ASC가 바뀌었을 때만 재호출
+		Super::BindToASC(InASC);
+	}
+	else
+	{
+		UnbindASCDelegates();
+	}
 
+	/*
+	* ASC가 바뀜 => 상위 Bind 로직 호출 => 여전히 null이면,
+	* 애초에 InASC가 null로 들어온 것.
+	* => early return.
+	*/
 	if (!BoundASC)
 	{
 		return;
 	}
 
-
-    if (bSameASC && HealthChangedHandle.IsValid())
-    {
-        BroadcastInitialAttributes();
-        return;
-    }
-
-    UnbindASCDelegates();
-
     if (QuickSkillHUD)
     {
-        UE_LOG(LogTemp, Warning, TEXT("PlayerHUD BindToASC. ASC=%s, QuickSkillHUD=%s"),
-            *GetNameSafe(InASC),
-            *GetNameSafe(QuickSkillHUD));
+		UE_LOG(LogTemp, Warning, TEXT("PlayerHUD BindToASC. ASC=%s, QuickSkillHUD=%s"),
+			*GetNameSafe(InASC),
+			*GetNameSafe(QuickSkillHUD));
 
         QuickSkillHUD->BindToASC(BoundASC);
     }
@@ -62,7 +66,7 @@ void UAOPlayerHUDWidget::UnbindFromASC()
 
 void UAOPlayerHUDWidget::NativeDestruct()
 {
-	UnbindASCDelegates();
+	ClearBinding();
 	Super::NativeDestruct();
 }
 
@@ -288,5 +292,13 @@ void UAOPlayerHUDWidget::UpdateStaminaBar(float CurrentValue, float MaxValue)
 		{
 			Pb_StaminaBar->SetVisibility(ESlateVisibility::Visible);
 		}
+	}
+}
+
+void UAOPlayerHUDWidget::PlaySkillPressedFeedback(int32 InputId)
+{
+	if (QuickSkillHUD)
+	{
+		QuickSkillHUD->PlaySkillPressedFeedback(InputId);
 	}
 }
