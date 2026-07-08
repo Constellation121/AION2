@@ -108,15 +108,18 @@ public:
 	void Reset_PlayerOrbStackAndColor();
 
 	FORCEINLINE void Set_OrbAttackColor(EOrbColor _eOrbColor) { AttackOrbColor = _eOrbColor; }
-	TArray<class ADaeva*> Get_ArrayOrbHittedDaeva() { return ArrayOrbHittedDaeva; }
+	TArray<class ADaeva*>& Get_ArrayOrbHittedDaeva() { return ArrayOrbHittedDaeva; }
 	EOrbColor Get_AttackOrbColor() { return AttackOrbColor; }
 
+
+	TArray<class ATalythraGimmickShield*>& Get_ArrayOrbShield() { return ArrayOrbShield; }
+	void Sub_ArrayOrbShield(class ATalythraGimmickShield* _pSheild);
 	void Destroy_OrbShield();
 
 #pragma endregion 
 
-
-
+	virtual void StartGroggy() override;
+	virtual void EndGroggy() override;
 
 
 protected:

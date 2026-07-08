@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AOPlayerManager.h"
@@ -8,11 +8,13 @@
 #include "Player/AOPlayerController.h"
 #include "UI/AOPlayerHUDWidget.h"
 #include "UI/AOMainHUDWidget.h"
+#include "GoldWidget.h"
 #include "AOChattingWidget.h"
 #include "AOQuickSlotComponent.h"
 #include "Item/AOItemDataBase.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
+#include "Kismet/GameplayStatics.h"
 #include "Game/AODungeonGameMode.h"
 
 UAOPlayerManager::UAOPlayerManager()
@@ -49,10 +51,12 @@ void UAOPlayerManager::Initialize(FSubsystemCollectionBase& Collection)
 	PlayerClass = ADaeva::StaticClass();
 }
 
-void UAOPlayerManager::HandleLogin(const uint64 PlayerId, const uint8 ClassType)
+void UAOPlayerManager::HandleLogin(const uint64 PlayerId, const uint8 ClassType, int32 Gold)
 {
 	GameInstance->SetMyPlayerId(PlayerId);
 	GameInstance->SetMyPlayerClass(ClassType);
+
+	MyGold = Gold;
 }
 
 void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation)
@@ -69,54 +73,55 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerNa
 		if (GameInstance->GetMyPlayerId() == PlayerId)
 		{
 			MyPlayer = GetWorld()->SpawnActor<AMMODaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
-			//MyPlayer = GetWorld()->SpawnActor<ADaeva>(SpawnClass, SpawnLocation, SpawnRotation, SpawnParams);
-			if (MyPlayer != nullptr)
+
+			if (!MyPlayer) return;
+			MyPlayer->SetMyId(PlayerId);
+			MyPlayer->SetMyClass(ClassType);
+
+			AAOPlayerController* PlayerController = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
+
+			if (!PlayerController) return;
+			PlayerController->Possess(MyPlayer);
+			UAOQuickSlotComponent* InventoryComp = MyPlayer->FindComponentByClass<UAOQuickSlotComponent>();
+
+			if (InventoryComp == nullptr)
 			{
-				MyPlayer->SetMyId(PlayerId);
-				MyPlayer->SetMyClass(ClassType);
+				UE_LOG(LogTemp, Warning, TEXT("Inventory Is Nat Vaild"));
+				return;
+			}
 
-				AAOPlayerController* PlayerController = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
-				if (PlayerController != nullptr)
+			UAOMainHUDWidget* MainHUD = PlayerController->GetMainHUD();
+			if (MainHUD == nullptr) return;
+
+			UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
+			if (PlayerHUD == nullptr) return;
+
+			for (const auto& Pair : MyItems)
+			{
+				const Protocol::ItemData& Item = Pair.Value;
+
+				int32 InstanceId = Item.iteminstancedid();
+				int32 TemplateId = Item.itemtemplateid();
+				int32 SlotIndex = Item.slotindex();
+				int32 Count = Item.count();
+
+				FAOSlotData SlotData;
+				SlotData.ItemInstancedId = InstanceId;
+				SlotData.ItemTemplateId = TemplateId;
+				SlotData.SlotIndex = SlotIndex;
+				SlotData.Count = Count;
+				FItemData TemplateData;
+
+				if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
 				{
-					PlayerController->Possess(MyPlayer);
-					UAOQuickSlotComponent* InventoryComp = MyPlayer->FindComponentByClass<UAOQuickSlotComponent>();
+					InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
+					PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
 
-					if (InventoryComp == nullptr)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Inventory Is Nat Vaild"));
-						return;
-					}
-
-					UAOMainHUDWidget* MainHUD = PlayerController->GetMainHUD();
-					if (MainHUD == nullptr) return;
-
-					UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
-					if (PlayerHUD == nullptr) return;
-
-					for (const auto& Pair : MyItems)
-					{
-						const Protocol::ItemData& Item = Pair.Value;
-
-						int32 InstanceId = Item.iteminstancedid();
-						int32 TemplateId = Item.itemtemplateid();
-						int32 SlotIndex = Item.slotindex();
-						int32 Count = Item.count();
-
-						FAOSlotData SlotData;
-						SlotData.ItemInstancedId = InstanceId;
-						SlotData.ItemTemplateId = TemplateId;
-						SlotData.SlotIndex = SlotIndex;
-						SlotData.Count = Count;
-						FItemData TemplateData;
-
-						if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
-						{
-							InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
-							PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
-						}
-					}
 				}
 			}
+			UGoldWidget* GoldWidget = MainHUD->GoldWidget;
+			if (!GoldWidget) return;
+			GoldWidget->SetGold(FString::FromInt(MyGold));
 		}
 
 		else
@@ -187,7 +192,7 @@ void UAOPlayerManager::HandleChatting(FString SenderName, FString SendMessage)
 	}
 }
 
-void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo)
+void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo, int32 Gold)
 {
 	AAOPlayerController* PlayerController = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PlayerController != nullptr)
@@ -223,12 +228,25 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo)
 			InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
 			PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
 		}
+		MyGold = Gold;
+		UGoldWidget* GoldWidget = MainHUD->GoldWidget;
+		GoldWidget->SetGold(FString::FromInt(MyGold));
 	}
 }
 
 void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 {
 	int32 SlotIndex = Pkt.slotindex();
+	for (auto& Pair : MyItems)
+	{
+		Protocol::ItemData& Item = Pair.Value;
+		if (Item.slotindex() == SlotIndex)
+		{
+			int32 ItemId = Item.iteminstancedid();
+			MyItems.Find(ItemId)->set_count(Pkt.count());
+		}
+	}
+
 	UAOQuickSlotComponent* QuickSlotComp = MyPlayer->GetQuickSlotComponent();
 	if (QuickSlotComp)
 	{
@@ -273,7 +291,20 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStartDediPacket& Info)
 {
 	AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->SetPrePlayerInfo(Info);
+	if (GameMode)
+	{
+		GameMode->SetPrePlayerInfo(Info);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HandleDungeonSetPlayerInfo failed: GameMode is null or not AAODungeonGameMode."));
+	}
+}
+
+void UAOPlayerManager::HandleDungeonEnd()
+{
+	//FSoftObjectPath LevelPath(FString::Printf(TEXT("/Game/Map/Lobby")))
+	UGameplayStatics::OpenLevel(this, TEXT("/Game/Map/Village"));
 }
 
 void UAOPlayerManager::HandleDisconnect(uint64 RemovePlayerId)
@@ -299,7 +330,7 @@ void UAOPlayerManager::HandleDungeonEnter(int32 DungeonId)
 
 void UAOPlayerManager::HandleDungeonStart(FString ServerURL)
 {
-
+	ClearMyDungeonRoomState();
 	AAOPlayerController* PC = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PC)
 	{
@@ -410,3 +441,19 @@ void UAOPlayerManager::UpdateMyDungeonReadyState(int32 DungeonId, uint64 PlayerI
 }
 
 #pragma endregion
+
+void UAOPlayerManager::HandleDash(const uint64 PlayerId)
+{
+	if (!GameInstance)
+		return;
+	UE_LOG(LogTemp, Log, TEXT("HandleDash: %d"), PlayerId);
+
+	if (GameInstance->GetMyPlayerId() == PlayerId) return;
+	auto PlayerRef = Players.Find(PlayerId);
+	if (PlayerRef == nullptr) return;
+	AMMODaeva* MMOPlayer = *PlayerRef;
+	if (MMOPlayer)
+	{
+		MMOPlayer->ReceiveDashPacket();
+	}
+}

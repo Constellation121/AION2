@@ -362,6 +362,11 @@ void ATalythra::Teleport_To_Player()
 	AActor* pTargetActor = pAITalythraAIController->Get_CurrentTargetPlayer();
 
 
+	if (pTargetActor == nullptr)
+	{
+		return;
+	}
+
 	// replicated는 위에 생성자에서 해줬으므로 mulit rpc 필요 x 
 	TeleportTo(pTargetActor->GetActorLocation(),
 		GetActorRotation(),
@@ -636,13 +641,11 @@ void ATalythra::DoFireProjectile_3()
 void ATalythra::InitAttributeSet()
 {
 	// AttributeSet설정
-	AttributeSet->InitHealth(5000.f);
-	AttributeSet->InitMaxHealth(5000.f);
+	AttributeSet->InitHealth(12000.f);
+	AttributeSet->InitMaxHealth(12000.f);
 
-	AttributeSet->InitGroggy(100.f);
-	AttributeSet->InitMaxGroggy(100.f);
-
-
+	AttributeSet->InitGroggy(3000.f);
+	AttributeSet->InitMaxGroggy(3000.f);
 
 
 }
@@ -837,13 +840,74 @@ void ATalythra::Reset_PlayerOrbStackAndColor()
 	}
 }
 
+void ATalythra::Sub_ArrayOrbShield(ATalythraGimmickShield* _pSheild)
+{
+	if (ArrayOrbShield.Find(_pSheild) != -1)
+	{
+		ArrayOrbShield.Remove(_pSheild);
+	}
+}
+
+
+void ATalythra::StartGroggy()
+{
+	if (!HasAuthority() || bIsGroggy || bIsDead)
+	{
+		return;
+	}
+
+	bIsGroggy = true;
+
+	UE_LOG(LogTemp, Warning, TEXT("%s groggy start"), *GetName());
+
+	AAIMonsterControllerBase* pMonsterController = Cast<AAIMonsterControllerBase>(GetController());
+	if (pMonsterController == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("pMonsterController nullptr"));
+	}
+
+	pMonsterController->Set_Phase(PHASE_MONSTER_GROGGY);
+
+	GetCharacterMovement()->StopMovementImmediately();
+
+	/* Decal 끄기 */
+	Multicast_AttackLine_Pattern_3_Off();
+}
+
+void ATalythra::EndGroggy()
+{
+	if (!HasAuthority() || !bIsGroggy || bIsDead)
+	{
+		return;
+	}
+
+	bIsGroggy = false;
+
+	if (AttributeSet)
+	{
+		AttributeSet->SetGroggy(AttributeSet->GetMaxGroggy());
+	}
+
+	AAIMonsterControllerBase* pMonsterController = Cast<AAIMonsterControllerBase>(GetController());
+	if (pMonsterController == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("pMonsterController nullptr"));
+	}
+
+	// 만약 PreCombat 페이즈를 안쓰신다면 EndGroggy를 virtual 함수로 선언하신 뒤 
+	// Set_Phase를 다른걸로 사용하시면 될 거 같습니다.
+	pMonsterController->Set_Phase(PHASE_MONSTER_PRECOMBAT);
+}
+
+
 void ATalythra::Destroy_OrbShield()
 {
 	// 여기서 각종 세팅값들 초기화 해주기. 
 
 	for (auto& OrbShield : ArrayOrbShield)
 	{
-		OrbShield->Destroy();
+		if (IsValid(OrbShield))
+			OrbShield->Destroy();
 	}
 
 	for (auto& Daeva : ArrayOrbHittedDaeva)
@@ -1095,7 +1159,7 @@ void ATalythra::OnHealthChanged(const FOnAttributeChangeData& Data)
 	FGameplayTagContainer OwnedTags;
 	ASC->GetOwnedGameplayTags(OwnedTags);
 
-	if (Ratio <= 0.9f
+	if (Ratio <= 0.7f
 		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP70_DONE) == false
 		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP70_PENDING) == false)
 	{
@@ -1103,7 +1167,7 @@ void ATalythra::OnHealthChanged(const FOnAttributeChangeData& Data)
 	}
 
 
-	if (Ratio <= 0.5f
+	if (Ratio <= 0.35f
 		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP35_DONE) == false
 		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP35_PENDING) == false)
 	{

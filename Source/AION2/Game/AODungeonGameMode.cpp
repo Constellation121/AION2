@@ -31,6 +31,7 @@ void AAODungeonGameMode::BeginPlay()
 	InitializePlacedBosses();
 
 	StartDungeon();
+	//SendDungeonCompleteRequest();
 }
 
 void AAODungeonGameMode::Tick(float DeltaTime)
@@ -336,6 +337,11 @@ void AAODungeonGameMode::NotifyPlayerDied(APlayerController* DeadPlayerControlle
 	StartPlayerRespawnTimer(DeadPlayerController, DeadPawn->GetActorTransform());
 }
 
+void AAODungeonGameMode::NotifyPlayerRespawnImmediately(APlayerController* DeadPlayerController)
+{
+	RespawnPlayer(DeadPlayerController);
+}
+
 void AAODungeonGameMode::SetCombatPhase(int32 BossNumber)
 {
 	switch (BossNumber)
@@ -422,7 +428,11 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 		return;
 	}
 
-	RespawnTimerHandles.Remove(PlayerController);
+	if (FTimerHandle* TimerHandle = RespawnTimerHandles.Find(PlayerController))
+	{
+		GetWorldTimerManager().ClearTimer(*TimerHandle);
+		RespawnTimerHandles.Remove(PlayerController);
+	}
 
 	if (!DeadPlayerControllers.Contains(PlayerController))
 	{
@@ -782,15 +792,15 @@ void AAODungeonGameMode::SendDungeonComplete()
 {
 	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
 	MapPkt.set_dungeonid(MyDungeonId);
-	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
+	SEND_PACKET(MapPkt, PKT_C_DUNGEON_MAP_COMPLETE);
 }
 
 void AAODungeonGameMode::SendDungeonCompleteRequest()
 {
-	//Protocol::C_RequestDungeonCompletePacket RequestPkt;
-	//RequestPkt.set_dungeonid(MyDungeonId);
+	Protocol::C_RequestDungeonCompletePacket RequestPkt;
+	RequestPkt.set_dungeonid(MyDungeonId);
 
-	//SEND_PACKET(RequestPkt, PKT_C_REQUEST_DUNGEON_COMPLETE);
+	SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
 }
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)

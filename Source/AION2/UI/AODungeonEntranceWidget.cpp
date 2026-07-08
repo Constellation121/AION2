@@ -107,7 +107,7 @@ void UAODungeonEntranceWidget::OnEnterButtonClicked()
 		EnterPacket.set_dungeonid(0);
 	}
 
-	SEND_PACKET(EnterPacket, PKT_C_DUNGEONENTER);
+	SEND_PACKET(EnterPacket, PKT_C_DUNGEON_ENTER);
 }
 
 void UAODungeonEntranceWidget::OnCreateButtonClicked()
@@ -116,7 +116,7 @@ void UAODungeonEntranceWidget::OnCreateButtonClicked()
 
 	Protocol::C_DungeonCreatePacket CreatePacket;
 
-	SEND_PACKET(CreatePacket, PKT_C_DUNGEONCREATE);
+	SEND_PACKET(CreatePacket, PKT_C_DUNGEON_CREATE);
 
 }
 void UAODungeonEntranceWidget::OnStartButtonClicked()
@@ -138,7 +138,7 @@ void UAODungeonEntranceWidget::OnStartButtonClicked()
 
 	Protocol::C_DungeonStartPacket StartPacket;
 	StartPacket.set_dungeonid(State.DungeonId);
-	SEND_PACKET(StartPacket, PKT_C_DUNGEONSTART);
+	SEND_PACKET(StartPacket, PKT_C_DUNGEON_START);
 }
 
 void UAODungeonEntranceWidget::OnReadyButtonClicked()
@@ -157,7 +157,7 @@ void UAODungeonEntranceWidget::OnReadyButtonClicked()
 
 	Protocol::C_DungeonReadyPacket ReadyPacket;
 	ReadyPacket.set_dungeonid(State.DungeonId);
-	SEND_PACKET(ReadyPacket, PKT_C_DUNGEONREADY);
+	SEND_PACKET(ReadyPacket, PKT_C_DUNGEON_READY);
 }
 
 void UAODungeonEntranceWidget::OnExitButtonClicked()
@@ -182,7 +182,7 @@ void UAODungeonEntranceWidget::OnExitButtonClicked()
 		{
 			exitPacket.set_playerid(GI->GetMyPlayerId());
 		}
-		SEND_PACKET(exitPacket, PKT_C_DUNGEONEXIT);
+		SEND_PACKET(exitPacket, PKT_C_DUNGEON_EXIT);
 	}
 }
 
@@ -365,7 +365,7 @@ void UAODungeonEntranceWidget::RequestEnterDungeon(int32 DungeonId)
 
 	EnterPacket.set_dungeonid(DungeonId);
 
-	SEND_PACKET(EnterPacket, PKT_C_DUNGEONENTER);
+	SEND_PACKET(EnterPacket, PKT_C_DUNGEON_ENTER);
 }
 
 void UAODungeonEntranceWidget::ApplyEntranceState()
