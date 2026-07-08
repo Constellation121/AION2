@@ -84,6 +84,17 @@ void AAOGameMode::NotifyPlayerDied(AController* DeadController)
 	RespawnTimerHandles.Add(DeadController, RespawnTimerHandle);
 }
 
+void AAOGameMode::NotifyPlayerRespawnImmediately(AController* DeadController)
+{
+	APawn* DeadPawn = DeadController->GetPawn();
+	if (!DeadPawn)
+	{
+		return;
+	}
+
+	RespawnPlayerImmediately(DeadController, DeadPawn->GetActorTransform());
+}
+
 void AAOGameMode::RespawnPlayerImmediately(AController* DeadController, const FTransform& RespawnTransform)
 {
 	if (!HasAuthority())
@@ -96,7 +107,11 @@ void AAOGameMode::RespawnPlayerImmediately(AController* DeadController, const FT
 		return;
 	}
 
-	RespawnTimerHandles.Remove(DeadController);
+	if (FTimerHandle* TimerHandle = RespawnTimerHandles.Find(DeadController))
+	{
+		GetWorldTimerManager().ClearTimer(*TimerHandle);
+		RespawnTimerHandles.Remove(DeadController);
+	}
 
 	APawn* OldPawn = DeadController->GetPawn();
 

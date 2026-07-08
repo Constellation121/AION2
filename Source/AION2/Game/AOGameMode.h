@@ -23,6 +23,7 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void NotifyPlayerDied(AController* DeadController);
+	void NotifyPlayerRespawnImmediately(AController* DeadController);
 
 protected:
 	void RespawnPlayerImmediately(AController* DeadController, const FTransform& RespawnTransform);

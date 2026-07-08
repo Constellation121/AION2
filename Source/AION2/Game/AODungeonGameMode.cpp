@@ -336,6 +336,11 @@ void AAODungeonGameMode::NotifyPlayerDied(APlayerController* DeadPlayerControlle
 	StartPlayerRespawnTimer(DeadPlayerController, DeadPawn->GetActorTransform());
 }
 
+void AAODungeonGameMode::NotifyPlayerRespawnImmediately(APlayerController* DeadPlayerController)
+{
+	RespawnPlayer(DeadPlayerController);
+}
+
 void AAODungeonGameMode::SetCombatPhase(int32 BossNumber)
 {
 	switch (BossNumber)
@@ -422,7 +427,11 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 		return;
 	}
 
-	RespawnTimerHandles.Remove(PlayerController);
+	if (FTimerHandle* TimerHandle = RespawnTimerHandles.Find(PlayerController))
+	{
+		GetWorldTimerManager().ClearTimer(*TimerHandle);
+		RespawnTimerHandles.Remove(PlayerController);
+	}
 
 	if (!DeadPlayerControllers.Contains(PlayerController))
 	{
