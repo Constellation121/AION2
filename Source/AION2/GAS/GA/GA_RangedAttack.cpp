@@ -203,6 +203,5 @@ void UGA_RangedAttack::OnLaunchProjectileEvent(FGameplayEventData Payload)
 		return;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("Summon Shuriken"));
 	AOCharacter->SpawnAttackProjectile(AttackData, ProjectileClass, ProjectileSpawnSocket);
 }

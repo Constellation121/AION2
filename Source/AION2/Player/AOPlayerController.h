@@ -118,4 +118,12 @@ private:
 	// 일단 넉넉하게 180 => 3초로 잡기. 잘 되면 점점 줄여서 60을 목표로.
 	int32 PawnASCMaxRetryCount = 180;
 
+	//TEST.HY
+public :
+	UFUNCTION(Exec)
+	void TestClearDungeon();
+
+	UFUNCTION(Server, Reliable)
+	void ServerTestClearDungeon();
+
 };

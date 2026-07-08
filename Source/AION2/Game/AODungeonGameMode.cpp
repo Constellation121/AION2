@@ -20,7 +20,7 @@ AAODungeonGameMode::AAODungeonGameMode()
 {
 	bUseSeamlessTravel = true;
 	PrimaryActorTick.bCanEverTick = true;
-	//DefaultPawnClass = APawn::StaticClass();
+	DefaultPawnClass = APawn::StaticClass();
 }
 
 void AAODungeonGameMode::BeginPlay()
@@ -170,7 +170,6 @@ void AAODungeonGameMode::StartDungeon()
 
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Start Dungeon"));
 
-	// 현재 테스트 때문에 3번째 보스부터 시작!
 	StartBossPhase(1);
 }
 
@@ -260,7 +259,7 @@ void AAODungeonGameMode::ClearDungeon()
 	
 	GiveDungeonReward();
 
-	SendDungeonComplete(true);
+	SendDungeonCompleteRequest();
 }
 
 void AAODungeonGameMode::FailDungeon()
@@ -335,6 +334,11 @@ void AAODungeonGameMode::NotifyPlayerDied(APlayerController* DeadPlayerControlle
 	}
 
 	StartPlayerRespawnTimer(DeadPlayerController, DeadPawn->GetActorTransform());
+}
+
+void AAODungeonGameMode::NotifyPlayerRespawnImmediately(APlayerController* DeadPlayerController)
+{
+	RespawnPlayer(DeadPlayerController);
 }
 
 void AAODungeonGameMode::SetCombatPhase(int32 BossNumber)
@@ -423,7 +427,11 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 		return;
 	}
 
-	RespawnTimerHandles.Remove(PlayerController);
+	if (FTimerHandle* TimerHandle = RespawnTimerHandles.Find(PlayerController))
+	{
+		GetWorldTimerManager().ClearTimer(*TimerHandle);
+		RespawnTimerHandles.Remove(PlayerController);
+	}
 
 	if (!DeadPlayerControllers.Contains(PlayerController))
 	{
@@ -762,21 +770,37 @@ void AAODungeonGameMode::RequestReturnToVillage()
 	ReturnToVillage();
 }
 
-//void AAODungeonGameMode::SendDungeonComplete()
-//{
-//	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
-//	MapPkt.set_dungeonid(MyDungeonId);
-//	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
-//}
+void AAODungeonGameMode::ForceClearDungeon()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
 
-//H.Y
-void AAODungeonGameMode::SendDungeonComplete(bool bIsClear)
+	if (CurrentPhase == EDungeonPhase::Cleared)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Already Cleared"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Force Clear Dungeon"));
+	ClearDungeon();
+}
+
+void AAODungeonGameMode::SendDungeonComplete()
 {
 	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
 	MapPkt.set_dungeonid(MyDungeonId);
 	SEND_PACKET(MapPkt, PKT_C_DUNGEOMMAPCOMPLETE);
 }
-//
+
+void AAODungeonGameMode::SendDungeonCompleteRequest()
+{
+	//Protocol::C_RequestDungeonCompletePacket RequestPkt;
+	//RequestPkt.set_dungeonid(MyDungeonId);
+
+	//SEND_PACKET(RequestPkt, PKT_C_REQUEST_DUNGEON_COMPLETE);
+}
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
 {

@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputCoreTypes.h"
+#include "Game/AODungeonGameMode.h"
 
 #include "AbilitySystemComponent.h"
 
@@ -274,3 +275,20 @@ void AAOPlayerController::ToggleMailWidget()
 	}
 }
 
+void AAOPlayerController::TestClearDungeon()
+{
+	ServerTestClearDungeon();
+}
+
+void AAOPlayerController::ServerTestClearDungeon_Implementation()
+{
+	AAODungeonGameMode* DungeonGameMode = GetWorld()->GetAuthGameMode<AAODungeonGameMode>();
+
+	if (!DungeonGameMode)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Dungeon Test] DungeonGameMode is null"));
+		return;
+	}
+
+	DungeonGameMode->ForceClearDungeon();
+}
