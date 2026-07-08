@@ -161,11 +161,14 @@ public :
 	// 미리 스폰된 플레이어들
 	UPROPERTY()
 	TArray<class APawn*> SpawnedPlayers;
+
+	// Test
+	UFUNCTION(Exec)
+	void ForceClearDungeon();
+
 private:
-	// H.Y
-	//void SendDungeonComplete();
-	void SendDungeonComplete(bool bIsClear);
-	//
+	void SendDungeonComplete();
+	void SendDungeonCompleteRequest();
 
 	int32 MyDungeonId = 0;
 	Protocol::DPlayerInfo* ValidateToken(FString Token);
@@ -178,4 +181,5 @@ private:
 
 private :
 	bool bDungeonResultSent = false;
+
 };
