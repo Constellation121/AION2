@@ -25,7 +25,22 @@ void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
         Daeva = Cast<ADaeva>(GetOwningPlayerPawn());
     }
 
-    const UDA_AbilitySet* AbilitySet = Daeva ? Daeva->GetCombatAbilitySet() : nullptr;
+    // 한 번 더 넣어줬는데 안되면 return;
+    if (!Daeva)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UAOQuickSkillHUD::BindToASC Daeva is null"));
+        return;
+    }
+
+    const UDA_AbilitySet* AbilitySet = Daeva->GetCombatAbilitySet();
+
+    // AbilitySet 안됐을 때 확인용
+    //UE_LOG(
+    //    LogTemp, 
+    //    Warning, 
+    //    TEXT("UAOQuickSkillHUD::BindToASC... AbilitySetName: %s"), 
+    //    *GetPathNameSafe(AbilitySet)
+    //);
 
     for (const TPair<int32, TObjectPtr<UAOSkillQuickSlotWidget>>& Pair : SkillSlotByAbilityID)
     {
