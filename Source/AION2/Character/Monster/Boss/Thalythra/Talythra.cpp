@@ -837,13 +837,22 @@ void ATalythra::Reset_PlayerOrbStackAndColor()
 	}
 }
 
+void ATalythra::Sub_ArrayOrbShield(ATalythraGimmickShield* _pSheild)
+{
+	if (ArrayOrbShield.Find(_pSheild) != -1)
+	{
+		ArrayOrbShield.Remove(_pSheild);
+	}
+}
+
 void ATalythra::Destroy_OrbShield()
 {
 	// 여기서 각종 세팅값들 초기화 해주기. 
 
 	for (auto& OrbShield : ArrayOrbShield)
 	{
-		OrbShield->Destroy();
+		if (IsValid(OrbShield))
+			OrbShield->Destroy();
 	}
 
 	for (auto& Daeva : ArrayOrbHittedDaeva)

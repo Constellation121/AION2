@@ -221,7 +221,7 @@ void UAOGameInstance::SendLoginPacket(const FString& Id, const FString& Password
 void UAOGameInstance::SendMapLoadCompletePacket()
 {
 	Protocol::C_MapLoadCompletePacket Pkt;
-	SendPacket(Pkt, PKT_C_MAPLOADCOMPLETE);
+	SendPacket(Pkt, PKT_C_MAP_LOAD_COMPLETE);
 }
 
 void UAOGameInstance::OpenVillageLevel()
