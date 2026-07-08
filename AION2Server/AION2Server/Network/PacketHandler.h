@@ -10,6 +10,9 @@ enum : uint16
 	// 회원가입 및 로그인
 	PKT_C_SIGNUP = 1000,
 	PKT_S_SIGNUP = 1001,
+	PKT_C_SET_NICNNAME = 1046,
+	PKT_S_SET_NICNNAME = 1047,
+
 	PKT_C_LOGIN = 1002,
 	PKT_S_LOGIN_SUCCEED = 1003,
 	PKT_S_LOGIN_FAIL = 1004,
@@ -82,6 +85,7 @@ public:
 
 		// 회원가입 및 로그인
 		GPacketHandler[PKT_C_SIGNUP] = [](PacketSessionRef& session, BYTE* buffer, int len) { return HandlePacket<Protocol::C_SignUpPacket>(HandleSignUp, session, buffer, len); };
+		GPacketHandler[PKT_C_SET_NICNNAME] = [](PacketSessionRef& session, BYTE* buffer, int len) { return HandlePacket<Protocol::C_SetNicknamePacket>(HandleSetNickname, session, buffer, len); };
 		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int len) {return HandlePacket<Protocol::C_LoginPacket>(HandleLogin, session, buffer, len); };
 
 		// 아이템 및 상점
@@ -117,6 +121,7 @@ public:
 	}
 
 	static bool HandleSignUp(PacketSessionRef& session, Protocol::C_SignUpPacket& pkt);
+	static bool HandleSetNickname(PacketSessionRef& session, Protocol::C_SetNicknamePacket& pkt);
 	static bool HandleLogin(PacketSessionRef& session, Protocol::C_LoginPacket& pkt);
 	static bool HandleMapComplete(PacketSessionRef& session, Protocol::C_MapLoadCompletePacket& pkt);
 	static bool HandleMove(PacketSessionRef& session, Protocol::C_MovePacket& pkt);
@@ -162,8 +167,10 @@ public:
 	//}
 
 	static SendBufferRef MakeSendBuffer(Protocol::S_SignUpResultPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_SIGNUP); };
+	static SendBufferRef MakeSendBuffer(Protocol::S_SetNicknamePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_SET_NICNNAME); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_LoginSuccessPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_LOGIN_SUCCEED); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_LoginFailPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_LOGIN_FAIL); };
+
 	static SendBufferRef MakeSendBuffer(Protocol::S_ItemDataPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_ITEM); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_SpawnPacket& pkt) { return MakeSendBuffer(pkt, PKT_S_SPAWN); };
 	static SendBufferRef MakeSendBuffer(Protocol::S_MovePacket& pkt) { return MakeSendBuffer(pkt, PKT_S_MOVE); };
