@@ -2,17 +2,32 @@
 
 
 #include "UI/AOSkillQuickSlotWidget.h"
+
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "Data/DA_AbilitySet.h"
+#include "Components/Button.h"
 
-void UAOSkillQuickSlotWidget::InitSkillSlot(const FGAData& InAbilityData)
+#include "Data/AOSkillSlotViewData.h"
+
+
+
+void UAOSkillQuickSlotWidget::NativeDestruct()
 {
-    CooldownTag = InAbilityData.CooldownTag;
-    EffectWidgetClass = InAbilityData.EffectWidgetClass;
+    // CooldownTimer에서 사용한 TimerHandle clear.
+    if (UWorld* World = GetWorld())
+    {
+        World->GetTimerManager().ClearTimer(CooldownTimerHandle);
+    }
 
-    SetSkillIcon(InAbilityData.Icon);
-    SetSkillLevel(InAbilityData.AbilityLevel);
+    Super::NativeDestruct();
+}
+
+void UAOSkillQuickSlotWidget::InitSkillSlot(const FAOSkillSlotViewData& InViewData)
+{
+    CurrentCooldownTag = InViewData.CooldownTag;
+
+    SetSkillIcon(InViewData.Icon);
+    SetSkillLevel(InViewData.AbilityLevel);
 }
 
 void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
@@ -42,16 +57,52 @@ void UAOSkillQuickSlotWidget::SetSkillLevel(int32 InLevel)
     }
 }
 
-void UAOSkillQuickSlotWidget::PlayPressedFeedback()
+void UAOSkillQuickSlotWidget::PlaySkillPressedFeedback()
 {
+    if (!SlotButton)
+    {
+        return;
+    }
+
+    BP_PlayPressedFeedback();
 }
 
 void UAOSkillQuickSlotWidget::StartCooldown(float RemainingTime, float Duration)
 {
+    if (RemainingTime <= 0.0f || Duration <= 0.0f)
+    {
+        return;
+    }
+
+    //CooldownEndTime = GetWorld()->GetTimeSeconds() + RemainingTime;
+    //CooldownDuration = Duration;
+    //
+    //BP_StartCooldown(RemainingTime, Duration);
+    //UpdateCooldownText();
+    //
+    //GetWorld()->GetTimerManager().SetTimer(
+    //    CooldownTimerHandle,
+    //    this,
+    //    &ThisClass::UpdateCooldownText,
+    //    0.1f,
+    //    true
+    //);
 }
 
 void UAOSkillQuickSlotWidget::StopCooldown()
 {
+    //if (GetWorld())
+    //{
+    //    GetWorld()->GetTimerManager().ClearTimer(CooldownTimerHandle);
+    //}
+    //
+    //if (TB_CooldownRemaining)
+    //{
+    //    TB_CooldownRemaining->SetText(FText::GetEmpty());
+    //    TB_CooldownRemaining->SetVisibility(ESlateVisibility::Collapsed);
+    //}
+    //
+    //BP_StopCooldown();
 }
 
 void UAOSkillQuickSlotWidget::ShowEffectWidget()

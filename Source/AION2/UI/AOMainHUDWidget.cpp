@@ -41,4 +41,12 @@ void UAOMainHUDWidget::HideTargetMonsterHUD()
 	}
 }
 
+void UAOMainHUDWidget::PlaySkillPressedFeedback(int32 InputId)
+{
+	if (PlayerHUDWidget)
+	{
+		PlayerHUDWidget->PlaySkillPressedFeedback(InputId);
+	}
+
+}
 

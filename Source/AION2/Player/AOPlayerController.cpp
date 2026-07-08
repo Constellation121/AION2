@@ -242,6 +242,16 @@ void AAOPlayerController::HideTargetMonsterHUD()
 	MainHUD->HideTargetMonsterHUD();
 }
 
+void AAOPlayerController::PlaySkillPressedFeedback(int32 InputId)
+{
+	if (!IsLocalController() || !MainHUD)
+	{
+		return;
+	}
+
+	MainHUD->PlaySkillPressedFeedback(InputId);
+}
+
 void AAOPlayerController::ToggleMailWidget()
 {
 	if (!IsLocalController()) return;

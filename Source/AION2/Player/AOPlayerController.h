@@ -67,6 +67,11 @@ public:
 	// Hide Full-Screen Monster Stat visibility value & Unbind ASC.
 	void HideTargetMonsterHUD();
 
+public:
+	// === Skill HUD. ===
+	void PlaySkillPressedFeedback(int32 InputId);
+
+
 private:
 	bool bShowColliderDebug = false;
 	bool bShowGASDebug = false;
