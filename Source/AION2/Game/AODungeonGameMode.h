@@ -161,6 +161,13 @@ public :
 	// 미리 스폰된 플레이어들
 	UPROPERTY()
 	TArray<class APawn*> SpawnedPlayers;
+
+	// Test
+#if WITH_EDITOR
+	UFUNCTION(Exec)
+	void ForceClearDungeon();
+#endif
+
 private:
 	void SendDungeonComplete();
 	void SendDungeonCompleteRequest();
@@ -176,4 +183,5 @@ private:
 
 private :
 	bool bDungeonResultSent = false;
+
 };

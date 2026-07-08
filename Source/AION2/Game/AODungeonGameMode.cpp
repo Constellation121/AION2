@@ -762,6 +762,25 @@ void AAODungeonGameMode::RequestReturnToVillage()
 	ReturnToVillage();
 }
 
+#if WITH_EDITOR
+void AAODungeonGameMode::ForceClearDungeon()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (CurrentPhase == EDungeonPhase::Cleared)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Already Cleared"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Force Clear Dungeon"));
+	ClearDungeon();
+}
+#endif
+
 void AAODungeonGameMode::SendDungeonComplete()
 {
 	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
