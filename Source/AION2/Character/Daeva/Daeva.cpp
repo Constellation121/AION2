@@ -950,7 +950,8 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// 부활 스킬에 맞아야 해서 Collision 켜두기
+	// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	if (ASC)
 	{

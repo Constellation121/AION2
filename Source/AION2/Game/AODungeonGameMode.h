@@ -82,7 +82,6 @@ protected:
 
 	APlayerStart* FindDungeonRespawnPoint() const;
 	void ClearAllRespawnTimers();
-	void CancelPlayerRespawnTimer(APlayerController* PlayerController);
 
 	void StartWipeRespawn();
 	void RespawnAllDeadPlayersAtBossCheckpoint();

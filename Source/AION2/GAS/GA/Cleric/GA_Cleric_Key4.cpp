@@ -9,12 +9,6 @@ void UGA_Cleric_Key4::OnCheckAttackHitEvent(FGameplayEventData Payload)
 		return;
 	}
 
-	UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
-	if (!SourceASC)
-	{
-		return;
-	}
-
 	AAOCharacter* AOCharacter = Cast<AAOCharacter>(GetAvatarActorFromActorInfo());
 	if (!AOCharacter)
 	{
@@ -75,17 +69,22 @@ void UGA_Cleric_Key4::OnCheckAttackHitEvent(FGameplayEventData Payload)
 			return;
 		}
 
-		AAODungeonGameMode* DungeonGameMode = GetWorld()->GetAuthGameMode<AAODungeonGameMode>();
-		if (!DungeonGameMode)
-		{
-			return;
-		}
+		bool bHasRespawned = false;
 
-		DungeonGameMode->NotifyPlayerRespawnImmediately(PlayerController);
+		if (AAODungeonGameMode* DungeonGameMode = GetWorld()->GetAuthGameMode<AAODungeonGameMode>())
+		{
+			DungeonGameMode->NotifyPlayerRespawnImmediately(PlayerController);
+			bHasRespawned = true;
+		}
+		else if (AAOGameMode* AOGameMode = GetWorld()->GetAuthGameMode<AAOGameMode>())
+		{
+			AOGameMode->NotifyPlayerRespawnImmediately(PlayerController);
+			bHasRespawned = true;
+		}
 
 		if (UAbilitySystemComponent* TargetASC = NearestCharacter->GetAbilitySystemComponent())
 		{
-			if (AttackData.HitGameplayCueTag.IsValid())
+			if (bHasRespawned && AttackData.HitGameplayCueTag.IsValid())
 			{
 				FGameplayCueParameters CueParams;
 				CueParams.Instigator = NearestCharacter;
