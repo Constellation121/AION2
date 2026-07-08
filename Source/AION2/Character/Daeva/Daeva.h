@@ -500,6 +500,8 @@ public:
 	EOrbColor Get_LastOrbColor() { return LastOrbColor; }
 	EOrbColor Get_CurrentDaevaHasSheildColor() { return HasShieldColor; }
 
+	int8 Get_OrbStack() { return OrbStack; }
+
 private:
 	/* SuYeon */
 	/*
