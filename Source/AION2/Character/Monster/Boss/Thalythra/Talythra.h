@@ -118,8 +118,8 @@ public:
 
 #pragma endregion 
 
-
-
+	virtual void StartGroggy() override;
+	virtual void EndGroggy() override;
 
 
 protected:

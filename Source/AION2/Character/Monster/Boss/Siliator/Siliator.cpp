@@ -2,11 +2,8 @@
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
 #include "UI/AOWidgetComponentBase.h"
-
 #include "AI/AIMonsterControllerBase.h"
 #include "GAS/AOGameplayTags.h"
-
-
 
 ASiliator::ASiliator(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -26,10 +23,9 @@ void ASiliator::InitAttributeSet()
 	AttributeSet->InitHealth(12000.f);
 	AttributeSet->InitMaxHealth(12000.f);
 
-	AttributeSet->InitGroggy(500.f); //3000
-	AttributeSet->InitMaxGroggy(500.f);
+	AttributeSet->InitGroggy(3000.f);
+	AttributeSet->InitMaxGroggy(3000.f);
 }
-
 
 void ASiliator::EndGroggy()
 {
@@ -44,8 +40,6 @@ void ASiliator::EndGroggy()
 	{
 		AttributeSet->SetGroggy(AttributeSet->GetMaxGroggy());
 	}
-
-
 
 	AAIMonsterControllerBase* pMonsterController = Cast<AAIMonsterControllerBase>(GetController());
 	if (pMonsterController == nullptr)
