@@ -6,6 +6,8 @@
 #include "GAS/AttributeSet/AOAttributeSet.h"
 #include "Actor/AOProjectile.h"
 #include "Character/Monster/AOMonsterBase.h"
+#include "Character/Daeva/Daeva.h"
+
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
@@ -184,6 +186,75 @@ void AAOCharacter::CheckAttackHitSector(const FAttackData& AttackData, const flo
 		OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
 	}
 }
+
+void AAOCharacter::CheckIsInSafeZone(const FAttackData& AttackData, uint8 SafeColor)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	TArray<FHitResult> OutHitResults;
+
+	const float AttackRange = AttackData.TraceData.Range;
+	const float AttackRadius = AttackData.TraceData.Radius;
+
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(AttackTrace), false, this);
+
+	FVector SweepStart = GetActorTransform().TransformPosition(AttackData.TraceData.StartOffset);
+	FVector SweepEnd = SweepStart + AttackData.TraceData.Direction.GetSafeNormal() * AttackRange;
+	FVector CapsuleCenter = SweepStart + (SweepEnd - SweepStart) * 0.5f;
+
+	bool bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, SweepStart, SweepEnd, FQuat::Identity, CCHANNEL_ATTACK, FCollisionShape::MakeSphere(AttackRadius), Params);
+
+	if (CVarDrawAttackTrace.GetValueOnGameThread())
+	{
+		const float CapsuleHalfHeight = AttackRange * 0.5f;
+		FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+		Multicast_DrawDebugCapsuleCollider(CapsuleCenter, CapsuleHalfHeight, AttackRadius, DrawColor);
+	}
+
+	if (!bHitDetected)
+	{
+		return;
+	}
+
+	bool bDidShakeCamera = false;
+
+	for (const FHitResult& HitResult : OutHitResults)
+	{
+		ADaeva* HitActor = Cast<ADaeva>(HitResult.GetActor());
+		if (!IsValid(HitActor))
+		{
+			continue;
+		}
+
+		if (HitActor->IsDead())
+		{
+			continue;
+		}
+
+		if (!IsEnemy(HitActor))
+		{
+			continue;
+		}
+
+		uint8 CurrentColor = static_cast<uint8>(HitActor->Get_CurrentDaevaHasSheildColor());
+
+		if (CurrentColor == SafeColor)
+		{
+			continue;
+		}
+
+		OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
+	}
+
+}
+
+
+
+
+
 
 void AAOCharacter::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
 {
