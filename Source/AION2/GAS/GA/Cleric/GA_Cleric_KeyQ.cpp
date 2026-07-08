@@ -1,6 +1,25 @@
 #include "GAS/GA/Cleric/GA_Cleric_KeyQ.h"
 #include "Physics/Collision.h"
 
+void UGA_Cleric_KeyQ::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData * TriggerEventData)
+{
+	AAOCharacter* AOCharacter = Cast<AAOCharacter>(ActorInfo->AvatarActor.Get());
+	if (!AOCharacter)
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
+	const int32 Count = ActorInfo->AbilitySystemComponent->GetTagCount(FGameplayTag::RequestGameplayTag(TEXT("Cooldown.Cleric.KeyQ")));
+	if (Count >= 3)
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
 void UGA_Cleric_KeyQ::OnCheckAttackHitEvent(FGameplayEventData Payload)
 {
 	if (!HasAuthority(&CurrentActivationInfo))
@@ -56,9 +75,7 @@ void UGA_Cleric_KeyQ::OnCheckAttackHitEvent(FGameplayEventData Payload)
 	}
 
 	AAOCharacter* LowestHealthCharacter = nullptr;
-	FHitResult LowestHealthHitResult;
-	float LowestHealthPercent = 1.1f; // 체력 비율은 0~1
-
+	float LowestHealthPercent = 1.1f;
 	for (const FHitResult& HitResult : OutHitResults)
 	{
 		AAOCharacter* HitCharacter = Cast<AAOCharacter>(HitResult.GetActor());
@@ -100,7 +117,6 @@ void UGA_Cleric_KeyQ::OnCheckAttackHitEvent(FGameplayEventData Payload)
 		{
 			LowestHealthPercent = HealthPercent;
 			LowestHealthCharacter = HitCharacter;
-			LowestHealthHitResult = HitResult;
 		}
 	}
 

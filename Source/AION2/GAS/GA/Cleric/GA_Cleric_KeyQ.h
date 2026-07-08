@@ -10,5 +10,8 @@ class AION2_API UGA_Cleric_KeyQ : public UGA_Attack
 	GENERATED_BODY()
 
 protected:
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+protected:
 	virtual void OnCheckAttackHitEvent(FGameplayEventData Payload) override;
 };

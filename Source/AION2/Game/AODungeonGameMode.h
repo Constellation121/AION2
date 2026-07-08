@@ -54,6 +54,7 @@ public:
 
 	// Player Health 0 or Died Call
 	void NotifyPlayerDied(APlayerController* DeadPlayerController);
+	void NotifyPlayerRespawnImmediately(APlayerController* DeadPlayerController);
 
 protected:
 	void FindPlacedBosses();
@@ -79,6 +80,7 @@ protected:
 
 	APlayerStart* FindDungeonRespawnPoint() const;
 	void ClearAllRespawnTimers();
+	void CancelPlayerRespawnTimer(APlayerController* PlayerController);
 
 	void StartWipeRespawn();
 	void RespawnAllDeadPlayersAtBossCheckpoint();
