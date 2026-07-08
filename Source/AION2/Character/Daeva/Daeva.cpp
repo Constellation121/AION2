@@ -10,6 +10,7 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Game/AOGameMode.h"
 #include "Game/AODungeonGameMode.h"
 #include "GameplayEffect.h"		
 
@@ -696,39 +697,79 @@ void ADaeva::OnMoveSpeedChanged(const FOnAttributeChangeData& Data)
 	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
 }
 
-void ADaeva::OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera)
+void ADaeva::OnAttackSucceeded(
+	const FAttackData& AttackData,
+	AActor* HitActor,
+	const FHitResult& HitResult,
+	bool& bDidShakeCamera
+)
 {
 	Super::OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
 
 	PlayCameraShake(bDidShakeCamera);
 
-	if (HasAuthority() && HitManaRegenEffect)
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[OnAttackSucceeded] RestoreManaOnHit: %s | HitActor: %s"),
+		AttackData.bRestoreManaOnHit ? TEXT("TRUE") : TEXT("FALSE"),
+		*GetNameSafe(HitActor)
+	);
+
+	if (!HasAuthority())
 	{
-		UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
-
-		if (!ASC)
-		{
-			return;
-		}
-
-		FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
-		ContextHandle.AddSourceObject(this);
-
-		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(HitManaRegenEffect, 1.f, ContextHandle);
-		if (!SpecHandle.IsValid())
-		{
-			return;
-		}
-
-		if (AttackData.bRestoreManaOnHit)
-		{
-			SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(TEXT("Data.HitManaRegen")), HitManaRegenAmount);
-		}
-		
-		const float BeforeMana = ASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
-		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-		const float AfterMana = ASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
+		return;
 	}
+
+	if (!AttackData.bRestoreManaOnHit)
+	{
+		return;
+	}
+
+	if (!HitManaRegenEffect)
+	{
+		return;
+	}
+
+	UAbilitySystemComponent* MyASC = GetAbilitySystemComponent();
+
+	if (!MyASC)
+	{
+		return;
+	}
+
+	FGameplayEffectContextHandle ContextHandle = MyASC->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle SpecHandle =
+		MyASC->MakeOutgoingSpec(HitManaRegenEffect, 1.f, ContextHandle);
+
+	if (!SpecHandle.IsValid())
+	{
+		return;
+	}
+
+	SpecHandle.Data->SetSetByCallerMagnitude(
+		FGameplayTag::RequestGameplayTag(TEXT("Data.HitManaRegen")),
+		HitManaRegenAmount
+	);
+
+	const float BeforeMana =
+		MyASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
+
+	MyASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+
+	const float AfterMana =
+		MyASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
+
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[HitManaRegen] Mana %.1f -> %.1f | Amount: %.1f"),
+		BeforeMana,
+		AfterMana,
+		HitManaRegenAmount
+	);
 }
 
 void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
@@ -929,13 +970,19 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 			{
 				const bool bIsFallDeath = (DeathReason == EDeathReason::Fall);
 
-				UE_LOG(LogTemp,Warning,TEXT("[Death] Notify Dungeon GameMode: %s"),*PlayerController->GetName());
+				UE_LOG(LogTemp, Warning, TEXT("[Death] Notify Dungeon GameMode: %s"), *PlayerController->GetName());
 
-				DungeonGameMode->NotifyPlayerDied(PlayerController,bIsFallDeath);
+				DungeonGameMode->NotifyPlayerDied(PlayerController, bIsFallDeath);
+			}
+			else if (AAOGameMode* AOGameMode = GetWorld()->GetAuthGameMode<AAOGameMode>())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("[Death] Notify Test GameMode: %s"), *PlayerController->GetName());
+
+				AOGameMode->NotifyPlayerDied(PlayerController);
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("[Death] DungeonGameMode is null"));
+				UE_LOG(LogTemp, Error, TEXT("[Death] GameMode is null"));
 			}
 		}
 		else

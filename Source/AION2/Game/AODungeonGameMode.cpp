@@ -171,7 +171,6 @@ void AAODungeonGameMode::StartDungeon()
 
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Start Dungeon"));
 
-	// 현재 테스트 때문에 3번째 보스부터 시작!
 	StartBossPhase(1);
 }
 
@@ -763,7 +762,6 @@ void AAODungeonGameMode::RequestReturnToVillage()
 	ReturnToVillage();
 }
 
-#if WITH_EDITOR
 void AAODungeonGameMode::ForceClearDungeon()
 {
 	if (!HasAuthority())
@@ -780,7 +778,6 @@ void AAODungeonGameMode::ForceClearDungeon()
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Force Clear Dungeon"));
 	ClearDungeon();
 }
-#endif
 
 void AAODungeonGameMode::SendDungeonComplete()
 {

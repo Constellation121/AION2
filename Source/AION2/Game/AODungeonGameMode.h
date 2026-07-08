@@ -163,10 +163,8 @@ public :
 	TArray<class APawn*> SpawnedPlayers;
 
 	// Test
-#if WITH_EDITOR
 	UFUNCTION(Exec)
 	void ForceClearDungeon();
-#endif
 
 private:
 	void SendDungeonComplete();
