@@ -229,10 +229,18 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 
 		if (GroggySpecHandle.IsValid())
 		{
+			const FGameplayTag GroggyDamageTag = FGameplayTag::RequestGameplayTag(TEXT("Data.GroggyDamage"));
+			float GroggyDamageAmount = BaseGroggyDamage;
+			if (AttackData.bRestoreManaOnHit)
+			{
+				GroggyDamageAmount *= 0.5;
+			}
+
+			GroggySpecHandle.Data->SetSetByCallerMagnitude(GroggyDamageTag, -GroggyDamageAmount);
 			SourceASC->ApplyGameplayEffectSpecToTarget(*GroggySpecHandle.Data.Get(), TargetASC);
+			
 		}
 	}
-
 
 	//
 
@@ -242,24 +250,17 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 		return;
 	}
 
-	SpecHandle.Data->SetSetByCallerMagnitude(
-		FGameplayTag::RequestGameplayTag(TEXT("Data.Damage")),
-		-FinalDamage
-	);
+	SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(TEXT("Data.Damage")),	-FinalDamage);
 
-	const float OldHealth =
-		TargetASC->GetNumericAttribute(
-			UAOAttributeSet::GetHealthAttribute()
-		);
+	const float OldHealth =	TargetASC->GetNumericAttribute(UAOAttributeSet::GetHealthAttribute());
 
 	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
 
-	const float NewHealth =
-		TargetASC->GetNumericAttribute(
-			UAOAttributeSet::GetHealthAttribute()
-		);
+	const float NewHealth =	TargetASC->GetNumericAttribute(UAOAttributeSet::GetHealthAttribute());
 
-	UE_LOG(LogTemp,Warning,TEXT("[Damage] %s -> %s | ATK: %.1f | DEF: %.1f | Mult: %.2f | Final: %.2f | HP: %.1f -> %.1f"),
+	const  float NewGroggy = TargetASC->GetNumericAttribute(UAOAttributeSet::GetGroggyAttribute());
+
+	UE_LOG(LogTemp, Warning, TEXT("[Damage] %s -> %s | ATK: %.1f | DEF: %.1f | Mult: %.2f | Final: %.2f | HP: %.1f -> %.1f | Groggy : %.1f"),
 		*GetNameSafe(DamageCauser),
 		*GetNameSafe(this),
 		AttackPower,
@@ -267,7 +268,8 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 		Multiplier,
 		FinalDamage,
 		OldHealth,
-		NewHealth
+		NewHealth,
+		NewGroggy
 	);
 
 	if (AttackData.HitGameplayCueTag.IsValid())
