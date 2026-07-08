@@ -20,7 +20,7 @@ AAODungeonGameMode::AAODungeonGameMode()
 {
 	bUseSeamlessTravel = true;
 	PrimaryActorTick.bCanEverTick = true;
-	//DefaultPawnClass = APawn::StaticClass();
+	DefaultPawnClass = APawn::StaticClass();
 }
 
 void AAODungeonGameMode::BeginPlay()
