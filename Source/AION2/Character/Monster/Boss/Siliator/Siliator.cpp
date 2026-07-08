@@ -23,11 +23,11 @@ void ASiliator::BeginPlay()
 
 void ASiliator::InitAttributeSet()
 {
-	AttributeSet->InitHealth(1000.f);
-	AttributeSet->InitMaxHealth(1000.f);
-	
-	AttributeSet->InitStamina(100.f);
-	AttributeSet->InitMaxStamina(100.f);
+	AttributeSet->InitHealth(12000.f);
+	AttributeSet->InitMaxHealth(12000.f);
+
+	AttributeSet->InitGroggy(500.f); //3000
+	AttributeSet->InitMaxGroggy(500.f);
 }
 
 

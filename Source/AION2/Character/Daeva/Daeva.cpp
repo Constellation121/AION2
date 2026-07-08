@@ -12,7 +12,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Game/AOGameMode.h"
 #include "Game/AODungeonGameMode.h"
-#include "GameplayEffect.h"		
+#include "GameplayEffect.h"
 
 #include "GameplayTagContainer.h"
 #include "AbilitySystemComponent.h"
@@ -302,6 +302,8 @@ bool ADaeva::HasMoveInput()
 
 void ADaeva::SearchTarget()
 {
+	CheckTargetGroggy();
+
 	if (!IsLocallyControlled())
 	{
 		return;
@@ -458,8 +460,7 @@ void ADaeva::ResetForDungeonRespawn()
 	ASC->SetNumericAttributeBase(UAOAttributeSet::GetStaminaAttribute(), RespawnStamina);
 
 	// 사망 태그 제거.
-	const FGameplayTag DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
-	ASC->RemoveLooseGameplayTag(DeadTag);
+	ASC->RemoveLooseGameplayTag(STATE_DEAD);
 
 	// New Pawn이므로 기본적으로 false이지만 명확하게 하기 위해 초기화.
 	bIsDead = false;
@@ -779,8 +780,6 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitRe
 		ASC->ExecuteGameplayCue(CUE_GHOSTTRAIL);
 		return;
 	}
-	
-	Super::TakeDamageAO(AttackData, HitResult, DamageCauser);
 
 	if (StateCombatApplyEffect)
 	{
@@ -791,6 +790,8 @@ void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitRe
 			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 		}
 	}
+	
+	Super::TakeDamageAO(AttackData, HitResult, DamageCauser);
 
 	bool bDidShakeCamera = false;
 	PlayCameraShake(bDidShakeCamera);
@@ -957,9 +958,16 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 	{
 		ASC->CancelAllAbilities();
 
-		const FGameplayTag DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+		FGameplayTagContainer TagsToRemove;
+		TagsToRemove.AddTag(STATE_COMBAT);
+		ASC->RemoveActiveEffectsWithGrantedTags(TagsToRemove);
 
-		ASC->AddLooseGameplayTag(DeadTag);
+		ASC->SetLooseGameplayTagCount(STATE_COMBAT, 0);
+		ASC->SetLooseGameplayTagCount(STATE_ATTACKING, 0);
+		ASC->SetLooseGameplayTagCount(STATE_DASHING, 0);
+		ASC->SetLooseGameplayTagCount(STATE_JUMPING, 0);
+		ASC->SetLooseGameplayTagCount(STATE_GLIDING, 0);
+		ASC->AddLooseGameplayTag(STATE_DEAD);
 	}
 
 	if (HasAuthority())
@@ -1308,6 +1316,29 @@ void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 				PC->HideTargetMonsterHUD();
 			}
 		}
+	}
+}
+
+void ADaeva::CheckTargetGroggy()
+{
+	if (!IsValid(CurrentTarget))
+	{
+		return;
+	}
+
+	AAOMonsterBase* Monster = Cast<AAOMonsterBase>(CurrentTarget);
+	if (!Monster)
+	{
+		return;
+	}
+
+	if (!ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_KEYE) && Monster->IsGroggy())
+	{
+		ASC->AddLooseGameplayTag(COMBO_AVAILABLE_KEYE);
+	}
+	else if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_KEYE) && !Monster->IsGroggy())
+	{
+		ASC->RemoveLooseGameplayTag(COMBO_AVAILABLE_KEYE);
 	}
 }
 
