@@ -5,6 +5,10 @@
 #include "Game/AOGameInstance.h"
 #include "Manager/AONetworkManager.h"
 
+#include "Character/Daeva/Daeva.h"
+#include "GameFramework/Controller.h"
+#include "GameFramework/Pawn.h"
+
 AAOGameMode::AAOGameMode()
 {
 	DefaultPawnClass = nullptr;
@@ -30,4 +34,55 @@ void AAOGameMode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (NetworkManager)
 		NetworkManager->ProcessQueuePackets();
+}
+
+void AAOGameMode::NotifyPlayerDied(AController* DeadController)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (!DeadController)
+	{
+		return;
+	}
+
+	APawn* DeadPawn = DeadController->GetPawn();
+
+	if (!DeadPawn)
+	{
+		return;
+	}
+	const FTransform RespawnTransform = DeadPawn->GetActorTransform();
+	RespawnPlayerImmediately(DeadController, RespawnTransform);
+}
+
+void AAOGameMode::RespawnPlayerImmediately(AController* DeadController, const FTransform& RespawnTransform)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (!DeadController)
+	{
+		return;
+	}
+
+	APawn* OldPawn = DeadController->GetPawn();
+
+	if (OldPawn)
+	{
+		DeadController->UnPossess();
+		OldPawn->Destroy();
+	}
+
+	RestartPlayerAtTransform(DeadController, RespawnTransform);
+
+	if (ADaeva* RespawnedPlayer = Cast<ADaeva>(DeadController->GetPawn()))
+	{
+		RespawnedPlayer->RestorePlayerInfoFromPlayerState();
+		RespawnedPlayer->ResetForDungeonRespawn();
+	}
 }
