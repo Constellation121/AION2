@@ -16,6 +16,7 @@ public:
 
 	// 회원가입 및 로그인
 	bool Handle_S_SIGNUP(Protocol::S_SignUpResultPacket& Pkt);
+	bool Handle_S_SET_NICKNAME(Protocol::S_SetNicknamePacket& Pkt);
 	bool Handle_S_LOGIN_SUCCEED(Protocol::S_LoginSuccessPacket& Pkt);
 	bool Handle_S_LOGIN_FAIL(Protocol::S_LoginFailPacket& Pkt);
 

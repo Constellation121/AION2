@@ -33,6 +33,8 @@ void InitPacketHandler()
 #if UE_BUILD_DEVELOPMENT
 	// 템플릿을 사용하여 자동 파싱 및 핸들러 맵핑
 	GAOPacketHandler[PKT_S_SIGNUP] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_SignUpResultPacket>(&FPacketHandler::Handle_S_SIGNUP, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_SET_NICNNAME] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_SetNicknamePacket>(&FPacketHandler::Handle_S_SET_NICKNAME, Mng, Buf, Len); };
+
 	GAOPacketHandler[PKT_S_LOGIN_FAIL] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_LoginFailPacket>(&FPacketHandler::Handle_S_LOGIN_FAIL, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_LOGIN_SUCCEED] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_LoginSuccessPacket>(&FPacketHandler::Handle_S_LOGIN_SUCCEED, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_ITEM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_ItemDataPacket>(&FPacketHandler::Handle_S_ITEM, Mng, Buf, Len); };
@@ -115,6 +117,15 @@ bool FPacketHandler::Handle_S_SIGNUP(Protocol::S_SignUpResultPacket& Pkt)
 			RegisterWidget->HandleRegisterError();
 		}
 		return true;
+	}
+	return false;
+}
+
+bool FPacketHandler::Handle_S_SET_NICKNAME(Protocol::S_SetNicknamePacket& Pkt)
+{
+	if (UAOLoginUserWidget* RegisterWidget = GameInstance->RegisterWidget)
+	{
+		RegisterWidget->ReceiveNicknameResult(Pkt.issucceed());
 	}
 	return false;
 }

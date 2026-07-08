@@ -78,6 +78,8 @@ protected:
 	//H.Y
 	UPROPERTY(EditDefaultsOnly, Category="GAS|Combat")
 	TSubclassOf<UGameplayEffect> GroggyDamageEffect;
+
+	const float BaseGroggyDamage = 10.0f;
 	//
 
 private:

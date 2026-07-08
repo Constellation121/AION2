@@ -159,7 +159,7 @@ protected:
 protected :
 	void OnGroggyChanged(const FOnAttributeChangeData& Data);
 
-	void StartGroggy();
+	virtual void StartGroggy();
 
 public :
 	UFUNCTION(BlueprintCallable, Category = "Groggy")
