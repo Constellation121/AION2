@@ -54,6 +54,8 @@ public:
 
 	// Player Health 0 or Died Call
 	void NotifyPlayerDied(APlayerController* DeadPlayerController, bool bIsFallDeath = false);
+	void NotifyPlayerRespawnImmediately(APlayerController* DeadPlayerController);
+
 	TMap<TObjectPtr<APlayerController>, int32> PendingRespawnBossIndices;
 
 protected:

@@ -23,9 +23,15 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void NotifyPlayerDied(AController* DeadController);
+	void NotifyPlayerRespawnImmediately(AController* DeadController);
 
 protected:
 	void RespawnPlayerImmediately(AController* DeadController, const FTransform& RespawnTransform);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Test|Respawn")
+	float Respawn = 3.0f;
+
+	TMap<TObjectPtr<AController>, FTimerHandle> RespawnTimerHandles;
 	
 private:
 	class UAOGameInstance* GameInst;
