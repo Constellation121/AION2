@@ -330,7 +330,7 @@ void UAOPlayerManager::HandleDungeonEnter(int32 DungeonId)
 
 void UAOPlayerManager::HandleDungeonStart(FString ServerURL)
 {
-
+	ClearMyDungeonRoomState();
 	AAOPlayerController* PC = Cast<AAOPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PC)
 	{

@@ -282,9 +282,9 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 	DedicatedSessionRef dediSession = static_pointer_cast<DedicatedSession>(session);
 
 	//GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleCreateDungeon, player);
-
 	int32 dungeonId = pkt.dungeonid();
 	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId);
+	dediSession->SetUsing(false);
 	return false;
 }
 
