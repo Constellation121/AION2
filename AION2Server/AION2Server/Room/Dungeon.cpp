@@ -167,6 +167,7 @@ void DungeonWaitingRoom::HandleCreateDungeon(PlayerRef player)
 	createPkt.mutable_dungeoninfo()->CopyFrom(dungeon->ToProto());
 
 	SendBufferRef createdungeonBuffer = PacketHandler::MakeSendBuffer(createPkt);
+	dedi->Send(createdungeonBuffer);
 	WaitingRoomBroadcast(createdungeonBuffer);
 }
 
@@ -229,7 +230,7 @@ void DungeonWaitingRoom::HandleEnterDungeon(PlayerRef player, int32 inDungeonId)
 
 void DungeonWaitingRoom::HandleReadyPacket(PlayerRef player, int32 dungeonId)
 {
-	if(player->GetReady())
+	if (player->GetReady())
 	{
 		player->SetReady(false);
 	}
@@ -368,8 +369,8 @@ void DungeonWaitingRoom::HandleDungeonStart(PlayerRef player, int32 dungeonId)
 		HandleLeaveWaitingRoom(member);
 	}
 
-	_dungeons.erase(dungeonId);
-	_freeDungeonIds.insert(dungeonId);
+	//_dungeons.erase(dungeonId);
+	//_freeDungeonIds.insert(dungeonId);
 }
 
 void DungeonWaitingRoom::HandleDungeonExit(int32 dungeonId)
@@ -448,6 +449,14 @@ void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId)
 			session->Send(endBuffer);
 		}
 	}
+
+	auto leader = dungeon->GetLeader();
+	if (auto leaderSession = leader->_ownerSession.lock())
+	{
+		leaderSession->Send(endBuffer);
+	}
+	_dungeons.erase(dungeonId);
+	_freeDungeonIds.insert(dungeonId);
 }
 
 

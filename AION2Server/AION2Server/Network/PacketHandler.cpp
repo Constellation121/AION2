@@ -279,8 +279,8 @@ bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_Du
 
 bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_RequestDungeonCompletePacket& pkt)
 {
-	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-	PlayerRef player = gameSession->_player;
+	DedicatedSessionRef dediSession = static_pointer_cast<DedicatedSession>(session);
+
 	//GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleCreateDungeon, player);
 
 	int32 dungeonId = pkt.dungeonid();

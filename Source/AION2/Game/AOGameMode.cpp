@@ -32,8 +32,6 @@ void AAOGameMode::BeginPlay()
 void AAOGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (NetworkManager)
-		NetworkManager->ProcessQueuePackets();
 }
 
 void AAOGameMode::NotifyPlayerDied(AController* DeadController)
