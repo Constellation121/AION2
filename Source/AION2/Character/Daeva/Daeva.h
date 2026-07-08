@@ -271,6 +271,7 @@ private:
 	bool IsFrontOfCamera(AActor* Other);
 	float CalcDistanceSquaredToScreenCenter(AActor* Other);
 	void ChangeCurrentTargetInClient(AAOCharacter* NewTarget);
+	void CheckTargetGroggy();
 
 public:
 	/*
