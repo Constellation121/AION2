@@ -20,7 +20,7 @@ AAODungeonGameMode::AAODungeonGameMode()
 {
 	bUseSeamlessTravel = true;
 	PrimaryActorTick.bCanEverTick = true;
-	DefaultPawnClass = APawn::StaticClass();
+	//DefaultPawnClass = APawn::StaticClass();
 }
 
 void AAODungeonGameMode::BeginPlay()
@@ -40,7 +40,7 @@ void AAODungeonGameMode::Tick(float DeltaTime)
 
 void AAODungeonGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
-	//Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
+	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
 
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PreLogin - Options: %s, Address: %s"), *Options, *Address);
 
@@ -98,7 +98,7 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 
 	PendingPlayers.Remove(UniqueId);
 
-	//Super::PostLogin(NewPlayer);
+	Super::PostLogin(NewPlayer);
 }
 
 void AAODungeonGameMode::InitStartSpot_Implementation(AActor* StartSpot, AController* NewPlayer)
