@@ -46,6 +46,7 @@ protected:
 
 	virtual void BeginPlay() override;
 	virtual void InitAttributeSet() override;
+	virtual void EndGroggy() override;
 
 
 private:
