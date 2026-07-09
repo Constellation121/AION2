@@ -43,10 +43,11 @@ public:
 	void SetMyName(FString InName);
 
 	// H.Y.
-	void SetPlayerInfo(uint64 InPalyerId, const FString& InPlayerName, uint8 InCalssType);
+	void SetPlayerInfo(uint64 InPlayerId, const FString& InPlayerName, uint8 InClassType, float InHP);
 
 	// GetClass function.
 	FORCEINLINE EDaevaClassType GetMyClass() const{ return MyClassType; }
+	FORCEINLINE float GetInitialHP() const { return InitialHP; }
 
 private:
 	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
@@ -73,4 +74,7 @@ private:
 
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
 	FString MyName;
+
+private:
+	float InitialHP = 0.0f;
 };

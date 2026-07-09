@@ -341,10 +341,10 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 
 			std::wcout.imbue(std::locale("kor"));
 
-			dbBind.BindCol(1, itemInstanceId);
-			dbBind.BindCol(2, itemTemplateId);
-			dbBind.BindCol(3, slotIndex);
-			dbBind.BindCol(4, itemCount);
+			dbBind.BindCol(0, itemInstanceId);
+			dbBind.BindCol(1, itemTemplateId);
+			dbBind.BindCol(2, slotIndex);
+			dbBind.BindCol(3, itemCount);
 
 			if (dbBind.Execute())
 			{
@@ -388,10 +388,10 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 
 			std::wcout.imbue(std::locale("kor"));
 
-			dbBind.BindCol(1, itemInstanceId);
-			dbBind.BindCol(2, itemTemplateId);
-			dbBind.BindCol(3, slotIndex);
-			dbBind.BindCol(4, itemCount);
+			dbBind.BindCol(0, itemInstanceId);
+			dbBind.BindCol(1, itemTemplateId);
+			dbBind.BindCol(2, slotIndex);
+			dbBind.BindCol(3, itemCount);
 
 			if (dbBind.Execute())
 			{

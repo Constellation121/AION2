@@ -23,12 +23,12 @@ void InitPacketHandler()
 	for (int32 i = 1000; i < UINT16_MAX; i++)
 		GAOPacketHandler[i] = &Handle_INVALID;
 
-#if UE_SERVER
+
 	// 서버 핸들러
 	GAOPacketHandler[PKT_S_DUNGEON_CREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_DEDI_CREATE, Mng, Buf, Len); };
 
 	GAOPacketHandler[PKT_S_DUNGEON_DEDI_START] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonStartDediPacket>(&FPacketHandler::Handle_S_DUNGEON_SET_PLAYER, Mng, Buf, Len); };
-#else
+
 
 #if UE_BUILD_DEVELOPMENT
 	// 템플릿을 사용하여 자동 파싱 및 핸들러 맵핑
@@ -248,9 +248,29 @@ bool FPacketHandler::Handle_S_CREATE(Protocol::S_DungeonCreatePacket& Pkt)
 
 bool FPacketHandler::Handle_S_DEDI_CREATE(Protocol::S_DungeonCreatePacket& Pkt)
 {
-	AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GameInstance->GetWorld()->GetAuthGameMode());
 	Protocol::DungeonInfo dungeonInfo = Pkt.dungeoninfo();
-	GameMode->SetDungeonId(dungeonInfo.dungeonid());
+	if (NetworkMng)
+	{
+		NetworkMng->PendingDungeonId = dungeonInfo.dungeonid();
+	}
+
+	if (GameInstance && GameInstance->GetWorld())
+	{
+		AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GameInstance->GetWorld()->GetAuthGameMode());
+		if (GameMode)
+		{
+			GameMode->SetDungeonId(dungeonInfo.dungeonid());
+			UE_LOG(LogTemp, Warning, TEXT("Handle_S_DEDI_CREATE: Set DungeonId %d directly to GameMode."), dungeonInfo.dungeonid());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Handle_S_DEDI_CREATE: GameMode is not AAODungeonGameMode or is null. Stored PendingDungeonId: %d"), dungeonInfo.dungeonid());
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Handle_S_DEDI_CREATE: GameInstance or World is null. Stored PendingDungeonId: %d"), dungeonInfo.dungeonid());
+	}
 	return false;
 }
 

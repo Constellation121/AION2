@@ -18,10 +18,6 @@
 	],
 	"Plugins": [
 		{
-			"Name": "LoadingScreenModule",
-			"Enabled": true
-		},
-		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
 		},

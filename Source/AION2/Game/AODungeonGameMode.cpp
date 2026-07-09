@@ -15,6 +15,8 @@
 
 #include "Network/PacketHeader.h"
 #include "AION2.h"
+#include "Game/AOGameInstance.h"
+#include "Manager/AONetworkManager.h"
 
 AAODungeonGameMode::AAODungeonGameMode()
 {
@@ -26,6 +28,18 @@ AAODungeonGameMode::AAODungeonGameMode()
 void AAODungeonGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (UAOGameInstance* GI = Cast<UAOGameInstance>(GetGameInstance()))
+	{
+		if (UAONetworkManager* NetworkMng = GI->GetNetworkManager())
+		{
+			if (NetworkMng->PendingDungeonId != 0)
+			{
+				SetDungeonId(NetworkMng->PendingDungeonId);
+				UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Retrieved Pending Dungeon ID from NetworkManager: %d"), MyDungeonId);
+			}
+		}
+	}
 
 	FindPlacedBosses();
 	InitializePlacedBosses();
@@ -93,8 +107,8 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 	if (PlayerState)
 	{
 		FString PlayerName = PlayerData.playername().c_str();
-		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass());
-		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d"), UniqueId, PlayerData.playerid());
+		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass(), (float)PlayerData.playerhp());
+		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d, HP: %d"), UniqueId, PlayerData.playerid(), PlayerData.playerhp());
 	}
 
 	PendingPlayers.Remove(UniqueId);
@@ -757,7 +771,15 @@ void AAODungeonGameMode::SetPrePlayerInfo(const Protocol::S_DungeonStartDediPack
 		DPlayerInfo.set_playerid(DungeonInfo.clientid());
 		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		DPlayerInfo.set_playerclass(DungeonInfo.clientclass());
-		DPlayerInfo.set_playername(DungeonInfo.clientname());
+		DPlayerInfo.set_playerhp(DungeonInfo.clienthp());
+
+		int32 ItemCount = DungeonInfo.playeritems_size();
+		for (int j = 0; j < ItemCount; j++)
+		{
+			const Protocol::ItemData& Item = DungeonInfo.playeritems(j);
+			Protocol::ItemData* NewItem = DPlayerInfo.add_playeritems();
+			NewItem->CopyFrom(Item);
+		}
 		PrePlayers.Add(Token, DPlayerInfo);
 	}
 }
