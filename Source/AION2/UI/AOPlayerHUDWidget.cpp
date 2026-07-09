@@ -3,6 +3,10 @@
 
 #include "UI/AOPlayerHUDWidget.h"
 
+#include "UI/AOMonsterHUDWidget.h"
+#include "UI/AOQuickSkillHUD.h"
+#include "UI/AOClassSwitcherWidget.h"
+
 #include "AbilitySystemComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 #include "Player/AOPlayerState.h"
@@ -10,10 +14,10 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "AOMonsterHUDWidget.h"
-#include "UI/AOQuickSkillHUD.h"
+
 
 // TODO(SuYeon): Delegate마다, 만약 다른 ASC와 연동되어있다면 로그를 출력하거나 하는 방어적 코드 추가 +Monster의 것에도 추가할 것.
+
 
 void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 {
@@ -47,9 +51,9 @@ void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 
     if (QuickSkillHUD)
     {
-		UE_LOG(LogTemp, Warning, TEXT("PlayerHUD BindToASC. ASC=%s, QuickSkillHUD=%s"),
-			*GetNameSafe(InASC),
-			*GetNameSafe(QuickSkillHUD));
+		//UE_LOG(LogTemp, Warning, TEXT("PlayerHUD BindToASC. ASC=%s, QuickSkillHUD=%s"),
+		//	*GetNameSafe(InASC),
+		//	*GetNameSafe(QuickSkillHUD));
 
         QuickSkillHUD->BindToASC(BoundASC);
     }
@@ -68,6 +72,18 @@ void UAOPlayerHUDWidget::NativeDestruct()
 {
 	ClearBinding();
 	Super::NativeDestruct();
+}
+
+void UAOPlayerHUDWidget::ChangeClassIcon(EDaevaClassType InClassType)
+{
+	if (!PlayerClassSwitcher)
+	{
+		return;
+	}
+
+	// 나중에 ClassSwitcher 변경되면 ClassType 자체로 넣어보기.
+	PlayerClassSwitcher->SetClassWidget(InClassType);
+	PlayerClassSwitcher->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 }
 
 void UAOPlayerHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)
@@ -195,7 +211,7 @@ void UAOPlayerHUDWidget::UnbindASCDelegates()
 		MaxHealthChangedHandle.Reset();
 	}
 
-	// Mana ����
+	// Mana Bind.
 	if (ManaChangedHandle.IsValid())
 	{
 		BoundASC->GetGameplayAttributeValueChangeDelegate(
@@ -214,7 +230,7 @@ void UAOPlayerHUDWidget::UnbindASCDelegates()
 		MaxManaChangedHandle.Reset();
 	}
 
-	// Stamina ����
+	// Stamina Bind.
 	if (StaminaChangedHandle.IsValid())
 	{
 		BoundASC->GetGameplayAttributeValueChangeDelegate(
@@ -251,6 +267,7 @@ void UAOPlayerHUDWidget::BroadcastInitialAttributes()
 	UpdateManaBar(AttributeSet->GetMana(), AttributeSet->GetMaxMana());
 	UpdateStaminaBar(AttributeSet->GetStamina(), AttributeSet->GetMaxStamina());
 }
+
 
 void UAOPlayerHUDWidget::UpdateHpBar(float CurrentValue, float MaxValue)
 {
