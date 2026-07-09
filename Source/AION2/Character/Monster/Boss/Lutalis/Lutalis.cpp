@@ -11,7 +11,11 @@
 #include "GameplayTagContainer.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 
+#include "Character/Monster/Boss/Lutalis/LutalisScytheZone.h"
 #include "AI/AIMonsterControllerBase.h"
+#include "Character/Daeva/Daeva.h"
+#include "DrawDebugHelpers.h"
+
 #include "GAS/AOGameplayTags.h"
 
 ALutalis::ALutalis(const FObjectInitializer& ObjectInitializer)
@@ -31,11 +35,11 @@ void ALutalis::InitAttributeSet()
 {
 	Super::InitAttributeSet();
 
-	AttributeSet->InitHealth(5000.f);
-	AttributeSet->InitMaxHealth(5000.f);
+	AttributeSet->InitHealth(12000.0f);
+	AttributeSet->InitMaxHealth(12000.0f);
 
-	AttributeSet->InitStamina(100.f);
-	AttributeSet->InitMaxStamina(100.f);
+	AttributeSet->InitGroggy(3000.0f);
+	AttributeSet->InitMaxGroggy(3000.0f);
 }
 
 void ALutalis::EndGroggy()
@@ -251,6 +255,93 @@ void ALutalis::ResetPreparedElectricZoneCast()
 {
 	PreparedElectricZoneArcIndex = INDEX_NONE;
 	PreparedElectricZoneTargetYaw = 0.0f;
+}
+
+bool ALutalis::BeginScytheWarning(float WarningDuration)
+{
+	if (!HasAuthority() || !ScytheZoneClass)
+	{
+		return false;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return false;
+	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	ActiveScytheZones.Reset();
+
+	for (TActorIterator<ADaeva> It(World); It; ++It)
+	{
+		ADaeva* Target = *It;
+		if (!IsValid(Target) || Target->IsDead())
+		{
+			continue;
+		}
+
+		FVector SpawnLocation = Target->GetActorLocation();
+
+		FHitResult GroundHit;
+		const FVector TraceStart = SpawnLocation + FVector(0.f, 0.f, 300.f);
+		const FVector TraceEnd = SpawnLocation - FVector(0.f, 0.f, 3000.f);
+
+		if (World->LineTraceSingleByChannel(GroundHit, TraceStart, TraceEnd, ECC_Visibility))
+		{
+			SpawnLocation = GroundHit.ImpactPoint;
+		}
+
+		SpawnLocation += FVector(0.f, 0.f, 50.0f);
+
+		const FRotator SpawnRotation(0.f, FMath::FRandRange(0.f, 360.f), 0.f);
+
+		ALutalisScytheZone* ScytheZone = World->SpawnActor<ALutalisScytheZone>(
+			ScytheZoneClass,
+			SpawnLocation,
+			SpawnRotation,
+			SpawnParams
+		);
+
+		if (!ScytheZone)
+		{
+			continue;
+		}
+
+		ScytheZone->InitZone(this, ScytheDamageData, ScytheZoneLength, ScytheZoneWidth);
+		ScytheZone->StartWarning(WarningDuration);
+		ActiveScytheZones.Add(ScytheZone);
+	}
+
+	return ActiveScytheZones.Num() > 0;
+}
+
+bool ALutalis::ActivateScytheSweep()
+{
+	if (!HasAuthority() || ActiveScytheZones.IsEmpty())
+	{
+		return false;
+	}
+
+	bool bActivatedAny = false;
+	for (ALutalisScytheZone* ScytheZone : ActiveScytheZones)
+	{
+		if (!IsValid(ScytheZone))
+		{
+			continue;
+		}
+
+		ScytheZone->ActivateSweep();
+		bActivatedAny = true;
+	}
+
+	ActiveScytheZones.Reset();
+
+	return bActivatedAny;
 }
 
 bool ALutalis::ResolveElectricZoneActor()
