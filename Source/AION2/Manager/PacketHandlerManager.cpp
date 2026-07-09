@@ -66,7 +66,6 @@ void InitPacketHandler()
 	GAOPacketHandler[PKT_S_DISCONNECT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DisconnectPacket>(&FPacketHandler::Handle_S_DISCONNECT, Mng, Buf, Len); };
 
 #endif
-#endif
 }
 
 bool Handle_INVALID(UAONetworkManager* NetworkMng, uint8* Buffer, int32 Len)
