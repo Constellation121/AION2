@@ -756,6 +756,7 @@ void AAODungeonGameMode::SetPrePlayerInfo(const Protocol::S_DungeonStartDediPack
 		DPlayerInfo.set_playerid(DungeonInfo.clientid());
 		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		DPlayerInfo.set_playerclass(DungeonInfo.clientclass());
+		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		PrePlayers.Add(Token, DPlayerInfo);
 	}
 }

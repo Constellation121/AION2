@@ -65,10 +65,7 @@ void InitPacketHandler()
 
 	GAOPacketHandler[PKT_S_DISCONNECT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DisconnectPacket>(&FPacketHandler::Handle_S_DISCONNECT, Mng, Buf, Len); };
 
-
-
 #endif
-
 #endif
 }
 
@@ -110,10 +107,12 @@ bool FPacketHandler::Handle_S_SIGNUP(Protocol::S_SignUpResultPacket& Pkt)
 	{
 		if (Pkt.success() == 1)
 		{
+			UE_LOG(LogTemp, Log, TEXT("회원가입 성공"));
 			RegisterWidget->HandleRegisterResult();
 		}
 		else
 		{
+			UE_LOG(LogTemp, Log, TEXT("회원가입 실패"));
 			RegisterWidget->HandleRegisterError();
 		}
 		return true;
@@ -134,10 +133,7 @@ bool FPacketHandler::Handle_S_LOGIN_SUCCEED(Protocol::S_LoginSuccessPacket& pkt)
 {
 	if (PlayerMng && pkt.has_playerinfo())
 	{
-		uint64 PlayerId = pkt.playerinfo().playerid();
-		uint8 ClassType = static_cast<uint8>(pkt.playerinfo().playerclass());
-		int32 Gold = pkt.gold();
-		PlayerMng->HandleLogin(PlayerId, ClassType, Gold);
+		PlayerMng->HandleLogin(pkt);
 		if (GameInstance)
 		{
 			GameInstance->OnReadyoOpenLevel();
