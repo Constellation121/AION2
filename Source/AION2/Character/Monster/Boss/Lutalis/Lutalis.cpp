@@ -35,8 +35,8 @@ void ALutalis::InitAttributeSet()
 {
 	Super::InitAttributeSet();
 
-	AttributeSet->InitHealth(12000.0f);
-	AttributeSet->InitMaxHealth(12000.0f);
+	AttributeSet->InitHealth(8000.0f);
+	AttributeSet->InitMaxHealth(8000.0f);
 
 	AttributeSet->InitGroggy(3000.0f);
 	AttributeSet->InitMaxGroggy(3000.0f);
