@@ -10,6 +10,9 @@
 #include "TimerManager.h"
 #include "IPAddress.h"
 
+//#include "LoadingScreenFunctionLibrary.h"
+
+
 void UAOGameInstance::Init()
 {
 	Super::Init();
@@ -227,6 +230,12 @@ void UAOGameInstance::SendMapLoadCompletePacket()
 void UAOGameInstance::OpenVillageLevel()
 {
 	FString VillagePath = TEXT("/Game/Map/Village");
+
+	//if (ULoadingScreenFunctionLibrary::OpenLevelWithLoadingScreen(this, *VillagePath))
+	//{
+	//	return;
+	//}
+
 	UGameplayStatics::OpenLevel(GetWorld(), *VillagePath, true);
 }
 

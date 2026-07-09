@@ -6,6 +6,7 @@
 #include "UI/AOUserWidgetBase.h"
 #include "AbilitySystemComponent.h"
 #include "Item/AOItemDataBase.h"
+#include "Player/AOPlayerState.h"
 #include "AOPlayerHUDWidget.generated.h"
 
 /**
@@ -15,6 +16,7 @@
 class UProgressBar;
 class UTextBlock;
 class UAOQuickSkillHUD;
+class UAOClassSwitcherWidget;
 
 
 UCLASS()
@@ -26,14 +28,26 @@ public:
     virtual void BindToASC(UAbilitySystemComponent* InASC) override;
     virtual void UnbindFromASC() override;
 
+private:
+    void BindASCDelegates();
+    void UnbindASCDelegates();
+
+    void BroadcastInitialAttributes();
 
 protected:
+    // UMG 처음 만들어질 때만 호출됨
+    //virtual void NativeOnInitialized() override;
+
     // UI 소멸자.
     virtual void NativeDestruct() override;
 
 public:
     // => SkillHUD.
     void PlaySkillPressedFeedback(int32 InputId);
+
+public:
+    // === Class Widget by PlayerInfo ===
+    void ChangeClassIcon(EDaevaClassType InClassType);
 
 protected:
     void HandleHealthChanged(const FOnAttributeChangeData& Data);
@@ -45,11 +59,6 @@ protected:
     void HandleStaminaChanged(const FOnAttributeChangeData& Data);
     void HandleMaxStaminaChanged(const FOnAttributeChangeData& Data);
 
-private:
-    void BindASCDelegates();
-    void UnbindASCDelegates();
-    
-    void BroadcastInitialAttributes();
 
 private:
     // 내부 UI 업데이트
@@ -76,6 +85,9 @@ private:
     FDelegateHandle MaxStaminaChangedHandle;
     
 protected:
+    UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
+    TObjectPtr<UAOClassSwitcherWidget> PlayerClassSwitcher;
+
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess = "true"))
     TObjectPtr<UProgressBar> Pb_HpBar;
 
@@ -94,4 +106,5 @@ protected:
     // For PlayerHUD on the MainPanel (Optional for the player head-up status bar, etc.).
     UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional,AllowPrivateAccess = "true"))
     TObjectPtr<UAOQuickSkillHUD> QuickSkillHUD;
+
 };

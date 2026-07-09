@@ -253,33 +253,6 @@ void AAOMonsterBase::HandleBossDeathMontageEnd()
 
 	UE_LOG(LogTemp, Warning, TEXT("[Monster Death] %s Died"), *GetName());
 
-	// 클라이언트/서버 공통: 더 이상 이동, 충돌, 피격이 일어나지 않도록 처리
-	GetCharacterMovement()->StopMovementImmediately();
-	GetCharacterMovement()->DisableMovement();
-
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	if (ASC)
-	{
-		ASC->CancelAllAbilities();
-
-		const FGameplayTag DeadTag =
-			FGameplayTag::RequestGameplayTag(FName("State.Dead"));
-
-		ASC->AddLooseGameplayTag(DeadTag);
-	}
-
-	// AI 중지
-	if (AAIController* AIController = Cast<AAIController>(GetController()))
-	{
-		AIController->StopMovement();
-
-		if (UBrainComponent* Brain = AIController->GetBrainComponent())
-		{
-			Brain->StopLogic(TEXT("Monster Dead"));
-		}
-	}
-
 	// 던전 진행은 서버에서만 결정
 	if (!HasAuthority())
 	{

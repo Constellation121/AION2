@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "UI/AOUserWidgetBase.h"
+
+#include "Player/AOPlayerState.h"
+
 #include "AOMainHUDWidget.generated.h"
 
 /*
@@ -37,7 +40,9 @@ public:
     void HideTargetMonsterHUD();
 
 public:
+    // === PlayerHUD -> SkillHUD/slot of inputID -> SkillSlot ===
     void PlaySkillPressedFeedback(int32 InputId);
+
 
 public:
     // 외부에서 PlayerHUDWidget의 함수를 사용할 때.
