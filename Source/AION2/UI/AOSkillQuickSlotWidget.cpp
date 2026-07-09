@@ -22,24 +22,21 @@ void UAOSkillQuickSlotWidget::NativeDestruct()
 
 void UAOSkillQuickSlotWidget::AddSkillSlotViewData(const FAOSkillSlotViewData& InViewData)
 {
-    ViewDataByAbilityID.Add(InViewData.AbilityID, InViewData);
+    ViewDataByComboIndex.Add(InViewData);
 }
 
 void UAOSkillQuickSlotWidget::ClearSkillSlotViewData()
 {
-    ViewDataByAbilityID.Empty();
+    ViewDataByComboIndex.Empty();
 }
 
-void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 InAbilityID)
+void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 InNewIndex)
 {
-    InitSkillSlot(InAbilityID);
-    CurrentSkillIndex = InAbilityID;
-}
+    CurrentSkillIndex = InNewIndex;
 
-void UAOSkillQuickSlotWidget::InitSkillSlot(const int32 InAbilityID)
-{
-    SetSkillIcon(ViewDataByAbilityID[InAbilityID].Icon);
-    SetSkillLevel(ViewDataByAbilityID[InAbilityID].AbilityLevel);
+    SetSkillIcon(ViewDataByComboIndex[CurrentSkillIndex].Icon);
+    SetSkillLevel(ViewDataByComboIndex[CurrentSkillIndex].AbilityLevel);
+
 }
 
 void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
@@ -71,11 +68,11 @@ void UAOSkillQuickSlotWidget::SetSkillLevel(int32 InLevel)
 
 const FAOSkillSlotViewData* UAOSkillQuickSlotWidget::GetCurrentSkillSlotViewData() const
 {
-    if (!ViewDataByAbilityID.Find(CurrentSkillIndex))
+    if (CurrentSkillIndex != INDEX_NONE && ViewDataByComboIndex.Num() > 1)
     {
         return nullptr;
     }
-    return  &ViewDataByAbilityID[CurrentSkillIndex];
+    return &ViewDataByComboIndex[CurrentSkillIndex];
 }
 
 void UAOSkillQuickSlotWidget::PlaySkillPressedFeedback()
@@ -86,6 +83,22 @@ void UAOSkillQuickSlotWidget::PlaySkillPressedFeedback()
     }
 
     BP_PlayPressedFeedback();
+}
+
+void UAOSkillQuickSlotWidget::HandleComboInput()
+{
+    if (CurrentSkillIndex + 1  < ViewDataByComboIndex.Num())
+    {
+        CurrentSkillIndex++;
+    }
+    else
+    {
+        CurrentSkillIndex = 0;
+    }
+
+
+    UE_LOG(LogTemp, Warning, TEXT("%d"), CurrentSkillIndex);
+    SetCurrentSkillIndex(CurrentSkillIndex);
 }
 
 void UAOSkillQuickSlotWidget::StartCooldown(float RemainingTime, float Duration)

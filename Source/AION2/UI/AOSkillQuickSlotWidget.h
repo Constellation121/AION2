@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 
 #include "UI/AOSlotWidgetBase.h"
-#include "UI/AOQuickSkillHUD.h"
 
 #include "Data/AOSkillSlotViewData.h"
 
@@ -47,9 +46,14 @@ public:
 	void AddSkillSlotViewData(const FAOSkillSlotViewData& InViewData);
 	void ClearSkillSlotViewData();
 
-	void SetCurrentSkillIndex(int32 InAbilityID);
+	// Array에 skill이 하나만 있는 Slot은 한 번만 호출됨.
+	void SetCurrentSkillIndex(int32 InNewIndex);
+	
+
 	FORCEINLINE int32 GetCurrentSkillIndex() { return CurrentSkillIndex; }
+	FORCEINLINE int32 GetSlotSkillCount() { return ViewDataByComboIndex.Num(); }
 	const FAOSkillSlotViewData* GetCurrentSkillSlotViewData() const;
+
 
 	void PlaySkillPressedFeedback();
 
@@ -59,6 +63,9 @@ public:
 	// EffectWidget의 표시를 풀어줌: TODO
 	void StopCooldown();
 
+
+	// TODO(SuYeon): 하위 Widget의 순환으로 구현하기 전에는 그냥 Set으로 대충 바꿔주기만. 
+	void HandleComboInput();
 
 public:
 	// Blueprint에서 구현하는 기능이므로, 초록줄이 뜬다고 해서 정의 만들면 빌드 에러남. 
@@ -74,8 +81,6 @@ public:
 
 
 private:
-	void InitSkillSlot(const int32 InAbilityID);
-
 	// Init the Icon
 	void SetSkillIcon(UTexture2D* Icon);
 
@@ -101,10 +106,10 @@ protected:
 private:
 	// ============= Skill View Data ============
 	UPROPERTY()
-	TMap<int32, FAOSkillSlotViewData> ViewDataByAbilityID;
+	TArray<FAOSkillSlotViewData> ViewDataByComboIndex;
 
 	UPROPERTY()
-	int32 CurrentSkillIndex = INDEX_NONE;
+	int32 CurrentSkillIndex = 0;
 
 	//매번 인자를 받기보다, 내부 멤버를 쓰도록 함: Play Effect용 private member.
 private:
