@@ -101,6 +101,14 @@ void UAOSkillQuickSlotWidget::HandleComboInput()
     SetCurrentSkillIndex(CurrentSkillIndex);
 }
 
+void UAOSkillQuickSlotWidget::ResetComboInput()
+{
+    if (ViewDataByComboIndex.Num() > 0)
+    {
+        SetCurrentSkillIndex(0);
+    }
+}
+
 void UAOSkillQuickSlotWidget::StartCooldown(float RemainingTime, float Duration)
 {
     if (RemainingTime <= 0.0f || Duration <= 0.0f)
