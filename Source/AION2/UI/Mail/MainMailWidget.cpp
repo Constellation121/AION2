@@ -16,7 +16,7 @@
 #include "Character/Daeva/Daeva.h"
 #include "Network/PacketHeader.h"
 #include "Manager/AOUIManager.h"
-#include "AOQuickSlotComponent.h"
+#include "UI/AOQuickSlotComponent.h"
 #include  "AION2.h"
 
 
