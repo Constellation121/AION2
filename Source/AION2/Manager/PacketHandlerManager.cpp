@@ -25,9 +25,9 @@ void InitPacketHandler()
 
 #if UE_SERVER
 	// 서버 핸들러
-	GAOPacketHandler[PKT_S_DUNGEONCREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_DEDI_CREATE, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_CREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_DEDI_CREATE, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_DUNGEONDEDISTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonStartDediPacket>(&FPacketHandler::Handle_S_DUNGEON_SET_PLAYER, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_DEDI_START] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonStartDediPacket>(&FPacketHandler::Handle_S_DUNGEON_SET_PLAYER, Mng, Buf, Len); };
 #else
 
 #if UE_BUILD_DEVELOPMENT
