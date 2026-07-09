@@ -56,6 +56,12 @@ int32 Dungeon::GetFreeIndex() const
 	return static_cast<int32>(_members.size() + 1);
 }
 
+void Dungeon::ResetDungeon()
+{
+	_members.clear();
+	_leader = nullptr;
+}
+
 
 void Dungeon::Broadcast(SendBufferRef sendBuffer)
 {
@@ -160,6 +166,7 @@ void DungeonWaitingRoom::HandleCreateDungeon(PlayerRef player)
 	DungeonRef dungeon = std::make_shared<Dungeon>(dungeonId, player);
 	_dungeons[dungeonId] = dungeon;
 
+	dedi->_dungeon = dungeon;
 	dedi->SetUsing(true);
 	dungeon->SetDediSession(dedi);
 
@@ -314,23 +321,94 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 		dediInfo = pkt.add_preplayersinfos();
 		auto session = member->_ownerSession;
 		if (auto session = member->_ownerSession.lock())
-		{
+		{	
+			int32 memberId = member->GetId();
+
 			dediInfo->set_clienttoken(session->GetToken());
-			dediInfo->set_clientid(member->GetId());
+			dediInfo->set_clientid(memberId);
 			dediInfo->set_clientname(member->GetName());
 			dediInfo->set_clientclass(member->GetClass());
+			dediInfo->set_clienthp(member->GetHp());		
+
+			DBConnection* dbConnect = GDBConnectionPool->Pop();
+			DBBind<1, 4> dbBind(*dbConnect, L"{CALL sp_GetItems(?)}");
+			dbBind.BindParam(0, memberId);
+
+			int32 itemInstanceId = 0;
+			int32 itemTemplateId = 0;
+			int32 slotIndex = 0;
+			int32 itemCount = 0;
+
+			std::wcout.imbue(std::locale("kor"));
+
+			dbBind.BindCol(1, itemInstanceId);
+			dbBind.BindCol(2, itemTemplateId);
+			dbBind.BindCol(3, slotIndex);
+			dbBind.BindCol(4, itemCount);
+
+			if (dbBind.Execute())
+			{
+				if (dbBind.Fetch())
+				{
+					if (itemInstanceId != 0)
+					{
+						Protocol::ItemData* item = dediInfo->add_playeritems();
+
+						item->set_iteminstancedid(itemInstanceId);
+						item->set_itemtemplateid(itemTemplateId);
+						item->set_slotindex(slotIndex);
+						item->set_count(itemCount);
+					}
+				}
+			}
+
 		}
 	}
+
 	{
 		auto leader = dungeon->GetLeader();
 		auto leaderSession = leader->_ownerSession;
 		if (auto leaderSession = leader->_ownerSession.lock())
 		{
+			int32 leaderId = leader->GetId();
 			dediInfo = pkt.add_preplayersinfos();
 			dediInfo->set_clienttoken(leaderSession->GetToken());
-			dediInfo->set_clientid(leader->GetId());
+			dediInfo->set_clientid(leaderId);
 			dediInfo->set_clientname(leader->GetName());
 			dediInfo->set_clientclass(leader->GetClass());
+
+			DBConnection* dbConnect = GDBConnectionPool->Pop();
+			DBBind<1, 4> dbBind(*dbConnect, L"{CALL sp_GetItems(?)}");
+			dbBind.BindParam(0, leaderId);
+
+			int32 itemInstanceId = 0;
+			int32 itemTemplateId = 0;
+			int32 slotIndex = 0;
+			int32 itemCount = 0;
+
+			std::wcout.imbue(std::locale("kor"));
+
+			dbBind.BindCol(1, itemInstanceId);
+			dbBind.BindCol(2, itemTemplateId);
+			dbBind.BindCol(3, slotIndex);
+			dbBind.BindCol(4, itemCount);
+
+			if (dbBind.Execute())
+			{
+				if (dbBind.Fetch())
+				{
+					if (itemInstanceId != 0)
+					{
+						Protocol::ItemData* item = dediInfo->add_playeritems();
+
+						item->set_iteminstancedid(itemInstanceId);
+						item->set_itemtemplateid(itemTemplateId);
+						item->set_slotindex(slotIndex);
+						item->set_count(itemCount);
+					}
+				}
+			}
+
 		}
 	}
 	SendBufferRef buffer = PacketHandler::MakeSendBuffer(pkt);
@@ -344,11 +422,10 @@ void DungeonWaitingRoom::HandleDungeonStart(PlayerRef player, int32 dungeonId)
 	if (it == _dungeons.end()) return;
 
 	DungeonRef dungeon = it->second;
-	//if (dungeon->GetLeader() != player) return;
+	if (dungeon->GetLeader() != player) return;
 
 	if (!CheckMembersReady(dungeon))
 	{
-		// Todo 거절하기
 		HandleFailDungeon(player, Protocol::DungeonFailReason::Ready);
 		return;
 	}

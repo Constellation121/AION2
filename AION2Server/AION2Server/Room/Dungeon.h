@@ -28,6 +28,7 @@ public:
 	bool IsFull() const;
 	int32 GetFreeIndex() const;
 
+	void ResetDungeon();
 
 	void Broadcast(SendBufferRef sendBuffer);
 	

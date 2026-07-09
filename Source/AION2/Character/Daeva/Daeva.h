@@ -104,6 +104,7 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(
 	ADaeva*
 );
 
+
 UCLASS()
 class AION2_API ADaeva : public AAOCharacter , public IGenericTeamAgentInterface
 {
@@ -121,6 +122,14 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	/*
+	*  Suyeon: Local이 아닌 Player는 EndPlay가 제 때 호출되지 않을 수 있으므로, 
+	* UnPossessed에서 해주는 작업을 명시적으로 해줌
+	*/
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+
 
 private:
 	void Tick_Camera(float DeltaTime);
@@ -523,4 +532,8 @@ private:
 	// 일단 넉넉하게 180 => 3초로 잡기. 잘 되면 점점 줄여서 60을 목표로.
 	int32 PawnASCBindMaxRetryCount = 180;
 
+
+protected:
+	// UI 입력이 여러 번 들어가는 것을 방지
+	int32 LastPressedFeedbackAbilityID = INDEX_NONE;
 };

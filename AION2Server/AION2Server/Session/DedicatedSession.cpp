@@ -12,7 +12,11 @@ void DedicatedSession::OnConnected()
 void DedicatedSession::OnDisconnected()
 {
 	GDediSessionManager.Remove(static_pointer_cast<DedicatedSession>(shared_from_this()));
+	
+	if (_dungeon)
+	{
 
+	}
 }
 
 void DedicatedSession::OnRecvPacket(BYTE* buffer, int32 len)

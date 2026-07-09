@@ -25,14 +25,16 @@ void InitPacketHandler()
 
 #if UE_SERVER
 	// 서버 핸들러
-	GAOPacketHandler[PKT_S_DUNGEONCREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_DEDI_CREATE, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_CREATE] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonCreatePacket>(&FPacketHandler::Handle_S_DEDI_CREATE, Mng, Buf, Len); };
 
-	GAOPacketHandler[PKT_S_DUNGEONDEDISTART] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonStartDediPacket>(&FPacketHandler::Handle_S_DUNGEON_SET_PLAYER, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_DUNGEON_DEDI_START] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) {return HandlePacketPolicy<Protocol::S_DungeonStartDediPacket>(&FPacketHandler::Handle_S_DUNGEON_SET_PLAYER, Mng, Buf, Len); };
 #else
 
 #if UE_BUILD_DEVELOPMENT
 	// 템플릿을 사용하여 자동 파싱 및 핸들러 맵핑
 	GAOPacketHandler[PKT_S_SIGNUP] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_SignUpResultPacket>(&FPacketHandler::Handle_S_SIGNUP, Mng, Buf, Len); };
+	GAOPacketHandler[PKT_S_SET_NICNNAME] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_SetNicknamePacket>(&FPacketHandler::Handle_S_SET_NICKNAME, Mng, Buf, Len); };
+
 	GAOPacketHandler[PKT_S_LOGIN_FAIL] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_LoginFailPacket>(&FPacketHandler::Handle_S_LOGIN_FAIL, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_LOGIN_SUCCEED] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_LoginSuccessPacket>(&FPacketHandler::Handle_S_LOGIN_SUCCEED, Mng, Buf, Len); };
 	GAOPacketHandler[PKT_S_ITEM] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_ItemDataPacket>(&FPacketHandler::Handle_S_ITEM, Mng, Buf, Len); };
@@ -63,10 +65,7 @@ void InitPacketHandler()
 
 	GAOPacketHandler[PKT_S_DISCONNECT] = [](UAONetworkManager* Mng, uint8* Buf, int32 Len) { return HandlePacketPolicy<Protocol::S_DisconnectPacket>(&FPacketHandler::Handle_S_DISCONNECT, Mng, Buf, Len); };
 
-
-
 #endif
-
 #endif
 }
 
@@ -108,13 +107,24 @@ bool FPacketHandler::Handle_S_SIGNUP(Protocol::S_SignUpResultPacket& Pkt)
 	{
 		if (Pkt.success() == 1)
 		{
+			UE_LOG(LogTemp, Log, TEXT("회원가입 성공"));
 			RegisterWidget->HandleRegisterResult();
 		}
 		else
 		{
+			UE_LOG(LogTemp, Log, TEXT("회원가입 실패"));
 			RegisterWidget->HandleRegisterError();
 		}
 		return true;
+	}
+	return false;
+}
+
+bool FPacketHandler::Handle_S_SET_NICKNAME(Protocol::S_SetNicknamePacket& Pkt)
+{
+	if (UAOLoginUserWidget* RegisterWidget = GameInstance->RegisterWidget)
+	{
+		RegisterWidget->ReceiveNicknameResult(Pkt.issucceed());
 	}
 	return false;
 }
@@ -123,10 +133,7 @@ bool FPacketHandler::Handle_S_LOGIN_SUCCEED(Protocol::S_LoginSuccessPacket& pkt)
 {
 	if (PlayerMng && pkt.has_playerinfo())
 	{
-		uint64 PlayerId = pkt.playerinfo().playerid();
-		uint8 ClassType = static_cast<uint8>(pkt.playerinfo().playerclass());
-		int32 Gold = pkt.gold();
-		PlayerMng->HandleLogin(PlayerId, ClassType, Gold);
+		PlayerMng->HandleLogin(pkt);
 		if (GameInstance)
 		{
 			GameInstance->OnReadyoOpenLevel();

@@ -132,6 +132,7 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 
 	PendingPlayers.Remove(UniqueId);
 
+	// === !! Warning: DO NOT Move the location !! ===
 	Super::PostLogin(NewPlayer);
 }
 
@@ -885,6 +886,7 @@ void AAODungeonGameMode::SetPrePlayerInfo(const Protocol::S_DungeonStartDediPack
 		DPlayerInfo.set_playerid(DungeonInfo.clientid());
 		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		DPlayerInfo.set_playerclass(DungeonInfo.clientclass());
+		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		PrePlayers.Add(Token, DPlayerInfo);
 	}
 }

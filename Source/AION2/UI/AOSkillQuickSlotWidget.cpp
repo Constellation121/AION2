@@ -2,17 +2,44 @@
 
 
 #include "UI/AOSkillQuickSlotWidget.h"
+
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "Data/DA_AbilitySet.h"
+#include "Components/Button.h"
 
-void UAOSkillQuickSlotWidget::InitSkillSlot(const FGAData& InAbilityData)
+#include "Data/AOSkillSlotViewData.h"
+
+void UAOSkillQuickSlotWidget::NativeDestruct()
 {
-    CooldownTag = InAbilityData.CooldownTag;
-    EffectWidgetClass = InAbilityData.EffectWidgetClass;
+    // CooldownTimer에서 사용한 TimerHandle clear.
+    if (UWorld* World = GetWorld())
+    {
+        World->GetTimerManager().ClearTimer(CooldownTimerHandle);
+    }
 
-    SetSkillIcon(InAbilityData.Icon);
-    SetSkillLevel(InAbilityData.AbilityLevel);
+    Super::NativeDestruct();
+}
+
+void UAOSkillQuickSlotWidget::AddSkillSlotViewData(const FAOSkillSlotViewData& InViewData)
+{
+    ViewDataByAbilityID.Add(InViewData.AbilityID, InViewData);
+}
+
+void UAOSkillQuickSlotWidget::ClearSkillSlotViewData()
+{
+    ViewDataByAbilityID.Empty();
+}
+
+void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 InAbilityID)
+{
+    InitSkillSlot(InAbilityID);
+    CurrentSkillIndex = InAbilityID;
+}
+
+void UAOSkillQuickSlotWidget::InitSkillSlot(const int32 InAbilityID)
+{
+    SetSkillIcon(ViewDataByAbilityID[InAbilityID].Icon);
+    SetSkillLevel(ViewDataByAbilityID[InAbilityID].AbilityLevel);
 }
 
 void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
@@ -42,24 +69,60 @@ void UAOSkillQuickSlotWidget::SetSkillLevel(int32 InLevel)
     }
 }
 
-void UAOSkillQuickSlotWidget::PlayPressedFeedback()
+const FAOSkillSlotViewData* UAOSkillQuickSlotWidget::GetCurrentSkillSlotViewData() const
 {
+    if (!ViewDataByAbilityID.Find(CurrentSkillIndex))
+    {
+        return nullptr;
+    }
+    return  &ViewDataByAbilityID[CurrentSkillIndex];
 }
 
-void UAOSkillQuickSlotWidget::StartCooldown(float RemainingTime, float Duration)
+void UAOSkillQuickSlotWidget::PlaySkillPressedFeedback()
 {
-}
-
-void UAOSkillQuickSlotWidget::StopCooldown()
-{
-}
-
-void UAOSkillQuickSlotWidget::ShowEffectWidget()
-{
-    if (!EffectWidgetClass)
+    if (!SlotButton)
     {
         return;
     }
 
-    // EffectWidgetClass로 위젯 생성/표시
+    BP_PlayPressedFeedback();
 }
+
+void UAOSkillQuickSlotWidget::StartCooldown(float RemainingTime, float Duration)
+{
+    if (RemainingTime <= 0.0f || Duration <= 0.0f)
+    {
+        return;
+    }
+
+    //CooldownEndTime = GetWorld()->GetTimeSeconds() + RemainingTime;
+    //CooldownDuration = Duration;
+    //
+    //BP_StartCooldown(RemainingTime, Duration);
+    //UpdateCooldownText();
+    //
+    //GetWorld()->GetTimerManager().SetTimer(
+    //    CooldownTimerHandle,
+    //    this,
+    //    &ThisClass::UpdateCooldownText,
+    //    0.1f,
+    //    true
+    //);
+}
+
+void UAOSkillQuickSlotWidget::StopCooldown()
+{
+    //if (GetWorld())
+    //{
+    //    GetWorld()->GetTimerManager().ClearTimer(CooldownTimerHandle);
+    //}
+    //
+    //if (TB_CooldownRemaining)
+    //{
+    //    TB_CooldownRemaining->SetText(FText::GetEmpty());
+    //    TB_CooldownRemaining->SetVisibility(ESlateVisibility::Collapsed);
+    //}
+    //
+    //BP_StopCooldown();
+}
+

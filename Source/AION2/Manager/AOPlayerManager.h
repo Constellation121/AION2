@@ -22,7 +22,7 @@ private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 public:
-	void HandleLogin(const uint64 PlayerId, const uint8 ClassType, int32 Gold);
+	void HandleLogin(Protocol::S_LoginSuccessPacket& LoginPacket);
 	void HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation);
 	void HandleItem(Protocol::S_ItemDataPacket Items);
 	void HnadleMove(const uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel);

@@ -67,6 +67,11 @@ public:
 	// Hide Full-Screen Monster Stat visibility value & Unbind ASC.
 	void HideTargetMonsterHUD();
 
+public:
+	// === MainHUD-> PlayerHUD -> SkillHUD/slot of inputID -> SkillSlot ===
+	void PlaySkillPressedFeedback(int32 InputId);
+
+
 private:
 	bool bShowColliderDebug = false;
 	bool bShowGASDebug = false;
@@ -100,7 +105,8 @@ public:
 	void ToggleMailWidget();
 
 	/*
-	* 동일한 처리가 이미 성공했다면(이미 Bound된 Daeva가 있고, 해당 Daeva의 ASC가 지금 Bind된 ASC와 같다면) return 해주는 용도.
+	* 동일한 처리가 이미 성공했다면
+	* (이미 Bound된 Daeva가 있고, 해당 Daeva의 ASC가 지금 Bind된 ASC와 같다면) return 해주는 용도.
 	* Respawn이나 Pawn 교체가 있으면 새 Pawn에 다시 Binding 불가능할 수도 있음
 	* 아래 부분은 원래 MainHUD에 맡겨야 하는데, 
 	* Error 없이 보이는 구현이 우선이므로 여기서 진행

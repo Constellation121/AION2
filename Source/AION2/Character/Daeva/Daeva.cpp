@@ -244,6 +244,22 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+void ADaeva::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	ClearGAS();
+
+	if (OverheadStatusWidgetComponent)
+	{
+		if (UAOPlayerHUDWidget* StatusWidget =
+			Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject()))
+		{
+			StatusWidget->ClearBinding();
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
 void ADaeva::Tick_Camera(float DeltaTime)
 {
 	if (IsLocallyControlled())
@@ -598,6 +614,7 @@ void ADaeva::InitGAS()
 
 void ADaeva::ClearGAS()
 {
+	// 클라이언트/서버 모두 해야 하는 delegate cleanup
 	if (ASC && bMoveSpeedDelegateRegistered)
 	{
 		ASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetMoveSpeedAttribute()).Remove(MoveSpeedChangedDelegateHandle);
@@ -613,7 +630,11 @@ void ADaeva::ClearGAS()
 		HealthChangedDelegateHandle.Reset();
 	}
 
-	if (HasAuthority())
+	
+	// Suyeon: added Exception Handling (!ASC)
+	// 서버 권한에서만 해야 하는 ability spec 제거: 
+	// ClearAbility는 서버인지 체크해야 함=> HasAuthority() 
+	if (HasAuthority() && ASC)
 	{
 		for (FGameplayAbilitySpecHandle Handle : CombatAbilityHandles)
 		{
@@ -628,6 +649,16 @@ void ADaeva::GASInputPressed(int32 InputId)
 {
 	if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId))
 	{
+		if (LastPressedFeedbackAbilityID != InputId)
+		{
+			LastPressedFeedbackAbilityID = InputId;
+		
+			if (AAOPlayerController* PC = Cast<AAOPlayerController>(GetController()))
+			{
+				PC->PlaySkillPressedFeedback(InputId);
+			}
+		}
+
 		Spec->InputPressed = true;
 		if (Spec->IsActive())
 		{
@@ -642,6 +673,12 @@ void ADaeva::GASInputPressed(int32 InputId)
 
 void ADaeva::GASInputReleased(int32 InputId)
 {
+	// For UI: 마지막에 눌린 값을 초기화
+	if (LastPressedFeedbackAbilityID == InputId)
+	{
+		LastPressedFeedbackAbilityID = INDEX_NONE;
+	}
+
 	if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId))
 	{
 		Spec->InputPressed = false;
@@ -859,10 +896,12 @@ void ADaeva::InputRBPressed()
 
 	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB2))
 	{
+
 		GASInputPressed(static_cast<int32>(EAbilityID::RB_2));
 	}
 	else if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB3))
 	{
+
 		GASInputPressed(static_cast<int32>(EAbilityID::RB_3));
 	}
 	else
@@ -920,6 +959,8 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 	}
 
 	bIsDead = true;
+
+	OverheadStatusWidgetComponent->DestroyComponent();
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
@@ -1002,8 +1043,7 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 
 void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
-	//SendHp(Data.NewValue);
-
+	
 	if (Data.NewValue <= 0.0f && !bIsDead)
 	{
 		HandleDeath();

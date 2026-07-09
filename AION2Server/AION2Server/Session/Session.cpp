@@ -48,7 +48,6 @@ void Session::Disconnect(const WCHAR* cause)
 	if (_connected.exchange(false) == false)
 		return;
 
-	// TODO: Logout logic
 	std::wcout << "Disconnected: " << cause << "\n";
 	OnDisconnected();;
 	RegisterDisConnect();
@@ -201,7 +200,6 @@ void Session::ProcessConnect()
 void Session::ProcessDisconnect()
 {
 	GetService()->ReleaseSession(GetSessionRef());
-	// TODO: OnDisconnected override logic
 
 	std::cout << "Client Disconnected!" << std::endl;
 }

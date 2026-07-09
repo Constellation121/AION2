@@ -143,7 +143,7 @@ void UMainMailWidget::UpdateMailList(const TArray<FMailData>& InMailList)
 			{
 				ScrollBoxSlot->SetHorizontalAlignment(HAlign_Center);
 				ScrollBoxSlot->SetVerticalAlignment(VAlign_Center);
-				ScrollBoxSlot->SetPadding(FMargin(0.f, 50.f, 0.f, 0.f));
+				ScrollBoxSlot->SetPadding(FMargin(0.f, 20.f, 0.f, 0.f));
 			}
 		}
 	}

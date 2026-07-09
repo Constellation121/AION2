@@ -641,13 +641,11 @@ void ATalythra::DoFireProjectile_3()
 void ATalythra::InitAttributeSet()
 {
 	// AttributeSet설정
-	AttributeSet->InitHealth(12000.f);
-	AttributeSet->InitMaxHealth(12000.f);
+	AttributeSet->InitHealth(8000.0f);
+	AttributeSet->InitMaxHealth(8000.0f);
 
-	AttributeSet->InitGroggy(3000.f);
-	AttributeSet->InitMaxGroggy(3000.f);
-
-
+	AttributeSet->InitGroggy(1800.f);
+	AttributeSet->InitMaxGroggy(1800.f);
 }
 
 
@@ -1164,6 +1162,7 @@ void ATalythra::OnHealthChanged(const FOnAttributeChangeData& Data)
 		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP70_PENDING) == false)
 	{
 		ASC->AddLooseGameplayTag(GIMMICK_MONSTER_TH_HP70_PENDING);
+		ASC->AddLooseGameplayTag(GIMMICK_MONSTER);
 	}
 
 
@@ -1172,6 +1171,7 @@ void ATalythra::OnHealthChanged(const FOnAttributeChangeData& Data)
 		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP35_PENDING) == false)
 	{
 		ASC->AddLooseGameplayTag(GIMMICK_MONSTER_TH_HP35_PENDING);
+		ASC->AddLooseGameplayTag(GIMMICK_MONSTER);
 	}
 
 

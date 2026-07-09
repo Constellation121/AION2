@@ -4,11 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "UI/AOUserWidgetBase.h"
+#include "GameplayTagContainer.h"
+#include "Delegates/Delegate.h"
 #include "AOQuickSkillHUD.generated.h"
 
 class UAOSkillQuickSlotWidget;
 class UHorizontalBox;
 class UAOWidgetBase;
+
+class UDA_AbilitySet;
+
+struct FAOSkillSlotViewData;
+
+
+// Daeva의 어떤 스킬 Cooldown이 시작/초기화됐을 때 시행할 함수들을 묶을 Delegate.
+DECLARE_DELEGATE_OneParam(FAOCooldownStartedDelegate, const FAOSkillSlotViewData&);
+DECLARE_DELEGATE_OneParam(FAOCooldownStoppedDelegate, FGameplayTag);
+
 
 /**
  * = PlayerHUDWidget 하위에서 =  
@@ -26,6 +38,25 @@ public:
 
 protected:
 	virtual void NativeConstruct() override;
+
+public:
+	// PlayerController로부터 타고 태려와 InputId에 맞는 slot에 전달할 함수.
+	void PlaySkillPressedFeedback(int32 InputId);
+	
+	// cooldown tag 변경에 따라 실행될 함수.
+	void HandleCooldownTagChanged(FGameplayTag CooldownTag, int32 NewCount);
+
+
+	void SetCurrentAbilityForSlot(int32 SlotIndex, int32 AbilityID);
+	void PlayPressedFeedbackByAbilityID(int32 AbilityID);
+
+
+private:
+	void InitSkillSlots(const UDA_AbilitySet* InAbilitySet);
+
+public:
+	FAOCooldownStartedDelegate OnCooldownStarted;
+	FAOCooldownStoppedDelegate OnCooldownStopped;
 
 protected:
 	// === Skill Slots ===
@@ -53,15 +84,20 @@ protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 	TObjectPtr<UAOSkillQuickSlotWidget> Skill_T;
 
-
 	// Binding된 위 Widget들을 편하게 관리하기 위해 Map에 넣음
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UAOSkillQuickSlotWidget>> SkillSlotByAbilityID;
 
+	// 해당 Slot에서 현재 보여줄 Skill의 내부 Index. { SlotIndex : SkillID  }.
+	// => Slot 내에서, viewData의 array를 들고 있도록 하고 입력을 받으면 변경.
+	TMap<int32, int32> SkillSlotBySlotIndex;
+	
 	// === Effect Area ===
 	TObjectPtr<UHorizontalBox> EffectArea;
 
 	TObjectPtr<UAOWidgetBase> EffectSlotBase;
 	
-	
+
+	UPROPERTY()
+	TObjectPtr<const UDA_AbilitySet> BoundAbilitySet;
 };
