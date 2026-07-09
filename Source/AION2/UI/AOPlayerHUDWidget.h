@@ -31,6 +31,10 @@ protected:
     // UI 소멸자.
     virtual void NativeDestruct() override;
 
+public:
+    // => SkillHUD.
+    void PlaySkillPressedFeedback(int32 InputId);
+
 protected:
     void HandleHealthChanged(const FOnAttributeChangeData& Data);
     void HandleMaxHealthChanged(const FOnAttributeChangeData& Data);

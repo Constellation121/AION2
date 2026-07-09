@@ -37,6 +37,9 @@ public:
     void HideTargetMonsterHUD();
 
 public:
+    void PlaySkillPressedFeedback(int32 InputId);
+
+public:
     // 외부에서 PlayerHUDWidget의 함수를 사용할 때.
     FORCEINLINE UAOPlayerHUDWidget* GetPlayerHUDWidget() const { return PlayerHUDWidget; }
 
@@ -49,6 +52,7 @@ protected:
     TObjectPtr<UAODungeonHUDWidget> DungeonHUDWidget;
 
 public:
+    // 던전에서는 없음. (26.07.08)
     UPROPERTY(meta = (BindWidgetOptional), BlueprintReadOnly)
     TObjectPtr<UAOChattingWidget> ChattingWidget;
 

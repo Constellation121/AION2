@@ -7,6 +7,7 @@
 #include "Lutalis.generated.h"
 
 class ALutalisElectricZone;
+class ALutalisScytheZone;
 
 /**
  * 
@@ -20,6 +21,15 @@ class AION2_API ALutalis : public AAOMonsterBase
 public:
 
 	ALutalis(const FObjectInitializer& ObjectInitializer);
+
+protected:
+
+	virtual void BeginPlay() override;
+	virtual void InitAttributeSet() override;
+	virtual void EndGroggy() override;
+
+// ElectricZone
+public:
 
 	UFUNCTION(BlueprintCallable, Category = "Lutalis|ElectricZone")
 	bool BeginElectricRangeWarning(float WarningDuration);
@@ -41,13 +51,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Lutalis|ElectricZone")
 	void ResetPreparedElectricZoneCast();
-
-protected:
-
-	virtual void BeginPlay() override;
-	virtual void InitAttributeSet() override;
-	virtual void EndGroggy() override;
-
 
 private:
 	bool ResolveElectricZoneActor();
@@ -77,4 +80,29 @@ private:
 
 	int32 PreparedElectricZoneArcIndex = INDEX_NONE;
 	float PreparedElectricZoneTargetYaw = 0.f;
+
+// Shythe
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "Lutalis|Scythe")
+	bool BeginScytheWarning(float WarningDuration);
+
+	UFUNCTION(BlueprintCallable, Category = "Lutalis|Scythe")
+	bool ActivateScytheSweep();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Lutalis|Scythe", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ALutalisScytheZone> ScytheZoneClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Lutalis|Scythe", meta = (AllowPrivateAccess = "true"))
+	float ScytheZoneLength = 1800.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Lutalis|Scythe", meta = (AllowPrivateAccess = "true"))
+	float ScytheZoneWidth = 500.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Lutalis|Scythe", meta = (AllowPrivateAccess = "true"))
+	FAttackData ScytheDamageData;
+
+	UPROPERTY()
+	TArray<TObjectPtr<ALutalisScytheZone>> ActiveScytheZones;
 };
