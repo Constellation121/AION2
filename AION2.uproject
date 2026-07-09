@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{D718008F-423E-CBB6-F8C0-1BBA0CED1DBF}",
+	"EngineAssociation": "{9B6F3622-4B32-FEEE-980B-2D9DBBDE3021}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -17,10 +17,6 @@
 		}
 	],
 	"Plugins": [
-		{
-			"Name": "LoadingScreenModule",
-			"Enabled": true
-		},
 		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
