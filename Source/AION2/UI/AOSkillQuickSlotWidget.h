@@ -67,6 +67,9 @@ public:
 	// TODO(SuYeon): 하위 Widget의 순환으로 구현하기 전에는 그냥 Set으로 대충 바꿔주기만. 
 	void HandleComboInput();
 
+	// ComboInput을 0으로 돌려줌
+	void ResetComboInput();
+
 public:
 	// Blueprint에서 구현하는 기능이므로, 초록줄이 뜬다고 해서 정의 만들면 빌드 에러남. 
 	// C++ 내에서 호출은 할 수 있다.
