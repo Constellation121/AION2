@@ -9,8 +9,6 @@
 
 #include "Data/AOSkillSlotViewData.h"
 
-
-
 void UAOSkillQuickSlotWidget::NativeDestruct()
 {
     // CooldownTimer에서 사용한 TimerHandle clear.
@@ -22,12 +20,26 @@ void UAOSkillQuickSlotWidget::NativeDestruct()
     Super::NativeDestruct();
 }
 
-void UAOSkillQuickSlotWidget::InitSkillSlot(const FAOSkillSlotViewData& InViewData)
+void UAOSkillQuickSlotWidget::AddSkillSlotViewData(const FAOSkillSlotViewData& InViewData)
 {
-    CurrentCooldownTag = InViewData.CooldownTag;
+    ViewDataByAbilityID.Add(InViewData.AbilityID, InViewData);
+}
 
-    SetSkillIcon(InViewData.Icon);
-    SetSkillLevel(InViewData.AbilityLevel);
+void UAOSkillQuickSlotWidget::ClearSkillSlotViewData()
+{
+    ViewDataByAbilityID.Empty();
+}
+
+void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 NewIndex)
+{
+    InitSkillSlot(NewIndex);
+    CurrentSkillIndex = NewIndex;
+}
+
+void UAOSkillQuickSlotWidget::InitSkillSlot(const int32 InAbilityID)
+{
+    SetSkillIcon(ViewDataByAbilityID[InAbilityID].Icon);
+    SetSkillLevel(ViewDataByAbilityID[InAbilityID].AbilityLevel);
 }
 
 void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
@@ -55,6 +67,15 @@ void UAOSkillQuickSlotWidget::SetSkillLevel(int32 InLevel)
         TB_SkillLevel->SetText(
             FText::FromString(FString::Printf(TEXT("Lv%d"), InLevel)));
     }
+}
+
+const FAOSkillSlotViewData* UAOSkillQuickSlotWidget::GetCurrentSkillSlotViewData() const
+{
+    if (!ViewDataByAbilityID.Find(CurrentSkillIndex))
+    {
+        return nullptr;
+    }
+    return  &ViewDataByAbilityID[CurrentSkillIndex];
 }
 
 void UAOSkillQuickSlotWidget::PlaySkillPressedFeedback()
@@ -105,12 +126,3 @@ void UAOSkillQuickSlotWidget::StopCooldown()
     //BP_StopCooldown();
 }
 
-void UAOSkillQuickSlotWidget::ShowEffectWidget()
-{
-    if (!EffectWidgetClass)
-    {
-        return;
-    }
-
-    // EffectWidgetClass로 위젯 생성/표시
-}
