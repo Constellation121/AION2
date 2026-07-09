@@ -9,6 +9,7 @@
 class AAOMonsterBase;
 class APlayerController;
 class APlayerStart;
+class Pawn;
 
 UENUM(BlueprintType)
 enum class EDungeonPhase : uint8
@@ -92,11 +93,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Dungeon|Class")
 	TMap<EDaevaClassType, TSubclassOf<APawn>> JobClassMap;
 
+protected :
+	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer,const FTransform& SpawnTransform) override;
+
+private :
+	APawn* SpawnPawnByPlayerClass(AController* NewPlayer, const FTransform& SapwnTransform);
+
 protected:
-	// 일반 사망 : 죽은 자리에서 부활.
 	TMap<TObjectPtr<APlayerController>, FTransform> PendingRespawnTransforms;
 
-	// 팀 전멸 : 보스 근처 체크포인트에서 전체 부활
 	FTimerHandle WipeRespawnTimerHandle;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Dungeon")
@@ -184,4 +189,6 @@ private:
 private :
 	bool bDungeonResultSent = false;
 
+public :
+	void BlockAllPlayersMovementOnClear();
 };

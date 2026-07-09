@@ -24,7 +24,7 @@ UCLASS()
 class AION2_API AAOPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-	
+
 public:
 	AAOPlayerState();
 
@@ -41,12 +41,16 @@ public:
 	void SetMyId(uint64 PlayerId);
 	void SetMyClass(EDaevaClassType InClassType);
 	void SetMyName(FString InName);
+	void SetMyHealth(float InHealth);
+	void SetMyItem(FString InItem);
 
 	// H.Y.
-	void SetPlayerInfo(uint64 InPalyerId, const FString& InPlayerName, uint8 InCalssType);
+	void SetPlayerInfo(uint64 InPalyerId, const FString& InPlayerName, uint8 InCalssType/*,float InHealth, FString& InItem*/);
 
 	// GetClass function.
-	FORCEINLINE EDaevaClassType GetMyClass() const{ return MyClassType; }
+	FORCEINLINE uint64 GetMyId() const { return MyId; }
+	FORCEINLINE EDaevaClassType GetMyClass() const { return MyClassType; }
+	FORCEINLINE FString GetMyName() const { return MyName; }
 
 private:
 	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))
@@ -73,4 +77,10 @@ private:
 
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
 	FString MyName;
+
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
+	float MyHealth;
+
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
+	FString MyItem;
 };
