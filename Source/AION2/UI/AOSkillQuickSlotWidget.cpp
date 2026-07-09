@@ -30,10 +30,10 @@ void UAOSkillQuickSlotWidget::ClearSkillSlotViewData()
     ViewDataByAbilityID.Empty();
 }
 
-void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 NewIndex)
+void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 InAbilityID)
 {
-    InitSkillSlot(NewIndex);
-    CurrentSkillIndex = NewIndex;
+    InitSkillSlot(InAbilityID);
+    CurrentSkillIndex = InAbilityID;
 }
 
 void UAOSkillQuickSlotWidget::InitSkillSlot(const int32 InAbilityID)

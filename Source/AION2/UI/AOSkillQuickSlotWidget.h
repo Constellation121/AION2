@@ -47,7 +47,7 @@ public:
 	void AddSkillSlotViewData(const FAOSkillSlotViewData& InViewData);
 	void ClearSkillSlotViewData();
 
-	void SetCurrentSkillIndex(int32 NewIndex);
+	void SetCurrentSkillIndex(int32 InAbilityID);
 	FORCEINLINE int32 GetCurrentSkillIndex() { return CurrentSkillIndex; }
 	const FAOSkillSlotViewData* GetCurrentSkillSlotViewData() const;
 

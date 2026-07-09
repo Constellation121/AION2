@@ -644,10 +644,8 @@ void ATalythra::InitAttributeSet()
 	AttributeSet->InitHealth(8000.0f);
 	AttributeSet->InitMaxHealth(8000.0f);
 
-	AttributeSet->InitGroggy(3000.f);
-	AttributeSet->InitMaxGroggy(3000.f);
-
-
+	AttributeSet->InitGroggy(1800.f);
+	AttributeSet->InitMaxGroggy(1800.f);
 }
 
 
