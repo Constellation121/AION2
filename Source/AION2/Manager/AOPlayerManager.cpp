@@ -25,11 +25,11 @@ UAOPlayerManager::UAOPlayerManager()
 		JobClassMap.Add(1, AssassinClassRef.Class);
 	}
 
-	//static ConstructorHelpers::FClassFinder<APawn> ClericClassRef(TEXT(""));
-	//if (ClericClassRef.Succeeded())
-	//{
-	//	JobClassMap.Add(2, ClericClassRef.Class);
-	//}
+	static ConstructorHelpers::FClassFinder<APawn> ClericClassRef(TEXT("/Game/Blueprint/Daeva/Cleric/BP_MMOCleric"));
+	if (ClericClassRef.Succeeded())
+	{
+		JobClassMap.Add(2, ClericClassRef.Class);
+	}
 
 	static ConstructorHelpers::FClassFinder<APawn> RangerClassRef(TEXT("/Game/Blueprint/Daeva/Ranger/BP_MMORanger"));
 	if (RangerClassRef.Succeeded())
