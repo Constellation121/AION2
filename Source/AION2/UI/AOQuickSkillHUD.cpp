@@ -9,6 +9,35 @@
 #include "Character/Daeva/Daeva.h"
 
 
+void UAOQuickSkillHUD::NativeConstruct()
+{
+    Super::NativeConstruct();
+
+    // 456
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_1), Skill_R);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_2), Skill_R);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_3), Skill_R);
+
+    // 789
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_1), Skill_T);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_2), Skill_T);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_3), Skill_T);
+
+    // 10 11 12 13
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key1), Skill_1);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key2), Skill_2);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key3), Skill_3);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key4), Skill_4);
+
+    // 14 15
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::KeyQ), Skill_Q);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::KeyE), Skill_E);
+
+
+}
+
+
+
 void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
 {
     Super::BindToASC(InASC);
@@ -52,6 +81,11 @@ void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
 
 void UAOQuickSkillHUD::InitSkillSlots(const UDA_AbilitySet* InAbilitySet)
 {
+    if (!InAbilitySet)
+    {
+        return;
+    }
+
     for (const TPair<int32, TObjectPtr<UAOSkillQuickSlotWidget>>& Pair : SkillSlotByAbilityID)
     {
         const int32 AbilityID = Pair.Key;
@@ -84,33 +118,14 @@ void UAOQuickSkillHUD::InitSkillSlots(const UDA_AbilitySet* InAbilitySet)
         * 해당 상위 Widget을 통해 소통하는 게 나을 듯.
         */
         // Init 하지 말고 해당 SlotWidget의 ViewData array에 Add.
-        SlotWidget->InitSkillSlot(ViewData);
+        //SlotWidget->InikillSlot(ViewData);
+        SlotWidget->AddSkillSlotViewData(ViewData);
+
+        if (SlotWidget->GetCurrentSkillIndex() == INDEX_NONE)
+        {
+            SlotWidget->SetCurrentSkillIndex(ViewData.AbilityID);
+        }
     }
-}
-
-void UAOQuickSkillHUD::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-    // 456
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_1), Skill_R);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_2), Skill_R);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_3), Skill_R);
-
-    // 789
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_1), Skill_T);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_2), Skill_T);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_3), Skill_T);
-    
-    // 10 11 12 13
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key1), Skill_1);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key2), Skill_2);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key3), Skill_3);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key4), Skill_4);
-    
-    // 14 15
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::KeyQ), Skill_Q);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::KeyE), Skill_E);
 
 
 }

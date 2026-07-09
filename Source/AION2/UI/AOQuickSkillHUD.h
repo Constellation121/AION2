@@ -84,14 +84,14 @@ protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 	TObjectPtr<UAOSkillQuickSlotWidget> Skill_T;
 
-
 	// Binding된 위 Widget들을 편하게 관리하기 위해 Map에 넣음
 	UPROPERTY()
 	TMap<int32, TObjectPtr<UAOSkillQuickSlotWidget>> SkillSlotByAbilityID;
 
 	// 해당 Slot에서 현재 보여줄 Skill의 내부 Index. { SlotIndex : SkillID  }.
-	TMap<int32, int32> CurrentAbilityIDBySlotIndex;
-
+	// => Slot 내에서, viewData의 array를 들고 있도록 하고 입력을 받으면 변경.
+	TMap<int32, int32> SkillSlotBySlotIndex;
+	
 	// === Effect Area ===
 	TObjectPtr<UHorizontalBox> EffectArea;
 

@@ -64,8 +64,6 @@ void AAODungeonGameMode::PreLogin(const FString& Options, const FString& Address
 
 void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	Super::PostLogin(NewPlayer);
-
 	if (NewPlayer == nullptr || NewPlayer->PlayerState == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[Dungeon] PostLogin: PlayerController or PlayerState is null"));
@@ -100,6 +98,9 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 
 	PendingPlayers.Remove(UniqueId);
+
+	// === !! Warning: DO NOT Move the location !! ===
+	Super::PostLogin(NewPlayer);
 }
 
 void AAODungeonGameMode::InitStartSpot_Implementation(AActor* StartSpot, AController* NewPlayer)
