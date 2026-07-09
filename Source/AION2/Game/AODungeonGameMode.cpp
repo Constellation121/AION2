@@ -315,7 +315,6 @@ void AAODungeonGameMode::ReturnToVillage()
 
 	ClearAllRespawnTimers();
 
-
 	GetWorld()->ServerTravel(VillageMapPath);
 }
 
