@@ -1162,6 +1162,7 @@ void ATalythra::OnHealthChanged(const FOnAttributeChangeData& Data)
 		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP70_PENDING) == false)
 	{
 		ASC->AddLooseGameplayTag(GIMMICK_MONSTER_TH_HP70_PENDING);
+		ASC->AddLooseGameplayTag(GIMMICK_MONSTER);
 	}
 
 
@@ -1170,6 +1171,7 @@ void ATalythra::OnHealthChanged(const FOnAttributeChangeData& Data)
 		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP35_PENDING) == false)
 	{
 		ASC->AddLooseGameplayTag(GIMMICK_MONSTER_TH_HP35_PENDING);
+		ASC->AddLooseGameplayTag(GIMMICK_MONSTER);
 	}
 
 
