@@ -1,5 +1,5 @@
 #include "Character/Daeva/Daeva.h"
-#include "AOQuickSlotComponent.h"
+#include "UI/AOQuickSlotComponent.h"
 #include "Player/AOPlayerState.h"
 #include "GAS/AOGameplayTags.h"
 #include "Character/AOCharacterMovementComponent.h"
@@ -92,7 +92,7 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
 	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	OverheadStatusWidgetComponent->SetBlendMode(EWidgetBlendMode::Transparent);
-	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 14.0f));
+	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 30.0f));
 	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 130.0f));
 	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
 	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -221,6 +221,17 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Key4));
 		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyQ));
 		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
+
+		// SuYeon: Released에 Bind되어있어야 UI도 키 입력 종료를 알 수 있음
+		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Completed, this, &ADaeva::InputLBPressed);
+		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Completed, this, &ADaeva::InputRBPressed);
+		EnhancedInputComponent->BindAction(Key1Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key1));
+		EnhancedInputComponent->BindAction(Key2Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key2));
+		EnhancedInputComponent->BindAction(Key3Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key3));
+		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key4));
+		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::KeyQ));
+		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::KeyE));
+
 
 		EnhancedInputComponent->BindAction(KeyXAction, ETriggerEvent::Triggered, this, &ADaeva::SendItem, 0);
 		EnhancedInputComponent->BindAction(KeyBAction, ETriggerEvent::Triggered, this, &ADaeva::SendItem, 1);

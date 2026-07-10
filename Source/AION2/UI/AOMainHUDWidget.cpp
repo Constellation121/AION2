@@ -18,6 +18,7 @@ void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 	{
 		PlayerHUDWidget->BindToPlayerState(InPlayerState);
 		PlayerHUDWidget->ChangeClassIcon(InPlayerState->GetMyClass());
+		PlayerHUDWidget->SetPlayerName(FText::FromString(InPlayerState->GetMyName()));
 	}
 
 	// TODO(suyeon): 던전 HUD에 각 파티원 Stat 추가

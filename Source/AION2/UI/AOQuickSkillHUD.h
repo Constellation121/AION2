@@ -37,7 +37,7 @@ public:
 	virtual void BindToASC(UAbilitySystemComponent* InASC) override;
 
 protected:
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 
 public:
 	// PlayerController로부터 타고 태려와 InputId에 맞는 slot에 전달할 함수.
@@ -47,12 +47,22 @@ public:
 	void HandleCooldownTagChanged(FGameplayTag CooldownTag, int32 NewCount);
 
 
-	void SetCurrentAbilityForSlot(int32 SlotIndex, int32 AbilityID);
-	void PlayPressedFeedbackByAbilityID(int32 AbilityID);
+
 
 
 private:
 	void InitSkillSlots(const UDA_AbilitySet* InAbilitySet);
+
+	// ASC combo tag에 Event 구독.
+	void BindComboDelegates();
+
+	/*
+	* BindComboDelegates에서 GameplayTag마다 묶어줄 Evnet.
+	* parameter를 넣고는 있으나, 사용할 Delegate가 TwoParams를 전제로 하므로 갖는 것.
+	* 지금은 RefreshComboSlots만 사용하고 있으므로 parameter의 값은 신경 안써도 됨.
+	*/
+	void HandleLBComboTagChanged(FGameplayTag Tag, int32 NewCount);
+	void HandleRBComboTagChanged(FGameplayTag Tag, int32 NewCount);
 
 public:
 	FAOCooldownStartedDelegate OnCooldownStarted;
@@ -83,6 +93,10 @@ protected:
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 	TObjectPtr<UAOSkillQuickSlotWidget> Skill_T;
+
+	// Binding된 위 Widget들을 편하게 관리하기 위해 Array에 넣음
+	UPROPERTY()
+	TArray<TObjectPtr<UAOSkillQuickSlotWidget>> SkillSlotArray;
 
 	// Binding된 위 Widget들을 편하게 관리하기 위해 Map에 넣음
 	UPROPERTY()

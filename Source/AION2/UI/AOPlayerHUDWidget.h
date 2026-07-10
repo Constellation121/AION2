@@ -27,7 +27,7 @@ class AION2_API UAOPlayerHUDWidget : public UAOUserWidgetBase
 public:
     virtual void BindToASC(UAbilitySystemComponent* InASC) override;
     virtual void UnbindFromASC() override;
-
+    
 private:
     void BindASCDelegates();
     void UnbindASCDelegates();
@@ -49,6 +49,9 @@ public:
 public:
     // === Class Widget by PlayerInfo ===
     void ChangeClassIcon(EDaevaClassType InClassType);
+
+    // === Set Player Nickname ===
+    void SetPlayerName(const FText PlayerName);
 
 protected:
     void HandleHealthChanged(const FOnAttributeChangeData& Data);
@@ -88,6 +91,9 @@ private:
 protected:
     UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
     TObjectPtr<UAOClassSwitcherWidget> PlayerClassSwitcher;
+
+    UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
+    TObjectPtr<UTextBlock> TB_PlayerName;
 
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess = "true"))
     TObjectPtr<UProgressBar> Pb_HpBar;
