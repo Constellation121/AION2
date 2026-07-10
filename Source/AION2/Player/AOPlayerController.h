@@ -137,10 +137,6 @@ public :
 	UFUNCTION(Exec)
 	void TestClearDungeon();
 
-	UFUNCTION(Server, Reliable)
-	void ServerTestClearDungeon();
-
-
 public:
 	UFUNCTION(Client, Reliable)
 	void ClientCreateDungeonClearWidget(int32 Gold);
