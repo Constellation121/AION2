@@ -77,13 +77,14 @@ void AAOPlayerState::SetMyHealth(float InHealth)
 {
 }
 
+
 void AAOPlayerState::SetMyItem(FString InItem)
 {
     //MyItem = InItem;
 }
 
 
-void AAOPlayerState::SetPlayerInfo(uint64 InPlayerId, const FString& InPlayerName, uint8 InClassType/*,float InHealth, FString InItem*/)
+void AAOPlayerState::SetPlayerInfo(uint64 InPlayerId, const FString& InPlayerName, uint8 InClassType,float InHP/*, FString InItem*/)
 {
     if (!HasAuthority())
     {
@@ -93,9 +94,8 @@ void AAOPlayerState::SetPlayerInfo(uint64 InPlayerId, const FString& InPlayerNam
     MyId = InPlayerId;
     MyName = InPlayerName;
     MyClassType = (EDaevaClassType)InClassType;
-    /*
-    * MyItem = InItem;
-    */
+    InitialHP = InHP;
 
-    UE_LOG(LogTemp, Warning,TEXT("[Dungeon] PlayerInfo Set | Id: %llu | Name: %s | ClassType: %d"), MyId,*MyName, static_cast<int32>(MyClassType));
+
+    UE_LOG(LogTemp, Warning,TEXT("[Dungeon] PlayerInfo Set | Id: %llu | Name: %s | ClassType: %d | HP: %.1f"), MyId,*MyName, static_cast<int32>(MyClassType), InitialHP);
 }

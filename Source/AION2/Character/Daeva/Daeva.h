@@ -536,4 +536,9 @@ private:
 protected:
 	// UI 입력이 여러 번 들어가는 것을 방지
 	int32 LastPressedFeedbackAbilityID = INDEX_NONE;
+
+protected:
+	FTimerHandle OverheadWidgetRefreshTimer;
+
+	void RefreshOverheadWidgetIfVisible();
 };

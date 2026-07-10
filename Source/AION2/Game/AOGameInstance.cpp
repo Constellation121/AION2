@@ -6,6 +6,7 @@
 #include "Common/TcpSocketBuilder.h"
 #include "SocketSubsystem.h"
 #include "Manager/AONetworkManager.h"
+#include "Manager/AOUIManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "IPAddress.h"
@@ -16,6 +17,12 @@
 void UAOGameInstance::Init()
 {
 	Super::Init();
+	
+	if (!UIManager)
+	{
+		UIManager = NewObject<UAOUIManager>(this);
+	}
+
 
 #if UE_SERVER
 	TryAsyncConnect("172.16.30.107", 9999);

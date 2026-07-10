@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -41,6 +41,8 @@ public:
 	void HandleDungeonEnd();
 
 	void HandleDisconnect(uint64 RemovePlayerId);
+
+	FORCEINLINE const TMap<int32, Protocol::ItemData>& GetMyItems() const { return MyItems; }
 
 #pragma region Dungeon State
 public:

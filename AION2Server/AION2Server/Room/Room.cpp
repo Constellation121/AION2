@@ -26,8 +26,6 @@ void Room::EnterRoom(PlayerRef player)
 {
 	// 새로 들어온 플레이어의 위치를 기존 플레이어들에게 전송
 	{
-		std::cout << "New Player: " << player->GetId() << "\n";
-
 		Protocol::S_SpawnPacket spawnPkt;
 		Protocol::PlayerState* playerState = spawnPkt.add_playerstates();
 
@@ -56,8 +54,6 @@ void Room::EnterRoom(PlayerRef player)
 		Protocol::S_SpawnPacket spawnPkt;
 		for (auto& userInfo : _players)
 		{
-			std::cout << "Ex Player: " << userInfo.first << "To New Player" << player->GetId() << "\n";
-
 			PlayerRef user = userInfo.second;
 			Protocol::PlayerState* playerState = spawnPkt.add_playerstates();
 			playerState->set_playerid(user->_playerId);
