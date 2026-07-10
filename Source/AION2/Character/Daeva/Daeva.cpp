@@ -1,6 +1,7 @@
 #include "Character/Daeva/Daeva.h"
 #include "UI/AOQuickSlotComponent.h"
 #include "Player/AOPlayerState.h"
+#include "Manager/AOPlayerManager.h"
 #include "GAS/AOGameplayTags.h"
 #include "Character/AOCharacterMovementComponent.h"
 #include "Data/DA_AbilitySet.h"
@@ -161,6 +162,8 @@ void ADaeva::PossessedBy(AController* NewController)
 
 	InitGAS();
 
+	RestorePlayerInfoFromPlayerState();
+
 	// 선환 추가 
 	SetGenericTeamId(FGenericTeamId(TEAM_PERCEPTION_DAEVA)); // 플레이어 팀
 
@@ -180,6 +183,8 @@ void ADaeva::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitGAS();
+
+	RestorePlayerInfoFromPlayerState();
 	
 	// LocalController일 때만 UI 만들도록 설정
 	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
@@ -1294,7 +1299,35 @@ void ADaeva::RestorePlayerInfoFromPlayerState()
 		return;
 	}
 
-	
+	// 1. HP Apply
+	if (HasAuthority())
+	{
+		float InitialHP = AOPlayerState->GetInitialHP();
+		if (InitialHP > 0.0f && ASC)
+		{
+			ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), InitialHP);
+			UE_LOG(LogTemp, Log, TEXT("[Dungeon] Restored HP for %s on Server: %.1f"), *GetName(), InitialHP);
+		}
+	}
+
+	// 2. Items Apply 
+	if (!HasAuthority() && IsLocallyControlled())
+	{
+		UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr;
+		UAOQuickSlotComponent* QuickSlotComp = GetQuickSlotComponent();
+		if (PlayerManager && QuickSlotComp)
+		{
+			const TMap<int32, Protocol::ItemData>& Items = PlayerManager->GetMyItems();
+			for (const auto& Pair : Items)
+			{
+				const Protocol::ItemData& Item = Pair.Value;
+				QuickSlotComp->InitializeQuickSlot(Item.slotindex(), Item.itemtemplateid(), Item.iteminstancedid(), Item.count());
+				UE_LOG(LogTemp, Log, TEXT("[Dungeon] Restored Item to QuickSlot[%d] from Local Subsystem: TemplateId=%d, Count=%d"), 
+					Item.slotindex(), Item.itemtemplateid(), Item.count());
+			}
+		}
+	}
+
 }
 
 void ADaeva::FellOutOfWorld(const UDamageType& DmgType)

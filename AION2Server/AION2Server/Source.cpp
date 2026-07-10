@@ -43,8 +43,7 @@ int main()
 		NetAddress(L"172.16.30.107", 7777),
 		iocpCore,
 		[]() { return  std::make_shared<GameSession>(); },
-		100
-	);
+		10000);
 
 	DediServiceRef dediService = make_shared<DediService>(
 		NetAddress(L"172.16.30.107", 9999),
