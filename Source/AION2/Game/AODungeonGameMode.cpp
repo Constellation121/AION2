@@ -18,6 +18,7 @@
 #include "Game/AOGameInstance.h"
 #include "Manager/AONetworkManager.h"
 
+
 AAODungeonGameMode::AAODungeonGameMode()
 {
 	bUseSeamlessTravel = true;
@@ -274,8 +275,8 @@ void AAODungeonGameMode::ClearDungeon()
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Dungeon Clear"));
 	
 	GiveDungeonReward();
-
-	SendDungeonCompleteRequest();
+	CreateDungeonClearWidget();
+	//SendDungeonCompleteRequest();
 }
 
 void AAODungeonGameMode::FailDungeon()
@@ -825,6 +826,11 @@ void AAODungeonGameMode::SendDungeonCompleteRequest()
 	RequestPkt.set_dungeonid(MyDungeonId);
 
 	SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
+}
+
+void AAODungeonGameMode::CreateDungeonClearWidget()
+{
+
 }
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)

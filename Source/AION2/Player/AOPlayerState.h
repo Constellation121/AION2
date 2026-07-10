@@ -48,6 +48,7 @@ public:
 	// GetClass function.
 	FORCEINLINE EDaevaClassType GetMyClass() const{ return MyClassType; }
 	FORCEINLINE float GetInitialHP() const { return InitialHP; }
+	FORCEINLINE void SetInitialHP(float InHP) { InitialHP = InHP; }
 
 private:
 	UPROPERTY(EditAnywhere, Category = "GAS", meta = (AllowPrivateAccess = "true"))

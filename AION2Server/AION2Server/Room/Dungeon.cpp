@@ -361,6 +361,7 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 					}
 				}
 			}
+			GDBConnectionPool->Push(dbConnect);
 
 		}
 	}
@@ -378,6 +379,7 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 			dediInfo->set_clientclass(leader->GetClass());
 
 			DBConnection* dbConnect = GDBConnectionPool->Pop();
+			if (dbConnect == nullptr) return;
 			DBBind<1, 4> dbBind(*dbConnect, L"{CALL sp_GetItems(?)}");
 			dbBind.BindParam(0, leaderId);
 
@@ -408,7 +410,7 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 					}
 				}
 			}
-
+			GDBConnectionPool->Push(dbConnect);
 		}
 	}
 	SendBufferRef buffer = PacketHandler::MakeSendBuffer(pkt);
@@ -422,7 +424,6 @@ void DungeonWaitingRoom::HandleDungeonStart(PlayerRef player, int32 dungeonId)
 	if (it == _dungeons.end()) return;
 
 	DungeonRef dungeon = it->second;
-	if (dungeon->GetLeader() != player) return;
 
 	if (!CheckMembersReady(dungeon))
 	{

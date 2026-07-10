@@ -1286,7 +1286,7 @@ void ADaeva::RestorePlayerInfoFromPlayerState()
 		return;
 	}
 
-	// 1. HP Apply (Server Only)
+	// 1. HP Apply
 	if (HasAuthority())
 	{
 		float InitialHP = AOPlayerState->GetInitialHP();
@@ -1297,7 +1297,7 @@ void ADaeva::RestorePlayerInfoFromPlayerState()
 		}
 	}
 
-	// 2. Items Apply (Client Only - Local Player initializes quickslots from persistent Subsystem)
+	// 2. Items Apply 
 	if (!HasAuthority() && IsLocallyControlled())
 	{
 		UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr;
