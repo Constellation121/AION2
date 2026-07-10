@@ -15,7 +15,6 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 
-#include "Player/AOPlayerState.h"
 
 
 // TODO(SuYeon): Delegate마다, 만약 다른 ASC와 연동되어있다면 로그를 출력하거나 하는 방어적 코드 추가 +Monster의 것에도 추가할 것.
