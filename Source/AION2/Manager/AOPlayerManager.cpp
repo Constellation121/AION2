@@ -56,14 +56,14 @@ void UAOPlayerManager::HandleLogin(Protocol::S_LoginSuccessPacket& LoginPacket)
 {
 	uint64 PlayerId = LoginPacket.playerinfo().playerid();
 	uint8 PlayerClass = static_cast<uint8>(LoginPacket.playerinfo().playerclass());
-
+	float PlayerHp = static_cast<float>(LoginPacket.hp());
 	GameInstance->SetMyPlayerId(PlayerId);
 	GameInstance->SetMyPlayerClass(LoginPacket.playerinfo().playerclass());
 
 	MyGold = LoginPacket.gold();
 	FString PlayerName = UTF8_TO_TCHAR(LoginPacket.playerinfo().playernickname().c_str());
 
-	FPlayerInfo NewInfo(PlayerId, PlayerName, PlayerClass);
+	FPlayerInfo NewInfo(PlayerId, PlayerName, PlayerClass, PlayerHp);
 	PlayerInfos.Add(PlayerId, NewInfo);
 }
 
@@ -97,10 +97,14 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerNa
 				if (!PlayerController) return;
 				PlayerController->Possess(MyPlayer);
 
+				auto PlayerInfo = PlayerInfos.Find(PlayerId);
+				int Hp = 100;
+				if (PlayerInfo)
+					Hp = PlayerInfo->PlayerHp;
 				// === SuYeon: PlayerState에 info를 명시적으로 삽입 ===
 				if (AAOPlayerState* AOPlayerState = PlayerController->GetPlayerState<AAOPlayerState>())
 				{
-					AOPlayerState->SetPlayerInfo(PlayerId, PlayerName, ClassType);
+					AOPlayerState->SetPlayerInfo(PlayerId, PlayerName, ClassType, Hp);
 				}
 
 				if (UAOMainHUDWidget* MainHUD = PlayerController->GetMainHUD())
@@ -174,7 +178,7 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerNa
 			}
 		}
 
-		FPlayerInfo PlayerInfo(PlayerId, PlayerName, ClassType);
+		FPlayerInfo PlayerInfo(PlayerId, PlayerName, ClassType, 100);
 		PlayerInfos.Add(PlayerId, PlayerInfo);
 	}
 

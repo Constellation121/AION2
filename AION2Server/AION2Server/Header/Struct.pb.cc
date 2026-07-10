@@ -94,6 +94,7 @@ PROTOBUF_CONSTEXPR PlayerState::PlayerState(
   , /*decltype(_impl_.playerrotation_)*/nullptr
   , /*decltype(_impl_.playerid_)*/uint64_t{0u}
   , /*decltype(_impl_.playerclass_)*/0
+  , /*decltype(_impl_.playerhp_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct PlayerStateDefaultTypeInternal {
   PROTOBUF_CONSTEXPR PlayerStateDefaultTypeInternal()
@@ -243,6 +244,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerState, _impl_.playerclass_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerState, _impl_.playerlocation_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerState, _impl_.playerrotation_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerState, _impl_.playerhp_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::DungeonPlayerInfo, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -305,11 +307,11 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 19, -1, -1, sizeof(::Protocol::Rotator3)},
   { 28, -1, -1, sizeof(::Protocol::PlayerInfo)},
   { 37, -1, -1, sizeof(::Protocol::PlayerState)},
-  { 48, -1, -1, sizeof(::Protocol::DungeonPlayerInfo)},
-  { 59, -1, -1, sizeof(::Protocol::DungeonInfo)},
-  { 69, -1, -1, sizeof(::Protocol::DediDungeonInfo)},
-  { 81, -1, -1, sizeof(::Protocol::DPlayerInfo)},
-  { 92, -1, -1, sizeof(::Protocol::MailListInfo)},
+  { 49, -1, -1, sizeof(::Protocol::DungeonPlayerInfo)},
+  { 60, -1, -1, sizeof(::Protocol::DungeonInfo)},
+  { 70, -1, -1, sizeof(::Protocol::DediDungeonInfo)},
+  { 82, -1, -1, sizeof(::Protocol::DPlayerInfo)},
+  { 93, -1, -1, sizeof(::Protocol::MailListInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -334,37 +336,37 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "(\002\022\014\n\004roll\030\002 \001(\002\022\013\n\003yaw\030\003 \001(\002\"`\n\nPlayerI"
   "nfo\022\020\n\010playerId\030\001 \001(\004\022(\n\013playerClass\030\002 \001"
   "(\0162\023.Protocol.ClassType\022\026\n\016playerNicknam"
-  "e\030\003 \001(\t\"\264\001\n\013PlayerState\022\020\n\010playerId\030\001 \001("
+  "e\030\003 \001(\t\"\306\001\n\013PlayerState\022\020\n\010playerId\030\001 \001("
   "\004\022\022\n\nplayerName\030\002 \001(\t\022(\n\013playerClass\030\003 \001"
   "(\0162\023.Protocol.ClassType\022)\n\016playerLocatio"
   "n\030\004 \001(\0132\021.Protocol.Vector3\022*\n\016playerRota"
-  "tion\030\005 \001(\0132\022.Protocol.Rotator3\"\203\001\n\021Dunge"
-  "onPlayerInfo\022\020\n\010memberId\030\001 \001(\004\022\022\n\nmember"
-  "Name\030\002 \001(\t\022(\n\013memberClass\030\003 \001(\0162\023.Protoc"
-  "ol.ClassType\022\017\n\007isReady\030\004 \001(\010\022\r\n\005index\030\005"
-  " \001(\005\"\245\001\n\013DungeonInfo\022\021\n\tdungeonId\030\001 \001(\005\022"
-  "$\n\006status\030\002 \001(\0162\024.Protocol.RoomStatus\022/\n"
-  "\nleaderInfo\030\003 \001(\0132\033.Protocol.DungeonPlay"
-  "erInfo\022,\n\007members\030\004 \003(\0132\033.Protocol.Dunge"
-  "onPlayerInfo\"\261\001\n\017DediDungeonInfo\022\023\n\013clie"
-  "ntToken\030\001 \001(\t\022\020\n\010clientId\030\002 \001(\004\022\022\n\nclien"
-  "tName\030\003 \001(\t\022(\n\013clientClass\030\004 \001(\0162\023.Proto"
-  "col.ClassType\022\020\n\010clientHp\030\005 \001(\005\022\'\n\013playe"
-  "rItems\030\006 \003(\0132\022.Protocol.ItemData\"\230\001\n\013DPl"
-  "ayerInfo\022\020\n\010playerId\030\001 \001(\004\022\022\n\nplayerName"
-  "\030\002 \001(\t\022(\n\013playerClass\030\003 \001(\0162\023.Protocol.C"
-  "lassType\022\020\n\010playerHp\030\004 \001(\005\022\'\n\013playerItem"
-  "s\030\006 \003(\0132\022.Protocol.ItemData\"g\n\014MailListI"
-  "nfo\022\016\n\006mailId\030\001 \001(\004\022\r\n\005title\030\002 \001(\t\022\022\n\nse"
-  "nderName\030\003 \001(\t\022\023\n\013expiredDate\030\004 \001(\t\022\017\n\007h"
-  "asItem\030\005 \001(\010b\006proto3"
+  "tion\030\005 \001(\0132\022.Protocol.Rotator3\022\020\n\010player"
+  "Hp\030\006 \001(\002\"\203\001\n\021DungeonPlayerInfo\022\020\n\010member"
+  "Id\030\001 \001(\004\022\022\n\nmemberName\030\002 \001(\t\022(\n\013memberCl"
+  "ass\030\003 \001(\0162\023.Protocol.ClassType\022\017\n\007isRead"
+  "y\030\004 \001(\010\022\r\n\005index\030\005 \001(\005\"\245\001\n\013DungeonInfo\022\021"
+  "\n\tdungeonId\030\001 \001(\005\022$\n\006status\030\002 \001(\0162\024.Prot"
+  "ocol.RoomStatus\022/\n\nleaderInfo\030\003 \001(\0132\033.Pr"
+  "otocol.DungeonPlayerInfo\022,\n\007members\030\004 \003("
+  "\0132\033.Protocol.DungeonPlayerInfo\"\261\001\n\017DediD"
+  "ungeonInfo\022\023\n\013clientToken\030\001 \001(\t\022\020\n\010clien"
+  "tId\030\002 \001(\004\022\022\n\nclientName\030\003 \001(\t\022(\n\013clientC"
+  "lass\030\004 \001(\0162\023.Protocol.ClassType\022\020\n\010clien"
+  "tHp\030\005 \001(\005\022\'\n\013playerItems\030\006 \003(\0132\022.Protoco"
+  "l.ItemData\"\230\001\n\013DPlayerInfo\022\020\n\010playerId\030\001"
+  " \001(\004\022\022\n\nplayerName\030\002 \001(\t\022(\n\013playerClass\030"
+  "\003 \001(\0162\023.Protocol.ClassType\022\020\n\010playerHp\030\004"
+  " \001(\005\022\'\n\013playerItems\030\006 \003(\0132\022.Protocol.Ite"
+  "mData\"g\n\014MailListInfo\022\016\n\006mailId\030\001 \001(\004\022\r\n"
+  "\005title\030\002 \001(\t\022\022\n\nsenderName\030\003 \001(\t\022\023\n\013expi"
+  "redDate\030\004 \001(\t\022\017\n\007hasItem\030\005 \001(\010b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 1260, descriptor_table_protodef_Struct_2eproto,
+    false, false, 1278, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 10,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -1477,6 +1479,7 @@ PlayerState::PlayerState(const PlayerState& from)
     , decltype(_impl_.playerrotation_){nullptr}
     , decltype(_impl_.playerid_){}
     , decltype(_impl_.playerclass_){}
+    , decltype(_impl_.playerhp_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1495,8 +1498,8 @@ PlayerState::PlayerState(const PlayerState& from)
     _this->_impl_.playerrotation_ = new ::Protocol::Rotator3(*from._impl_.playerrotation_);
   }
   ::memcpy(&_impl_.playerid_, &from._impl_.playerid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.playerclass_) -
-    reinterpret_cast<char*>(&_impl_.playerid_)) + sizeof(_impl_.playerclass_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.playerhp_) -
+    reinterpret_cast<char*>(&_impl_.playerid_)) + sizeof(_impl_.playerhp_));
   // @@protoc_insertion_point(copy_constructor:Protocol.PlayerState)
 }
 
@@ -1510,6 +1513,7 @@ inline void PlayerState::SharedCtor(
     , decltype(_impl_.playerrotation_){nullptr}
     , decltype(_impl_.playerid_){uint64_t{0u}}
     , decltype(_impl_.playerclass_){0}
+    , decltype(_impl_.playerhp_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.playername_.InitDefault();
@@ -1554,8 +1558,8 @@ void PlayerState::Clear() {
   }
   _impl_.playerrotation_ = nullptr;
   ::memset(&_impl_.playerid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.playerclass_) -
-      reinterpret_cast<char*>(&_impl_.playerid_)) + sizeof(_impl_.playerclass_));
+      reinterpret_cast<char*>(&_impl_.playerhp_) -
+      reinterpret_cast<char*>(&_impl_.playerid_)) + sizeof(_impl_.playerhp_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1605,6 +1609,14 @@ const char* PlayerState::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
           ptr = ctx->ParseMessage(_internal_mutable_playerrotation(), ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float playerHp = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
+          _impl_.playerhp_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
@@ -1674,6 +1686,16 @@ uint8_t* PlayerState::_InternalSerialize(
         _Internal::playerrotation(this).GetCachedSize(), target, stream);
   }
 
+  // float playerHp = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_playerhp = this->_internal_playerhp();
+  uint32_t raw_playerhp;
+  memcpy(&raw_playerhp, &tmp_playerhp, sizeof(tmp_playerhp));
+  if (raw_playerhp != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(6, this->_internal_playerhp(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1722,6 +1744,15 @@ size_t PlayerState::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_playerclass());
   }
 
+  // float playerHp = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_playerhp = this->_internal_playerhp();
+  uint32_t raw_playerhp;
+  memcpy(&raw_playerhp, &tmp_playerhp, sizeof(tmp_playerhp));
+  if (raw_playerhp != 0) {
+    total_size += 1 + 4;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1757,6 +1788,13 @@ void PlayerState::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PR
   if (from._internal_playerclass() != 0) {
     _this->_internal_set_playerclass(from._internal_playerclass());
   }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_playerhp = from._internal_playerhp();
+  uint32_t raw_playerhp;
+  memcpy(&raw_playerhp, &tmp_playerhp, sizeof(tmp_playerhp));
+  if (raw_playerhp != 0) {
+    _this->_internal_set_playerhp(from._internal_playerhp());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1781,8 +1819,8 @@ void PlayerState::InternalSwap(PlayerState* other) {
       &other->_impl_.playername_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(PlayerState, _impl_.playerclass_)
-      + sizeof(PlayerState::_impl_.playerclass_)
+      PROTOBUF_FIELD_OFFSET(PlayerState, _impl_.playerhp_)
+      + sizeof(PlayerState::_impl_.playerhp_)
       - PROTOBUF_FIELD_OFFSET(PlayerState, _impl_.playerlocation_)>(
           reinterpret_cast<char*>(&_impl_.playerlocation_),
           reinterpret_cast<char*>(&other->_impl_.playerlocation_));

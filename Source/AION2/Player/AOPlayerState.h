@@ -50,6 +50,8 @@ public:
 	// GetClass function.
 	FORCEINLINE uint64 GetMyId() const { return MyId; }
 	FORCEINLINE EDaevaClassType GetMyClass() const { return MyClassType; }
+	FORCEINLINE float GetInitialHP() const { return InitialHP; }
+	FORCEINLINE void SetInitialHP(float InHP) { InitialHP = InHP; }
 	FORCEINLINE FString GetMyName() const { return MyName; }
 
 private:

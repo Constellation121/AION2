@@ -107,7 +107,8 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 			AOPlayerState->SetPlayerInfo(
 				FakePlayerId,
 				TEXT("PIE_Dungeon_Player"),
-				static_cast<uint8>(EDaevaClassType::Ranger)
+				static_cast<uint8>(EDaevaClassType::Ranger),
+				100
 			);
 
 			UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PIE PostLogin Set Dummy PlayerInfo"));
