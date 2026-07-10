@@ -254,7 +254,6 @@ void ASiliatorShuriken::UpdateAOEPlane()
 
 	if (Distance <= KINDA_SMALL_NUMBER)
 	{
-		UE_LOG(LogTemp, Log, TEXT("NO"));
 		AOEPlaneComp->SetVisibility(false);
 		return;
 	}
@@ -275,7 +274,6 @@ void ASiliatorShuriken::UpdateAOEPlane()
 	AOEPlaneComp->SetWorldLocation(CenterLocation);
 	AOEPlaneComp->SetWorldRotation(PlaneRotation);
 	AOEPlaneComp->SetWorldScale3D(PlaneScale);
-	UE_LOG(LogTemp, Log, TEXT("YES"));
 }
 
 void ASiliatorShuriken::OnRep_TargetCharacter()
