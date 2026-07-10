@@ -56,6 +56,16 @@ void AAODungeonGameMode::Tick(float DeltaTime)
 
 void AAODungeonGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
+#if WITH_EDITOR
+	if (GetWorld() && GetWorld()->WorldType == EWorldType::PIE)
+	{
+		Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
+
+		UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PIE PreLogin Bypass"));
+		return;
+	}
+#endif
+
 	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
 
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PreLogin - Options: %s, Address: %s"), *Options, *Address);
@@ -85,6 +95,29 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 		if (NewPlayer) NewPlayer->Destroy();
 		return;
 	}
+#if WITH_EDITOR
+	if (GetWorld() && GetWorld()->WorldType == EWorldType::PIE)
+	{
+		AAOPlayerState* AOPlayerState = NewPlayer->GetPlayerState<AAOPlayerState>();
+		if (AOPlayerState)
+		{
+			const int32 FakePlayerId = NewPlayer->PlayerState->GetPlayerId();
+
+			// 원하는 직업으로 테스트
+			AOPlayerState->SetPlayerInfo(
+				FakePlayerId,
+				TEXT("PIE_Dungeon_Player"),
+				static_cast<uint8>(EDaevaClassType::Ranger)
+			);
+
+			UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PIE PostLogin Set Dummy PlayerInfo"));
+		}
+
+		Super::PostLogin(NewPlayer);
+
+		return;
+	}
+#endif
 
 	const FUniqueNetIdRepl& NetId = NewPlayer->PlayerState->GetUniqueId();
 
@@ -270,8 +303,6 @@ void AAODungeonGameMode::ClearDungeon()
 {
 	CurrentPhase = EDungeonPhase::Cleared;
 
-	ClearAllRespawnTimers();
-
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Dungeon Clear"));
 	
 	GiveDungeonReward();
@@ -297,6 +328,8 @@ void AAODungeonGameMode::ReturnToVillage()
 		UE_LOG(LogTemp, Error, TEXT("[Dungeon] VillageMapPath is Empty"));
 		return;
 	}
+
+	ClearAllRespawnTimers();
 
 	GetWorld()->ServerTravel(VillageMapPath);
 }
@@ -439,11 +472,6 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 		return;
 	}
 
-	if (CurrentPhase == EDungeonPhase::Failed || CurrentPhase == EDungeonPhase::Cleared)
-	{
-		return;
-	}
-
 	if (FTimerHandle* TimerHandle = RespawnTimerHandles.Find(PlayerController))
 	{
 		GetWorldTimerManager().ClearTimer(*TimerHandle);
@@ -473,6 +501,7 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 	// 낙사
 	if (const int32* RespawnBossIndex = PendingRespawnBossIndices.Find(PlayerController))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[RestartPlayerAtPlayerStart]"));
 		TArray<APlayerStart*> Checkpoints = FindBossRespawnPoint(*RespawnBossIndex);
 
 		if (Checkpoints.IsEmpty())
@@ -487,6 +516,7 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 	// 일반 사명
 	else if (const FTransform* RespawnTransform = PendingRespawnTransforms.Find(PlayerController))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[RestartPlayerAtTransform]"));
 		RestartPlayerAtTransform(PlayerController, *RespawnTransform);
 	}
 	else
@@ -496,7 +526,7 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 
 	if (ADaeva* RespawnedPlayer = Cast<ADaeva>(PlayerController->GetPawn()))
 	{
-
+		UE_LOG(LogTemp, Log, TEXT("%s"), *RespawnedPlayer->GetClass()->GetName());
 		RespawnedPlayer->RestorePlayerInfoFromPlayerState();
 		RespawnedPlayer->ResetForDungeonRespawn();
 	}
@@ -632,24 +662,24 @@ void AAODungeonGameMode::ClearAllRespawnTimers()
 
 	RespawnTimerHandles.Empty();
 	PendingRespawnTransforms.Empty();
+	PendingRespawnBossIndices.Empty();
 }
 
 void AAODungeonGameMode::StartWipeRespawn()
 {
-	ClearAllRespawnTimers();
+	for (auto& Pair : RespawnTimerHandles)
+	{
+		GetWorldTimerManager().ClearTimer(Pair.Value);
+	}
+
+	RespawnTimerHandles.Empty();
+
 	GetWorldTimerManager().ClearTimer(WipeRespawnTimerHandle);
-	GetWorldTimerManager().SetTimer(WipeRespawnTimerHandle, this, &AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint, RespawnDelay, false);
+	GetWorldTimerManager().SetTimer(WipeRespawnTimerHandle,	this,&AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint,RespawnDelay,false);
 }
 
 void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 {
-	TArray<APlayerStart*> Checkpoints = FindBossRespawnPoint(CurrentBossNumber);
-
-	if (Checkpoints.IsEmpty())
-	{
-		return;
-	}
-
 	TArray<TObjectPtr<APlayerController>> PlayersToRespawn;
 
 	for (APlayerController* PlayerController : DeadPlayerControllers)
@@ -664,10 +694,35 @@ void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 	{
 		APlayerController* PlayerController = PlayersToRespawn[PlayerIndex];
 
+		if (!PlayerController)
+		{
+			continue;
+		}
+
+		int32 TargetBossIndex = CurrentBossNumber;
+
+		if (const int32* SavedBossIndex = PendingRespawnBossIndices.Find(PlayerController))
+		{
+			TargetBossIndex = *SavedBossIndex;
+		}
+
+		TArray<APlayerStart*> Checkpoints = FindBossRespawnPoint(TargetBossIndex);
+
+		if (Checkpoints.IsEmpty())
+		{
+			continue;
+		}
+
 		const int32 RespawnIndex = PlayerIndex % Checkpoints.Num();
 		APlayerStart* RespawnPoint = Checkpoints[RespawnIndex];
 
 		APawn* OldPawn = PlayerController->GetPawn();
+
+		if (OldPawn)
+		{
+			PlayerController->UnPossess();
+			OldPawn->Destroy();
+		}
 
 		RestartPlayerAtPlayerStart(PlayerController, RespawnPoint);
 
@@ -680,6 +735,7 @@ void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 
 	DeadPlayerControllers.Empty();
 	PendingRespawnTransforms.Empty();
+	PendingRespawnBossIndices.Empty();
 	RespawnTimerHandles.Empty();
 }
 
@@ -723,9 +779,46 @@ TArray<APlayerStart*> AAODungeonGameMode::FindBossRespawnPoint(int32 CurrentBoss
 	return RespawnPoints;
 }
 
-APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
+//APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
+//{
+//	if (!NewPlayer || !StartSpot)
+//	{
+//		return nullptr;
+//	}
+//
+//	AAOPlayerState* PlayerState = NewPlayer->GetPlayerState<AAOPlayerState>();
+//
+//	if (!PlayerState)
+//	{
+//		UE_LOG(LogTemp, Error, TEXT("PlayerState is null."));
+//		return Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
+//	}
+//
+//	const EDaevaClassType ClassType = PlayerState->GetMyClass();
+//
+//	UE_LOG(LogTemp, Warning, TEXT("[Spawn] %s | Authority: %d | ClassType: %d"), *NewPlayer->GetName(), HasAuthority(), static_cast<uint8>(ClassType));
+//
+//	const TSubclassOf<APawn>* PawnClass = JobClassMap.Find(ClassType);
+//
+//	if (!PawnClass || !(*PawnClass))
+//	{
+//		UE_LOG(LogTemp, Error, TEXT("Pawn Class Not Found. ClassType : %d"), static_cast<uint8>(PlayerState->GetMyClass()));
+//		return Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
+//	}
+//
+//	FActorSpawnParameters SpawnParams;
+//	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+//
+//	APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(*PawnClass, StartSpot->GetActorTransform(), SpawnParams);
+//
+//	UE_LOG(LogTemp, Warning, TEXT("%s Spawned as %s"), *NewPlayer->GetName(), SpawnedPawn ? *SpawnedPawn->GetName() : TEXT("NULL"));
+//	SpawnedPlayers.Add(SpawnedPawn);
+//	return SpawnedPawn;
+//}
+
+APawn* AAODungeonGameMode::SpawnPawnByPlayerClass(AController* NewPlayer, const FTransform& SpawnTransform)
 {
-	if (!NewPlayer || !StartSpot)
+	if (!NewPlayer)
 	{
 		return nullptr;
 	}
@@ -734,28 +827,64 @@ APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPl
 
 	if (!PlayerState)
 	{
-		UE_LOG(LogTemp, Error, TEXT("PlayerState is null."));
-		return Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
+		return nullptr;
 	}
 
 	const EDaevaClassType ClassType = PlayerState->GetMyClass();
 
-	UE_LOG(LogTemp, Warning, TEXT("[Spawn] %s | Authority: %d | ClassType: %d"), *NewPlayer->GetName(), HasAuthority(), static_cast<uint8>(ClassType));
+	UE_LOG(	LogTemp,Warning,TEXT("[Spawn] Controller: %s | ClassType: %d"),*NewPlayer->GetName(),static_cast<uint8>(ClassType));
 
 	const TSubclassOf<APawn>* PawnClass = JobClassMap.Find(ClassType);
 
 	if (!PawnClass || !(*PawnClass))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Pawn Class Not Found. ClassType : %d"), static_cast<uint8>(PlayerState->GetMyClass()));
-		return Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
+		UE_LOG(	LogTemp,Error,TEXT("[Spawn] Pawn Class Not Found. ClassType: %d"),static_cast<uint8>(ClassType));
+
+		return nullptr;
 	}
 
 	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	SpawnParams.Owner = NewPlayer;
+	SpawnParams.Instigator = NewPlayer->GetPawn();
+	SpawnParams.SpawnCollisionHandlingOverride =ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(*PawnClass, StartSpot->GetActorTransform(), SpawnParams);
+	APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(	*PawnClass,	SpawnTransform,	SpawnParams);
 
-	UE_LOG(LogTemp, Warning, TEXT("%s Spawned as %s"), *NewPlayer->GetName(), SpawnedPawn ? *SpawnedPawn->GetName() : TEXT("NULL"));
+	return SpawnedPawn;
+}
+
+APawn* AAODungeonGameMode::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot)
+{
+	if (!NewPlayer || !StartSpot)
+	{
+		return nullptr;
+	}
+
+	APawn* SpawnedPawn = SpawnPawnByPlayerClass(NewPlayer, StartSpot->GetActorTransform());
+
+	if (!SpawnedPawn)
+	{
+		return Super::SpawnDefaultPawnFor_Implementation(NewPlayer, StartSpot);
+	}
+
+	SpawnedPlayers.Add(SpawnedPawn);
+	return SpawnedPawn;
+}
+
+APawn* AAODungeonGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer,const FTransform& SpawnTransform)
+{
+	if (!NewPlayer)
+	{
+		return nullptr;
+	}
+
+	APawn* SpawnedPawn = SpawnPawnByPlayerClass(NewPlayer, SpawnTransform);
+
+	if (!SpawnedPawn)
+	{
+		return Super::SpawnDefaultPawnAtTransform_Implementation(NewPlayer, SpawnTransform);
+	}
+
 	SpawnedPlayers.Add(SpawnedPawn);
 	return SpawnedPawn;
 }
@@ -805,11 +934,9 @@ void AAODungeonGameMode::ForceClearDungeon()
 
 	if (CurrentPhase == EDungeonPhase::Cleared)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Already Cleared"));
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[Dungeon Test] Force Clear Dungeon"));
 	ClearDungeon();
 }
 

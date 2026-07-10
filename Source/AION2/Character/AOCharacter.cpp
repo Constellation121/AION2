@@ -298,7 +298,11 @@ void AAOCharacter::TakeDamageAO(const FAttackData& AttackData, const FHitResult&
 	{
 		FGameplayEffectSpecHandle GroggySpecHandle = SourceASC->MakeOutgoingSpec(GroggyDamageEffect, 1.0f, Context);
 
-		if (GroggySpecHandle.IsValid())
+		FGameplayTagContainer OwnedTags;	
+		MonsterTarget->GetAbilitySystemComponent()->GetOwnedGameplayTags(OwnedTags);	
+
+		// 보스가 기믹상태일시에는 데미지 x 
+		if (GroggySpecHandle.IsValid() && OwnedTags.HasTagExact(GIMMICK_MONSTER) == false)
 		{
 			const FGameplayTag GroggyDamageTag = FGameplayTag::RequestGameplayTag(TEXT("Data.GroggyDamage"));
 			float GroggyDamageAmount = BaseGroggyDamage;

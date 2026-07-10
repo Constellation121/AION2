@@ -1,5 +1,5 @@
 #include "Character/Daeva/Daeva.h"
-#include "AOQuickSlotComponent.h"
+#include "UI/AOQuickSlotComponent.h"
 #include "Player/AOPlayerState.h"
 #include "Manager/AOPlayerManager.h"
 #include "GAS/AOGameplayTags.h"
@@ -93,7 +93,7 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
 	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	OverheadStatusWidgetComponent->SetBlendMode(EWidgetBlendMode::Transparent);
-	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 14.0f));
+	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 30.0f));
 	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 130.0f));
 	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
 	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -222,6 +222,17 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Key4));
 		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyQ));
 		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
+
+		// SuYeon: Released에 Bind되어있어야 UI도 키 입력 종료를 알 수 있음
+		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Completed, this, &ADaeva::InputLBPressed);
+		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Completed, this, &ADaeva::InputRBPressed);
+		EnhancedInputComponent->BindAction(Key1Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key1));
+		EnhancedInputComponent->BindAction(Key2Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key2));
+		EnhancedInputComponent->BindAction(Key3Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key3));
+		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key4));
+		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::KeyQ));
+		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::KeyE));
+
 
 		EnhancedInputComponent->BindAction(KeyXAction, ETriggerEvent::Triggered, this, &ADaeva::SendItem, 0);
 		EnhancedInputComponent->BindAction(KeyBAction, ETriggerEvent::Triggered, this, &ADaeva::SendItem, 1);
@@ -458,27 +469,32 @@ void ADaeva::SetCameraByLookAt(const FRotator& LookAtRot)
 
 void ADaeva::ResetForDungeonRespawn()
 {
+	//
+	bIsDead = false;
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	GetCharacterMovement()->StopMovementImmediately();
+	//
+
 	if (!ASC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("ASC is null"));
 		return;
 	}
-
 	const UAOAttributeSet* AttributeSet = ASC->GetSet<UAOAttributeSet>();
 
 	if (!AttributeSet)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AttributeSet is null"));
 		return;
 	}
 
 	const float RespawnHealth = AttributeSet->GetMaxHealth();
-	const float RespawnMana = AttributeSet->GetMana();
-	const float RespawnStamina = AttributeSet->GetStamina();
+	const float RespawnMana = AttributeSet->GetMaxMana();
+	const float RespawnStamina = AttributeSet->GetMaxStamina();
 
-	ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), RespawnHealth);
-	ASC->SetNumericAttributeBase(UAOAttributeSet::GetManaAttribute(), RespawnMana);
-	ASC->SetNumericAttributeBase(UAOAttributeSet::GetStaminaAttribute(), RespawnStamina);
+	ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), AttributeSet->GetMaxHealth());
+	ASC->SetNumericAttributeBase(UAOAttributeSet::GetManaAttribute(), AttributeSet->GetMaxMana());
+	ASC->SetNumericAttributeBase(UAOAttributeSet::GetStaminaAttribute(), AttributeSet->GetMaxStamina());
 
 	// 사망 태그 제거.
 	ASC->RemoveLooseGameplayTag(STATE_DEAD);
@@ -566,7 +582,6 @@ void ADaeva::InitGAS()
 		if (SpecHandle.IsValid())
 		{
 			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-			UE_LOG(LogTemp, Log, TEXT("Regen Effect Applied."));
 		}
 	}
 
@@ -740,24 +755,11 @@ void ADaeva::OnMoveSpeedChanged(const FOnAttributeChangeData& Data)
 	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
 }
 
-void ADaeva::OnAttackSucceeded(
-	const FAttackData& AttackData,
-	AActor* HitActor,
-	const FHitResult& HitResult,
-	bool& bDidShakeCamera
-)
+void ADaeva::OnAttackSucceeded(const FAttackData& AttackData,AActor* HitActor,const FHitResult& HitResult,bool& bDidShakeCamera)
 {
 	Super::OnAttackSucceeded(AttackData, HitActor, HitResult, bDidShakeCamera);
 
 	PlayCameraShake(bDidShakeCamera);
-
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[OnAttackSucceeded] RestoreManaOnHit: %s | HitActor: %s"),
-		AttackData.bRestoreManaOnHit ? TEXT("TRUE") : TEXT("FALSE"),
-		*GetNameSafe(HitActor)
-	);
 
 	if (!HasAuthority())
 	{
@@ -784,18 +786,14 @@ void ADaeva::OnAttackSucceeded(
 	FGameplayEffectContextHandle ContextHandle = MyASC->MakeEffectContext();
 	ContextHandle.AddSourceObject(this);
 
-	FGameplayEffectSpecHandle SpecHandle =
-		MyASC->MakeOutgoingSpec(HitManaRegenEffect, 1.f, ContextHandle);
+	FGameplayEffectSpecHandle SpecHandle =	MyASC->MakeOutgoingSpec(HitManaRegenEffect, 1.f, ContextHandle);
 
 	if (!SpecHandle.IsValid())
 	{
 		return;
 	}
 
-	SpecHandle.Data->SetSetByCallerMagnitude(
-		FGameplayTag::RequestGameplayTag(TEXT("Data.HitManaRegen")),
-		HitManaRegenAmount
-	);
+	SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(TEXT("Data.HitManaRegen")),HitManaRegenAmount);
 
 	const float BeforeMana =
 		MyASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
@@ -804,15 +802,6 @@ void ADaeva::OnAttackSucceeded(
 
 	const float AfterMana =
 		MyASC->GetNumericAttribute(UAOAttributeSet::GetManaAttribute());
-
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[HitManaRegen] Mana %.1f -> %.1f | Amount: %.1f"),
-		BeforeMana,
-		AfterMana,
-		HitManaRegenAmount
-	);
 }
 
 void ADaeva::TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser)
@@ -980,24 +969,37 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 		return;
 	}
 
-	bIsDead = true;
+	if (!HasAuthority())
+	{
+		return;
+	}
 
-	// 선환 추가 
-	OnPlayerDead.Broadcast(this);
+	bIsDead = true;
 
 	OverheadStatusWidgetComponent->DestroyComponent();
 
-	UE_LOG(LogTemp, Warning, TEXT("[Death] %s Died"), *GetName());
-
-
-	// 죽기 전에 Controller를 먼저 확보해야 한다.
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
-	GetCharacterMovement()->StopMovementImmediately();
-	GetCharacterMovement()->DisableMovement();
+	if (UCharacterMovementComponent* MoveComp = GetCharacterMovement())
+	{
+		MoveComp->StopMovementImmediately();
+		MoveComp->DisableMovement();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Death] CharacterMovement is null: %s"), *GetName());
+	}
 
-	// 부활 스킬에 맞아야 해서 Collision 켜두기
-	// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (UCapsuleComponent* Capsule = GetCapsuleComponent())
+	{
+		Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Death] CapsuleComponent is null: %s"), *GetName());
+	}
+
+	OnPlayerDead.Broadcast(this);
 
 	if (ASC)
 	{
@@ -1012,68 +1014,52 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 		ASC->SetLooseGameplayTagCount(STATE_DASHING, 0);
 		ASC->SetLooseGameplayTagCount(STATE_JUMPING, 0);
 		ASC->SetLooseGameplayTagCount(STATE_GLIDING, 0);
+
 		ASC->AddLooseGameplayTag(STATE_DEAD);
 	}
-
-	if (HasAuthority())
+	else
 	{
-		// GameMode에 먼저 사망 사실 전달
-		if (PlayerController)
-		{
-			if (AAODungeonGameMode* DungeonGameMode = GetWorld()->GetAuthGameMode<AAODungeonGameMode>())
-			{
-				const bool bIsFallDeath = (DeathReason == EDeathReason::Fall);
-
-				UE_LOG(LogTemp, Warning, TEXT("[Death] Notify Dungeon GameMode: %s"), *PlayerController->GetName());
-
-				DungeonGameMode->NotifyPlayerDied(PlayerController, bIsFallDeath);
-			}
-			else if (AAOGameMode* AOGameMode = GetWorld()->GetAuthGameMode<AAOGameMode>())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[Death] Notify Test GameMode: %s"), *PlayerController->GetName());
-
-				AOGameMode->NotifyPlayerDied(PlayerController);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("[Death] GameMode is null"));
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp,	Error,TEXT("[Death] PlayerController is null before detach: %s"),*GetName());
-		}
-
-		// 사망 애니메이션은 Controller가 붙어 있어도 재생 가능
-		Multicast_PlayMontage(EMontageID::Die, 1.0f);
-		Multicast_PlayWingMontage(EMontageID::Die, 1.0f);
-		SetWingVisibilityOnServer(true);
-
-		// 여기서는 제거하거나 주석 처리
-		// DetachFromControllerPendingDestroy();
+		UE_LOG(LogTemp, Error, TEXT("[Death] ASC is null: %s"), *GetName());
 	}
-}
 
-void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
-{
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[Health] %s : %.1f -> %.1f"),
-		*GetName(),
-		Data.OldValue,
-		Data.NewValue
-	);
-
-	// SuYeon: 만약 해당 Health에 대한 권한이 없으면 넘기지 않도록
-	if (!HasAuthority())
+	UWorld* World = GetWorld();
+	if (!World)
 	{
 		return;
 	}
 
-	// SuYeon: 해당 값을 서버에 보내긴 해야 함
-	SendHp(Data.NewValue);
+	if (PlayerController)
+	{
+		if (AAODungeonGameMode* DungeonGameMode = World->GetAuthGameMode<AAODungeonGameMode>())
+		{
+			const bool bIsFallDeath = (DeathReason == EDeathReason::Fall);
+			DungeonGameMode->NotifyPlayerDied(PlayerController, bIsFallDeath);
+		}
+		else if (AAOGameMode* AOGameMode = World->GetAuthGameMode<AAOGameMode>())
+		{
+			AOGameMode->NotifyPlayerDied(PlayerController);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("[Death] GameMode is null"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[Death] PlayerController is null before detach: %s"), *GetName());
+	}
 
+	Multicast_PlayMontage(EMontageID::Die, 1.0f);
+	Multicast_PlayWingMontage(EMontageID::Die, 1.0f);
+	SetWingVisibilityOnServer(true);
+
+	// 여기서는 제거하거나 주석 처리
+	// DetachFromControllerPendingDestroy();
+}
+
+void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
+{
+	
 	if (Data.NewValue <= 0.0f && !bIsDead)
 	{
 		HandleDeath();
@@ -1117,7 +1103,6 @@ void ADaeva::StartSprint()
 
 	if (!SprintEffect || !SprintDrainEffect)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[Sprint] Sprint GE reference missing"));
 		return;
 	}
 
@@ -1128,7 +1113,6 @@ void ADaeva::StartSprint()
 
 	if (!SprintSpec.IsValid())
 	{
-		UE_LOG(LogTemp, Error, TEXT("[Sprint] SprintSpec invalid"));
 		return;
 	}
 
@@ -1142,7 +1126,6 @@ void ADaeva::StartSprint()
 
 	if (!DrainSpec.IsValid())
 	{
-		UE_LOG(LogTemp, Error, TEXT("[Sprint] DrainSpec invalid"));
 		return;
 	}
 
@@ -1314,6 +1297,7 @@ void ADaeva::RestorePlayerInfoFromPlayerState()
 			}
 		}
 	}
+
 }
 
 void ADaeva::FellOutOfWorld(const UDamageType& DmgType)
