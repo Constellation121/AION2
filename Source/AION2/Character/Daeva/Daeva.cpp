@@ -1,6 +1,7 @@
 #include "Character/Daeva/Daeva.h"
-#include "AOQuickSlotComponent.h"
+#include "UI/AOQuickSlotComponent.h"
 #include "Player/AOPlayerState.h"
+#include "Manager/AOPlayerManager.h"
 #include "GAS/AOGameplayTags.h"
 #include "Character/AOCharacterMovementComponent.h"
 #include "Data/DA_AbilitySet.h"
@@ -92,7 +93,7 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
 	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	OverheadStatusWidgetComponent->SetBlendMode(EWidgetBlendMode::Transparent);
-	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 14.0f));
+	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 30.0f));
 	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 130.0f));
 	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
 	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -157,6 +158,8 @@ void ADaeva::PossessedBy(AController* NewController)
 
 	InitGAS();
 
+	RestorePlayerInfoFromPlayerState();
+
 	// 선환 추가 
 	SetGenericTeamId(FGenericTeamId(TEAM_PERCEPTION_DAEVA)); // 플레이어 팀
 
@@ -176,6 +179,8 @@ void ADaeva::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitGAS();
+
+	RestorePlayerInfoFromPlayerState();
 	
 	// LocalController일 때만 UI 만들도록 설정
 	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
@@ -217,6 +222,17 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::Key4));
 		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyQ));
 		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
+
+		// SuYeon: Released에 Bind되어있어야 UI도 키 입력 종료를 알 수 있음
+		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Completed, this, &ADaeva::InputLBPressed);
+		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Completed, this, &ADaeva::InputRBPressed);
+		EnhancedInputComponent->BindAction(Key1Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key1));
+		EnhancedInputComponent->BindAction(Key2Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key2));
+		EnhancedInputComponent->BindAction(Key3Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key3));
+		EnhancedInputComponent->BindAction(Key4Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key4));
+		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::KeyQ));
+		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::KeyE));
+
 
 		EnhancedInputComponent->BindAction(KeyXAction, ETriggerEvent::Triggered, this, &ADaeva::SendItem, 0);
 		EnhancedInputComponent->BindAction(KeyBAction, ETriggerEvent::Triggered, this, &ADaeva::SendItem, 1);
@@ -1253,7 +1269,35 @@ void ADaeva::RestorePlayerInfoFromPlayerState()
 		return;
 	}
 
-	
+	// 1. HP Apply
+	if (HasAuthority())
+	{
+		float InitialHP = AOPlayerState->GetInitialHP();
+		if (InitialHP > 0.0f && ASC)
+		{
+			ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), InitialHP);
+			UE_LOG(LogTemp, Log, TEXT("[Dungeon] Restored HP for %s on Server: %.1f"), *GetName(), InitialHP);
+		}
+	}
+
+	// 2. Items Apply 
+	if (!HasAuthority() && IsLocallyControlled())
+	{
+		UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr;
+		UAOQuickSlotComponent* QuickSlotComp = GetQuickSlotComponent();
+		if (PlayerManager && QuickSlotComp)
+		{
+			const TMap<int32, Protocol::ItemData>& Items = PlayerManager->GetMyItems();
+			for (const auto& Pair : Items)
+			{
+				const Protocol::ItemData& Item = Pair.Value;
+				QuickSlotComp->InitializeQuickSlot(Item.slotindex(), Item.itemtemplateid(), Item.iteminstancedid(), Item.count());
+				UE_LOG(LogTemp, Log, TEXT("[Dungeon] Restored Item to QuickSlot[%d] from Local Subsystem: TemplateId=%d, Count=%d"), 
+					Item.slotindex(), Item.itemtemplateid(), Item.count());
+			}
+		}
+	}
+
 }
 
 void ADaeva::FellOutOfWorld(const UDamageType& DmgType)

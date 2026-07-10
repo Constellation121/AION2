@@ -15,6 +15,8 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 
+#include "Player/AOPlayerState.h"
+
 
 // TODO(SuYeon): Delegate마다, 만약 다른 ASC와 연동되어있다면 로그를 출력하거나 하는 방어적 코드 추가 +Monster의 것에도 추가할 것.
 
@@ -84,6 +86,14 @@ void UAOPlayerHUDWidget::ChangeClassIcon(EDaevaClassType InClassType)
 	// 나중에 ClassSwitcher 변경되면 ClassType 자체로 넣어보기.
 	PlayerClassSwitcher->SetClassWidget(InClassType);
 	PlayerClassSwitcher->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+}
+
+void UAOPlayerHUDWidget::SetPlayerName(const FText PlayerName)
+{
+	if (TB_PlayerName)
+	{
+		TB_PlayerName->SetText(PlayerName);
+	}
 }
 
 void UAOPlayerHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)

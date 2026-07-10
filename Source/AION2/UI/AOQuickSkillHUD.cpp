@@ -8,10 +8,14 @@
 
 #include "Character/Daeva/Daeva.h"
 
+#include "Gas/AOGameplayTags.h"
 
-void UAOQuickSkillHUD::NativeConstruct()
+
+void UAOQuickSkillHUD::NativeOnInitialized()
 {
-    Super::NativeConstruct();
+    Super::NativeOnInitialized();
+
+    // ============= Initialize SkillSlotByAbilityID ============
 
     // 456
     SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_1), Skill_R);
@@ -34,6 +38,16 @@ void UAOQuickSkillHUD::NativeConstruct()
     SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::KeyE), Skill_E);
 
 
+    // ============= Initialize SkillSlotArray ============
+    SkillSlotArray.Add(Skill_1);
+    SkillSlotArray.Add(Skill_2);
+    SkillSlotArray.Add(Skill_3);
+    SkillSlotArray.Add(Skill_4);
+
+    SkillSlotArray.Add(Skill_Q);
+    SkillSlotArray.Add(Skill_E);
+    SkillSlotArray.Add(Skill_R);
+    SkillSlotArray.Add(Skill_T);
 }
 
 
@@ -77,6 +91,9 @@ void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
 
     // Button Init하는 부분 바꿔줌.
     InitSkillSlots(AbilitySet);
+
+
+    BindComboDelegates();
 }
 
 void UAOQuickSkillHUD::InitSkillSlots(const UDA_AbilitySet* InAbilitySet)
@@ -86,6 +103,14 @@ void UAOQuickSkillHUD::InitSkillSlots(const UDA_AbilitySet* InAbilitySet)
         return;
     }
 
+    // 혹시 모르니 한 번 Clear 해주기.
+    for (UAOSkillQuickSlotWidget* SlotWidget : SkillSlotArray)
+    {
+        SlotWidget->ClearSkillSlotViewData();
+    }
+
+
+    // Ability의 ViewData 넣어주기.
     for (const TPair<int32, TObjectPtr<UAOSkillQuickSlotWidget>>& Pair : SkillSlotByAbilityID)
     {
         const int32 AbilityID = Pair.Key;
@@ -117,18 +142,65 @@ void UAOQuickSkillHUD::InitSkillSlots(const UDA_AbilitySet* InAbilitySet)
         * 다른 class로 분리해서 PlayerStatus Widget에 넣은 뒤,
         * 해당 상위 Widget을 통해 소통하는 게 나을 듯.
         */
-        // Init 하지 말고 해당 SlotWidget의 ViewData array에 Add.
-        //SlotWidget->InikillSlot(ViewData);
+        
         SlotWidget->AddSkillSlotViewData(ViewData);
-
-        if (SlotWidget->GetCurrentSkillIndex() == INDEX_NONE)
-        {
-            SlotWidget->SetCurrentSkillIndex(ViewData.AbilityID);
-        }
     }
 
+    // 처음 것으로 초기화 해주기.
+    for (UAOSkillQuickSlotWidget* SlotWidget : SkillSlotArray)
+    {
+        if (SlotWidget->GetSlotSkillCount() > 0)
+        {
+            SlotWidget->SetCurrentSkillIndex(0);
+
+        }
+    }
+}
+
+void UAOQuickSkillHUD::BindComboDelegates()
+{
+    // 콤보 태그 변화 구독: 각각의 1번 공격은 Combo가 아니므로 괜찮음.
+
+    // Left Button
+    BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_LB2, EGameplayTagEventType::NewOrRemoved)
+        .AddUObject(this, &UAOQuickSkillHUD::HandleLBComboTagChanged);
+
+    BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_LB3, EGameplayTagEventType::NewOrRemoved)
+        .AddUObject(this, &UAOQuickSkillHUD::HandleLBComboTagChanged);
+
+    // Right Button
+    BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_RB2, EGameplayTagEventType::NewOrRemoved)
+        .AddUObject(this, &UAOQuickSkillHUD::HandleRBComboTagChanged);
+
+    BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_RB3, EGameplayTagEventType::NewOrRemoved)
+        .AddUObject(this, &UAOQuickSkillHUD::HandleRBComboTagChanged);
 
 }
+
+void UAOQuickSkillHUD::HandleLBComboTagChanged(FGameplayTag Tag, int32 NewCount)
+{
+    //UE_UNUSED(Tag);
+    //UE_UNUSED(NewCount);
+
+    // 아직 이 함수에서는 안 쓰고 있음을 명시.
+    (void)Tag;
+    (void)NewCount;
+    
+    Skill_R->HandleComboInput();
+}
+
+void UAOQuickSkillHUD::HandleRBComboTagChanged(FGameplayTag Tag, int32 NewCount)
+{
+    //UE_UNUSED(Tag);
+    //UE_UNUSED(NewCount);
+
+    // 아직 이 함수에서는 안 쓰고 있음을 명시.
+    (void)Tag;
+    (void)NewCount;
+
+    Skill_T->HandleComboInput();
+}
+
 
 void UAOQuickSkillHUD::HandleCooldownTagChanged(FGameplayTag CooldownTag, int32 NewCount)
 {

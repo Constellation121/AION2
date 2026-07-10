@@ -108,9 +108,12 @@ struct FPlayerInfo
 	UPROPERTY()
 	uint8 ClassType = 0;
 
+	UPROPERTY()
+	float PlayerHp = 0;
+
 	FPlayerInfo() {}
-	FPlayerInfo(uint64 InId, FString InName, uint8 InClass)
-		:PlayerId(InId), PlayerName(InName), ClassType(InClass) 
+	FPlayerInfo(uint64 InId, FString InName, uint8 InClass, float InHp)
+		:PlayerId(InId), PlayerName(InName), ClassType(InClass), PlayerHp(InHp)
 	{}
 };
 

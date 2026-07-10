@@ -15,6 +15,11 @@
 
 #include "Network/PacketHeader.h"
 #include "AION2.h"
+#include "Game/AOGameInstance.h"
+#include "Manager/AONetworkManager.h"
+
+#include "Manager/AOUIManager.h"
+
 
 AAODungeonGameMode::AAODungeonGameMode()
 {
@@ -26,6 +31,18 @@ AAODungeonGameMode::AAODungeonGameMode()
 void AAODungeonGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (UAOGameInstance* GI = Cast<UAOGameInstance>(GetGameInstance()))
+	{
+		if (UAONetworkManager* NetworkMng = GI->GetNetworkManager())
+		{
+			if (NetworkMng->PendingDungeonId != 0)
+			{
+				SetDungeonId(NetworkMng->PendingDungeonId);
+				UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Retrieved Pending Dungeon ID from NetworkManager: %d"), MyDungeonId);
+			}
+		}
+	}
 
 	FindPlacedBosses();
 	InitializePlacedBosses();
@@ -92,7 +109,8 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 			AOPlayerState->SetPlayerInfo(
 				FakePlayerId,
 				TEXT("PIE_Dungeon_Player"),
-				static_cast<uint8>(EDaevaClassType::Ranger)
+				static_cast<uint8>(EDaevaClassType::Ranger),
+				100
 			);
 
 			UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PIE PostLogin Set Dummy PlayerInfo"));
@@ -126,8 +144,8 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 	if (PlayerState)
 	{
 		FString PlayerName = PlayerData.playername().c_str();
-		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass());
-		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d"), UniqueId, PlayerData.playerid());
+		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass(), (float)PlayerData.playerhp());
+		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d, HP: %d"), UniqueId, PlayerData.playerid(), PlayerData.playerhp());
 	}
 
 	PendingPlayers.Remove(UniqueId);
@@ -291,8 +309,8 @@ void AAODungeonGameMode::ClearDungeon()
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Dungeon Clear"));
 	
 	GiveDungeonReward();
-
-	SendDungeonCompleteRequest();
+	CreateDungeonClearWidget();
+	//SendDungeonCompleteRequest();
 }
 
 void AAODungeonGameMode::FailDungeon()
@@ -886,7 +904,15 @@ void AAODungeonGameMode::SetPrePlayerInfo(const Protocol::S_DungeonStartDediPack
 		DPlayerInfo.set_playerid(DungeonInfo.clientid());
 		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		DPlayerInfo.set_playerclass(DungeonInfo.clientclass());
-		DPlayerInfo.set_playername(DungeonInfo.clientname());
+		DPlayerInfo.set_playerhp(DungeonInfo.clienthp());
+
+		int32 ItemCount = DungeonInfo.playeritems_size();
+		for (int j = 0; j < ItemCount; j++)
+		{
+			const Protocol::ItemData& Item = DungeonInfo.playeritems(j);
+			Protocol::ItemData* NewItem = DPlayerInfo.add_playeritems();
+			NewItem->CopyFrom(Item);
+		}
 		PrePlayers.Add(Token, DPlayerInfo);
 	}
 }
@@ -930,6 +956,12 @@ void AAODungeonGameMode::SendDungeonCompleteRequest()
 	RequestPkt.set_dungeonid(MyDungeonId);
 
 	SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
+}
+
+void AAODungeonGameMode::CreateDungeonClearWidget()
+{
+	//UI 띄우기 함수명 바꿔도 됨
+	// Create 하고 꼭 SetDungeonClearWidget 이거 호출해 주세요
 }
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
