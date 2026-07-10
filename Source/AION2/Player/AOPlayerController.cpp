@@ -250,6 +250,13 @@ void AAOPlayerController::PlaySkillPressedFeedback(int32 InputId)
 	MainHUD->PlaySkillPressedFeedback(InputId);
 }
 
+// 07.09
+void AAOPlayerController::Client_RefreshPlayerHUD_Implementation()
+{
+	HandlePawnASCReady();
+}
+//
+
 void AAOPlayerController::ToggleMailWidget()
 {
 	if (!IsLocalController()) return;

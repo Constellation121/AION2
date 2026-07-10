@@ -32,7 +32,6 @@ private:
     void BindASCDelegates();
     void UnbindASCDelegates();
 
-    void BroadcastInitialAttributes();
 
 protected:
     // UMG 처음 만들어질 때만 호출됨
@@ -45,6 +44,8 @@ public:
     // => SkillHUD.
     void PlaySkillPressedFeedback(int32 InputId);
 
+
+    void BroadcastInitialAttributes();
 public:
     // === Class Widget by PlayerInfo ===
     void ChangeClassIcon(EDaevaClassType InClassType);

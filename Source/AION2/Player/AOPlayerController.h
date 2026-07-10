@@ -100,6 +100,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSoftClassPtr<class UMainMailWidget> MainMailWidgetClass;
 
+	//07.09
+	UFUNCTION(Client, Reliable)
+	void Client_RefreshPlayerHUD();
+	//
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void ToggleMailWidget();
