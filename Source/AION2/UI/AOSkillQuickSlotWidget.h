@@ -84,11 +84,8 @@ public:
 
 
 private:
-	// Init the Icon
+	// TODO(SuYeon): Init the Icon => HorizontalBox의 Slot을 밀어주는 것으로 바꿀 것.
 	void SetSkillIcon(UTexture2D* Icon);
-
-	// Set Skill Level Text
-	void SetSkillLevel(int32 InLevel);
 
 
 protected:
@@ -98,9 +95,6 @@ protected:
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
 	TObjectPtr<UImage> SkillImage;
-
-	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
-	TObjectPtr<UTextBlock> TB_SkillLevel;
 
 protected:
 	ESlotType slotType = ESlotType::Skill_Quick;
