@@ -295,7 +295,7 @@ void AAOPlayerController::ToggleMailWidget()
 
 void AAOPlayerController::TestClearDungeon()
 {
-	ServerTestClearDungeon();
+	//ServerTestClearDungeon();
 }
 
 void AAOPlayerController::ServerRequestDungeonComplete_Implementation()
