@@ -8,13 +8,16 @@
 #include "EnhancedInputComponent.h"
 #include "InputCoreTypes.h"
 #include "Game/AODungeonGameMode.h"
-
+#include "Game/AOGameInstance.h"
 #include "AbilitySystemComponent.h"
+#include "Game/AOGameInstance.h"
+#include "Blueprint/UserWidget.h"
 
 #include "UI/AOMainHUDWidget.h"
 
 #include "Manager/AOUIManager.h"
 #include "UI/Mail/MainMailWidget.h"
+#include "UI/DungeonClearWidget.h"
 #include "Components/Widget.h"
 
 
@@ -295,16 +298,41 @@ void AAOPlayerController::TestClearDungeon()
 	ServerTestClearDungeon();
 }
 
-void AAOPlayerController::ServerTestClearDungeon_Implementation()
+void AAOPlayerController::ServerRequestDungeonComplete_Implementation()
 {
 	AAODungeonGameMode* DungeonGameMode = GetWorld()->GetAuthGameMode<AAODungeonGameMode>();
 
 	if (!DungeonGameMode)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[Dungeon Test] DungeonGameMode is null"));
 		return;
 	}
 
-	DungeonGameMode->ForceClearDungeon();
+	DungeonGameMode->SendDungeonCompleteRequest();
 }
 
+void AAOPlayerController::ClientCreateDungeonClearWidget_Implementation(int32 Gold)
+{
+	if (!IsLocalController())
+	{
+		return;
+	}
+
+	if (!DungeonClearWidgetClass)
+	{
+		return;
+	}
+
+	if (!DungeonClearWidget)
+	{
+		DungeonClearWidget = CreateWidget<UDungeonClearWidget>(this,DungeonClearWidgetClass);
+
+		if (!DungeonClearWidget)
+		{
+			return;
+		}
+
+		DungeonClearWidget->AddToViewport();
+	}
+
+	DungeonClearWidget->SetDungeonClearWidget(Gold);
+}

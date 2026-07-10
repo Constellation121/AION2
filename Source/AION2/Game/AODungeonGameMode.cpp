@@ -8,6 +8,7 @@
 #include "GameFramework/Controller.h"
 
 #include "Character/Monster/AOMonsterBase.h"
+#include "Player/AOPlayerController.h"
 
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -961,7 +962,25 @@ void AAODungeonGameMode::SendDungeonCompleteRequest()
 void AAODungeonGameMode::CreateDungeonClearWidget()
 {
 	//UI 띄우기 함수명 바꿔도 됨
-	// Create 하고 꼭 SetDungeonClearWidget 이거 호출해 주세요
+	//Create 하고 꼭 SetDungeonClearWidget 이거 호출해 주세요
+
+	// PlayerController -> Client RPC.
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		AAOPlayerController* PlayerController = Cast<AAOPlayerController>(It->Get());
+
+		if (!PlayerController)
+		{
+			continue;
+		}
+
+		PlayerController->ClientCreateDungeonClearWidget(DungeonPrice);
+	}
 }
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
@@ -973,3 +992,4 @@ Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
 	}
 	return nullptr;
 }
+
