@@ -493,6 +493,7 @@ void ADaeva::ResetForDungeonRespawn()
 
 	// 사망 태그 제거.
 	ASC->RemoveLooseGameplayTag(STATE_DEAD);
+	ASC->RemoveReplicatedLooseGameplayTag(STATE_DEAD);
 
 	// New Pawn이므로 기본적으로 false이지만 명확하게 하기 위해 초기화.
 	bIsDead = false;
@@ -1011,6 +1012,7 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 		ASC->SetLooseGameplayTagCount(STATE_GLIDING, 0);
 
 		ASC->AddLooseGameplayTag(STATE_DEAD);
+		ASC->AddReplicatedLooseGameplayTag(STATE_DEAD);
 	}
 	else
 	{
