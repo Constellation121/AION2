@@ -65,6 +65,11 @@ void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 
 void UAOPlayerHUDWidget::UnbindFromASC()
 {
+	if (QuickSkillHUD)
+	{
+		QuickSkillHUD->UnbindFromASC();
+	}
+
 	UnbindASCDelegates();
 	Super::UnbindFromASC();
 }

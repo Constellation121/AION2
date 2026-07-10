@@ -104,6 +104,11 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(
 	ADaeva*
 );
 
+// Combo처리를 UI가 구독할 수 있도록 추가.
+DECLARE_MULTICAST_DELEGATE_OneParam(
+	FOnComboInputCompleted,
+	int32
+);
 
 UCLASS()
 class AION2_API ADaeva : public AAOCharacter , public IGenericTeamAgentInterface
@@ -146,7 +151,6 @@ public:
 
 	UFUNCTION(Client, Unreliable)
 	void Client_PlayCameraShake();
-
 
 public:
 	bool HasMoveInput();
@@ -195,8 +199,18 @@ private:
 	void InputRBPressed();
 	void InputMoveReleased();
 
+	// Combo가 다시 돌아가는 것을 처리하기 위해 필요
+	void InputLBReleased();
+
+	// Combo가 다시 돌아가는 것을 처리하기 위해 필요
+	void InputRBReleased();
+
+
 	void InputXPressed();
 	void InputBPressed();
+
+public:
+	FOnComboInputCompleted OnComboInputCompleted;
 
 protected:
 	void OnCombatStateChanged(const FGameplayTag Tag, int32 NewCount);
@@ -214,6 +228,7 @@ public:
 
 protected:
 	FDelegateHandle HealthChangedDelegateHandle;
+
 
 protected:
 	void StartSprint();
@@ -356,6 +371,7 @@ public:
 	void SendHp(float NewHp);
 	void SendItem(int32 SlotIndex);
 	void SetItemUse();
+
 private:
 	bool bPlayerUIReady = false;
 
