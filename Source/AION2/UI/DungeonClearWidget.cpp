@@ -15,6 +15,12 @@ void UDungeonClearWidget::NativeConstruct()
 
 void UDungeonClearWidget::SetDungeonClearWidget(int32 Gold)
 {
+	APlayerController* PC = GetOwningPlayer();
+	if (!PC || !PC->IsLocalController())
+	{
+		return;
+	}
+
 	if (GoldPrice)
 	{
 		GoldPrice->SetText(FText::AsNumber(Gold));
@@ -40,15 +46,25 @@ void UDungeonClearWidget::SetDungeonClearWidget(int32 Gold)
 	GetWorld()->GetTimerManager().SetTimer(
 		ClearTimer,
 		this,
-		&UDungeonClearWidget::DungeonReward,
+		&UDungeonClearWidget::UpdateCountdown,
 		1.0f,
-		false
+		true
 	);
 
 }
 
 void UDungeonClearWidget::DungeonReward()
 {
+	if (Clear1)
+	{
+		Clear1->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	if (Clear2)
+	{
+		Clear2->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
 	if (ClearPopup)
 	{
 		ClearPopup->SetVisibility(ESlateVisibility::Visible);

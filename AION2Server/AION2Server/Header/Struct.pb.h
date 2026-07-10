@@ -923,7 +923,6 @@ class PlayerState final :
     kPlayerRotationFieldNumber = 5,
     kPlayerIdFieldNumber = 1,
     kPlayerClassFieldNumber = 3,
-    kPlayerHpFieldNumber = 6,
   };
   // string playerName = 2;
   void clear_playername();
@@ -993,15 +992,6 @@ class PlayerState final :
   void _internal_set_playerclass(::Protocol::ClassType value);
   public:
 
-  // float playerHp = 6;
-  void clear_playerhp();
-  float playerhp() const;
-  void set_playerhp(float value);
-  private:
-  float _internal_playerhp() const;
-  void _internal_set_playerhp(float value);
-  public:
-
   // @@protoc_insertion_point(class_scope:Protocol.PlayerState)
  private:
   class _Internal;
@@ -1015,7 +1005,6 @@ class PlayerState final :
     ::Protocol::Rotator3* playerrotation_;
     uint64_t playerid_;
     int playerclass_;
-    float playerhp_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2637,26 +2626,6 @@ inline void PlayerState::set_allocated_playerrotation(::Protocol::Rotator3* play
   }
   _impl_.playerrotation_ = playerrotation;
   // @@protoc_insertion_point(field_set_allocated:Protocol.PlayerState.playerRotation)
-}
-
-// float playerHp = 6;
-inline void PlayerState::clear_playerhp() {
-  _impl_.playerhp_ = 0;
-}
-inline float PlayerState::_internal_playerhp() const {
-  return _impl_.playerhp_;
-}
-inline float PlayerState::playerhp() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerState.playerHp)
-  return _internal_playerhp();
-}
-inline void PlayerState::_internal_set_playerhp(float value) {
-  
-  _impl_.playerhp_ = value;
-}
-inline void PlayerState::set_playerhp(float value) {
-  _internal_set_playerhp(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerState.playerHp)
 }
 
 // -------------------------------------------------------------------
