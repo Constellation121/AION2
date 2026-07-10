@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Physics/Collision.h"
 #include "Character/Monster/Boss/Thalythra/Shield/TalythraGimmickShield.h"
+#include "GAS/AOGameplayTags.h"
 
 void UGA_Monster_TH_OrbGimmickAttack::OnCheckAttackHitEvent(FGameplayEventData Payload)
 {
@@ -36,6 +37,31 @@ void UGA_Monster_TH_OrbGimmickAttack::OnCheckAttackHitEvent(FGameplayEventData P
 	uint8 SafeOrbColor = static_cast<uint8>(pTalythra->Get_AttackOrbColor());
 
 	pTalythra->CheckIsInSafeZone(AttackData, SafeOrbColor);
+}
+
+void UGA_Monster_TH_OrbGimmickAttack::EndAbility(
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility,
+	bool bWasCancelled)
+{
+	if (HasAuthority(&CurrentActivationInfo))
+	{
+		if (PendingTag.IsValid())
+		{
+			UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+
+			if (ASC)
+			{
+				ASC->RemoveLooseGameplayTag(PendingTag);
+				ASC->RemoveLooseGameplayTag(GIMMICK_MONSTER);
+			}
+		}
+	}
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
 }
 
 

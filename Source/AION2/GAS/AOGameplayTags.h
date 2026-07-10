@@ -65,7 +65,7 @@
 #define PHASE_MONSTER_COMBAT FGameplayTag::RequestGameplayTag(TEXT("Phase.Monster.Combat"))
 #define PHASE_MONSTER_GROGGY FGameplayTag::RequestGameplayTag(TEXT("Phase.Monster.Groggy"))
 #define PHASE_MONSTER_DEAD FGameplayTag::RequestGameplayTag(TEXT("Phase.Monster.Dead"))
-
+#define PHASE_MONSTER_RESET FGameplayTag::RequestGameplayTag(TEXT("Phase.Monster.Reset"))
 
 // State - SH
 #define STATE_MONSTER_TH_IDLE FGameplayTag::RequestGameplayTag(TEXT("State.Monster.TH.Idle"))
@@ -110,3 +110,4 @@
 #define GIMMICK_MONSTER_TH_HP35_DONE FGameplayTag::RequestGameplayTag(TEXT("Gimmick.Monster.TH.HP35.Done"))
 #define GIMMICK_MONSTER_TH_HP35_PENDING FGameplayTag::RequestGameplayTag(TEXT("Gimmick.Monster.TH.HP35.Pending"))
 
+#define GIMMICK_MONSTER_TH_SHELTER FGameplayTag::RequestGameplayTag(TEXT("Gimmick.Monster.TH.Shelter"))
