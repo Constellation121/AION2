@@ -376,7 +376,7 @@ bool FPacketHandler::Handle_S_DUNGEON_END(Protocol::S_RequestDungeonCompletePack
 {
 	if (!PlayerMng)
 		return false;
-	PlayerMng->HandleDungeonEnd();
+	PlayerMng->HandleDungeonEnd(Pkt.gold());
 	return false;
 }
 

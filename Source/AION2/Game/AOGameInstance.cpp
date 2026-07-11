@@ -21,7 +21,7 @@ void UAOGameInstance::Init()
 	TryAsyncConnect("172.16.30.107", 9999);
 #else
 
-	TryAsyncConnect("172.16.30.107", 7777);
+	TryAsyncConnect("172.30.1.29", 7777);
 #endif
 }
 

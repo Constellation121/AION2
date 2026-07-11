@@ -369,8 +369,9 @@ void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStart
 	}
 }
 
-void UAOPlayerManager::HandleDungeonEnd()
+void UAOPlayerManager::HandleDungeonEnd(int32 Gold)
 {
+	MyGold = Gold;
 	//FSoftObjectPath LevelPath(FString::Printf(TEXT("/Game/Map/Lobby")))
 	UGameplayStatics::OpenLevel(this, TEXT("/Game/Map/Village"));
 }

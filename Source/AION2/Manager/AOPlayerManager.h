@@ -38,7 +38,7 @@ public:
 	
 	void HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStartDediPacket& Info);
 
-	void HandleDungeonEnd();
+	void HandleDungeonEnd(int32 Gold);
 
 	void HandleDisconnect(uint64 RemovePlayerId);
 
@@ -50,7 +50,6 @@ public:
 
 	bool TryUpdateMyDungeonRoomState(const Protocol::DungeonInfo& DungeonInfo);
 
-	// �� ��� ��ü�� Update �Լ�
 	void UpdateMyDungeonRoomStateFromList(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonInfos);
 
 	void UpdateMyDungeonEnterState(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);

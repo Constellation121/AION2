@@ -408,7 +408,30 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 
 	//GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleCreateDungeon, player);
 	int32 dungeonId = pkt.dungeonid();
-	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId);
+	int32 gold = pkt.gold();
+
+	DBConnection* dbConnect = GDBConnectionPool->Pop();
+	DBBind<2, 1> dbBind(*dbConnect, L"{CALL sp_SetDungeonReward(?, ?)");
+	
+	dbBind.BindCol(0, gold);
+	dbBind.BindCol(1, dungeonId);
+
+	int resultCode = 0;
+
+	dbBind.BindParam(0, resultCode);
+
+	if (!dbBind.Execute())
+	{
+		std::cout << "HandleDungeonEnd - Execute() Error" << std::endl;
+	}
+	if (!dbBind.Fetch())
+	{
+		std::cout << "HandleDungeonEnd - Fetch() Error" << std::endl;
+	}
+
+	if (!resultCode) return false;
+
+	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId, gold);
 	dediSession->SetUsing(false);
 	return false;
 }

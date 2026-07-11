@@ -502,7 +502,7 @@ void DungeonWaitingRoom::StartDungeonPacket(DungeonRef dungeon)
 }
 
 
-void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId)
+void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId, int32 gold)
 {
 	auto it = _dungeons.find(dungeonId);
 	if (it == _dungeons.end()) return;
@@ -510,6 +510,7 @@ void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId)
 	DungeonRef dungeon = it->second;
 	if (!dungeon) return;
 	Protocol::S_RequestDungeonCompletePacket endPacket;
+	endPacket.set_gold(gold);
 	SendBufferRef endBuffer = PacketHandler::MakeSendBuffer(endPacket);
 
 	for (auto& member : dungeon->GetMembers())
