@@ -44,12 +44,14 @@ public:
 	void SetMyHealth(float InHealth);
 	void SetMyItem(FString InItem);
 
-	// H.Y.
-	void SetPlayerInfo(uint64 InPalyerId, const FString& InPlayerName, uint8 InCalssType/*,float InHealth, FString& InItem*/);
+	// H.Y
+	void SetPlayerInfo(uint64 InPalyerId, const FString& InPlayerName, uint8 InCalssType,float InHp/*, FString& InItem*/);
 
 	// GetClass function.
 	FORCEINLINE uint64 GetMyId() const { return MyId; }
 	FORCEINLINE EDaevaClassType GetMyClass() const { return MyClassType; }
+	FORCEINLINE float GetInitialHP() const { return InitialHP; }
+	FORCEINLINE void SetInitialHP(float InHP) { InitialHP = InHP; }
 	FORCEINLINE FString GetMyName() const { return MyName; }
 
 private:
@@ -78,9 +80,6 @@ private:
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
 	FString MyName;
 
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
-	float MyHealth;
-
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
-	FString MyItem;
+private:
+	float InitialHP = 0.0f;
 };

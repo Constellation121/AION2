@@ -36,6 +36,7 @@ public:
 public:
 	class UAOGameInstance* GameInstance; 
 	class UAOPlayerManager* PlayerMng;
+	int32 PendingDungeonId = 0;
 
 private:
 	FSocket* ClientSocket;
