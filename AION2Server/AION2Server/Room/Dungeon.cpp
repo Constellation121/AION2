@@ -465,8 +465,10 @@ void DungeonWaitingRoom::StartDungeonPacket(DungeonRef dungeon)
 	auto dedi = dungeon->GetDediSession();
 	dungeon->SetStatus(Protocol::RoomStatus::IN_PROGRESS);
 	if (!dedi) return;
-	std::string dediIp = dedi->GetIP();
+	std::string dediIp = "125.133.163.145";
+
 	int32 port = dedi->GetPort();
+	std::cout << port << std::endl;
 	int32 dungeonId = dungeon->GetId();
 	std::string token;
 	for (auto member : dungeon->GetMembers())

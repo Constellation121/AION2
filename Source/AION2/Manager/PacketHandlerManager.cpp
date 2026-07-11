@@ -213,7 +213,17 @@ bool FPacketHandler::Handle_S_MOVE(Protocol::S_MovePacket& Pkt)
 bool FPacketHandler::Handle_S_DASH(Protocol::S_DashPacket& Pkt)
 {
 	if (!PlayerMng) return false;
-	PlayerMng->HandleDash(Pkt.playerid());
+
+	Protocol::Vector3* Loc = Pkt.mutable_playerlocation();
+	FVector TargetLoc = FVector(Loc->x(), Loc->y(), Loc->z());
+
+	Protocol::Vector3* Vel = Pkt.mutable_playervelocity();
+	FVector TargetVel = FVector(Vel->x(), Vel->y(), Vel->z());
+
+	Protocol::Rotator3* Rot = Pkt.mutable_playerrotation();
+	FRotator TargetRot = FRotator(Rot->pitch(), Rot->yaw(), Rot->roll());
+
+	PlayerMng->HandleDash(Pkt.playerid(), TargetLoc, TargetRot, TargetVel);
 	return true;
 }
 

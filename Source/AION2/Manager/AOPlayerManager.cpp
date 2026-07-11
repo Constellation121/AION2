@@ -67,7 +67,7 @@ void UAOPlayerManager::HandleLogin(Protocol::S_LoginSuccessPacket& LoginPacket)
 	PlayerInfos.Add(PlayerId, NewInfo);
 }
 
-void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation)
+void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString& PlayerName, uint8& ClassType, FVector& SpawnLocation, FRotator& SpawnRotation)
 {
 	if (!GameInstance)
 		return;
@@ -206,7 +206,7 @@ void UAOPlayerManager::HandleItem(Protocol::S_ItemDataPacket Items)
 	}
 }
 
-void UAOPlayerManager::HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel)
+void UAOPlayerManager::HnadleMove(uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel)
 {
 	if (!GameInstance)
 		return;
@@ -511,7 +511,7 @@ void UAOPlayerManager::UpdateMyDungeonReadyState(int32 DungeonId, uint64 PlayerI
 
 #pragma endregion
 
-void UAOPlayerManager::HandleDash(const uint64 PlayerId)
+void UAOPlayerManager::HandleDash(const uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel)
 {
 	if (!GameInstance)
 		return;
@@ -523,6 +523,6 @@ void UAOPlayerManager::HandleDash(const uint64 PlayerId)
 	AMMODaeva* MMOPlayer = *PlayerRef;
 	if (MMOPlayer)
 	{
-		MMOPlayer->ReceiveDashPacket();
+		MMOPlayer->ReceiveDashPacket(NewLocation, NewRotation, NewVel);
 	}
 }
