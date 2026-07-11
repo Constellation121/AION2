@@ -58,6 +58,7 @@ public:
 	void HandleEnterDungeon(PlayerRef player, int32 inDungeonId);
 	void HandleDungeonStart(PlayerRef player, int32 dungeonId);
 	void HandleDungeonExit(int32 dungeonId);
+	void HandleDungeonExitByDedi(int32 dungeonId);
 	void HandleReadyPacket(PlayerRef player, int32 dungeonId);
 	void HandleExitPacket(PlayerRef player, int32 dungeonId);
 	void HandleFailDungeon(PlayerRef player, Protocol::DungeonFailReason reason);
