@@ -5,10 +5,13 @@
 #include "Components/CanvasPanel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Player/AOPlayerController.h"
 #include "Game/AODungeonGameMode.h"
 
 void UDungeonClearWidget::NativeConstruct()
 {
+	Super::NativeConstruct();
+
 	if (Btn_Check)
 		Btn_Check->OnClicked.AddUniqueDynamic(this, &UDungeonClearWidget::OnCheckClicked);
 }
@@ -91,9 +94,17 @@ void UDungeonClearWidget::UpdateCountdown()
 
 void UDungeonClearWidget::OnCheckClicked()
 {
-	AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GetWorld()->GetAuthGameMode());
-	if (GameMode)
+	//AAODungeonGameMode* GameMode = Cast<AAODungeonGameMode>(GetWorld()->GetAuthGameMode());
+	//if (GameMode)
+	//{
+	//	GameMode->SendDungeonCompleteRequest();
+	//}
+	AAOPlayerController* PlayerController = Cast<AAOPlayerController>(GetOwningPlayer());
+
+	if (!PlayerController)
 	{
-		GameMode->SendDungeonCompleteRequest();
+		return;
 	}
+
+	PlayerController->ServerRequestDungeonComplete();
 }

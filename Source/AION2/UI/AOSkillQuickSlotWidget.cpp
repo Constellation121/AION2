@@ -35,8 +35,6 @@ void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 InNewIndex)
     CurrentSkillIndex = InNewIndex;
 
     SetSkillIcon(ViewDataByComboIndex[CurrentSkillIndex].Icon);
-    SetSkillLevel(ViewDataByComboIndex[CurrentSkillIndex].AbilityLevel);
-
 }
 
 void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
@@ -55,15 +53,6 @@ void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
     }
 
     // SizeBox로 감싸둬도 괜찮다!
-}
-
-void UAOSkillQuickSlotWidget::SetSkillLevel(int32 InLevel)
-{
-    if (TB_SkillLevel)
-    {
-        TB_SkillLevel->SetText(
-            FText::FromString(FString::Printf(TEXT("Lv%d"), InLevel)));
-    }
 }
 
 const FAOSkillSlotViewData* UAOSkillQuickSlotWidget::GetCurrentSkillSlotViewData() const
