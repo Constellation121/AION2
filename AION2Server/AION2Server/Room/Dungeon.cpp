@@ -341,10 +341,10 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 
 			std::wcout.imbue(std::locale("kor"));
 
-			dbBind.BindCol(1, itemInstanceId);
-			dbBind.BindCol(2, itemTemplateId);
-			dbBind.BindCol(3, slotIndex);
-			dbBind.BindCol(4, itemCount);
+			dbBind.BindCol(0, itemInstanceId);
+			dbBind.BindCol(1, itemTemplateId);
+			dbBind.BindCol(2, slotIndex);
+			dbBind.BindCol(3, itemCount);
 
 			if (dbBind.Execute())
 			{
@@ -361,6 +361,7 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 					}
 				}
 			}
+			GDBConnectionPool->Push(dbConnect);
 
 		}
 	}
@@ -378,6 +379,7 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 			dediInfo->set_clientclass(leader->GetClass());
 
 			DBConnection* dbConnect = GDBConnectionPool->Pop();
+			if (dbConnect == nullptr) return;
 			DBBind<1, 4> dbBind(*dbConnect, L"{CALL sp_GetItems(?)}");
 			dbBind.BindParam(0, leaderId);
 
@@ -388,10 +390,10 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 
 			std::wcout.imbue(std::locale("kor"));
 
-			dbBind.BindCol(1, itemInstanceId);
-			dbBind.BindCol(2, itemTemplateId);
-			dbBind.BindCol(3, slotIndex);
-			dbBind.BindCol(4, itemCount);
+			dbBind.BindCol(0, itemInstanceId);
+			dbBind.BindCol(1, itemTemplateId);
+			dbBind.BindCol(2, slotIndex);
+			dbBind.BindCol(3, itemCount);
 
 			if (dbBind.Execute())
 			{
@@ -408,7 +410,7 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 					}
 				}
 			}
-
+			GDBConnectionPool->Push(dbConnect);
 		}
 	}
 	SendBufferRef buffer = PacketHandler::MakeSendBuffer(pkt);
@@ -422,7 +424,6 @@ void DungeonWaitingRoom::HandleDungeonStart(PlayerRef player, int32 dungeonId)
 	if (it == _dungeons.end()) return;
 
 	DungeonRef dungeon = it->second;
-	if (dungeon->GetLeader() != player) return;
 
 	if (!CheckMembersReady(dungeon))
 	{
@@ -501,7 +502,7 @@ void DungeonWaitingRoom::StartDungeonPacket(DungeonRef dungeon)
 }
 
 
-void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId)
+void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId, int32 gold)
 {
 	auto it = _dungeons.find(dungeonId);
 	if (it == _dungeons.end()) return;
@@ -509,6 +510,7 @@ void DungeonWaitingRoom::HandleDungeonEnd(int32 dungeonId)
 	DungeonRef dungeon = it->second;
 	if (!dungeon) return;
 	Protocol::S_RequestDungeonCompletePacket endPacket;
+	endPacket.set_gold(gold);
 	SendBufferRef endBuffer = PacketHandler::MakeSendBuffer(endPacket);
 
 	for (auto& member : dungeon->GetMembers())

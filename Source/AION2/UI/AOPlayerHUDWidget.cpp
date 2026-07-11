@@ -15,7 +15,6 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 
-#include "Player/AOPlayerState.h"
 
 
 // TODO(SuYeon): Delegate마다, 만약 다른 ASC와 연동되어있다면 로그를 출력하거나 하는 방어적 코드 추가 +Monster의 것에도 추가할 것.
@@ -29,17 +28,23 @@ void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
         return;
     }
 
-    const bool bASCChanged = BoundASC != InASC;
+	// 기존 ASC에 묵인 delegate 먼제 제거.
+	// BoundASC가 새 ASC로 바뀐 뒤에 제거하면 ASC delegate가 남을 수 있기 때문입니다.
+	UnbindASCDelegates();
 
-	if (bASCChanged)
-	{
-		// ASC가 바뀌었을 때만 재호출
-		Super::BindToASC(InASC);
-	}
-	else
-	{
-		UnbindASCDelegates();
-	}
+	Super::BindToASC(InASC);
+
+ //   const bool bASCChanged = BoundASC != InASC;
+
+	//if (bASCChanged)
+	//{
+	//	// ASC가 바뀌었을 때만 재호출
+	//	Super::BindToASC(InASC);
+	//}
+	//else
+	//{
+	//	UnbindASCDelegates();
+	//}
 
 	/*
 	* ASC가 바뀜 => 상위 Bind 로직 호출 => 여전히 null이면,
@@ -98,6 +103,10 @@ void UAOPlayerHUDWidget::SetPlayerName(const FText PlayerName)
 
 void UAOPlayerHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)
 {
+	if (!BoundASC)
+	{
+		return;
+	}
 	const UAOAttributeSet* AttributeSet = BoundASC->GetSet<UAOAttributeSet>();
 	if (!AttributeSet)
 	{
@@ -109,6 +118,10 @@ void UAOPlayerHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)
 
 void UAOPlayerHUDWidget::HandleMaxHealthChanged(const FOnAttributeChangeData& Data)
 {
+	if (!BoundASC)
+	{
+		return;
+	}
 	const UAOAttributeSet* AttributeSet = BoundASC->GetSet<UAOAttributeSet>();
 	if (!AttributeSet)
 	{
@@ -120,6 +133,10 @@ void UAOPlayerHUDWidget::HandleMaxHealthChanged(const FOnAttributeChangeData& Da
 
 void UAOPlayerHUDWidget::HandleManaChanged(const FOnAttributeChangeData& Data)
 {
+	if (!BoundASC)
+	{
+		return;
+	}
 	const UAOAttributeSet* AttributeSet = BoundASC->GetSet<UAOAttributeSet>();
 	if (!AttributeSet)
 	{
@@ -131,6 +148,10 @@ void UAOPlayerHUDWidget::HandleManaChanged(const FOnAttributeChangeData& Data)
 
 void UAOPlayerHUDWidget::HandleMaxManaChanged(const FOnAttributeChangeData& Data)
 {
+	if (!BoundASC)
+	{
+		return;
+	}
 	const UAOAttributeSet* AttributeSet = BoundASC->GetSet<UAOAttributeSet>();
 	if (!AttributeSet)
 	{
@@ -142,6 +163,10 @@ void UAOPlayerHUDWidget::HandleMaxManaChanged(const FOnAttributeChangeData& Data
 
 void UAOPlayerHUDWidget::HandleStaminaChanged(const FOnAttributeChangeData& Data)
 {
+	if (!BoundASC)
+	{
+		return;
+	}
 	const UAOAttributeSet* AttributeSet = BoundASC->GetSet<UAOAttributeSet>();
 	if (!AttributeSet)
 	{
@@ -153,6 +178,10 @@ void UAOPlayerHUDWidget::HandleStaminaChanged(const FOnAttributeChangeData& Data
 
 void UAOPlayerHUDWidget::HandleMaxStaminaChanged(const FOnAttributeChangeData& Data)
 {
+	if (!BoundASC)
+	{
+		return;
+	}
 	const UAOAttributeSet* AttributeSet = BoundASC->GetSet<UAOAttributeSet>();
 	if (!AttributeSet)
 	{

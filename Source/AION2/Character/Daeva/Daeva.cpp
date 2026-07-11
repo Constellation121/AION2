@@ -1,6 +1,7 @@
 #include "Character/Daeva/Daeva.h"
 #include "UI/AOQuickSlotComponent.h"
 #include "Player/AOPlayerState.h"
+#include "Manager/AOPlayerManager.h"
 #include "GAS/AOGameplayTags.h"
 #include "Character/AOCharacterMovementComponent.h"
 #include "Data/DA_AbilitySet.h"
@@ -141,6 +142,10 @@ void ADaeva::BeginPlay()
 	TargetZoomDistance = SpringArm->TargetArmLength;
 	GetWorldTimerManager().SetTimer(TargetSearchTimer, this, &ThisClass::SearchTarget, 0.25f, true);
 
+	if (GetNetMode() != NM_DedicatedServer)
+	{
+		GetWorldTimerManager().SetTimer(OverheadWidgetRefreshTimer,	this,&ADaeva::RefreshOverheadWidgetIfVisible,0.5f,true);
+	}
 }
 
 void ADaeva::Tick(float DeltaTime)
@@ -156,6 +161,8 @@ void ADaeva::PossessedBy(AController* NewController)
 
 
 	InitGAS();
+
+	RestorePlayerInfoFromPlayerState();
 
 	// 선환 추가 
 	SetGenericTeamId(FGenericTeamId(TEAM_PERCEPTION_DAEVA)); // 플레이어 팀
@@ -176,6 +183,8 @@ void ADaeva::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitGAS();
+
+	RestorePlayerInfoFromPlayerState();
 	
 	// LocalController일 때만 UI 만들도록 설정
 	if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
@@ -493,9 +502,30 @@ void ADaeva::ResetForDungeonRespawn()
 
 	// 사망 태그 제거.
 	ASC->RemoveLooseGameplayTag(STATE_DEAD);
+	ASC->RemoveReplicatedLooseGameplayTag(STATE_DEAD);
 
 	// New Pawn이므로 기본적으로 false이지만 명확하게 하기 위해 초기화.
 	bIsDead = false;
+
+	if (OverheadStatusWidgetComponent)
+	{
+		OverheadStatusWidgetComponent->SetVisibility(true);
+	}
+
+	// 같은 Pawn으로 부활하는 경우 OnRep_PlayerState가 다시 안 올 수 있으므로 직접 다시 함.
+	BindOverheadStatusWidget();
+
+	// 로컬 갱신.
+	NotifyPlayerUIReady(); // 서버에서도 호출 될 수 있으므로, PlayerController에 Clinet RPC를 만들어서 HUD 다시 묶는 것이 좋다.
+
+	if (HasAuthority())
+	{
+		if (AAOPlayerController* AOController = Cast<AAOPlayerController>(GetController()))
+		{
+			AOController->Client_RefreshPlayerHUD();
+		}
+	}
+
 
 	if (HasAuthority())
 	{
@@ -971,7 +1001,13 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 
 	bIsDead = true;
 
-	OverheadStatusWidgetComponent->DestroyComponent();
+	//OverheadStatusWidgetComponent->DestroyComponent();
+	//부활 후 다시 사용할 컴포넌트라서 숨기기만 하면 된다.
+	if (OverheadStatusWidgetComponent)
+	{
+		OverheadStatusWidgetComponent->SetVisibility(false);
+	}
+
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
@@ -1011,6 +1047,7 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 		ASC->SetLooseGameplayTagCount(STATE_GLIDING, 0);
 
 		ASC->AddLooseGameplayTag(STATE_DEAD);
+		ASC->AddReplicatedLooseGameplayTag(STATE_DEAD);
 	}
 	else
 	{
@@ -1264,7 +1301,35 @@ void ADaeva::RestorePlayerInfoFromPlayerState()
 		return;
 	}
 
-	
+	// 1. HP Apply
+	if (HasAuthority())
+	{
+		float InitialHP = AOPlayerState->GetInitialHP();
+		if (InitialHP > 0.0f && ASC)
+		{
+			ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), InitialHP);
+			UE_LOG(LogTemp, Log, TEXT("[Dungeon] Restored HP for %s on Server: %.1f"), *GetName(), InitialHP);
+		}
+	}
+
+	// 2. Items Apply 
+	if (!HasAuthority() && IsLocallyControlled())
+	{
+		UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr;
+		UAOQuickSlotComponent* QuickSlotComp = GetQuickSlotComponent();
+		if (PlayerManager && QuickSlotComp)
+		{
+			const TMap<int32, Protocol::ItemData>& Items = PlayerManager->GetMyItems();
+			for (const auto& Pair : Items)
+			{
+				const Protocol::ItemData& Item = Pair.Value;
+				QuickSlotComp->InitializeQuickSlot(Item.slotindex(), Item.itemtemplateid(), Item.iteminstancedid(), Item.count());
+				UE_LOG(LogTemp, Log, TEXT("[Dungeon] Restored Item to QuickSlot[%d] from Local Subsystem: TemplateId=%d, Count=%d"), 
+					Item.slotindex(), Item.itemtemplateid(), Item.count());
+			}
+		}
+	}
+
 }
 
 void ADaeva::FellOutOfWorld(const UDamageType& DmgType)
@@ -1376,22 +1441,33 @@ void ADaeva::CheckTargetGroggy()
 
 void ADaeva::BindOverheadStatusWidget()
 {
-	/* Suyeon: More strict validation Check => else: retry next Tick(26.07.07) */
-
-	// Exception Handling 
-	// => Validation Check: Is LocalPlayer && DedicatedServer => Can Show UI
-	// Existed Validation Check
-	if (GetNetMode() == NM_DedicatedServer || !OverheadStatusWidgetComponent)
+	if (GetNetMode() == NM_DedicatedServer)
 	{
 		return;
 	}
 
-	// Validation Check: If (PlayerState && ASC ready?)
-	// else: retry next Tick.
-	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
-	if (!AOPlayerState || !AOPlayerState->GetAbilitySystemComponent())
+	if (!OverheadStatusWidgetComponent)
 	{
-		// 최대 횟수를 지정해 retry.
+		return;
+	}
+
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	if (!AOPlayerState)
+	{
+		if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
+		{
+			GetWorldTimerManager().SetTimerForNextTick(
+				this,
+				&ADaeva::BindOverheadStatusWidget
+			);
+		}
+
+		return;
+	}
+
+	UAbilitySystemComponent* PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
+	if (!PlayerStateASC)
+	{
 		if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
 		{
 			GetWorldTimerManager().SetTimerForNextTick(
@@ -1406,18 +1482,14 @@ void ADaeva::BindOverheadStatusWidget()
 	UAOPlayerHUDWidget* StatusWidget =
 		Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
 
-	// Validation Check: If (OverheadStatusWidgetComponent is ready)
-	// else: retry next Tick.
 	if (!StatusWidget)
 	{
 		OverheadStatusWidgetComponent->InitWidget();
 
-		StatusWidget =
-			Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
+		StatusWidget =	Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
 
 		if (!StatusWidget)
 		{
-			// 최대 횟수를 지정해 retry.
 			if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
 			{
 				GetWorldTimerManager().SetTimerForNextTick(
@@ -1430,40 +1502,18 @@ void ADaeva::BindOverheadStatusWidget()
 		}
 	}
 
-	UAbilitySystemComponent* PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
-
-	// 이미 성공한 처리일 경우 return: Bound된 ASC가 같은지 + 지금 지정된 WidgetInstance가 같은지.
-	if (BoundOverheadStatusASC.Get() == PlayerStateASC &&
-		BoundOverheadStatusWidget.Get() == StatusWidget)
-	{
-		/*
-		* BoundOverheadStatusWidget는 이미 생성자에서 명시적으로는 한 번만 생성하고 있지만, 
-		* 외부에서 아래의 작업을 하면 깨진다. 
-		* Runtime에서 SetWidgetClass() 다시 호출 
-		* 외부에서 SetWidget()으로 다른 WidgetInstance 주입
-		* component의 unregister/register 호출로 내부 Widget 재 초기화
-		* level streaming, actor reconstruction, PIE 재시작성 흐름 blueprint construction script 변경 등으로 Component는 있는데 내부 Widget이 새로 잡힘
-		* 스스로 InitWidget() 호출 했을 때 기존 객체가 없으면 새로 생성됨
-		* 
-		* 거의 가능성 없는 부분이라고 생각하지만 일단 최대한 방어적으로 넣었음.
-  		*/
-
-		// /성공 후 끝/이 아니라 현재 WidgetComponent의 현재 UserWidget이 항상 현재 ASC에 묶이도록.
-		StatusWidget->BindToPlayerState(AOPlayerState);
-
-		return;
-	}
-
-	// else: 기존에 검사를 수행하는 조건에 다시 지정
+	// 여기서부터 핵심.
+	// 같은 ASC / 같은 Widget이어도 다시 바인딩하고 현재 Attribute 값을 다시 밀어준다.
 	BoundOverheadStatusASC = PlayerStateASC;
 	BoundOverheadStatusWidget = StatusWidget;
-
-
-	// 다음에 Pawn이 재생성되면 다시 시도될 수 있으므로 Initialize.
 	PawnASCBindRetryCount = 0;
 
-	// Finally Called.
 	StatusWidget->BindToPlayerState(AOPlayerState);
+	StatusWidget->BroadcastInitialAttributes();
+
+	OverheadStatusWidgetComponent->RequestRedraw();
+
+	UE_LOG(	LogTemp,Warning,TEXT("[Overhead Bind/Refresh] %s | PS=%s | ASC=%s | Widget=%s"),*GetName(),	*GetNameSafe(AOPlayerState),*GetNameSafe(PlayerStateASC),*GetNameSafe(StatusWidget));
 }
 
 void ADaeva::NotifyPlayerUIReady()
@@ -1650,4 +1700,31 @@ void ADaeva::Reset_OrbStackAndColor()
 	LastOrbColor = EOrbColor::None;
 
 
+}
+
+void ADaeva::RefreshOverheadWidgetIfVisible()
+{
+	if (GetNetMode() == NM_DedicatedServer)
+	{
+		return;
+	}
+
+	if (!OverheadStatusWidgetComponent)
+	{
+		return;
+	}
+
+	// StatusWidget이 있어도 내부 ASC 바인딩이 꼬였을 수 있으므로
+	// 매번 다시 Bind 시도.
+	BindOverheadStatusWidget();
+
+	UAOPlayerHUDWidget* StatusWidget = Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
+
+	if (!StatusWidget)
+	{
+		return;
+	}
+
+	StatusWidget->BroadcastInitialAttributes();
+	OverheadStatusWidgetComponent->RequestRedraw();
 }

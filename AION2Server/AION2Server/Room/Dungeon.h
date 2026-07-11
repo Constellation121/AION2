@@ -61,7 +61,7 @@ public:
 	void HandleReadyPacket(PlayerRef player, int32 dungeonId);
 	void HandleExitPacket(PlayerRef player, int32 dungeonId);
 	void HandleFailDungeon(PlayerRef player, Protocol::DungeonFailReason reason);
-	void HandleDungeonEnd(int32 dungeonId);
+	void HandleDungeonEnd(int32 dungeonId, int32 gold);
 
 	bool CheckMembersReady(DungeonRef dungeon);
 	bool CheckAlreadyIn(uint64 playerId, DungeonRef dungeon);
