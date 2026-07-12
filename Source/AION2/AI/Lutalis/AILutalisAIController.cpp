@@ -7,6 +7,8 @@
 #include "GAS/AOGameplayTags.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "AbilitySystemComponent.h"
+#include "Game/DungeonGameState.h"
+
 
 AAILutalisAIController::AAILutalisAIController()
 {
@@ -26,6 +28,13 @@ void AAILutalisAIController::TargetPerceptionOn(AActor* Actor, FAIStimulus Stiml
 	
 			ArrayTargetPlayers.Add(Actor);
 			CurrentTargetPlayer = Actor;
+
+			// 보스 브금 재생 
+			if (auto* GS = GetWorld()->GetGameState<ADungeonGameState>())
+			{
+				GS->SetMusic(EDungeonMusic::Boss);
+			}
+
 		}
 	}
 }

@@ -106,7 +106,21 @@ bool AAIMonsterControllerBase::RefreshOrReset()
 			UAOAttributeSet* pAttributeSet = ControlledMonster->GetAttributeSet();
 			pAttributeSet->SetHealth(pAttributeSet->GetMaxHealth());
 			pAttributeSet->SetGroggy(pAttributeSet->GetMaxGroggy());
+			
+			if (ControlledMonster->Get_GimmickArray() != nullptr)
+			{
+				TArray<AAOMonsterBase::FGimmickEntry>* ArrayGimmick = ControlledMonster->Get_GimmickArray();
+
+				for (auto& iter : *ArrayGimmick)
+				{
+					iter.bTriggered = false;
+				}
+			}
+
+			
 			// =================================
+
+
 
 			Set_Phase(PHASE_MONSTER_RESET);	
 			Set_State(STATE_MONSTER_TH_IDLE);
