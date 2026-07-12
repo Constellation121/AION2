@@ -9,7 +9,9 @@
 #include "Character/Daeva/Daeva.h"
 
 #include "Gas/AOGameplayTags.h"
-
+#include "Abilities/GameplayAbility.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayEffectTypes.h"
 
 void UAOQuickSkillHUD::NativeOnInitialized()
 {
@@ -50,10 +52,19 @@ void UAOQuickSkillHUD::NativeOnInitialized()
     SkillSlotArray.Add(Skill_T);
 }
 
-
-
 void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
 {
+    if (!InASC)
+    {
+        UnbindFromASC();;
+        return;
+    }
+
+    // 중복 Binding 방지
+    UnbindComboInputCompletedDelegate();
+    UnbindComboDelegates();
+    UnbindCooldownDelegates();
+
     Super::BindToASC(InASC);
 
     // Exception Handling
@@ -62,7 +73,7 @@ void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
         return;
     }
    
-    const ADaeva* Daeva = Cast<ADaeva>(BoundASC->GetAvatarActor());
+    ADaeva* Daeva = Cast<ADaeva>(BoundASC->GetAvatarActor());
     if (!Daeva)
     {
         Daeva = Cast<ADaeva>(GetOwningPlayerPawn());
@@ -87,13 +98,25 @@ void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
             TEXT("UAOQuickSkillHUD::BindToASC...CharacterName: %s,  AbilitySetName: %s"), 
             *GetNameSafe(Daeva), *GetPathNameSafe(AbilitySet)
         );
+        return;
     }
 
     // Button Init하는 부분 바꿔줌.
     InitSkillSlots(AbilitySet);
 
-
+    BindComboInputCompletedDelegate(Daeva);
     BindComboDelegates();
+    BindCooldownDelegates();
+}
+
+void UAOQuickSkillHUD::UnbindFromASC()
+{
+    // 기존 Bind 정리.
+    UnbindComboInputCompletedDelegate();
+    UnbindComboDelegates();
+    UnbindCooldownDelegates();
+
+    Super::UnbindFromASC();
 }
 
 void UAOQuickSkillHUD::InitSkillSlots(const UDA_AbilitySet* InAbilitySet)
@@ -134,7 +157,24 @@ void UAOQuickSkillHUD::InitSkillSlots(const UDA_AbilitySet* InAbilitySet)
         ViewData.AbilityID = AbilityData.AbilityID;
         ViewData.Icon = AbilityData.Icon;
         ViewData.AbilityLevel = AbilityData.AbilityLevel;
-        ViewData.CooldownTag = AbilityData.CooldownTag;
+
+        // Cooldown Tag는 Ability 자체의 쿨다운 Tag를 읽어와서 넣어주기 
+        if (AbilityData.Ability)
+        {
+            const UGameplayAbility* AbilityCDO =
+                AbilityData.Ability->GetDefaultObject<UGameplayAbility>();
+
+            if (AbilityCDO)
+            {
+                const FGameplayTagContainer* CooldownTags =
+                    AbilityCDO->GetCooldownTags();
+
+                if (CooldownTags && !CooldownTags->IsEmpty())
+                {
+                    ViewData.CooldownTag = CooldownTags->First();
+                }
+            }
+        }
 
         /*
         * TODO(SuYeon): 나중에.
@@ -159,75 +199,317 @@ void UAOQuickSkillHUD::InitSkillSlots(const UDA_AbilitySet* InAbilitySet)
 
 void UAOQuickSkillHUD::BindComboDelegates()
 {
-    // 콤보 태그 변화 구독: 각각의 1번 공격은 Combo가 아니므로 괜찮음.
+    if (!BoundASC)
+    {
+        return;
+    }
 
-    // Left Button
-    BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_LB2, EGameplayTagEventType::NewOrRemoved)
-        .AddUObject(this, &UAOQuickSkillHUD::HandleLBComboTagChanged);
+    // 콤보 태그 변화 구독: NewOrRemoved에 구독하고 있으므로, 각각의 1번 공격은 Combo가 아님 =>  따로 구독 안해도 됨.
+   // // Left Button
+   // BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_LB2, EGameplayTagEventType::NewOrRemoved)
+   //     .AddUObject(this, &UAOQuickSkillHUD::HandleLBComboTagChanged);
+   //
+   // BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_LB3, EGameplayTagEventType::NewOrRemoved)
+   //     .AddUObject(this, &UAOQuickSkillHUD::HandleLBComboTagChanged);
+   //
+   // // Right Button
+   // BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_RB2, EGameplayTagEventType::NewOrRemoved)
+   //     .AddUObject(this, &UAOQuickSkillHUD::HandleRBComboTagChanged);
+   //
+   // BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_RB3, EGameplayTagEventType::NewOrRemoved)
+   //     .AddUObject(this, &UAOQuickSkillHUD::HandleRBComboTagChanged);
 
-    BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_LB3, EGameplayTagEventType::NewOrRemoved)
-        .AddUObject(this, &UAOQuickSkillHUD::HandleLBComboTagChanged);
 
-    // Right Button
-    BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_RB2, EGameplayTagEventType::NewOrRemoved)
-        .AddUObject(this, &UAOQuickSkillHUD::HandleRBComboTagChanged);
 
-    BoundASC->RegisterGameplayTagEvent(COMBO_AVAILABLE_RB3, EGameplayTagEventType::NewOrRemoved)
-        .AddUObject(this, &UAOQuickSkillHUD::HandleRBComboTagChanged);
+    auto BindComboTag = [this](FGameplayTag Tag, void (UAOQuickSkillHUD::* Func)(FGameplayTag, int32))
+        {
+            FDelegateHandle Handle =
+                BoundASC->RegisterGameplayTagEvent(Tag, EGameplayTagEventType::NewOrRemoved)
+                .AddUObject(this, Func);
 
+            ComboTagDelegateHandles.Emplace(Tag, Handle);
+        };
+
+    BindComboTag(COMBO_AVAILABLE_LB2, &UAOQuickSkillHUD::HandleLBComboTagChanged);
+    BindComboTag(COMBO_AVAILABLE_LB3, &UAOQuickSkillHUD::HandleLBComboTagChanged);
+    BindComboTag(COMBO_AVAILABLE_RB2, &UAOQuickSkillHUD::HandleRBComboTagChanged);
+    BindComboTag(COMBO_AVAILABLE_RB3, &UAOQuickSkillHUD::HandleRBComboTagChanged);
+
+    
+}
+
+void UAOQuickSkillHUD::UnbindComboDelegates()
+{
+    if (!BoundASC)
+    {
+        ComboTagDelegateHandles.Empty();
+        return;
+    }
+
+    for (const TPair<FGameplayTag, FDelegateHandle>& Pair : ComboTagDelegateHandles)
+    {
+        if (Pair.Value.IsValid())
+        {
+            BoundASC->RegisterGameplayTagEvent(Pair.Key, EGameplayTagEventType::NewOrRemoved)
+                .Remove(Pair.Value);
+        }
+    }
+
+    ComboTagDelegateHandles.Empty();
+}
+
+void UAOQuickSkillHUD::BindCooldownDelegates()
+{
+    if (!BoundASC)
+    {
+        return;
+    }
+
+    // 같은 CooldownTag가 실수로 여러 슬롯에 들어가 있으면 delegate가 중복 등록됨!
+    // 슬롯마다 태그가 유니크하다는 설계여도 방어적으로 한 번만 등록.
+    TSet<FGameplayTag> BoundTags;
+
+    for (UAOSkillQuickSlotWidget* SlotWidget : SkillSlotArray)
+    {
+        if (!SlotWidget)
+        {
+            continue;
+        }
+
+        // 일단 빠른 구현을 위해 슬롯당 ViewData가 하나라고 가정.
+        // => 현재 ViewData(이 시점에서 첫번째)만 읽으면 해당 슬롯의 쿨다운 태그를 알 수 있다.
+        // 나중에 해당 Slot의 다른 Skill에 대해서도 구현한다고 하면, 순회하면서 처리해줘야 함.
+        const FAOSkillSlotViewData* ViewData = SlotWidget->GetCurrentSkillSlotViewData();
+        if (!ViewData || !ViewData->CooldownTag.IsValid())
+        {
+            continue;
+        }
+
+        const FGameplayTag CooldownTag = ViewData->CooldownTag;
+        if (BoundTags.Contains(CooldownTag))
+        {
+            continue;
+        }
+
+        BoundTags.Add(CooldownTag);
+
+        // NewOrRemoved => ASC의 CooldownTag count가 생길 때, 사라질 때 호출됨.
+        // 해당 Event는 어떤 Slot에 해당 Skill이 있는지 전달해줄 수 없으므로, 
+        // Handler에서 Slot을 순회해서 검사해줌.
+        FDelegateHandle Handle =
+            BoundASC->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::NewOrRemoved)
+            .AddUObject(this, &UAOQuickSkillHUD::HandleCooldownTagChanged);
+
+        CooldownTagDelegateHandles.Emplace(CooldownTag, Handle);
+    }
+}
+
+void UAOQuickSkillHUD::UnbindCooldownDelegates()
+{
+    if (!BoundASC)
+    {
+        CooldownTagDelegateHandles.Empty();
+        return;
+    }
+
+    for (const TPair<FGameplayTag, FDelegateHandle>& Pair : CooldownTagDelegateHandles)
+    {
+        const FGameplayTag CooldownTag = Pair.Key;
+        const FDelegateHandle& Handle = Pair.Value;
+
+        if (!CooldownTag.IsValid() || !Handle.IsValid())
+        {
+            continue;
+        }
+
+        // RegisterGameplayTagEvent는 태그별 delegate list를 반환한다.
+        // 등록할 때 받은 handle로 정확히 같은 바인딩만 제거한다.
+        BoundASC->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::NewOrRemoved)
+            .Remove(Handle);
+    }
+
+    CooldownTagDelegateHandles.Empty();
+}
+
+void UAOQuickSkillHUD::HandleCooldownTagChanged(FGameplayTag CooldownTag, int32 NewCount)
+{
+    	UAOSkillQuickSlotWidget* SlotWidget = FindCurrentSlotByCooldownTag(CooldownTag);
+	if (!SlotWidget)
+	{
+		return;
+	}
+
+	if (NewCount > 0)
+	{
+		float RemainingTime = 0.0f;
+		float Duration = 0.0f;
+
+		if (GetCooldownTime(CooldownTag, RemainingTime, Duration))
+		{
+			SlotWidget->StartCooldown(RemainingTime, Duration);
+		}
+	}
+	else
+	{
+		SlotWidget->StopCooldown();
+	}
+}
+
+UAOSkillQuickSlotWidget* UAOQuickSkillHUD::FindCurrentSlotByCooldownTag(FGameplayTag CooldownTag) const
+{
+    if (!CooldownTag.IsValid())
+    {
+        return nullptr;
+    }
+
+    for (UAOSkillQuickSlotWidget* SlotWidget : SkillSlotArray)
+    {
+        if (!SlotWidget)
+        {
+            continue;
+        }
+
+        const FAOSkillSlotViewData* ViewData = SlotWidget->GetCurrentSkillSlotViewData();
+        if (ViewData && ViewData->CooldownTag == CooldownTag)
+        {
+            return SlotWidget;
+        }
+    }
+
+    return nullptr;
+}
+
+bool UAOQuickSkillHUD::GetCooldownTime(FGameplayTag CooldownTag, float& OutRemainingTime, float& OutDuration) const
+{
+    OutRemainingTime = 0.0f;
+    OutDuration = 0.0f;
+
+    if (!BoundASC || !CooldownTag.IsValid())
+    {
+        return false;
+    }
+
+    FGameplayTagContainer CooldownTags;
+    CooldownTags.AddTag(CooldownTag);
+
+    // ASC에 적용 중인 Active GameplayEffect 중,
+    // CooldownTag를 가진 효과를 찾는다.
+    const FGameplayEffectQuery Query =
+        FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTags);
+
+    const TArray<TPair<float, float>> TimeRemainingAndDurations =
+        BoundASC->GetActiveEffectsTimeRemainingAndDuration(Query);
+
+    if (TimeRemainingAndDurations.IsEmpty())
+    {
+        return false;
+    }
+
+    // 같은 태그로 여러 GE가 잡히는 경우 가장 긴 남은 시간을 UI에 표시한다.
+    for (const TPair<float, float>& TimePair : TimeRemainingAndDurations)
+    {
+        const float RemainingTime = TimePair.Key;
+        const float Duration = TimePair.Value;
+
+        if (RemainingTime > OutRemainingTime)
+        {
+            OutRemainingTime = RemainingTime;
+            OutDuration = Duration;
+        }
+    }
+
+    return OutRemainingTime > 0.0f && OutDuration > 0.0f;
 }
 
 void UAOQuickSkillHUD::HandleLBComboTagChanged(FGameplayTag Tag, int32 NewCount)
 {
-    //UE_UNUSED(Tag);
-    //UE_UNUSED(NewCount);
+    // 콤보 가능 태그가 사라짐.
+    if (NewCount <= 0)
+    {
+        return;
+    }
 
     // 아직 이 함수에서는 안 쓰고 있음을 명시.
     (void)Tag;
-    (void)NewCount;
-    
-    Skill_R->HandleComboInput();
+
+    if (NewCount > 0)
+    {
+        Skill_R->HandleComboInput();  
+    }
+    else
+    {
+        Skill_R->ResetComboInput();
+    }
 }
 
 void UAOQuickSkillHUD::HandleRBComboTagChanged(FGameplayTag Tag, int32 NewCount)
 {
-    //UE_UNUSED(Tag);
-    //UE_UNUSED(NewCount);
+    if (NewCount <= 0)
+    {
+        return;
+    }
 
     // 아직 이 함수에서는 안 쓰고 있음을 명시.
     (void)Tag;
-    (void)NewCount;
 
-    Skill_T->HandleComboInput();
+    if (NewCount > 0)
+    {
+        Skill_T->HandleComboInput();
+    }
+    else
+    {
+        Skill_T->ResetComboInput();  
+    }
 }
 
-
-void UAOQuickSkillHUD::HandleCooldownTagChanged(FGameplayTag CooldownTag, int32 NewCount)
+void UAOQuickSkillHUD::BindComboInputCompletedDelegate(ADaeva* InDaeva)
 {
-    //if (NewCount > 0)
-    //{
-    //    FAOSkillSlotViewData Data;
-    //    if (!BuildCooldownViewData(CooldownTag, Data))
-    //    {
-    //        return;
-    //    }
-    //
-    //    if (UAOSkillQuickSlotWidget* SlotWidget = FindSlotByCooldownTag(CooldownTag))
-    //    {
-    //        SlotWidget->StartCooldown(Data.RemainingTime, Data.Duration);
-    //    }
-    //
-    //    OnCooldownStarted.ExecuteIfBound(Data);
-    //}
-    //else
-    //{
-    //    if (UAOSkillQuickSlotWidget* SlotWidget = FindSlotByCooldownTag(CooldownTag))
-    //    {
-    //        SlotWidget->StopCooldown();
-    //    }
-    //
-    //    OnCooldownStopped.ExecuteIfBound(CooldownTag);
-    //}
+    if (!IsValid(InDaeva))
+    {
+        return;
+    }
+
+    BoundComboInputDaeva = InDaeva;
+
+    ComboInputCompletedDelegateHandle =
+        InDaeva->OnComboInputCompleted.AddUObject(
+            this,
+            &UAOQuickSkillHUD::HandleComboInputCompleted
+        );
+}
+
+void UAOQuickSkillHUD::UnbindComboInputCompletedDelegate()
+{
+    ADaeva* Daeva = BoundComboInputDaeva.Get();
+
+    if (Daeva && ComboInputCompletedDelegateHandle.IsValid())
+    {
+        Daeva->OnComboInputCompleted.Remove(
+            ComboInputCompletedDelegateHandle
+        );
+    }
+
+    ComboInputCompletedDelegateHandle.Reset();
+    BoundComboInputDaeva.Reset();
+}
+
+void UAOQuickSkillHUD::HandleComboInputCompleted(int32 SlotBaseInputId)
+{
+    const TObjectPtr<UAOSkillQuickSlotWidget>* SlotPtr =
+        SkillSlotByAbilityID.Find(SlotBaseInputId);
+
+    if (!SlotPtr)
+    {
+        return;
+    }
+
+    UAOSkillQuickSlotWidget* SlotWidget = SlotPtr->Get();
+    if (!IsValid(SlotWidget))
+    {
+        return;
+    }
+
+    SlotWidget->ResetComboInput();
 }
 
 void UAOQuickSkillHUD::PlaySkillPressedFeedback(int32 InputId)
