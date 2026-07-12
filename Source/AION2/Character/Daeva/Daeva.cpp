@@ -1449,6 +1449,10 @@ void ADaeva::CheckTargetGroggy()
 {
 	if (!IsValid(CurrentTarget))
 	{
+		if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_KEYE))
+		{
+			ASC->RemoveLooseGameplayTag(COMBO_AVAILABLE_KEYE);
+		}
 		return;
 	}
 
