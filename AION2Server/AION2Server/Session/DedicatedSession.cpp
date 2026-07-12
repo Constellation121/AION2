@@ -2,6 +2,7 @@
 #include "DedicatedSession.h"
 #include "DediSessionManager.h"
 #include "PacketHandler.h"
+#include "Dungeon.h"
 
 
 void DedicatedSession::OnConnected()
@@ -15,7 +16,8 @@ void DedicatedSession::OnDisconnected()
 	
 	if (_dungeon)
 	{
-
+		GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonExitByDedi, _dungeon->GetId());
+		_dungeon = nullptr;
 	}
 }
 

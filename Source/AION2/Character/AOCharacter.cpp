@@ -552,6 +552,10 @@ TArray<USkeletalMeshComponent*> AAOCharacter::GetAllMeshes()
 	return Meshes;
 }
 
+void AAOCharacter::OnRep_IsDead()
+{
+}
+
 void AAOCharacter::SetupOwnedAttackColliders()
 {
 	if (!HasAuthority())

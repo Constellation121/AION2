@@ -227,9 +227,10 @@ void ADaeva::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(KeyQAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyQ));
 		EnhancedInputComponent->BindAction(KeyEAction, ETriggerEvent::Triggered, this, &ADaeva::GASInputPressed, static_cast<int32>(EAbilityID::KeyE));
 
-		// SuYeon: Released에 Bind되어있어야 UI도 키 입력 종료를 알 수 있음
-		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Completed, this, &ADaeva::InputLBPressed);
-		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Completed, this, &ADaeva::InputRBPressed);
+		EnhancedInputComponent->BindAction(LBAction, ETriggerEvent::Completed, this, &ADaeva::InputLBReleased);
+		EnhancedInputComponent->BindAction(RBAction, ETriggerEvent::Completed, this, &ADaeva::InputRBReleased);
+
+		// SuYeon: Released에 Bind되어있어야 UI도 키 입력 종료를 알 수 있음: KeyPressedEvent가 발생되기 위함.
 		EnhancedInputComponent->BindAction(Key1Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key1));
 		EnhancedInputComponent->BindAction(Key2Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key2));
 		EnhancedInputComponent->BindAction(Key3Action, ETriggerEvent::Completed, this, &ADaeva::GASInputReleased, static_cast<int32>(EAbilityID::Key3));
@@ -912,18 +913,19 @@ void ADaeva::InputLBPressed()
 
 	RequestStopSprint();
 
-	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB2))
+	EAbilityID AbilityID = EAbilityID::LB_1;
+
+	// 두 태그가 잠깐 함께 존재해도 더 높은 콤보를 우선.
+	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB3))
 	{
-		GASInputPressed(static_cast<int32>(EAbilityID::LB_2));
+		AbilityID = EAbilityID::LB_3;
 	}
-	else if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB3))
+	else if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_LB2))
 	{
-		GASInputPressed(static_cast<int32>(EAbilityID::LB_3));
+		AbilityID = EAbilityID::LB_2;
 	}
-	else
-	{
-		GASInputPressed(static_cast<int32>(EAbilityID::LB_1));
-	}
+
+	GASInputPressed(static_cast<int32>(AbilityID));
 }
 
 void ADaeva::InputRBPressed()
@@ -935,25 +937,52 @@ void ADaeva::InputRBPressed()
 
 	RequestStopSprint();
 
-	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB2))
-	{
+	EAbilityID AbilityID = EAbilityID::RB_1;
 
-		GASInputPressed(static_cast<int32>(EAbilityID::RB_2));
-	}
-	else if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB3))
+	// 두 태그가 잠깐 함께 존재해도 더 높은 콤보를 우선.
+	if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB3))
 	{
+		AbilityID = EAbilityID::RB_3;
+	}
+	else if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_RB2))
+	{
+		AbilityID = EAbilityID::RB_2;
+	}
 
-		GASInputPressed(static_cast<int32>(EAbilityID::RB_3));
-	}
-	else
-	{
-		GASInputPressed(static_cast<int32>(EAbilityID::RB_1));
-	}
+	GASInputPressed(static_cast<int32>(AbilityID));
 }
 
 void ADaeva::InputMoveReleased()
 {
 	RequestStopSprint();
+}
+
+void ADaeva::InputLBReleased()
+{
+	if (ASC)
+	{
+		GASInputReleased(static_cast<int32>(EAbilityID::LB_1));
+		GASInputReleased(static_cast<int32>(EAbilityID::LB_2));
+		GASInputReleased(static_cast<int32>(EAbilityID::LB_3));
+	}
+
+	OnComboInputCompleted.Broadcast(
+		static_cast<int32>(EAbilityID::LB_1)
+	);
+}
+
+void ADaeva::InputRBReleased()
+{
+	if (ASC)
+	{
+		GASInputReleased(static_cast<int32>(EAbilityID::RB_1));
+		GASInputReleased(static_cast<int32>(EAbilityID::RB_2));
+		GASInputReleased(static_cast<int32>(EAbilityID::RB_3));
+	}
+
+	OnComboInputCompleted.Broadcast(
+		static_cast<int32>(EAbilityID::RB_1)
+	);
 }
 
 void ADaeva::InputXPressed()
@@ -987,6 +1016,16 @@ void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	}
 }
 
+void ADaeva::OnRep_IsDead()
+{
+	//OverheadStatusWidgetComponent->DestroyComponent();
+	//부활 후 다시 사용할 컴포넌트라서 숨기기만 하면 된다.
+	if (OverheadStatusWidgetComponent)
+	{
+		OverheadStatusWidgetComponent->SetVisibility(!bIsDead);
+	}
+}
+
 void ADaeva::HandleDeath(EDeathReason DeathReason)
 {
 	if (bIsDead)
@@ -1001,14 +1040,6 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 
 	bIsDead = true;
 
-	//OverheadStatusWidgetComponent->DestroyComponent();
-	//부활 후 다시 사용할 컴포넌트라서 숨기기만 하면 된다.
-	if (OverheadStatusWidgetComponent)
-	{
-		OverheadStatusWidgetComponent->SetVisibility(false);
-	}
-
-
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
 	if (UCharacterMovementComponent* MoveComp = GetCharacterMovement())
@@ -1019,15 +1050,6 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("[Death] CharacterMovement is null: %s"), *GetName());
-	}
-
-	if (UCapsuleComponent* Capsule = GetCapsuleComponent())
-	{
-		Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Death] CapsuleComponent is null: %s"), *GetName());
 	}
 
 	OnPlayerDead.Broadcast(this);
@@ -1418,8 +1440,17 @@ void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 
 void ADaeva::CheckTargetGroggy()
 {
+	if (!ASC)
+	{
+		return;
+	}
+
 	if (!IsValid(CurrentTarget))
 	{
+		if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_KEYE))
+		{
+			ASC->RemoveLooseGameplayTag(COMBO_AVAILABLE_KEYE);
+		}
 		return;
 	}
 
