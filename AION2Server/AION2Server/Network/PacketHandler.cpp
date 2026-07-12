@@ -289,6 +289,14 @@ bool PacketHandler::HandleMapComplete(PacketSessionRef& session, Protocol::C_Map
 	if (!gameSession)return false;
 	PlayerRef player = gameSession->_player;
 	if (!player) return false;
+
+	// 세션 스레드(네트워크 스레드)에서 Redis를 미리 조회하여 Room 스레드 블로킹을 방지합니다.
+	int32 ttl = GRedisManager.GetDeathPenaltyTtl(player->GetName());
+	if (ttl > 0)
+	{
+		player->_deathPenaltyTtl = ttl;
+	}
+
 	GRoom->DoAsync(&Room::HandleEnterPlayer, player);
 
 	return true;
@@ -314,6 +322,28 @@ bool PacketHandler::HandleDash(PacketSessionRef& session, Protocol::C_DashPacket
 		return false;
 
 	GRoom->DoAsync(&Room::HandlePlayerDash, pkt, player);
+	return true;
+}
+
+bool PacketHandler::HandleJump(PacketSessionRef& session, Protocol::C_JumpPacket& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+	if (player == nullptr)
+		return false;
+
+	GRoom->DoAsync(&Room::HandlePlayerJump, pkt, player);
+	return true;
+}
+
+bool PacketHandler::HandleAttack(PacketSessionRef& session, Protocol::C_AttackPacket& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+	if (player == nullptr)
+		return false;
+
+	GRoom->DoAsync(&Room::HandleAttack, pkt, player);
 	return true;
 }
 

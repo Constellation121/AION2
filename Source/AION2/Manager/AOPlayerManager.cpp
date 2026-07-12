@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AOPlayerManager.h"
@@ -101,7 +101,7 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString& PlayerN
 				int Hp = 100;
 				if (PlayerInfo)
 					Hp = PlayerInfo->PlayerHp;
-				// === SuYeon: PlayerState¿¡ info¸¦ ¸í½ÃÀûÀ¸·Î »ðÀÔ ===
+				// === SuYeon: PlayerStateï¿½ï¿½ infoï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ===
 				if (AAOPlayerState* AOPlayerState = PlayerController->GetPlayerState<AAOPlayerState>())
 				{
 					AOPlayerState->SetPlayerInfo(PlayerId, PlayerName, ClassType, Hp);
@@ -524,5 +524,62 @@ void UAOPlayerManager::HandleDash(const uint64 PlayerId, FVector& NewLocation, F
 	if (MMOPlayer)
 	{
 		MMOPlayer->ReceiveDashPacket(NewLocation, NewRotation, NewVel);
+	}
+}
+
+void UAOPlayerManager::HandleJump(const uint64 PlayerId, bool bIsGliding)
+{
+	if (!GameInstance)
+		return;
+
+	if (GameInstance->GetMyPlayerId() == PlayerId) return;
+
+	auto PlayerRef = Players.Find(PlayerId);
+	if (PlayerRef == nullptr) return;
+
+	AMMODaeva* MMOPlayer = *PlayerRef;
+	if (MMOPlayer)
+	{
+		MMOPlayer->ReceiveJumpPacket(bIsGliding);
+	}
+}
+
+void UAOPlayerManager::HandleAttack(Protocol::S_AttackResultPacket& Pkt)
+{
+	AMMODaeva* TargetPlayer = nullptr;
+
+	if (MyPlayer && MyPlayer->GetMyId() == Pkt.targetid())
+	{
+		TargetPlayer = MyPlayer;
+	}
+	else if (auto PlayerRef = Players.Find(Pkt.targetid()))
+	{
+		TargetPlayer = *PlayerRef;
+	}
+
+	if (TargetPlayer)
+	{
+		UAbilitySystemComponent* MyASC = TargetPlayer->GetAbilitySystemComponent();
+		if (MyASC)
+		{
+			MyASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), Pkt.targethp());
+		}
+		if (Pkt.isdead())
+		{
+			TargetPlayer->HandleDeath(EDeathReason::Normal);
+		}
+	}
+
+	if (MyPlayer && MyPlayer->GetMyId() != Pkt.attackerid())
+	{
+		if (auto PlayerRef = Players.Find(Pkt.attackerid()))
+		{
+			AMMODaeva* AttackerPlayer = *PlayerRef;
+			if (AttackerPlayer)
+			{
+				EMontageID PlayMontageID = static_cast<EMontageID>(Pkt.skillid());
+				AttackerPlayer->PlayMontageWithSection(PlayMontageID, 1.0f, NAME_None);
+			}
+		}
 	}
 }

@@ -27,6 +27,10 @@ public:
 	void HandleItem(Protocol::S_ItemDataPacket Items);
 	void HnadleMove(const uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel);
 	void HandleDash(const uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel);
+	void HandleJump(const uint64 PlayerId, bool bIsGliding);
+
+	void HandleAttack(Protocol::S_AttackResultPacket& Pkt);
+
 
 	void HandleDungeonCreate(int32 DungeonId);
 	void HandleDungeonEnter(int32 DungeonId);

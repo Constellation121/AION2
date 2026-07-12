@@ -103,6 +103,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSoftClassPtr<class UMainMailWidget> MainMailWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSoftClassPtr<class UPvpWidget> PvpWidgetClass;
+
+
 	//07.09
 	UFUNCTION(Client, Reliable)
 	void Client_RefreshPlayerHUD();

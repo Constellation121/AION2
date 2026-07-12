@@ -45,6 +45,9 @@ public:
 	int32 _exp;
 
 	bool _isReady = false;
+	bool _isInvulnerable = false;
+	bool _canAttack = true;
+	int32 _deathPenaltyTtl = 0;
 	
 	Protocol::Vector3 _playerPos;
 	Protocol::Rotator3 _playerRot;

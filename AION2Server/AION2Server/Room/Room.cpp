@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Room.h"
 #include "Player.h"
 #include "Protocol.pb.h"
@@ -14,7 +14,6 @@ RoomRef GRoom = std::make_shared<Room>();
 // Village
 Room::Room()
 {
-
 }
 
 Room::~Room()
@@ -24,6 +23,22 @@ Room::~Room()
 
 void Room::EnterRoom(PlayerRef player)
 {
+	if (player == nullptr)
+		return;
+
+	// 세션 스레드에서 미리 조회한 사망 페널티 정보를 이용해 타이머 등록
+	if (player->_deathPenaltyTtl > 0)
+	{
+		player->_isInvulnerable = true;
+		player->_canAttack = false;
+
+		// 남은 시간만큼 대기 후 페널티 해제하는 타이머 등록
+		uint64 remainingMs = static_cast<uint64>(player->_deathPenaltyTtl) * 1000;
+		DoTimer(remainingMs, &Room::ClearDeathPenalty, player->GetId());
+		std::cout << "Player " << player->GetName() << " entered with death penalty. Remaining: " << player->_deathPenaltyTtl << "s\n";
+		player->_deathPenaltyTtl = 0; // 사용 후 초기화
+	}
+
 	// 새로 들어온 플레이어의 위치를 기존 플레이어들에게 전송
 	{
 		Protocol::S_SpawnPacket spawnPkt;
@@ -86,6 +101,39 @@ void Room::LeaveRoom(PlayerRef player)
 	std::cout << "Player Leave Room: " << player->GetId() << "\n";
 }
 
+void Room::UpdatePvpTimer()
+{
+	// 1. 현재 인덱스에 해당하는 PVP 설정 가져오기
+	const FPvpStateConfig& currentConfig = PvpStateSequence[CurrentStateIndex];
+
+	// 2. 현재 상태 패킷 생성 
+	Protocol::S_PvpStatePacket statePacket;
+	statePacket.set_state(currentConfig.State);
+	statePacket.set_remainingseconds(currentConfig.Duration);
+
+	SendBufferRef stateBuffer = PacketHandler::MakeSendBuffer(statePacket);
+	Broadcast(stateBuffer, -1);
+
+	std::cout << "[PVP State Changed] State: " << currentConfig.State
+		<< ", Duration: " << currentConfig.Duration << "s\n";
+
+	// 3. 다음 상태의 인덱스로 미리 변경 
+	CurrentStateIndex = (CurrentStateIndex + 1) % NumPvpStates;
+
+	// 4. 방금 전송한 상태의 지속 시간(초)이 끝난 후에 다시 이 함수가 실행되도록 타이머 등록
+	uint64 delayMs = static_cast<uint64>(currentConfig.Duration) * 1000;
+	DoTimer(delayMs, &Room::UpdatePvpTimer);
+}
+
+void Room::BroadcastPvpState()
+{
+	Protocol::S_PvpStatePacket statePacket;
+
+	statePacket.set_state(PvpStateSequence[CurrentStateIndex].State);
+	statePacket.set_remainingseconds(PvpTimerSeconds);
+	SendBufferRef stateBuffer = PacketHandler::MakeSendBuffer(statePacket);
+	Broadcast(stateBuffer, -1);
+}
 bool Room::HandleEnterPlayer(PlayerRef player)
 {
 	EnterRoom(player);
@@ -105,7 +153,7 @@ bool Room::HandleLeavePlayer(PlayerRef player)
 
 void Room::HandleMove(Protocol::C_MovePacket pkt, PlayerRef player)
 {
-	const uint64 playerId = pkt.playerid();
+	const uint64 playerId = player->GetId();
 	const Protocol::Vector3& targetPos = pkt.playerlocation();
 	const Protocol::Rotator3& targetRot = pkt.playerrotation();
 
@@ -226,6 +274,120 @@ void Room::HandlePlayerDash(Protocol::C_DashPacket pkt, PlayerRef player)
 	rot->set_roll(targetRot.roll());
 
 	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(dashPkt);
+	Broadcast(sendBuffer, player->_playerId);
+}
+
+void Room::HandleAttack(Protocol::C_AttackPacket pkt, PlayerRef player)
+{
+	if (player == nullptr)
+		return;
+
+	// 공격 불가 상태 체크 (사망 페널티)
+	if (!player->_canAttack)
+	{
+		std::cout << "Player " << player->GetName() << " cannot attack (Death Penalty active).\n";
+		return;
+	}
+
+	uint64 attackerId = player->GetId();
+	uint64 targetId = pkt.targetid();
+	int32 skillId = pkt.skillid();
+	int32 damage = pkt.damage();
+
+	PlayerRef target = nullptr;
+	if (targetId != 0)
+	{
+		auto it = _players.find(targetId);
+		if (it != _players.end())
+		{
+			target = it->second;
+		}
+	}
+
+	int32 nextHp = 0;
+	bool isDead = false;
+
+	if (target != nullptr)
+	{
+		if (target->_isInvulnerable)
+		{
+			std::cout << "Target " << target->GetName() << " is invulnerable.\n";
+			return;
+		}
+
+		// 데미지 적용 및 사망 처리
+		if (damage <= 0)
+		{
+			damage = 10;
+		}
+
+		nextHp = target->GetHp() - damage;
+		if (nextHp < 0)
+			nextHp = 0;
+
+		target->SetHp(nextHp);
+
+		// Redis에 변경된 HP 정보 업데이트 (비동기 처리로 Room 스레드 블로킹 방지)
+		std::string targetName = target->GetName();
+		std::thread([targetName, nextHp]() {
+			GRedisManager.UpdatePlayerHp(targetName, nextHp);
+		}).detach();
+
+		// 사망 시 페널티 적용 (무적 상태 & 공격 불가 5분)
+		if (nextHp == 0)
+		{
+			target->_isInvulnerable = true;
+			target->_canAttack = false;
+
+			// Redis 저장은 별도 스레드로 비동기 처리하여 Room 스레드 블로킹 방지
+			std::thread([targetName]() {
+				GRedisManager.SetDeathPenalty(targetName, 300);
+			}).detach();
+
+			// 5분 후 페널티 해제하는 타이머 등록
+			DoTimer(300000, &Room::ClearDeathPenalty, target->GetId());
+			std::cout << "Player " << target->GetName() << " died. Invulnerability applied for 5 minutes.\n";
+		}
+		isDead = (nextHp <= 0);
+	}
+	else
+	{
+		damage = 0;
+	}
+
+	Protocol::S_AttackResultPacket resultPkt;
+	resultPkt.set_attackerid(attackerId);
+	resultPkt.set_targetid(target ? targetId : 0);
+	resultPkt.set_damage(damage);
+	resultPkt.set_targethp(target ? target->GetHp() : 0);
+	resultPkt.set_isdead(isDead);
+	resultPkt.set_skillid(skillId);
+	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(resultPkt);
+	Broadcast(sendBuffer, -1); 
+}
+
+void Room::ClearDeathPenalty(uint64 playerId)
+{
+	auto it = _players.find(playerId);
+	if (it == _players.end())
+		return;
+
+	PlayerRef player = it->second;
+	if (player == nullptr)
+		return;
+
+	player->_isInvulnerable = false;
+	player->_canAttack = true;
+	std::cout << "Player " << player->GetName() << " death penalty expired.\n";
+}
+
+void Room::HandlePlayerJump(Protocol::C_JumpPacket pkt, PlayerRef player)
+{
+	Protocol::S_JumpPacket jumpPkt;
+	jumpPkt.set_playerid(pkt.playerid());
+	jumpPkt.set_isgliding(pkt.isgliding());
+
+	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(jumpPkt);
 	Broadcast(sendBuffer, player->_playerId);
 }
 
