@@ -9,17 +9,6 @@
 
 #include "Data/AOSkillSlotViewData.h"
 
-void UAOSkillQuickSlotWidget::NativeDestruct()
-{
-    // CooldownTimer에서 사용한 TimerHandle clear.
-    if (UWorld* World = GetWorld())
-    {
-        World->GetTimerManager().ClearTimer(CooldownTimerHandle);
-    }
-
-    Super::NativeDestruct();
-}
-
 void UAOSkillQuickSlotWidget::AddSkillSlotViewData(const FAOSkillSlotViewData& InViewData)
 {
     ViewDataByComboIndex.Add(InViewData);
@@ -32,6 +21,11 @@ void UAOSkillQuickSlotWidget::ClearSkillSlotViewData()
 
 void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 InNewIndex)
 {
+    if (!ViewDataByComboIndex.IsValidIndex(InNewIndex))
+    {
+        return;
+    }
+
     CurrentSkillIndex = InNewIndex;
 
     SetSkillIcon(ViewDataByComboIndex[CurrentSkillIndex].Icon);
@@ -57,7 +51,7 @@ void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
 
 const FAOSkillSlotViewData* UAOSkillQuickSlotWidget::GetCurrentSkillSlotViewData() const
 {
-    if (CurrentSkillIndex != INDEX_NONE && ViewDataByComboIndex.Num() > 1)
+    if (!ViewDataByComboIndex.IsValidIndex(CurrentSkillIndex))
     {
         return nullptr;
     }
@@ -105,34 +99,14 @@ void UAOSkillQuickSlotWidget::StartCooldown(float RemainingTime, float Duration)
         return;
     }
 
-    //CooldownEndTime = GetWorld()->GetTimeSeconds() + RemainingTime;
-    //CooldownDuration = Duration;
-    //
-    //BP_StartCooldown(RemainingTime, Duration);
-    //UpdateCooldownText();
-    //
-    //GetWorld()->GetTimerManager().SetTimer(
-    //    CooldownTimerHandle,
-    //    this,
-    //    &ThisClass::UpdateCooldownText,
-    //    0.1f,
-    //    true
-    //);
+    // 실제 쿨다운 판정은 GAS가 담당한다.
+    // 여기서는 ASC에서 조회한 남은 시간/전체 시간을 Blueprint UI에 넘겨 시각화만 한다.
+    BP_StartCooldown(RemainingTime, Duration);
 }
 
 void UAOSkillQuickSlotWidget::StopCooldown()
 {
-    //if (GetWorld())
-    //{
-    //    GetWorld()->GetTimerManager().ClearTimer(CooldownTimerHandle);
-    //}
-    //
-    //if (TB_CooldownRemaining)
-    //{
-    //    TB_CooldownRemaining->SetText(FText::GetEmpty());
-    //    TB_CooldownRemaining->SetVisibility(ESlateVisibility::Collapsed);
-    //}
-    //
-    //BP_StopCooldown();
+    // CooldownTag가 ASC에서 제거되었으므로 슬롯의 쿨다운 표시를 종료한다.
+    BP_StopCooldown();
 }
 

@@ -38,9 +38,6 @@ UCLASS()
 class AION2_API UAOSkillQuickSlotWidget : public UAOSlotWidgetBase
 {
 	GENERATED_BODY()
-	
-protected:
-	void NativeDestruct() override;
 
 public:
 	void AddSkillSlotViewData(const FAOSkillSlotViewData& InViewData);
@@ -57,10 +54,10 @@ public:
 
 	void PlaySkillPressedFeedback();
 
-	// 쿨타임 가진 Skill 발동 시 Effect 표시: TODO
+	// 쿨타임 가진 Skill 발동 시 Effect 표시
 	void StartCooldown(float RemainingTime, float Duration);
 
-	// EffectWidget의 표시를 풀어줌: TODO
+	// EffectWidget의 표시를 풀어줌
 	void StopCooldown();
 
 
@@ -107,16 +104,4 @@ private:
 
 	UPROPERTY()
 	int32 CurrentSkillIndex = 0;
-
-	//매번 인자를 받기보다, 내부 멤버를 쓰도록 함: Play Effect용 private member.
-private:
-	// ============= Cool down ============
-	// FGameplayTag는 GC 대상이 아니기 때문에 일반 private으로 둬도 된다. => 나중에 더 알아보기
-	FGameplayTag CurrentCooldownTag;
-
-	UPROPERTY()
-	TSubclassOf<UUserWidget> CurrentEffectWidgetClass;
-
-	FTimerHandle CooldownTimerHandle;
-
 };
