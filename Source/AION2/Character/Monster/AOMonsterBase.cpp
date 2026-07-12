@@ -24,6 +24,9 @@
 #include "UI/AOUserWidgetBase.h"
 #include "UI/AOMonsterHUDWidget_Targetable.h"
 
+// Boss BGM 
+#include "Game/DungeonGameState.h"
+
 // Sets default values
 AAOMonsterBase::AAOMonsterBase(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -272,6 +275,13 @@ void AAOMonsterBase::HandleBossDeathMontageEnd()
 		{
 			DungeonGameMode->NotifyBossDefeated(this);
 		}
+	}
+
+	// 보스 브금 -> 배경 브금으로 교체 
+	// 보스 브금 재생 
+	if (auto* GS = GetWorld()->GetGameState<ADungeonGameState>())
+	{
+		GS->SetMusic(EDungeonMusic::Dungeon);
 	}
 }
 
