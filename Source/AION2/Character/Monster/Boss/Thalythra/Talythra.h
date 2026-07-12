@@ -8,6 +8,9 @@
 #include "Types/AOTypes.h"
 #include "Talythra.generated.h"
 
+
+
+
 UCLASS()
 class AION2_API ATalythra : public AAOMonsterBase
 {
@@ -24,7 +27,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
+	virtual void TriggerGimmicks(float Ratio) override;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

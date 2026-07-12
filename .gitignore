@@ -94,7 +94,8 @@ x86/
 # Google Proto
 /ProtoBufCore/
 /Protobuf/
-/Common/
+/Common/*
+!/Common/*.proto
 */ProtoBufCore/
 
 # Visual Studio 캐시 및 빌드 결과물

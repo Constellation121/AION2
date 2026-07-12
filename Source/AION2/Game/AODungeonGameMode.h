@@ -180,8 +180,6 @@ public :
 	void CreateDungeonClearWidget();
 
 private:
-	void SendDungeonComplete();
-
 	int32 MyDungeonId = 0;
 	Protocol::DPlayerInfo* ValidateToken(FString Token);
 

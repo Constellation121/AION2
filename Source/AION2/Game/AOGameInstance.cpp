@@ -25,10 +25,9 @@ void UAOGameInstance::Init()
 
 
 #if UE_SERVER
-	TryAsyncConnect("172.16.30.107", 9999);
+	TryAsyncConnect("61.82.153.198", 9999);
 #else
-
-	TryAsyncConnect("172.16.30.107", 7777);
+	TryAsyncConnect("61.82.153.198", 7777);
 #endif
 }
 

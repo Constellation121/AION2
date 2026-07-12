@@ -29,16 +29,10 @@ struct FGAData
     * 지금은 콤보 Skill을 통해 한 Slot에 여러 키가 들어가도록 하는 데 사용.
     * 추후 유저가 Skill을 자유 배치할 수 있도록 허용할 때도 아래 Index를 쓸 수 있음.
     */
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-    int32 SlotIndex = -1;
 
     // 스킬 버튼 아이콘
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
     TObjectPtr<UTexture2D> Icon = nullptr;
-
-    // 이 스킬의 쿨타임 태그. 예: Cooldown.Assassin.Key1
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI", meta = (Categories = "Cooldown"))
-    FGameplayTag CooldownTag;
 };
 
 UCLASS()

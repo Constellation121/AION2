@@ -19,9 +19,19 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeadMontageEnd);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGroggyMontageEnd);
 
 UCLASS()
-class AION2_API AAOMonsterBase : public AAOCharacter , public IGenericTeamAgentInterface
+class AION2_API AAOMonsterBase : public AAOCharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
+
+public:
+	struct FGimmickEntry
+	{
+		// 이 기믹이 발동할 조건. 자유롭게 정의 가능. 
+		TFunction<bool(float Ratio)> Condition;
+
+		FGameplayTag PendingTag; // 재생중인 태그 이름 
+		bool bTriggered = false; // 이미 해당 기믹이 진행되었는지 체크, 
+	};
 
 public:
 	// Sets default values for this character's properties
@@ -113,6 +123,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void HandleBossDeathMontageEnd();
 
+	TArray<FGimmickEntry>* Get_GimmickArray() { return &Gimmicks; }
 
 public:
 	/*
@@ -130,10 +141,12 @@ public:
 
 	void Die();
 
-protected :
+protected:
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
+	virtual void TriggerGimmicks(float Ratio);
 
-protected :
+
+protected:
 	FDelegateHandle HealthChangedDelegateHandle;
 
 	// Seohwan ( aicontroller에서 적 및 동료 판별 기준 ) 
@@ -156,22 +169,24 @@ protected:
 	TObjectPtr<UAOWidgetComponentBase> OverheadStatusWidgetComponent;
 
 	// K.H
-protected :
+protected:
 	void OnGroggyChanged(const FOnAttributeChangeData& Data);
 
 	virtual void StartGroggy();
 
-public :
+public:
 	UFUNCTION(BlueprintCallable, Category = "Groggy")
 	virtual void EndGroggy();
 
 	UFUNCTION(BlueprintPure, Category = "Groggy")
 	bool IsGroggy() const { return bIsGroggy; }
 
-protected :
+protected:
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Groggy")
 	bool bIsGroggy = false;
 
 	FDelegateHandle GroggyChangedDelegateHandle;
+
+	TArray<FGimmickEntry> Gimmicks;
 
 };

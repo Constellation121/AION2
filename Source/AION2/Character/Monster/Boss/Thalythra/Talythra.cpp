@@ -133,6 +133,37 @@ void ATalythra::BeginPlay()
 	AttackWarningRangeSceneComponent->SetIsReplicated(true);
 #pragma endregion 
 
+
+#pragma region Talythra Gimmick Initialize 
+
+	if (HasAuthority())
+	{
+		Gimmicks =
+		{
+			// HP 기반
+			{ [](float R) { return R <= 0.7f; }, GIMMICK_MONSTER_TH_SHELTER },
+			{ [](float R) { return R <= 0.35f; }, GIMMICK_MONSTER_TH_SHELTER },
+		};
+	}
+
+#pragma endregion 
+
+}
+
+void ATalythra::TriggerGimmicks(float Ratio)
+{
+	for (FGimmickEntry& Gimmick : Gimmicks)
+	{
+		// 아직 안 터졌고 & 조건 충족 → 발동
+		if (!Gimmick.bTriggered && Gimmick.Condition(Ratio))
+		{
+			ASC->AddLooseGameplayTag(Gimmick.PendingTag);
+			ASC->AddLooseGameplayTag(GIMMICK_MONSTER);
+			Gimmick.bTriggered = true;
+		}
+	}
+
+
 }
 
 // Called every frame
@@ -156,7 +187,6 @@ void ATalythra::Tick(float DeltaTime)
 			GetCharacterMovement()->StopMovementImmediately();
 			EndChargeMove();
 		}
-
 	}
 
 
@@ -640,10 +670,11 @@ void ATalythra::DoFireProjectile_3()
 
 void ATalythra::InitAttributeSet()
 {
-	// AttributeSet설정
+	// AttributeSet설정 8000 이였음
 	AttributeSet->InitHealth(8000.0f);
 	AttributeSet->InitMaxHealth(8000.0f);
 
+	// 1800 이였음 
 	AttributeSet->InitGroggy(1800.f);
 	AttributeSet->InitMaxGroggy(1800.f);
 }
@@ -895,6 +926,7 @@ void ATalythra::EndGroggy()
 	// 만약 PreCombat 페이즈를 안쓰신다면 EndGroggy를 virtual 함수로 선언하신 뒤 
 	// Set_Phase를 다른걸로 사용하시면 될 거 같습니다.
 	pMonsterController->Set_Phase(PHASE_MONSTER_PRECOMBAT);
+
 }
 
 
@@ -1152,28 +1184,5 @@ void ATalythra::OnHealthChanged(const FOnAttributeChangeData& Data)
 	const float Max = AttributeSet->GetMaxHealth();
 	const float Ratio = Max > 0.f ? Data.NewValue / Max : 0.f;
 
-
-	// 기믹 관련 
-	FGameplayTagContainer OwnedTags;
-	ASC->GetOwnedGameplayTags(OwnedTags);
-
-	if (Ratio <= 0.7f
-		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP70_DONE) == false
-		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP70_PENDING) == false)
-	{
-		ASC->AddLooseGameplayTag(GIMMICK_MONSTER_TH_HP70_PENDING);
-		ASC->AddLooseGameplayTag(GIMMICK_MONSTER);
-	}
-
-
-	if (Ratio <= 0.35f
-		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP35_DONE) == false
-		&& OwnedTags.HasTagExact(GIMMICK_MONSTER_TH_HP35_PENDING) == false)
-	{
-		ASC->AddLooseGameplayTag(GIMMICK_MONSTER_TH_HP35_PENDING);
-		ASC->AddLooseGameplayTag(GIMMICK_MONSTER);
-	}
-
-
-
+	TriggerGimmicks(Ratio);
 }

@@ -102,7 +102,27 @@ bool AAIMonsterControllerBase::RefreshOrReset()
 	{
 		if (RefreshPerceivedTargets() == false)
 		{
-			Set_Phase(PHASE_MONSTER_OUTOFCOMBAT);
+			// 보스 HP 및 Groggy 게이지 초기화. 
+			UAOAttributeSet* pAttributeSet = ControlledMonster->GetAttributeSet();
+			pAttributeSet->SetHealth(pAttributeSet->GetMaxHealth());
+			pAttributeSet->SetGroggy(pAttributeSet->GetMaxGroggy());
+			
+			if (ControlledMonster->Get_GimmickArray() != nullptr)
+			{
+				TArray<AAOMonsterBase::FGimmickEntry>* ArrayGimmick = ControlledMonster->Get_GimmickArray();
+
+				for (auto& iter : *ArrayGimmick)
+				{
+					iter.bTriggered = false;
+				}
+			}
+
+			
+			// =================================
+
+
+
+			Set_Phase(PHASE_MONSTER_RESET);	
 			Set_State(STATE_MONSTER_TH_IDLE);
 			CurrentTargetPlayer = nullptr;
 			HasDetectedTarget = false;
