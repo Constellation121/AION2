@@ -23,7 +23,7 @@ public:
 
 	void SendMovePacket();
 	void ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel);
-	void ReceiveDashPacket();
+	void ReceiveDashPacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel);
 	void ToggleMailWidget();
 
 	bool HasMovement();

@@ -397,8 +397,12 @@ void AMMODaeva::MMOInputShiftPressed()
 	}
 }
 
-void AMMODaeva::ReceiveDashPacket()
+void AMMODaeva::ReceiveDashPacket(FVector& NewLoc, FRotator& NewRot, FVector& NewVel)
 {
+	TargetLoc = NewLoc;
+	TargetRot = NewRot;
+	TargetVel = NewVel;
+
 	EMontageID SelectedMontageID = EMontageID::Dash;
 	float MontagePlayRate = 1.0f;
 
@@ -408,17 +412,7 @@ void AMMODaeva::ReceiveDashPacket()
 		return;
 	}
 
-	FName SectionName = FName("Back");
-
-	// 이동 거리가 일정 수준(10cm) 이상일 때만 전진/후진 판정 진행
-	if (FVector::DistSquared(TargetLoc, LastLoc) > 100.f)
-	{
-		FVector MoveDir = (TargetLoc - LastLoc).GetSafeNormal();
-		FVector ForwardDir = LastRot.Vector();
-		float DotResult = FVector::DotProduct(ForwardDir, MoveDir);
-
-		SectionName = DotResult <= 0.0f ? FName("Back") : FName("Forward");
-	}
+	FName SectionName = TargetVel.SizeSquared() > 10000.f ? FName("Forward") : FName("Back");
 
 	PlayMontageWithSection(SelectedMontageID, MontagePlayRate, SectionName);
 

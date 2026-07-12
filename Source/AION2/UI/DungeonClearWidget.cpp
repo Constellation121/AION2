@@ -5,6 +5,7 @@
 #include "Components/CanvasPanel.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "TimerManager.h"
 #include "Player/AOPlayerController.h"
 #include "Game/AODungeonGameMode.h"
 
@@ -46,6 +47,7 @@ void UDungeonClearWidget::SetDungeonClearWidget(int32 Gold)
 		CountdownText->SetText(FText::AsNumber(RemainingTime));
 	}
 
+	GetWorld()->GetTimerManager().ClearTimer(ClearTimer);
 	GetWorld()->GetTimerManager().SetTimer(
 		ClearTimer,
 		this,
@@ -72,6 +74,17 @@ void UDungeonClearWidget::DungeonReward()
 	{
 		ClearPopup->SetVisibility(ESlateVisibility::Visible);
 	}
+
+	APlayerController* PC = GetOwningPlayer();
+	if (PC && PC->IsLocalController())
+	{
+		FInputModeGameAndUI InputMode;
+		InputMode.SetWidgetToFocus(TakeWidget());
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PC->SetInputMode(InputMode);
+		PC->bShowMouseCursor = true;
+	}
+
 }
 
 void UDungeonClearWidget::UpdateCountdown()
@@ -107,4 +120,9 @@ void UDungeonClearWidget::OnCheckClicked()
 	}
 
 	PlayerController->ServerRequestDungeonComplete();
+
+	FInputModeGameOnly InputMode;
+	PlayerController->SetInputMode(InputMode);
+	PlayerController->bShowMouseCursor = false;
+	RemoveFromParent();
 }

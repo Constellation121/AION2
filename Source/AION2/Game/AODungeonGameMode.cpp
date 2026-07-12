@@ -942,17 +942,16 @@ void AAODungeonGameMode::ForceClearDungeon()
 	}
 
 	ClearDungeon();
-}
-
-void AAODungeonGameMode::SendDungeonComplete()
-{
-	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
-	MapPkt.set_dungeonid(MyDungeonId);
-	SEND_PACKET(MapPkt, PKT_C_DUNGEON_MAP_COMPLETE);
-}
+} 
 
 void AAODungeonGameMode::SendDungeonCompleteRequest()
 {
+	if (bDungeonResultSent)
+	{
+		return;
+	}
+	bDungeonResultSent = true;
+
 	Protocol::C_RequestDungeonCompletePacket RequestPkt;
 	RequestPkt.set_dungeonid(MyDungeonId);
 
