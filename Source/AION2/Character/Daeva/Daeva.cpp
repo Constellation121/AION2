@@ -1016,6 +1016,16 @@ void ADaeva::OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	}
 }
 
+void ADaeva::OnRep_IsDead()
+{
+	//OverheadStatusWidgetComponent->DestroyComponent();
+	//부활 후 다시 사용할 컴포넌트라서 숨기기만 하면 된다.
+	if (OverheadStatusWidgetComponent)
+	{
+		OverheadStatusWidgetComponent->SetVisibility(!bIsDead);
+	}
+}
+
 void ADaeva::HandleDeath(EDeathReason DeathReason)
 {
 	if (bIsDead)
@@ -1030,14 +1040,6 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 
 	bIsDead = true;
 
-	//OverheadStatusWidgetComponent->DestroyComponent();
-	//부활 후 다시 사용할 컴포넌트라서 숨기기만 하면 된다.
-	if (OverheadStatusWidgetComponent)
-	{
-		OverheadStatusWidgetComponent->SetVisibility(false);
-	}
-
-
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
 	if (UCharacterMovementComponent* MoveComp = GetCharacterMovement())
@@ -1048,15 +1050,6 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("[Death] CharacterMovement is null: %s"), *GetName());
-	}
-
-	if (UCapsuleComponent* Capsule = GetCapsuleComponent())
-	{
-		Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Death] CapsuleComponent is null: %s"), *GetName());
 	}
 
 	OnPlayerDead.Broadcast(this);
@@ -1447,6 +1440,11 @@ void ADaeva::ChangeCurrentTargetInClient(AAOCharacter* NewTarget)
 
 void ADaeva::CheckTargetGroggy()
 {
+	if (!ASC)
+	{
+		return;
+	}
+
 	if (!IsValid(CurrentTarget))
 	{
 		if (ASC->HasMatchingGameplayTag(COMBO_AVAILABLE_KEYE))

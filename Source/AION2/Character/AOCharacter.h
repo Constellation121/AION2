@@ -58,7 +58,10 @@ public:
 	FOnCharacterDead OnPlayerDead;
 
 protected:
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "State")
+	UFUNCTION()
+	virtual void OnRep_IsDead();
+
+	UPROPERTY(ReplicatedUsing = OnRep_IsDead, BlueprintReadOnly, Category = "State")
 	bool bIsDead = false;
 
 public:

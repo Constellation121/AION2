@@ -82,7 +82,6 @@ void UGA_Cleric_Key4::OnCheckAttackHitEvent(FGameplayEventData Payload)
 			bHasRespawned = true;
 		}
 
-		UE_LOG(LogTemp, Log, TEXT("Respawned: %d"), bHasRespawned);
 		if (UAbilitySystemComponent* TargetASC = NearestCharacter->GetAbilitySystemComponent())
 		{
 			if (bHasRespawned && AttackData.HitGameplayCueTag.IsValid())

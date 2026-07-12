@@ -217,6 +217,7 @@ protected:
 	void OnRebirthMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 public:
+	virtual void OnRep_IsDead() override;
 	virtual void HandleDeath(EDeathReason DeathReason = EDeathReason::Normal);
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 
