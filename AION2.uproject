@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{85967E26-43EF-C36C-4807-3E8D11DFFD9D}",
+	"EngineAssociation": "{9C40C48C-4F94-0207-4733-C086262246AE}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -54,6 +54,10 @@
 		},
 		{
 			"Name": "BinkMedia",
+			"Enabled": true
+		},
+		{
+			"Name": "MotionWarping",
 			"Enabled": true
 		}
 	]
