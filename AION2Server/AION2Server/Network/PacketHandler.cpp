@@ -138,6 +138,41 @@ bool PacketHandler::HandleSetNickname(PacketSessionRef& session, Protocol::C_Set
 bool PacketHandler::HandleLogin(PacketSessionRef& session, Protocol::C_LoginPacket& pkt)
 {
 	std::cout << "Login Request: ID(" << pkt.id() << ") PW(" << pkt.password() << ")" << std::endl;
+
+	// 더미유저 우회 로직 (DB 타지 않고 즉석 가상 로그인 성공 처리)
+	if (pkt.id().rfind("dummy_user_", 0) == 0)
+	{
+		std::string szNickname = pkt.id();
+		uint64 playerId = 100000 + std::stoull(pkt.id().substr(11));
+
+		GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+		PlayerRef player = ObjectUtils::CreatePlayer(gameSession);
+		player->SetPlayerInfo(playerId, static_cast<Protocol::ClassType>(1), 100, 1000, 100);
+		player->SetName(szNickname);
+
+		Protocol::S_LoginSuccessPacket loginPkt;
+		Protocol::PlayerInfo* playerInfo = loginPkt.mutable_playerinfo();
+		playerInfo->set_playerclass(static_cast<Protocol::ClassType>(player->_class));
+		playerInfo->set_playerid(player->_playerId);
+		playerInfo->set_playernickname(player->GetName());
+		loginPkt.set_gold(player->_gold);
+		loginPkt.set_exp(player->_exp);
+		loginPkt.set_hp(player->_hp);
+
+		SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(loginPkt);
+		session->Send(sendBuffer);
+
+		// 빈 아이템 패킷 전송
+		Protocol::S_ItemDataPacket itemPkt;
+		SendBufferRef itemSendBuffer = PacketHandler::MakeSendBuffer(itemPkt);
+		session->Send(itemSendBuffer);
+
+		GRoom->DoAsync(&Room::AddPlayer, player);
+
+		std::cout << "Dummy Login Bypass Success! ID: " << szNickname << std::endl;
+		return true;
+	}
+
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
 	DBBind<2, 11> dbBind(*dbConnect, L"{CALL sp_LogIn(?, ?)}");
 
@@ -373,7 +408,30 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 
 	//GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleCreateDungeon, player);
 	int32 dungeonId = pkt.dungeonid();
-	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId);
+	int32 gold = pkt.gold();
+
+	DBConnection* dbConnect = GDBConnectionPool->Pop();
+	DBBind<2, 1> dbBind(*dbConnect, L"{CALL sp_SetDungeonReward(?, ?)");
+	
+	dbBind.BindCol(0, gold);
+	dbBind.BindCol(1, dungeonId);
+
+	int resultCode = 0;
+
+	dbBind.BindParam(0, resultCode);
+
+	if (!dbBind.Execute())
+	{
+		std::cout << "HandleDungeonEnd - Execute() Error" << std::endl;
+	}
+	if (!dbBind.Fetch())
+	{
+		std::cout << "HandleDungeonEnd - Fetch() Error" << std::endl;
+	}
+
+	if (!resultCode) return false;
+
+	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId, gold);
 	dediSession->SetUsing(false);
 	return false;
 }

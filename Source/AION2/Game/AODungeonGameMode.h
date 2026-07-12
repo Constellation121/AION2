@@ -160,6 +160,8 @@ public:
 	void SetDungeonId(int32 DungeonId) { MyDungeonId = DungeonId; }
 	void SetPrePlayerInfo(const Protocol::S_DungeonStartDediPacket& PlayerInfo);
 
+	int32 GetDungeonId() { return MyDungeonId; }
+	
 public :
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void RequestReturnToVillage();
@@ -173,10 +175,11 @@ public :
 	UFUNCTION(Exec)
 	void ForceClearDungeon();
 
-private:
-	void SendDungeonComplete();
 	void SendDungeonCompleteRequest();
 
+	void CreateDungeonClearWidget();
+
+private:
 	int32 MyDungeonId = 0;
 	Protocol::DPlayerInfo* ValidateToken(FString Token);
 
@@ -188,7 +191,6 @@ private:
 
 private :
 	bool bDungeonResultSent = false;
+	int32 DungeonPrice = 1000;
 
-public :
-	void BlockAllPlayersMovementOnClear();
 };

@@ -58,10 +58,11 @@ public:
 	void HandleEnterDungeon(PlayerRef player, int32 inDungeonId);
 	void HandleDungeonStart(PlayerRef player, int32 dungeonId);
 	void HandleDungeonExit(int32 dungeonId);
+	void HandleDungeonExitByDedi(int32 dungeonId);
 	void HandleReadyPacket(PlayerRef player, int32 dungeonId);
 	void HandleExitPacket(PlayerRef player, int32 dungeonId);
 	void HandleFailDungeon(PlayerRef player, Protocol::DungeonFailReason reason);
-	void HandleDungeonEnd(int32 dungeonId);
+	void HandleDungeonEnd(int32 dungeonId, int32 gold);
 
 	bool CheckMembersReady(DungeonRef dungeon);
 	bool CheckAlreadyIn(uint64 playerId, DungeonRef dungeon);

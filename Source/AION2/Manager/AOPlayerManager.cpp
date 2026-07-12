@@ -56,18 +56,18 @@ void UAOPlayerManager::HandleLogin(Protocol::S_LoginSuccessPacket& LoginPacket)
 {
 	uint64 PlayerId = LoginPacket.playerinfo().playerid();
 	uint8 PlayerClass = static_cast<uint8>(LoginPacket.playerinfo().playerclass());
-
+	float PlayerHp = static_cast<float>(LoginPacket.hp());
 	GameInstance->SetMyPlayerId(PlayerId);
 	GameInstance->SetMyPlayerClass(LoginPacket.playerinfo().playerclass());
 
 	MyGold = LoginPacket.gold();
 	FString PlayerName = UTF8_TO_TCHAR(LoginPacket.playerinfo().playernickname().c_str());
 
-	FPlayerInfo NewInfo(PlayerId, PlayerName, PlayerClass);
+	FPlayerInfo NewInfo(PlayerId, PlayerName, PlayerClass, PlayerHp);
 	PlayerInfos.Add(PlayerId, NewInfo);
 }
 
-void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation)
+void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString& PlayerName, uint8& ClassType, FVector& SpawnLocation, FRotator& SpawnRotation)
 {
 	if (!GameInstance)
 		return;
@@ -97,10 +97,14 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerNa
 				if (!PlayerController) return;
 				PlayerController->Possess(MyPlayer);
 
+				auto PlayerInfo = PlayerInfos.Find(PlayerId);
+				int Hp = 100;
+				if (PlayerInfo)
+					Hp = PlayerInfo->PlayerHp;
 				// === SuYeon: PlayerState에 info를 명시적으로 삽입 ===
 				if (AAOPlayerState* AOPlayerState = PlayerController->GetPlayerState<AAOPlayerState>())
 				{
-					AOPlayerState->SetPlayerInfo(PlayerId, PlayerName, ClassType);
+					AOPlayerState->SetPlayerInfo(PlayerId, PlayerName, ClassType, Hp);
 				}
 
 				if (UAOMainHUDWidget* MainHUD = PlayerController->GetMainHUD())
@@ -174,7 +178,7 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString PlayerNa
 			}
 		}
 
-		FPlayerInfo PlayerInfo(PlayerId, PlayerName, ClassType);
+		FPlayerInfo PlayerInfo(PlayerId, PlayerName, ClassType, 100);
 		PlayerInfos.Add(PlayerId, PlayerInfo);
 	}
 
@@ -202,7 +206,7 @@ void UAOPlayerManager::HandleItem(Protocol::S_ItemDataPacket Items)
 	}
 }
 
-void UAOPlayerManager::HnadleMove(uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel)
+void UAOPlayerManager::HnadleMove(uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel)
 {
 	if (!GameInstance)
 		return;
@@ -275,13 +279,27 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo, int32 Go
 void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 {
 	int32 SlotIndex = Pkt.slotindex();
+	int32 TargetItemId = -1;
+
 	for (auto& Pair : MyItems)
 	{
 		Protocol::ItemData& Item = Pair.Value;
 		if (Item.slotindex() == SlotIndex)
 		{
-			int32 ItemId = Item.iteminstancedid();
-			MyItems.Find(ItemId)->set_count(Pkt.count());
+			TargetItemId = Item.iteminstancedid();
+			break;
+		}
+	}
+
+	if (TargetItemId != -1)
+	{
+		if (Pkt.count() <= 0)
+		{
+			MyItems.Remove(TargetItemId);
+		}
+		else
+		{
+			MyItems.Find(TargetItemId)->set_count(Pkt.count());
 		}
 	}
 
@@ -292,21 +310,33 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 		FItemData TemplateData;
 		if (QuickSlotComp->GetItemDataFromSlot(SlotIndex, SlotData, TemplateData))
 		{
-			QuickSlotComp->InitializeQuickSlot(SlotIndex, SlotData.ItemTemplateId, SlotData.ItemInstancedId, Pkt.count());
-
-			AAOPlayerController* PC = Cast<AAOPlayerController>(MyPlayer->GetController());
-			if (!PC)return;
-
-			UAOMainHUDWidget* MainHUD = PC->GetMainHUD();
-			if (!MainHUD)return;
-
-			UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
-			if (!PlayerHUD)return;
-
 			FAOSlotData UpdatedSlotData = SlotData;
 			UpdatedSlotData.Count = Pkt.count();
-			PlayerHUD->UpdateItemQuickSlot(Pkt.slotindex(), UpdatedSlotData, TemplateData);
 
+			if (Pkt.count() <= 0)
+			{
+				QuickSlotComp->InitializeQuickSlot(SlotIndex, 0, 0, 0);
+				UpdatedSlotData.ItemTemplateId = 0;
+				UpdatedSlotData.ItemInstancedId = 0;
+			}
+			else
+			{
+				QuickSlotComp->InitializeQuickSlot(SlotIndex, SlotData.ItemTemplateId, SlotData.ItemInstancedId, Pkt.count());
+			}
+
+			AAOPlayerController* PC = Cast<AAOPlayerController>(MyPlayer->GetController());
+			if (PC)
+			{
+				UAOMainHUDWidget* MainHUD = PC->GetMainHUD();
+				if (MainHUD)
+				{
+					UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
+					if (PlayerHUD)
+					{
+						PlayerHUD->UpdateItemQuickSlot(Pkt.slotindex(), UpdatedSlotData, TemplateData);
+					}
+				}
+			}
 		}
 	}
 
@@ -339,8 +369,9 @@ void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStart
 	}
 }
 
-void UAOPlayerManager::HandleDungeonEnd()
+void UAOPlayerManager::HandleDungeonEnd(int32 Gold)
 {
+	MyGold = Gold;
 	//FSoftObjectPath LevelPath(FString::Printf(TEXT("/Game/Map/Lobby")))
 	UGameplayStatics::OpenLevel(this, TEXT("/Game/Map/Village"));
 }
@@ -480,7 +511,7 @@ void UAOPlayerManager::UpdateMyDungeonReadyState(int32 DungeonId, uint64 PlayerI
 
 #pragma endregion
 
-void UAOPlayerManager::HandleDash(const uint64 PlayerId)
+void UAOPlayerManager::HandleDash(const uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel)
 {
 	if (!GameInstance)
 		return;
@@ -492,6 +523,6 @@ void UAOPlayerManager::HandleDash(const uint64 PlayerId)
 	AMMODaeva* MMOPlayer = *PlayerRef;
 	if (MMOPlayer)
 	{
-		MMOPlayer->ReceiveDashPacket();
+		MMOPlayer->ReceiveDashPacket(NewLocation, NewRotation, NewVel);
 	}
 }

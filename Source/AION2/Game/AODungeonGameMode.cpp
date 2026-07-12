@@ -8,6 +8,7 @@
 #include "GameFramework/Controller.h"
 
 #include "Character/Monster/AOMonsterBase.h"
+#include "Player/AOPlayerController.h"
 
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -15,6 +16,11 @@
 
 #include "Network/PacketHeader.h"
 #include "AION2.h"
+#include "Game/AOGameInstance.h"
+#include "Manager/AONetworkManager.h"
+
+#include "Manager/AOUIManager.h"
+
 
 AAODungeonGameMode::AAODungeonGameMode()
 {
@@ -26,6 +32,18 @@ AAODungeonGameMode::AAODungeonGameMode()
 void AAODungeonGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (UAOGameInstance* GI = Cast<UAOGameInstance>(GetGameInstance()))
+	{
+		if (UAONetworkManager* NetworkMng = GI->GetNetworkManager())
+		{
+			if (NetworkMng->PendingDungeonId != 0)
+			{
+				SetDungeonId(NetworkMng->PendingDungeonId);
+				UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Retrieved Pending Dungeon ID from NetworkManager: %d"), MyDungeonId);
+			}
+		}
+	}
 
 	FindPlacedBosses();
 	InitializePlacedBosses();
@@ -92,7 +110,8 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 			AOPlayerState->SetPlayerInfo(
 				FakePlayerId,
 				TEXT("PIE_Dungeon_Player"),
-				static_cast<uint8>(EDaevaClassType::Ranger)
+				static_cast<uint8>(EDaevaClassType::Ranger),
+				100
 			);
 
 			UE_LOG(LogTemp, Warning, TEXT("[Dungeon] PIE PostLogin Set Dummy PlayerInfo"));
@@ -125,9 +144,9 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 	AAOPlayerState* PlayerState = NewPlayer->GetPlayerState<AAOPlayerState>();
 	if (PlayerState)
 	{
-		FString PlayerName = UTF8_TO_TCHAR(PlayerData.playername().c_str());
-		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass());
-		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d"), UniqueId, PlayerData.playerid());
+		FString PlayerName = PlayerData.playername().c_str();
+		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass(), (float)PlayerData.playerhp());
+		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d, HP: %d"), UniqueId, PlayerData.playerid(), PlayerData.playerhp());
 	}
 
 	PendingPlayers.Remove(UniqueId);
@@ -291,8 +310,8 @@ void AAODungeonGameMode::ClearDungeon()
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Dungeon Clear"));
 	
 	GiveDungeonReward();
-
-	SendDungeonCompleteRequest();
+	CreateDungeonClearWidget();
+	//SendDungeonCompleteRequest();
 }
 
 void AAODungeonGameMode::FailDungeon()
@@ -886,7 +905,15 @@ void AAODungeonGameMode::SetPrePlayerInfo(const Protocol::S_DungeonStartDediPack
 		DPlayerInfo.set_playerid(DungeonInfo.clientid());
 		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		DPlayerInfo.set_playerclass(DungeonInfo.clientclass());
-		DPlayerInfo.set_playername(DungeonInfo.clientname());
+		DPlayerInfo.set_playerhp(DungeonInfo.clienthp());
+
+		int32 ItemCount = DungeonInfo.playeritems_size();
+		for (int j = 0; j < ItemCount; j++)
+		{
+			const Protocol::ItemData& Item = DungeonInfo.playeritems(j);
+			Protocol::ItemData* NewItem = DPlayerInfo.add_playeritems();
+			NewItem->CopyFrom(Item);
+		}
 		PrePlayers.Add(Token, DPlayerInfo);
 	}
 }
@@ -915,21 +942,41 @@ void AAODungeonGameMode::ForceClearDungeon()
 	}
 
 	ClearDungeon();
-}
-
-void AAODungeonGameMode::SendDungeonComplete()
-{
-	Protocol::C_DungeonMapLoadCompletePacket MapPkt;
-	MapPkt.set_dungeonid(MyDungeonId);
-	SEND_PACKET(MapPkt, PKT_C_DUNGEON_MAP_COMPLETE);
-}
+} 
 
 void AAODungeonGameMode::SendDungeonCompleteRequest()
 {
+	if (bDungeonResultSent)
+	{
+		return;
+	}
+	bDungeonResultSent = true;
+
 	Protocol::C_RequestDungeonCompletePacket RequestPkt;
 	RequestPkt.set_dungeonid(MyDungeonId);
 
 	SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
+}
+
+void AAODungeonGameMode::CreateDungeonClearWidget()
+{
+	// PlayerController -> Client RPC.
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		AAOPlayerController* PlayerController = Cast<AAOPlayerController>(It->Get());
+
+		if (!PlayerController)
+		{
+			continue;
+		}
+
+		PlayerController->ClientCreateDungeonClearWidget(DungeonPrice);
+	}
 }
 
 Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
@@ -941,3 +988,4 @@ Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
 	}
 	return nullptr;
 }
+

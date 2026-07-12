@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -23,10 +23,10 @@ private:
 
 public:
 	void HandleLogin(Protocol::S_LoginSuccessPacket& LoginPacket);
-	void HandleSpawn(const uint64 PlayerId, const FString PlayerName, uint8 ClassType, FVector SpawnLocation, FRotator SpawnRotation);
+	void HandleSpawn(const uint64 PlayerId, const FString& PlayerName, uint8& ClassType, FVector& SpawnLocation, FRotator& SpawnRotation);
 	void HandleItem(Protocol::S_ItemDataPacket Items);
-	void HnadleMove(const uint64 PlayerId, FVector NewLocation, FRotator NewRotation, FVector NewVel);
-	void HandleDash(const uint64 PlayerId);
+	void HnadleMove(const uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel);
+	void HandleDash(const uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel);
 
 	void HandleDungeonCreate(int32 DungeonId);
 	void HandleDungeonEnter(int32 DungeonId);
@@ -38,9 +38,11 @@ public:
 	
 	void HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStartDediPacket& Info);
 
-	void HandleDungeonEnd();
+	void HandleDungeonEnd(int32 Gold);
 
 	void HandleDisconnect(uint64 RemovePlayerId);
+
+	FORCEINLINE const TMap<int32, Protocol::ItemData>& GetMyItems() const { return MyItems; }
 
 #pragma region Dungeon State
 public:
@@ -48,7 +50,6 @@ public:
 
 	bool TryUpdateMyDungeonRoomState(const Protocol::DungeonInfo& DungeonInfo);
 
-	// �� ��� ��ü�� Update �Լ�
 	void UpdateMyDungeonRoomStateFromList(const google::protobuf::RepeatedPtrField<Protocol::DungeonInfo>& DungeonInfos);
 
 	void UpdateMyDungeonEnterState(int32 DungeonId, const Protocol::DungeonPlayerInfo& EnterPlayer);

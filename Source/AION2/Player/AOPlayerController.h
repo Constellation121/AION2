@@ -10,6 +10,9 @@ class AAOMonsterBase;
 class AAOPlayerState;
 class ADaeva;
 
+class UUserWidget;
+class UDungeonClearWidget;
+
 class UAOMainHUDWidget;
 class UAbilitySystemComponent;
 
@@ -100,6 +103,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSoftClassPtr<class UMainMailWidget> MainMailWidgetClass;
 
+	//07.09
+	UFUNCTION(Client, Reliable)
+	void Client_RefreshPlayerHUD();
+	//
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void ToggleMailWidget();
@@ -129,7 +137,18 @@ public :
 	UFUNCTION(Exec)
 	void TestClearDungeon();
 
-	UFUNCTION(Server, Reliable)
-	void ServerTestClearDungeon();
+public:
+	UFUNCTION(Client, Reliable)
+	void ClientCreateDungeonClearWidget(int32 Gold);
 
+	UFUNCTION(Server, Reliable)
+	void ServerRequestDungeonComplete();
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UDungeonClearWidget> DungeonClearWidgetClass;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UDungeonClearWidget> DungeonClearWidget;
 };
