@@ -233,6 +233,12 @@ void AMMODaeva::ReceiveMovePacket(FVector& NewLoc, FRotator& NewRot, FVector& Ne
 	TargetLoc = NewLoc;
 	TargetRot = NewRot;
 	TargetVel = NewVel;
+
+	// 공중(낙하) 상태 중 지상 도달 시 (Z 속도가 0이 되면) 걷기 상태로 전환해 착지 애니메이션 유도
+	if (GetCharacterMovement()->MovementMode == MOVE_Falling && FMath::IsNearlyZero(NewVel.Z, 0.1f))
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	}
 }
 
 
@@ -833,7 +839,8 @@ void AMMODaeva::ReceiveJumpPacket(bool bIsGliding)
 		}
 		else
 		{
-			Jump();
+			GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+			OnJumped();
 		}
 	}
 }
