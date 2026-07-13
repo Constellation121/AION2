@@ -93,7 +93,7 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
 	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	OverheadStatusWidgetComponent->SetBlendMode(EWidgetBlendMode::Transparent);
-	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 30.0f));
+	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(120.0f, 30.0f));
 	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 130.0f));
 	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
 	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);

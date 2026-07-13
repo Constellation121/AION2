@@ -106,6 +106,21 @@ void UAOPlayerHUDWidget::SetPlayerName(const FText PlayerName)
 	}
 }
 
+void UAOPlayerHUDWidget::SetPlayerAsLeader(bool bIsLeader)
+{
+	if (LeaderImage)
+	{
+		if (bIsLeader)
+		{
+			LeaderImage->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			LeaderImage->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
 void UAOPlayerHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)
 {
 	if (!BoundASC)
