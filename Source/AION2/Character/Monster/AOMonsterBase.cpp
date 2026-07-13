@@ -105,6 +105,8 @@ void AAOMonsterBase::BeginPlay()
 	}
 
 	TargetWidgetComponent->SetVisibility(false, true);
+
+	BindMonsterHUDToASC(); // 서버랑 클라이언트 로컬 위젯 -> 몬스터 ASC 연결.
 }
 
 void AAOMonsterBase::PossessedBy(AController* NewController)
@@ -391,6 +393,27 @@ void AAOMonsterBase::EndGroggy()
 	// 만약 PreCombat 페이즈를 안쓰신다면 EndGroggy를 virtual 함수로 선언하신 뒤 
 	// Set_Phase를 다른걸로 사용하시면 될 거 같습니다.
 	pMonsterController->Set_Phase(PHASE_MONSTER_PRECOMBAT);
+}
+
+void AAOMonsterBase::BindMonsterHUDToASC()
+{
+	if (!ASC || !OverheadStatusWidgetComponent)
+	{
+		return;
+	}
+
+	OverheadStatusWidgetComponent->InitWidget(); // 위젯 인스턴스 생성 보장.
+
+	UUserWidget* UserWidget = OverheadStatusWidgetComponent->GetUserWidgetObject();
+	UAOMonsterHUDWidget* MonsterHUD = Cast<UAOMonsterHUDWidget>(UserWidget);
+
+	if (!MonsterHUD)
+	{
+		return;
+	}
+
+	MonsterHUD->BindToASC(ASC);
+	MonsterHUD->SetMonsterIndex(DungeonBossIndex);
 }
 
 void AAOMonsterBase::SetDungeonBossActive(bool bActive)
