@@ -343,7 +343,12 @@ void AAOPlayerController::TestClearDungeon()
 
 void AAOPlayerController::SendDungeonClearRequest()
 {
-	ADaeva* Owner = this->GetOwner<ADaeva>();
+	ADaeva* Owner = Cast<ADaeva>(GetPawn());
+	if (!Owner)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[SendDungeonClearRequest] Failed to get controlled ADaeva character."));
+		return;
+	}
 
 	Protocol::C_RequestDungeonCompletePacket RequestPkt;
 	RequestPkt.set_playerid(Owner->GetMy());
