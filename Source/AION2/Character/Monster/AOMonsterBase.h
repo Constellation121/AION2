@@ -23,7 +23,7 @@ class AION2_API AAOMonsterBase : public AAOCharacter, public IGenericTeamAgentIn
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	struct FGimmickEntry
 	{
 		// 이 기믹이 발동할 조건. 자유롭게 정의 가능. 
@@ -123,6 +123,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dungeon")
 	void HandleBossDeathMontageEnd();
 
+	TArray<FGimmickEntry>* Get_GimmickArray() { return &Gimmicks; }
 
 public:
 	/*
