@@ -318,11 +318,13 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 			FAOSlotData UpdatedSlotData = SlotData;
 			UpdatedSlotData.Count = Pkt.count();
 
+			FItemData FinalTemplateData = TemplateData;
 			if (Pkt.count() <= 0)
 			{
 				QuickSlotComp->InitializeQuickSlot(SlotIndex, 0, 0, 0);
 				UpdatedSlotData.ItemTemplateId = 0;
 				UpdatedSlotData.ItemInstancedId = 0;
+				FinalTemplateData = FItemData();
 			}
 			else
 			{
@@ -338,7 +340,7 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 					UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
 					if (PlayerHUD)
 					{
-						PlayerHUD->UpdateItemQuickSlot(Pkt.slotindex(), UpdatedSlotData, TemplateData);
+						PlayerHUD->UpdateItemQuickSlot(Pkt.slotindex(), UpdatedSlotData, FinalTemplateData);
 					}
 				}
 			}

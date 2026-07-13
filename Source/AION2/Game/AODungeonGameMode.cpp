@@ -913,14 +913,6 @@ void AAODungeonGameMode::SetPrePlayerInfo(const Protocol::S_DungeonStartDediPack
 		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		DPlayerInfo.set_playerclass(DungeonInfo.clientclass());
 		DPlayerInfo.set_playerhp(DungeonInfo.clienthp());
-
-		int32 ItemCount = DungeonInfo.playeritems_size();
-		for (int j = 0; j < ItemCount; j++)
-		{
-			const Protocol::ItemData& Item = DungeonInfo.playeritems(j);
-			Protocol::ItemData* NewItem = DPlayerInfo.add_playeritems();
-			NewItem->CopyFrom(Item);
-		}
 		PrePlayers.Add(Token, DPlayerInfo);
 	}
 }

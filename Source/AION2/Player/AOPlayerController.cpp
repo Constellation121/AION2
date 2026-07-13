@@ -14,6 +14,9 @@
 #include "Blueprint/UserWidget.h"
 
 #include "UI/AOMainHUDWidget.h"
+#include "UI/AOPlayerHUDWidget.h"
+#include "UI/AOQuickSlotComponent.h"
+#include "Manager/AOPlayerManager.h"
 
 #include "Manager/AOUIManager.h"
 #include "UI/Mail/MainMailWidget.h"
@@ -223,6 +226,43 @@ void AAOPlayerController::CreateOrBindMainHUD(AAOPlayerState* AOPlayerState)
 	}
 
 	MainHUD->BindToPlayerState(AOPlayerState);
+
+	if (ADaeva* Daeva = Cast<ADaeva>(GetPawn()))
+	{
+		UAOQuickSlotComponent* QuickSlotComp = Daeva->GetQuickSlotComponent();
+		UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr;
+		UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
+
+		if (QuickSlotComp && PlayerManager && PlayerHUD)
+		{
+			const TMap<int32, Protocol::ItemData>& Items = PlayerManager->GetMyItems();
+			for (const auto& Pair : Items)
+			{
+				const Protocol::ItemData& Item = Pair.Value;
+
+				int32 InstanceId = Item.iteminstancedid();
+				int32 TemplateId = Item.itemtemplateid();
+				int32 SlotIndex = Item.slotindex();
+				int32 Count = Item.count();
+
+				FAOSlotData SlotData;
+				SlotData.ItemInstancedId = InstanceId;
+				SlotData.ItemTemplateId = TemplateId;
+				SlotData.SlotIndex = SlotIndex;
+				SlotData.Count = Count;
+				FItemData TemplateData;
+
+				if (QuickSlotComp->FindItemTemplateData(TemplateId, TemplateData))
+				{
+					QuickSlotComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
+					PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
+
+					UE_LOG(LogTemp, Log, TEXT("[Dungeon/HUD] Successfully restored quick slot item: Index=%d, TemplateId=%d, Count=%d"),
+						SlotIndex, TemplateId, Count);
+				}
+			}
+		}
+	}
 }
 
 void AAOPlayerController::ShowTargetMonsterHUD(AAOMonsterBase* InMonster)
