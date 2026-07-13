@@ -959,10 +959,10 @@ void AAODungeonGameMode::SendDungeonCompleteRequest()
 	}
 	bDungeonResultSent = true;
 
-	Protocol::C_RequestDungeonCompletePacket RequestPkt;
-	RequestPkt.set_dungeonid(MyDungeonId);
+	//Protocol::C_RequestDungeonCompletePacket RequestPkt;
+	//RequestPkt.set_dungeonid(MyDungeonId);
 
-	SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
+	//SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
 }
 
 void AAODungeonGameMode::CreateDungeonClearWidget()
