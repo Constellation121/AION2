@@ -855,6 +855,9 @@ void AMMODaeva::InputSpacePressed()
 	}
 }
 
+static bool IsBodyMontageConfigured(const ADaeva* Daeva, EMontageID MontageID);
+static bool IsWingMontageConfigured(const ADaeva* Daeva, EMontageID MontageID);
+
 void AMMODaeva::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
