@@ -29,6 +29,22 @@ void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 InNewIndex)
     CurrentSkillIndex = InNewIndex;
 
     SetSkillIcon(ViewDataByComboIndex[CurrentSkillIndex].Icon);
+    BP_InitSlot();
+}
+
+void UAOSkillQuickSlotWidget::SetChargeCount(int32 AvailableCharge, int32 MaxCharge, float NextChargeRemaining, float ChargeDuration, EChargeSkillUIState State)
+{
+    AvailableCharge = FMath::Clamp(
+        AvailableCharge,
+        0,
+        MaxCharge
+    );
+
+    ChargableSkillState = (AvailableCharge == 0 ? EChargeSkillUIState::Empty
+        : (AvailableCharge == MaxCharge ? EChargeSkillUIState::Full
+            : EChargeSkillUIState::Partial));
+    
+    BP_UpdateChargeState(AvailableCharge, MaxCharge, NextChargeRemaining, ChargeDuration, State);
 }
 
 void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
