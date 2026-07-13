@@ -7,6 +7,8 @@
 #include "Character/Monster/Boss/Thalythra/Talythra.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 #include "Character/Daeva/Daeva.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 
 
 // Sets default values
@@ -88,11 +90,15 @@ void ATalythraCollectibleOrb::OnProjectileOverlapEvent(UPrimitiveComponent* Over
 			{
 				pTalythra->Add_OrbHittedDaeva(pPlayer);
 				pPlayer->EatOrb(OrbColor);
+				Multicast_PlayEatSound(GetActorLocation());
 			}
 		}
 	}
 
-	Destroy();
+	//Destroy();
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	SetLifeSpan(0.1f);
 }
 
 
@@ -105,4 +111,15 @@ void ATalythraCollectibleOrb::InitVelocityAndDirection(const FVector Direction)
 		ProjectileMovement->Velocity =
 			Direction.GetSafeNormal() * ProjectileMovement->InitialSpeed;
 	}
+}
+
+void ATalythraCollectibleOrb::Multicast_PlayEatSound_Implementation(FVector Location)
+{
+	// 데디 서버는 오디오 디바이스가 없으므로 스킵
+	if (GetNetMode() == NM_DedicatedServer)
+		return;
+
+	if (OrbCollisionSound)
+		UGameplayStatics::PlaySoundAtLocation(this, OrbCollisionSound, Location);
+
 }

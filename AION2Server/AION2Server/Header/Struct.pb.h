@@ -1751,30 +1751,11 @@ class DPlayerInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayerItemsFieldNumber = 6,
     kPlayerNameFieldNumber = 2,
     kPlayerIdFieldNumber = 1,
     kPlayerClassFieldNumber = 3,
     kPlayerHpFieldNumber = 4,
   };
-  // repeated .Protocol.ItemData playerItems = 6;
-  int playeritems_size() const;
-  private:
-  int _internal_playeritems_size() const;
-  public:
-  void clear_playeritems();
-  ::Protocol::ItemData* mutable_playeritems(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ItemData >*
-      mutable_playeritems();
-  private:
-  const ::Protocol::ItemData& _internal_playeritems(int index) const;
-  ::Protocol::ItemData* _internal_add_playeritems();
-  public:
-  const ::Protocol::ItemData& playeritems(int index) const;
-  ::Protocol::ItemData* add_playeritems();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ItemData >&
-      playeritems() const;
-
   // string playerName = 2;
   void clear_playername();
   const std::string& playername() const;
@@ -1824,7 +1805,6 @@ class DPlayerInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ItemData > playeritems_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr playername_;
     uint64_t playerid_;
     int playerclass_;
@@ -3252,46 +3232,6 @@ inline void DPlayerInfo::_internal_set_playerhp(int32_t value) {
 inline void DPlayerInfo::set_playerhp(int32_t value) {
   _internal_set_playerhp(value);
   // @@protoc_insertion_point(field_set:Protocol.DPlayerInfo.playerHp)
-}
-
-// repeated .Protocol.ItemData playerItems = 6;
-inline int DPlayerInfo::_internal_playeritems_size() const {
-  return _impl_.playeritems_.size();
-}
-inline int DPlayerInfo::playeritems_size() const {
-  return _internal_playeritems_size();
-}
-inline void DPlayerInfo::clear_playeritems() {
-  _impl_.playeritems_.Clear();
-}
-inline ::Protocol::ItemData* DPlayerInfo::mutable_playeritems(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.DPlayerInfo.playerItems)
-  return _impl_.playeritems_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ItemData >*
-DPlayerInfo::mutable_playeritems() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.DPlayerInfo.playerItems)
-  return &_impl_.playeritems_;
-}
-inline const ::Protocol::ItemData& DPlayerInfo::_internal_playeritems(int index) const {
-  return _impl_.playeritems_.Get(index);
-}
-inline const ::Protocol::ItemData& DPlayerInfo::playeritems(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.DPlayerInfo.playerItems)
-  return _internal_playeritems(index);
-}
-inline ::Protocol::ItemData* DPlayerInfo::_internal_add_playeritems() {
-  return _impl_.playeritems_.Add();
-}
-inline ::Protocol::ItemData* DPlayerInfo::add_playeritems() {
-  ::Protocol::ItemData* _add = _internal_add_playeritems();
-  // @@protoc_insertion_point(field_add:Protocol.DPlayerInfo.playerItems)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ItemData >&
-DPlayerInfo::playeritems() const {
-  // @@protoc_insertion_point(field_list:Protocol.DPlayerInfo.playerItems)
-  return _impl_.playeritems_;
 }
 
 // -------------------------------------------------------------------

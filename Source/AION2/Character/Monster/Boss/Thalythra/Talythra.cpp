@@ -674,6 +674,7 @@ void ATalythra::InitAttributeSet()
 	AttributeSet->InitHealth(8000.0f);
 	AttributeSet->InitMaxHealth(8000.0f);
 
+
 	// 1800 이였음 
 	AttributeSet->InitGroggy(1800.f);
 	AttributeSet->InitMaxGroggy(1800.f);

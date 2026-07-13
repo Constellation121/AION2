@@ -111,7 +111,7 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 			AOPlayerState->SetPlayerInfo(
 				FakePlayerId,
 				TEXT("PIE_Dungeon_Player"),
-				static_cast<uint8>(EDaevaClassType::Ranger),
+				static_cast<uint8>(EDaevaClassType::Assassin),
 				100
 			);
 
@@ -913,14 +913,6 @@ void AAODungeonGameMode::SetPrePlayerInfo(const Protocol::S_DungeonStartDediPack
 		DPlayerInfo.set_playername(DungeonInfo.clientname());
 		DPlayerInfo.set_playerclass(DungeonInfo.clientclass());
 		DPlayerInfo.set_playerhp(DungeonInfo.clienthp());
-
-		int32 ItemCount = DungeonInfo.playeritems_size();
-		for (int j = 0; j < ItemCount; j++)
-		{
-			const Protocol::ItemData& Item = DungeonInfo.playeritems(j);
-			Protocol::ItemData* NewItem = DPlayerInfo.add_playeritems();
-			NewItem->CopyFrom(Item);
-		}
 		PrePlayers.Add(Token, DPlayerInfo);
 	}
 }
@@ -959,10 +951,10 @@ void AAODungeonGameMode::SendDungeonCompleteRequest()
 	}
 	bDungeonResultSent = true;
 
-	Protocol::C_RequestDungeonCompletePacket RequestPkt;
-	RequestPkt.set_dungeonid(MyDungeonId);
+	//Protocol::C_RequestDungeonCompletePacket RequestPkt;
+	//RequestPkt.set_dungeonid(MyDungeonId);
 
-	SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
+	//SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
 }
 
 void AAODungeonGameMode::CreateDungeonClearWidget()
