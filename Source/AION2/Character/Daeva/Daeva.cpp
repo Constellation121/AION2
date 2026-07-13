@@ -1484,30 +1484,6 @@ void ADaeva::BindOverheadStatusWidget()
 		return;
 	}
 
-	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
-	UAbilitySystemComponent* PlayerStateASC = nullptr;
-	if (AOPlayerState)
-	{
-		PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
-	}
-	else
-	{
-		PlayerStateASC = GetAbilitySystemComponent();
-	}
-
-	if (!PlayerStateASC)
-	{
-		if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
-		{
-			GetWorldTimerManager().SetTimerForNextTick(
-				this,
-				&ADaeva::BindOverheadStatusWidget
-			);
-		}
-
-		return;
-	}
-
 	UAOPlayerHUDWidget* StatusWidget =
 		Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
 
@@ -1515,7 +1491,7 @@ void ADaeva::BindOverheadStatusWidget()
 	{
 		OverheadStatusWidgetComponent->InitWidget();
 
-		StatusWidget =	Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
+		StatusWidget = Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
 
 		if (!StatusWidget)
 		{
@@ -1533,18 +1509,53 @@ void ADaeva::BindOverheadStatusWidget()
 
 	// 여기서부터 핵심.
 	// 같은 ASC / 같은 Widget이어도 다시 바인딩하고 현재 Attribute 값을 다시 밀어준다.
-	BoundOverheadStatusASC = PlayerStateASC;
 	BoundOverheadStatusWidget = StatusWidget;
 	PawnASCBindRetryCount = 0;
 
-	StatusWidget->BindToPlayerState(AOPlayerState);
-	StatusWidget->SetPlayerName(FText::FromString(AOPlayerState->GetMyName()));
+	// Resolve player name (with PlayerState or fall back to PlayerManager)
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	FString PlayerName = FString();
+	if (AOPlayerState)
+	{
+		PlayerName = AOPlayerState->GetMyName();
+	}
 
-	StatusWidget->BroadcastInitialAttributes();
-	
+	if (PlayerName.IsEmpty())
+	{
+		if (UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr)
+		{
+			PlayerName = PlayerManager->GetPlayerNameById(MyId);
+		}
+	}
+
+	StatusWidget->SetPlayerName(FText::FromString(PlayerName));
+
+	// Bind ASC and PlayerState if available
+	UAbilitySystemComponent* PlayerStateASC = nullptr;
+	if (AOPlayerState)
+	{
+		PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
+	}
+	else
+	{
+		PlayerStateASC = GetAbilitySystemComponent();
+	}
+
+	if (PlayerStateASC)
+	{
+		BoundOverheadStatusASC = PlayerStateASC;
+		StatusWidget->BindToPlayerState(AOPlayerState);
+		StatusWidget->BroadcastInitialAttributes();
+	}
+
 	OverheadStatusWidgetComponent->RequestRedraw();
 
-	UE_LOG(	LogTemp,Warning,TEXT("[Overhead Bind/Refresh] %s | PS=%s | ASC=%s | Widget=%s"),*GetName(),	*GetNameSafe(AOPlayerState),*GetNameSafe(PlayerStateASC),*GetNameSafe(StatusWidget));
+	UE_LOG(LogTemp, Warning, TEXT("[Overhead Bind/Refresh] %s | PS=%s | ASC=%s | Widget=%s | Name=%s"),
+		*GetName(),
+		*GetNameSafe(AOPlayerState),
+		*GetNameSafe(PlayerStateASC),
+		*GetNameSafe(StatusWidget),
+		*PlayerName);
 }
 
 void ADaeva::NotifyPlayerUIReady()

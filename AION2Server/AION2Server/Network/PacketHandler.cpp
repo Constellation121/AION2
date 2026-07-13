@@ -108,6 +108,7 @@ bool PacketHandler::HandleSetNickname(PacketSessionRef& session, Protocol::C_Set
 
 		}
 	}
+	GDBConnectionPool->Push(dbConnect);
 
 	Protocol::S_SetNicknamePacket nicknamePacket;
 	nicknamePacket.set_issucceed(result);
@@ -455,14 +456,14 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 	int32 gold = pkt.gold();
 
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
-	DBBind<2, 1> dbBind(*dbConnect, L"{CALL sp_SetDungeonReward(?, ?)");
+	DBBind<2, 1> dbBind(*dbConnect, L"{CALL sp_SetDungeonReward(?, ?)}");
 	
-	dbBind.BindCol(0, gold);
-	dbBind.BindCol(1, playerId);
+	dbBind.BindParam(0, gold);
+	dbBind.BindParam(1, playerId);
 
 	int resultCode = 0;
 
-	dbBind.BindParam(0, resultCode);
+	dbBind.BindCol(0, resultCode);
 
 	if (!dbBind.Execute())
 	{
@@ -472,8 +473,11 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 	{
 		std::cout << "HandleDungeonEnd - Fetch() Error" << std::endl;
 	}
+	
+	GDBConnectionPool->Push(dbConnect);
 
 	if (!resultCode) return false;
+
 
 	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId);
 	player->SetDungeonId(0);

@@ -180,7 +180,7 @@ bool FPacketHandler::Handle_S_SPAWN(Protocol::S_SpawnPacket& Pkt)
 		{
 			const Protocol::PlayerState& State = Pkt.playerstates(i);
 			uint64 PlayerId = State.playerid();
-			FString PlayerName = TCHAR_TO_UTF8(State.playername().c_str());
+			FString PlayerName = UTF8_TO_TCHAR(State.playername().c_str());
 			FVector Location = FVector(State.playerlocation().x(), State.playerlocation().y(), State.playerlocation().z());
 			FRotator Rotation = FRotator(State.playerrotation().pitch(), State.playerrotation().yaw(), State.playerrotation().roll());
 			uint8 CalssType = static_cast<uint8>(State.playerclass());
