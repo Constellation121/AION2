@@ -129,6 +129,7 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/*
+	*  Suyeon: Local이 아닌 Player는 EndPlay가 제 때 호출되지 않을 수 있으므로,
 	* UnPossessed에서 해주는 작업을 명시적으로 해줌
 	*/
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

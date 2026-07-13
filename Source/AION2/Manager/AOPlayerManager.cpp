@@ -275,6 +275,10 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo, int32 Go
 			InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
 			PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
 		}
+
+		// 구입한 아이템을 캐시에 저장/갱신하여 맵 전환 시 복원되도록 합니다.
+		MyItems.Add(InstanceId, ItemInfo);
+
 		MyGold = Gold;
 		UGoldWidget* GoldWidget = MainHUD->GoldWidget;
 		GoldWidget->SetGold(FString::FromInt(MyGold));

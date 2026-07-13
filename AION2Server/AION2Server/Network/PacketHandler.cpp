@@ -545,7 +545,7 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
 	DBBind<2, 5> dbBind(*dbConnect, L"{CALL sp_UseItem(?, ?)}");
-	int32 characterId = pkt.playerid();
+	int32 characterId = player->GetId();
 	int32 slot = pkt.slotindex();
 
 	dbBind.BindParam(0, characterId);
@@ -564,12 +564,13 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 	dbBind.BindCol(2, itemCount);
 	dbBind.BindCol(3, effectType);
 	dbBind.BindCol(4, effectValue);
+	std::cout << "Use Item  : " << itemCount << std::endl;
 
 	if (dbBind.Execute())
 	{
 		if (dbBind.Fetch())
 		{
-			std::cout << "Use Item ResultCode : " << errorCode << std::endl;
+			std::cout << "Use Item slot : " << slot << "Count" << itemCount << std::endl;
 		}
 	}
 	else
