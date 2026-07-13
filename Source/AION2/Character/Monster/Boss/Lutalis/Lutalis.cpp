@@ -4,6 +4,7 @@
 
 #include "AIController.h"
 #include "AbilitySystemComponent.h"
+#include "Character/Monster/Boss/Lutalis/LutalisElectricShockZone.h"
 #include "Character/Monster/Boss/Lutalis/LutalisElectricZone.h"
 #include "EngineUtils.h"
 #include "Engine/World.h"
@@ -255,6 +256,91 @@ void ALutalis::ResetPreparedElectricZoneCast()
 {
 	PreparedElectricZoneArcIndex = INDEX_NONE;
 	PreparedElectricZoneTargetYaw = 0.0f;
+}
+
+bool ALutalis::BeginElectricShockWarning(float WarningDuration)
+{
+	if (!HasAuthority() || !ElectricShockZoneClass)
+	{
+		return false;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return false;
+	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	ActiveElectricShockZones.Reset();
+
+	for (TActorIterator<ADaeva> It(World); It; ++It)
+	{
+		ADaeva* Target = *It;
+		if (!IsValid(Target) || Target->IsDead())
+		{
+			continue;
+		}
+
+		FVector SpawnLocation = Target->GetActorLocation();
+
+		FHitResult GroundHit;
+		const FVector TraceStart = SpawnLocation + FVector(0.f, 0.f, 300.f);
+		const FVector TraceEnd = SpawnLocation - FVector(0.f, 0.f, 3000.f);
+
+		if (World->LineTraceSingleByChannel(GroundHit, TraceStart, TraceEnd, ECC_Visibility))
+		{
+			SpawnLocation = GroundHit.ImpactPoint;
+		}
+
+		SpawnLocation += FVector(0.f, 0.f, 50.0f);
+
+		ALutalisElectricShockZone* ElectricShockZone = World->SpawnActor<ALutalisElectricShockZone>(
+			ElectricShockZoneClass,
+			SpawnLocation,
+			FRotator::ZeroRotator,
+			SpawnParams
+		);
+
+		if (!ElectricShockZone)
+		{
+			continue;
+		}
+
+		ElectricShockZone->InitZone(this, ElectricShockDamageData, ElectricShockRadius);
+		ElectricShockZone->StartWarning(WarningDuration);
+		ActiveElectricShockZones.Add(ElectricShockZone);
+	}
+
+	return ActiveElectricShockZones.Num() > 0;
+}
+
+bool ALutalis::ActivateElectricShockStrikes()
+{
+	if (!HasAuthority() || ActiveElectricShockZones.IsEmpty())
+	{
+		return false;
+	}
+
+	bool bActivatedAny = false;
+	for (ALutalisElectricShockZone* ElectricShockZone : ActiveElectricShockZones)
+	{
+		if (!IsValid(ElectricShockZone))
+		{
+			continue;
+		}
+
+		ElectricShockZone->ActivateStrike();
+		bActivatedAny = true;
+	}
+
+	ActiveElectricShockZones.Reset();
+
+	return bActivatedAny;
 }
 
 bool ALutalis::BeginScytheWarning(float WarningDuration)

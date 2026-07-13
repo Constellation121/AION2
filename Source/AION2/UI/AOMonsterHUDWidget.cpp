@@ -10,11 +10,13 @@
 
 void UAOMonsterHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 {
-    if (!InASC || BoundASC == InASC)
+    if (!InASC)
     {
         return;
     }
 
+    UnbindASCDelegates();
+    
     Super::BindToASC(InASC);
 
     if (!BoundASC)
@@ -69,6 +71,11 @@ void UAOMonsterHUDWidget::SetMonsterIndex(int32 InMonsterIndex)
 
 void UAOMonsterHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data)
 {
+    if (!BoundASC) // 위젯 제거 시점과 복제 알림 시점 겹칠 수 있으므로 null 체크.
+    {
+        return;
+    }
+
     const UAOAttributeSet* AttributeSet = BoundASC->GetSet<UAOAttributeSet>();
     if (!AttributeSet)
     {
@@ -80,6 +87,11 @@ void UAOMonsterHUDWidget::HandleHealthChanged(const FOnAttributeChangeData& Data
 
 void UAOMonsterHUDWidget::HandleGroggyChanged(const FOnAttributeChangeData& Data)
 {
+    if (!BoundASC) // 위젯 제거 시점과 복제 알림 시점 겹칠 수 있으므로 null 체크.
+    {
+        return;
+    }
+
     const UAOAttributeSet* AttributeSet = BoundASC->GetSet<UAOAttributeSet>();
     if (!AttributeSet)
     {
@@ -91,6 +103,12 @@ void UAOMonsterHUDWidget::HandleGroggyChanged(const FOnAttributeChangeData& Data
 
 void UAOMonsterHUDWidget::BindASCDelegates()
 {
+    // 추가.
+    if (!BoundASC)
+    {
+        return;
+    }
+
     HealthChangedHandle = BoundASC->GetGameplayAttributeValueChangeDelegate(
         UAOAttributeSet::GetHealthAttribute()
     ).AddUObject(this, &UAOMonsterHUDWidget::HandleHealthChanged);
@@ -99,6 +117,10 @@ void UAOMonsterHUDWidget::BindASCDelegates()
     GroggyChangedHandle = BoundASC->GetGameplayAttributeValueChangeDelegate(
         UAOAttributeSet::GetGroggyAttribute()
     ).AddUObject(this, &UAOMonsterHUDWidget::HandleGroggyChanged);
+
+    MaxHealthChangedHandle = BoundASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetMaxHealthAttribute()).AddUObject(this, &UAOMonsterHUDWidget::HandleMaxHealthChanged);
+
+    MaxGroggyChangedHandle = BoundASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetMaxGroggyAttribute()).AddUObject(this, &UAOMonsterHUDWidget::HandleMaxGroggyChanged);
 }
 
 void UAOMonsterHUDWidget::UnbindASCDelegates()
@@ -124,6 +146,21 @@ void UAOMonsterHUDWidget::UnbindASCDelegates()
         ).Remove(GroggyChangedHandle);
 
         GroggyChangedHandle.Reset();
+    }
+
+    // 해제 코드 추가.
+    if (MaxHealthChangedHandle.IsValid())
+    {
+        BoundASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetMaxHealthAttribute()).Remove(MaxHealthChangedHandle);
+
+        MaxHealthChangedHandle.Reset();
+    }
+
+    if (MaxGroggyChangedHandle.IsValid())
+    {
+        BoundASC->GetGameplayAttributeValueChangeDelegate(UAOAttributeSet::GetMaxGroggyAttribute()).Remove(MaxGroggyChangedHandle);
+
+        MaxGroggyChangedHandle.Reset();
     }
 }
 
@@ -159,3 +196,28 @@ void UAOMonsterHUDWidget::BroadcastInitialAttributes()
     UpdateHpBar(AttributeSet->GetHealth(), AttributeSet->GetMaxHealth());
     UpdateGroggyBar(AttributeSet->GetGroggy(), AttributeSet->GetMaxGroggy());
 }
+
+void UAOMonsterHUDWidget::HandleMaxHealthChanged(const FOnAttributeChangeData& Data)
+{
+    if (!BoundASC)
+    {
+        return;
+    }
+
+    const float CurrentHealth = BoundASC->GetNumericAttribute(UAOAttributeSet::GetHealthAttribute());
+
+    UpdateHpBar(CurrentHealth, Data.NewValue);
+}
+
+void UAOMonsterHUDWidget::HandleMaxGroggyChanged(const FOnAttributeChangeData& Data)
+{
+    if (!BoundASC)
+    {
+        return;
+    }
+
+    const float CurrentGroggy = BoundASC->GetNumericAttribute(UAOAttributeSet::GetGroggyAttribute());
+
+    UpdateHpBar(CurrentGroggy, Data.NewValue);
+}
+

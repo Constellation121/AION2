@@ -42,6 +42,12 @@ public:
     void InitVelocityAndDirection(const FVector Direction);
     FORCEINLINE void Set_OrbColor(EOrbColor _EOrbColor) { OrbColor = _EOrbColor; }
 
+protected:
+    UPROPERTY(EditDefaultsOnly, Category = "Orb|Sound")
+    TObjectPtr<USoundBase> OrbCollisionSound;
+
+    UFUNCTION(NetMulticast, Unreliable)
+    void Multicast_PlayEatSound(FVector Location);
 
 
 private:

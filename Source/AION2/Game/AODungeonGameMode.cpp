@@ -741,7 +741,7 @@ void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 	// 보스 브금 재생 
 	if (auto* GS = GetWorld()->GetGameState<ADungeonGameState>())
 	{
-		GS->SetMusic(EDungeonMusic::Boss);
+		GS->SetMusic(EDungeonMusic::Dungeon);
 	}
 
 	DeadPlayerControllers.Empty();
