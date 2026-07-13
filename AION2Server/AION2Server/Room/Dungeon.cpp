@@ -441,6 +441,7 @@ void DungeonWaitingRoom::HandleDungeonToken(DungeonRef dungeon)
 			dediInfo->set_clientid(leaderId);
 			dediInfo->set_clientname(leader->GetName());
 			dediInfo->set_clientclass(leader->GetClass());
+			dediInfo->set_clienthp(leader->GetHp());
 
 			DBConnection* dbConnect = GDBConnectionPool->Pop();
 			if (dbConnect == nullptr) return;
@@ -570,10 +571,9 @@ void DungeonWaitingRoom::StartDungeonPacket(DungeonRef dungeon)
 	auto dedi = dungeon->GetDediSession();
 	dungeon->SetStatus(Protocol::RoomStatus::IN_PROGRESS);
 	if (!dedi) return;
-	std::string dediIp = "125.133.163.145";
-
+	std::string dediIp = dedi->GetIP();
 	int32 port = dedi->GetPort();
-	std::cout << port << std::endl;
+	std::cout << dediIp << " : " << port << std::endl;
 	int32 dungeonId = dungeon->GetId();
 	std::string token;
 	for (auto member : dungeon->GetMembers())

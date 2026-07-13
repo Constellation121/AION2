@@ -26,7 +26,7 @@ public:
 	void SetRot(Protocol::Rotator3 inRot) { _playerRot = inRot; }
 	void SetReady(bool ready) { _isReady = ready; }
 	void SetHp(int32 NewHp) { _hp = NewHp; }
-	void SetDungeonId(int32 dungeonId) { _dungeonId = _dungeonId; }
+	void SetDungeonId(int32 dungeonId) { _dungeonId = dungeonId; }
 
 	Protocol::Vector3 GetPos() { return _playerPos; }
 	Protocol::Rotator3 GetRot() { return _playerRot; }
