@@ -23,6 +23,14 @@ void UPvpWidget::UpdatePvpWidget(uint8 State, int32 RemainingSeconds)
 	}
 }
 
+void UPvpWidget::NativeConstruct()
+{
+	if (PvpTimer)
+	{
+		PvpTimer->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
 void UPvpWidget::TickTime()
 {
 	if (CurrentRemainingSeconds > 0)

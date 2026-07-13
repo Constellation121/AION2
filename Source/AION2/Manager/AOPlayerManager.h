@@ -61,6 +61,8 @@ public:
 
 	const FPlayerDungeonRoomState& GetMyDungeonRoomState() const { return MyDungeonRoomState; }
 
+	uint8 GetPlayerClassType(uint64 PlayerId) const;
+
 private:
 	UPROPERTY()
 	FPlayerDungeonRoomState MyDungeonRoomState;

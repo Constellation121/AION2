@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* PvpTimer;
 
+protected:
+	virtual void NativeConstruct() override;
+
 private:
 	uint8 CurrentState = 0;
 	int32 CurrentRemainingSeconds = 0;

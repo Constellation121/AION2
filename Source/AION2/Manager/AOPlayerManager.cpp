@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AOPlayerManager.h"
@@ -524,6 +524,19 @@ void UAOPlayerManager::UpdateMyDungeonReadyState(int32 DungeonId, uint64 PlayerI
 	}
 
 	MyDungeonRoomState.ReadyState = EReadyState::Ready;
+}
+
+uint8 UAOPlayerManager::GetPlayerClassType(uint64 PlayerId) const
+{
+	if (const FPlayerInfo* Info = PlayerInfos.Find(PlayerId))
+	{
+		return Info->ClassType;
+	}
+	if (GameInstance && GameInstance->GetMyPlayerId() == PlayerId)
+	{
+		return static_cast<uint8>(GameInstance->GetMyPlayerClass());
+	}
+	return 0;
 }
 
 #pragma endregion
