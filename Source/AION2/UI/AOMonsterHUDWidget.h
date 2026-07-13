@@ -40,7 +40,6 @@ private:
     void BindASCDelegates();
     void UnbindASCDelegates();
 
-
 private:
     // 내부 UI 업데이트
     void UpdateHpBar(float CurrentValue, float MaxValue);

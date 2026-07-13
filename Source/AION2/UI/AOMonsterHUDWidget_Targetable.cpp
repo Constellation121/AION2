@@ -12,9 +12,9 @@
 #include "Character/Monster/AOMonsterBase.h"
 #include "UI/AODistanceDisplayWidget.h"
 
-void UAOMonsterHUDWidget_Targetable::NativeConstruct()
+void UAOMonsterHUDWidget_Targetable::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 
 	if (Overlay_Root)
 	{
@@ -45,6 +45,11 @@ void UAOMonsterHUDWidget_Targetable::ClearBinding()
 void UAOMonsterHUDWidget_Targetable::SetMonsterHUDVisibility(bool bInVisiblity)
 {
 	ESlateVisibility NewVisibility = bInVisiblity ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+
+	if (NewVisibility == ESlateVisibility::Visible)
+	{
+		Super::BroadcastInitialAttributes();
+	}
 
 	if (TargetableWidgetType== ETargetableWidgetType::FullScreen && Overlay_Root)
 	{

@@ -34,7 +34,7 @@ void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 
 	Super::BindToASC(InASC);
 
- //   const bool bASCChanged = BoundASC != InASC;
+	// const bool bASCChanged = BoundASC != InASC;
 
 	//if (bASCChanged)
 	//{

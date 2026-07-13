@@ -28,7 +28,7 @@ class AION2_API UAOMonsterHUDWidget_Targetable : public UAOMonsterHUDWidget
 	GENERATED_BODY()
 	
 public:
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 
 public:
 	virtual void BindToAbilitySystemActor(AActor* InActor) override;
