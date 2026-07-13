@@ -18,6 +18,22 @@ class UDA_AbilitySet;
 
 struct FAOSkillSlotViewData;
 
+// 충전형 스킬에 대한 정보,
+USTRUCT()
+struct FChargeSkillInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FGameplayTag CooldownTag;
+
+	UPROPERTY()
+	UAOSkillQuickSlotWidget* SlotWidget = nullptr;
+
+	UPROPERTY()
+	int32 MaxCharge = 0;
+};
+
 /**
  * = PlayerHUDWidget 하위에서 =  
  * [Player의 각 Skill에 대해 시각적으로 반응하는 SkillSlot들을 소유 및 관리]
@@ -153,4 +169,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<const UDA_AbilitySet> BoundAbilitySet;
+
+	// === 충전형 스킬 ===
+	TMap<FGameplayTag, FChargeSkillInfo> ChargeSkillMap;
 };
