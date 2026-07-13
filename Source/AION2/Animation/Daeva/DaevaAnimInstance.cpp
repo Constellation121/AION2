@@ -1,6 +1,7 @@
 #include "Animation/Daeva/DaevaAnimInstance.h"
 #include "Character/AOCharacter.h"
 #include "GAS/AOGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "AbilitySystemComponent.h"
 
@@ -22,7 +23,7 @@ void UDaevaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
     if (UAbilitySystemComponent* ASC = AOCharacter->GetAbilitySystemComponent())
     {
-        bIsGliding = ASC->HasMatchingGameplayTag(STATE_GLIDING);
+        bIsGliding = ASC->HasMatchingGameplayTag(STATE_GLIDING) && !AOCharacter->GetCharacterMovement()->IsMovingOnGround();
         bIsCombat = ASC->HasMatchingGameplayTag(STATE_COMBAT);
     }
 }
