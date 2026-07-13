@@ -63,7 +63,9 @@ void UAOQuickSkillHUD::NativeOnInitialized()
     const FGameplayTag ClericKeyQTag =
         FGameplayTag::RequestGameplayTag(TEXT("Cooldown.Cleric.KeyQ"));
 
-    ChargeSkillMap.Add(AssassinKey3Tag, { AssassinKey3Tag , Skill_3, 2 });
+    //ChargeSkillMap.Add(AssassinKey3Tag, { AssassinKey3Tag , Skill_3, 2 });
+
+
 }
 
 void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
