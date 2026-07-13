@@ -10,7 +10,7 @@ EStateTreeRunStatus FSTT_SelectGameplayTagByWeight::EnterState(
 	FStateTreeExecutionContext& Context,
 	const FStateTreeTransitionResult& Transition) const
 {
-	const FInstanceDataType& Inst = Context.GetInstanceData<FInstanceDataType>(*this);
+	FInstanceDataType& Inst = Context.GetInstanceData<FInstanceDataType>(*this);
 
 	UAbilitySystemComponent* ASC = GetASC(Inst);
 	if (ASC == nullptr)
@@ -34,12 +34,39 @@ EStateTreeRunStatus FSTT_SelectGameplayTagByWeight::EnterState(
 		}
 	}
 
+	bool bUseLastSelectedTagWeightScale =
+		Inst.bApplyLastSelectedTagWeightScale && Inst.LastSelectedTag.IsValid();
+
 	float TotalWeight = 0.0f;
 	for (const FSTT_WeightedGameplayTagEntry& Entry : Inst.WeightedTags)
 	{
 		if (Entry.Tag.IsValid() && Entry.Weight > 0.0f)
 		{
-			TotalWeight += Entry.Weight;
+			float EffectiveWeight = Entry.Weight;
+			if (bUseLastSelectedTagWeightScale && Entry.Tag == Inst.LastSelectedTag)
+			{
+				EffectiveWeight *= Inst.LastSelectedTagWeightScale;
+			}
+
+			if (EffectiveWeight > 0.0f)
+			{
+				TotalWeight += EffectiveWeight;
+			}
+		}
+	}
+
+	if (TotalWeight <= 0.0f)
+	{
+		if (bUseLastSelectedTagWeightScale)
+		{
+			bUseLastSelectedTagWeightScale = false;
+			for (const FSTT_WeightedGameplayTagEntry& Entry : Inst.WeightedTags)
+			{
+				if (Entry.Tag.IsValid() && Entry.Weight > 0.0f)
+				{
+					TotalWeight += Entry.Weight;
+				}
+			}
 		}
 	}
 
@@ -59,7 +86,18 @@ EStateTreeRunStatus FSTT_SelectGameplayTagByWeight::EnterState(
 			continue;
 		}
 
-		AccumulatedWeight += Entry.Weight;
+		float EffectiveWeight = Entry.Weight;
+		if (bUseLastSelectedTagWeightScale && Entry.Tag == Inst.LastSelectedTag)
+		{
+			EffectiveWeight *= Inst.LastSelectedTagWeightScale;
+		}
+
+		if (EffectiveWeight <= 0.0f)
+		{
+			continue;
+		}
+
+		AccumulatedWeight += EffectiveWeight;
 		if (Pick <= AccumulatedWeight)
 		{
 			SelectedTag = Entry.Tag;
@@ -86,6 +124,7 @@ EStateTreeRunStatus FSTT_SelectGameplayTagByWeight::EnterState(
 	}
 
 	ASC->SetLooseGameplayTagCount(SelectedTag, 1);
+	Inst.LastSelectedTag = SelectedTag;
 
 	return EStateTreeRunStatus::Succeeded;
 }

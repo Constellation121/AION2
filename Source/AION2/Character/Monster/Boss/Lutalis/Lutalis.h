@@ -7,6 +7,7 @@
 #include "Lutalis.generated.h"
 
 class ALutalisElectricZone;
+class ALutalisElectricShockZone;
 class ALutalisScytheZone;
 
 /**
@@ -80,6 +81,28 @@ private:
 
 	int32 PreparedElectricZoneArcIndex = INDEX_NONE;
 	float PreparedElectricZoneTargetYaw = 0.f;
+
+// ElectricShock
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "Lutalis|ElectricShock")
+	bool BeginElectricShockWarning(float WarningDuration);
+
+	UFUNCTION(BlueprintCallable, Category = "Lutalis|ElectricShock")
+	bool ActivateElectricShockStrikes();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Lutalis|ElectricShock", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ALutalisElectricShockZone> ElectricShockZoneClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Lutalis|ElectricShock", meta = (AllowPrivateAccess = "true"))
+	float ElectricShockRadius = 350.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Lutalis|ElectricShock", meta = (AllowPrivateAccess = "true"))
+	FAttackData ElectricShockDamageData;
+
+	UPROPERTY()
+	TArray<TObjectPtr<ALutalisElectricShockZone>> ActiveElectricShockZones;
 
 // Shythe
 public:
