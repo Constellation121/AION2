@@ -193,8 +193,9 @@ protected:
 	virtual void OnAttackSucceeded(const FAttackData& AttackData, AActor* HitActor, const FHitResult& HitResult, bool& bDidShakeCamera) override;
 	virtual void TakeDamageAO(const FAttackData& AttackData, const FHitResult& HitResult, AAOCharacter* DamageCauser) override;
 
-private:
 	void InputSpacePressed();
+
+private:
 	void InputLBPressed();
 	void InputRBPressed();
 	void InputMoveReleased();
@@ -530,7 +531,7 @@ public:
 
 	int8 Get_OrbStack() { return OrbStack; }
 
-private:
+protected:
 	/* SuYeon */
 	/*
 	* 이미 성공 처리된 상태(같은 Daeva의 ASC가 Bound됨)을 체크하기 위해 추가

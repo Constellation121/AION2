@@ -2,6 +2,7 @@
 
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Character/AOCharacterMovementComponent.h"
 
 void UAOCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
@@ -23,5 +24,11 @@ void UAOCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
     bHasMoveInput = Character->GetCharacterMovement()->GetCurrentAcceleration().SizeSquared() > 0.f;
 
-    bIsInAir = Character->GetMovementComponent()->IsFalling() || Character->GetMovementComponent()->IsFlying();
+    bool bIsGlidingCustom = false;
+    if (UAOCharacterMovementComponent* AOMovement = Cast<UAOCharacterMovementComponent>(Character->GetCharacterMovement()))
+    {
+        bIsGlidingCustom = (AOMovement->MovementMode == MOVE_Custom && AOMovement->CustomMovementMode == static_cast<uint8>(EAOMovementMode::Glide));
+    }
+
+    bIsInAir = Character->GetMovementComponent()->IsFalling() || Character->GetMovementComponent()->IsFlying() || bIsGlidingCustom;
 }

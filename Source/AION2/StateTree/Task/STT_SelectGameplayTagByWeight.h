@@ -34,6 +34,15 @@ struct AION2_API FSTT_SelectGameplayTagByWeightInstanceData
 
 	UPROPERTY(EditAnywhere, Category = "Parameter")
 	bool bClearWeightedTagsBeforeSelect = true;
+
+	UPROPERTY(EditAnywhere, Category = "Parameter")
+	bool bApplyLastSelectedTagWeightScale = false;
+
+	UPROPERTY(EditAnywhere, Category = "Parameter", meta = (EditCondition = "bApplyLastSelectedTagWeightScale", ClampMin = "0.0", UIMin = "0.0"))
+	float LastSelectedTagWeightScale = 0.0f;
+
+	UPROPERTY(Transient)
+	FGameplayTag LastSelectedTag;
 };
 
 USTRUCT(meta = (DisplayName = "Select Gameplay Tag By Weight", Category = "AION2|Ability"))

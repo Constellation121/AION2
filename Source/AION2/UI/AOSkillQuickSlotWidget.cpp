@@ -29,6 +29,22 @@ void UAOSkillQuickSlotWidget::SetCurrentSkillIndex(int32 InNewIndex)
     CurrentSkillIndex = InNewIndex;
 
     SetSkillIcon(ViewDataByComboIndex[CurrentSkillIndex].Icon);
+    BP_InitSlot();
+}
+
+void UAOSkillQuickSlotWidget::SetChargeCount(int32 AvailableCharge, int32 MaxCharge, float NextChargeRemaining, float ChargeDuration, EChargeSkillUIState State)
+{
+    AvailableCharge = FMath::Clamp(
+        AvailableCharge,
+        0,
+        MaxCharge
+    );
+
+    ChargableSkillState = (AvailableCharge == 0 ? EChargeSkillUIState::Empty
+        : (AvailableCharge == MaxCharge ? EChargeSkillUIState::Full
+            : EChargeSkillUIState::Partial));
+    
+    BP_UpdateChargeState(AvailableCharge, MaxCharge, NextChargeRemaining, ChargeDuration, State);
 }
 
 void UAOSkillQuickSlotWidget::SetSkillIcon(UTexture2D* Icon)
@@ -98,6 +114,8 @@ void UAOSkillQuickSlotWidget::StartCooldown(float RemainingTime, float Duration)
     {
         return;
     }
+
+    RemainingTime = FMath::Clamp(RemainingTime, 0, Duration);
 
     // 실제 쿨다운 판정은 GAS가 담당한다.
     // 여기서는 ASC에서 조회한 남은 시간/전체 시간을 Blueprint UI에 넘겨 시각화만 한다.

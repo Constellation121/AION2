@@ -1540,8 +1540,9 @@ void ADaeva::BindOverheadStatusWidget()
 	PawnASCBindRetryCount = 0;
 
 	StatusWidget->BindToPlayerState(AOPlayerState);
+	StatusWidget->SetPlayerName(FText::FromString(AOPlayerState->GetMyName()));
 	StatusWidget->BroadcastInitialAttributes();
-
+	
 	OverheadStatusWidgetComponent->RequestRedraw();
 
 	UE_LOG(	LogTemp,Warning,TEXT("[Overhead Bind/Refresh] %s | PS=%s | ASC=%s | Widget=%s"),*GetName(),	*GetNameSafe(AOPlayerState),*GetNameSafe(PlayerStateASC),*GetNameSafe(StatusWidget));

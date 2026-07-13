@@ -35,7 +35,7 @@ int main()
 
 	// DB Connect
 	ASSERT_CRASH(GDBConnectionPool->Connect(5, L"Driver={ODBC Driver 17 for SQL Server}; Server=localhost\\SQLEXPRESS03; Database=AION2_DB; Trusted_Connection=yes;"));
-	//ASSERT_CRASH(GRedisManager.Init(5, "127.0.0.1", 6379)); // Redis 연결 추가
+	ASSERT_CRASH(GRedisManager.Init(5, "127.0.0.1", 6379)); // Redis 연결 추가
 	IocpCoreRef iocpCore = std::make_shared<IocpCore>();
 	IocpCoreRef dediIocpCore = std::make_shared<IocpCore>();
 
@@ -62,7 +62,8 @@ int main()
 		std::cout << "Dedi Server Started on Port 9999" << std::endl;
 	}
 
-	GRoom->DoTimer(10000, &Room::HandleSavePlayerHp);
+	GRoom->DoTimer(60000, &Room::HandleSavePlayerHp);
+	//GRoom->DoTimer(20000, &Room::UpdatePvpTimer);
 
 	int32 maxCore = std::thread::hardware_concurrency();
 	for (int32 i = 0; i < maxCore - 5; i++)
@@ -83,6 +84,5 @@ int main()
 
 	// Main Thread
 	DoWorkerJob(service);
-
 	GThreadManager->Join();
 }

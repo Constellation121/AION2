@@ -40,7 +40,6 @@ private:
     void BindASCDelegates();
     void UnbindASCDelegates();
 
-    void BroadcastInitialAttributes();
 
 private:
     // 내부 UI 업데이트
@@ -68,4 +67,14 @@ protected:
 
 private:
     int32 MonsterIndex = 0;
+
+public :
+    void BroadcastInitialAttributes();
+
+protected :
+    FDelegateHandle MaxHealthChangedHandle;
+    FDelegateHandle MaxGroggyChangedHandle;
+
+    void HandleMaxHealthChanged(const FOnAttributeChangeData& Data);
+    void HandleMaxGroggyChanged(const FOnAttributeChangeData& Data);
 };

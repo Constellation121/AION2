@@ -193,4 +193,7 @@ private :
 	bool bDungeonResultSent = false;
 	int32 DungeonPrice = 1000;
 
+private :
+	void StopAllPlayers();
+
 };
