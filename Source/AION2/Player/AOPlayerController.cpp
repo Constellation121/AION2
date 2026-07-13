@@ -309,15 +309,11 @@ void AAOPlayerController::ClientCreateDungeonClearWidget_Implementation(int32 Go
 
 	if (!IsLocalController())
 	{
-		UE_LOG(LogTemp, Error,
-			TEXT("[DungeonClearUI] This controller is not local"));
 		return;
 	}
 
 	if (!DungeonClearWidgetClass)
 	{
-		UE_LOG(LogTemp, Error,
-			TEXT("[DungeonClearUI] DungeonClearWidgetClass is NULL"));
 		return;
 	}
 
@@ -331,22 +327,13 @@ void AAOPlayerController::ClientCreateDungeonClearWidget_Implementation(int32 Go
 
 		if (!DungeonClearWidget)
 		{
-			UE_LOG(LogTemp, Error,
-				TEXT("[DungeonClearUI] CreateWidget failed"));
 			return;
 		}
 
 		DungeonClearWidget->AddToViewport(100);
-
-		UE_LOG(LogTemp, Warning,
-			TEXT("[DungeonClearUI] Widget created and added: %s"),
-			*GetNameSafe(DungeonClearWidget));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning,
-			TEXT("[DungeonClearUI] Existing widget found"));
-
 		if (!DungeonClearWidget->IsInViewport())
 		{
 			DungeonClearWidget->AddToViewport(100);
@@ -359,15 +346,10 @@ void AAOPlayerController::ClientCreateDungeonClearWidget_Implementation(int32 Go
 
 	FInputModeUIOnly InputMode;
 	InputMode.SetWidgetToFocus(DungeonClearWidget->TakeWidget());
-	InputMode.SetLockMouseToViewportBehavior(
-		EMouseLockMode::DoNotLock
-	);
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
 	SetInputMode(InputMode);
 	bShowMouseCursor = true;
-
-	UE_LOG(LogTemp, Warning,
-		TEXT("[DungeonClearUI] Finished displaying widget"));
 }
 
 void AAOPlayerController::ServerRequestDungeonComplete_Implementation()
