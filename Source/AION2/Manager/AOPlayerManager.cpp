@@ -407,6 +407,18 @@ void UAOPlayerManager::HandleDungeonStart(FString ServerURL)
 	}
 }
 
+void UAOPlayerManager::HandleSetPvpState(Protocol::EPvpState State)
+{
+	if (State == Protocol::EPvpState::PVP_STATE_ACTIVE)
+	{
+		MyPlayer->SetPvpState(true, 600);
+	}
+	else if (State == Protocol::EPvpState::PVP_STATE_ACTIVE)
+	{
+		MyPlayer->SetPvpState(false, 600);
+	}
+}
+
 void UAOPlayerManager::HandleDungeonCreate(int32 DungeonId)
 {
 	if (!GameInstance)
@@ -566,7 +578,8 @@ void UAOPlayerManager::HandleAttack(Protocol::S_AttackResultPacket& Pkt)
 		}
 		if (Pkt.isdead())
 		{
-			TargetPlayer->HandleDeath(EDeathReason::Normal);
+			EMontageID PlayMontageID = EMontageID::Die;
+			TargetPlayer->PlayMontageWithSection(PlayMontageID, 2.0f, NAME_None); 
 		}
 	}
 

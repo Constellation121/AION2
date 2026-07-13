@@ -52,6 +52,10 @@ private:
 private:
 	int32 CurrentStateIndex = 1;   
 	int32 PvpTimerSeconds = 600;  
+
+	Protocol::EPvpState _currentPvpState = Protocol::PVP_STATE_INACTIVE;
+	uint64 _currentStateStartTime = 0;
+	int32 _currentStateDuration = 0;
 };
 
 extern RoomRef GRoom;

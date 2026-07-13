@@ -63,7 +63,7 @@ int main()
 	}
 
 	GRoom->DoTimer(60000, &Room::HandleSavePlayerHp);
-	GRoom->DoTimer(20000, &Room::UpdatePvpTimer);
+	//GRoom->DoTimer(20000, &Room::UpdatePvpTimer);
 
 	int32 maxCore = std::thread::hardware_concurrency();
 	for (int32 i = 0; i < maxCore - 5; i++)

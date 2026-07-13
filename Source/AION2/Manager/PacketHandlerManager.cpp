@@ -253,6 +253,7 @@ bool FPacketHandler::Handle_S_PVP_STATE(Protocol::S_PvpStatePacket& Pkt)
 			PvpWidget->UpdatePvpWidget(State, Time);
 		}
 	}
+	PlayerMng->HandleSetPvpState(Pkt.state());
 	return false;
 }
 

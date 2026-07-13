@@ -495,6 +495,7 @@ void AMMODaeva::ReceiveDashPacket(FVector& NewLoc, FRotator& NewRot, FVector& Ne
 void AMMODaeva::OnLMBPressed()
 {
 	if (IsDead()) return;
+	if (!bIsPvpActive) return;
 	bIsLMBHeld = true;
 	ExecuteBasicAttack();
 }
@@ -591,9 +592,10 @@ void AMMODaeva::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 void AMMODaeva::OnSkillActionTriggered(EMontageID SkillID)
 {
 	if (IsDead()) return;
+	if (!bIsPvpActive) return;
 
 	// 타겟이 플레이어인데 PVP 비활성화 상태인 경우 스킬 사용 자체를 불허
-	if (CurrentTarget && CurrentTarget->IsA(AMMODaeva::StaticClass()) && !bIsPvpActive)
+	if (CurrentTarget && CurrentTarget->IsA(AMMODaeva::StaticClass()))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PVP 비활성화 기간에는 다른 플레이어에게 스킬을 사용할 수 없습니다."));
 		return;
@@ -691,7 +693,6 @@ void AMMODaeva::CheckAttackHit(const FAttackData& AttackData)
 			continue;
 		}
 
-		// [IOCP 송신] S_PvpStatePacket, C_AttackPacket 규격에 맞춰 서버로 공격 정보 송신
 		Protocol::C_AttackPacket AttackPacket;
 		AttackPacket.set_playerid(MyId);
 		AttackPacket.set_targetid(HitActor->GetMyId());
@@ -809,19 +810,125 @@ void AMMODaeva::RegenerateMana()
 
 void AMMODaeva::InputSpacePressed()
 {
-	Super::InputSpacePressed();
+	if (GetCharacterMovement()->MovementMode == MOVE_Custom &&
+		GetCharacterMovement()->CustomMovementMode == static_cast<uint8>(EAOMovementMode::Glide))
+	{
+		GASInputPressed(static_cast<int32>(EAbilityID::StopGlide));
+		
+		if (IsLocallyControlled())
+		{
+			Protocol::C_JumpPacket JumpPacket;
+			JumpPacket.set_playerid(MyId);
+			JumpPacket.set_isgliding(false);
+
+			SEND_PACKET(JumpPacket, PKT_C_JUMP);
+		}
+		return;
+	}
+
+	if (GetCharacterMovement()->IsFalling())
+	{
+		RequestStopSprint();
+		GASInputPressed(static_cast<int32>(EAbilityID::Glide));
+
+		if (IsLocallyControlled())
+		{
+			Protocol::C_JumpPacket JumpPacket;
+			JumpPacket.set_playerid(MyId);
+			JumpPacket.set_isgliding(true);
+
+			SEND_PACKET(JumpPacket, PKT_C_JUMP);
+		}
+		return;
+	}
+
+
+	GASInputPressed(static_cast<int32>(EAbilityID::Jump));
 
 	if (IsLocallyControlled())
 	{
 		Protocol::C_JumpPacket JumpPacket;
 		JumpPacket.set_playerid(MyId);
-		
-		bool bIsGliding = GetCharacterMovement()->MovementMode == MOVE_Custom && 
-		                  GetCharacterMovement()->CustomMovementMode == static_cast<uint8>(EAOMovementMode::Glide);
-		JumpPacket.set_isgliding(bIsGliding);
+		JumpPacket.set_isgliding(false);
 
 		SEND_PACKET(JumpPacket, PKT_C_JUMP);
 	}
+}
+
+void AMMODaeva::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+
+	if (IsLocallyControlled())
+	{
+		bool bWasGliding = (PrevMovementMode == MOVE_Custom && PreviousCustomMode == static_cast<uint8>(EAOMovementMode::Glide));
+		bool bIsGliding = (GetCharacterMovement()->MovementMode == MOVE_Custom && GetCharacterMovement()->CustomMovementMode == static_cast<uint8>(EAOMovementMode::Glide));
+
+		if (bWasGliding && !bIsGliding)
+		{
+			Protocol::C_JumpPacket JumpPacket;
+			JumpPacket.set_playerid(MyId);
+			JumpPacket.set_isgliding(false); // Stopped gliding
+
+			SEND_PACKET(JumpPacket, PKT_C_JUMP);
+		}
+	}
+}
+
+static bool IsBodyMontageConfigured(const ADaeva* Daeva, EMontageID MontageID)
+{
+	if (!Daeva) return false;
+
+	FMapProperty* MapProp = CastField<FMapProperty>(ADaeva::StaticClass()->FindPropertyByName(TEXT("Montages")));
+	if (MapProp)
+	{
+		FScriptMapHelper MapHelper(MapProp, MapProp->ContainerPtrToValuePtr<void>(Daeva));
+		for (int32 i = 0; i < MapHelper.Num(); ++i)
+		{
+			if (MapHelper.IsValidIndex(i))
+			{
+				const uint8* KeyPtr = MapHelper.GetKeyPtr(i);
+				if (KeyPtr && *KeyPtr == static_cast<uint8>(MontageID))
+				{
+					const uint8* ValuePtr = MapHelper.GetValuePtr(i);
+					if (ValuePtr)
+					{
+						UAnimMontage* Montage = *reinterpret_cast<UAnimMontage* const*>(ValuePtr);
+						return Montage != nullptr;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+static bool IsWingMontageConfigured(const ADaeva* Daeva, EMontageID MontageID)
+{
+	if (!Daeva) return false;
+
+	FMapProperty* MapProp = CastField<FMapProperty>(ADaeva::StaticClass()->FindPropertyByName(TEXT("WingMontages")));
+	if (MapProp)
+	{
+		FScriptMapHelper MapHelper(MapProp, MapProp->ContainerPtrToValuePtr<void>(Daeva));
+		for (int32 i = 0; i < MapHelper.Num(); ++i)
+		{
+			if (MapHelper.IsValidIndex(i))
+			{
+				const uint8* KeyPtr = MapHelper.GetKeyPtr(i);
+				if (KeyPtr && *KeyPtr == static_cast<uint8>(MontageID))
+				{
+					const uint8* ValuePtr = MapHelper.GetValuePtr(i);
+					if (ValuePtr)
+					{
+						UAnimMontage* Montage = *reinterpret_cast<UAnimMontage* const*>(ValuePtr);
+						return Montage != nullptr;
+					}
+				}
+			}
+		}
+	}
+	return false;
 }
 
 void AMMODaeva::ReceiveJumpPacket(bool bIsGliding)
@@ -829,6 +936,36 @@ void AMMODaeva::ReceiveJumpPacket(bool bIsGliding)
 	if (bIsGliding)
 	{
 		GetCharacterMovement()->SetMovementMode(MOVE_Custom, static_cast<uint8>(EAOMovementMode::Glide));
+		
+		if (USkeletalMeshComponent* WingMesh = GetWingMesh())
+		{
+			WingMesh->SetVisibility(true);
+		}
+
+		USkeletalMeshComponent* CapeMesh = nullptr;
+		TArray<USkeletalMeshComponent*> SkeletalMeshes;
+		GetComponents<USkeletalMeshComponent>(SkeletalMeshes);
+		for (USkeletalMeshComponent* MeshComp : SkeletalMeshes)
+		{
+			if (MeshComp && MeshComp->GetName() == TEXT("CapePart"))
+			{
+				CapeMesh = MeshComp;
+				break;
+			}
+		}
+		if (CapeMesh)
+		{
+			CapeMesh->SetVisibility(false);
+		}
+
+		if (IsBodyMontageConfigured(this, EMontageID::Glide))
+		{
+			Multicast_PlayMontage(EMontageID::Glide, 1.0f);
+		}
+		if (IsWingMontageConfigured(this, EMontageID::Glide))
+		{
+			Multicast_PlayWingMontage(EMontageID::Glide, 1.0f);
+		}
 	}
 	else
 	{
@@ -836,6 +973,36 @@ void AMMODaeva::ReceiveJumpPacket(bool bIsGliding)
 		    GetCharacterMovement()->CustomMovementMode == static_cast<uint8>(EAOMovementMode::Glide))
 		{
 			GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+			
+			if (USkeletalMeshComponent* WingMesh = GetWingMesh())
+			{
+				WingMesh->SetVisibility(false);
+			}
+
+			USkeletalMeshComponent* CapeMesh = nullptr;
+			TArray<USkeletalMeshComponent*> SkeletalMeshes;
+			GetComponents<USkeletalMeshComponent>(SkeletalMeshes);
+			for (USkeletalMeshComponent* MeshComp : SkeletalMeshes)
+			{
+				if (MeshComp && MeshComp->GetName() == TEXT("CapePart"))
+				{
+					CapeMesh = MeshComp;
+					break;
+				}
+			}
+			if (CapeMesh)
+			{
+				CapeMesh->SetVisibility(true);
+			}
+
+			if (IsBodyMontageConfigured(this, EMontageID::GlideLand))
+			{
+				Multicast_PlayMontage(EMontageID::GlideLand, 2.0f);
+			}
+			if (IsWingMontageConfigured(this, EMontageID::GlideLand))
+			{
+				Multicast_PlayWingMontage(EMontageID::GlideLand, 2.0f);
+			}
 		}
 		else
 		{

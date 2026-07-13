@@ -182,7 +182,7 @@ message S_DungeonFailPacket
 
 message C_RequestDungeonCompletePacket
 {
-	int32 dungeonId = 1;
+	int32 playerId = 1;
 	int32 Gold = 2;
 }
 

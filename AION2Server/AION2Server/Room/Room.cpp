@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <cmath>
 #include "Room.h"
 #include "Player.h"
 #include "Protocol.pb.h"
@@ -14,6 +15,9 @@ RoomRef GRoom = std::make_shared<Room>();
 // Village
 Room::Room()
 {
+	_currentPvpState = Protocol::PVP_STATE_INACTIVE;
+	_currentStateStartTime = ::GetTickCount64();
+	_currentStateDuration = 20; // 최초 타이머가 20초(20000ms) 후에 동작하므로 20초로 설정
 }
 
 Room::~Room()
@@ -90,6 +94,25 @@ void Room::EnterRoom(PlayerRef player)
 		if (auto session = player->_ownerSession.lock())
 			session->Send(spawnBuffer);
 	}
+
+	// PVP 상태 동기화 패킷 전송
+	{
+		uint64 elapsedMs = ::GetTickCount64() - _currentStateStartTime;
+		int32 remainingSeconds = 0;
+		uint64 durationMs = static_cast<uint64>(_currentStateDuration) * 1000;
+		if (elapsedMs < durationMs)
+		{
+			remainingSeconds = static_cast<int32>((durationMs - elapsedMs) / 1000);
+		}
+
+		Protocol::S_PvpStatePacket statePacket;
+		statePacket.set_state(_currentPvpState);
+		statePacket.set_remainingseconds(remainingSeconds);
+
+		SendBufferRef stateBuffer = PacketHandler::MakeSendBuffer(statePacket);
+		if (auto session = player->_ownerSession.lock())
+			session->Send(stateBuffer);
+	}
 }
 
 void Room::LeaveRoom(PlayerRef player)
@@ -106,22 +129,26 @@ void Room::UpdatePvpTimer()
 	// 1. 현재 인덱스에 해당하는 PVP 설정 가져오기
 	const FPvpStateConfig& currentConfig = PvpStateSequence[CurrentStateIndex];
 
+	_currentPvpState = currentConfig.State;
+	_currentStateStartTime = ::GetTickCount64();
+	_currentStateDuration = currentConfig.Duration;
+
 	// 2. 현재 상태 패킷 생성 
 	Protocol::S_PvpStatePacket statePacket;
-	statePacket.set_state(currentConfig.State);
-	statePacket.set_remainingseconds(currentConfig.Duration);
+	statePacket.set_state(_currentPvpState);
+	statePacket.set_remainingseconds(_currentStateDuration);
 
 	SendBufferRef stateBuffer = PacketHandler::MakeSendBuffer(statePacket);
 	Broadcast(stateBuffer, -1);
 
-	std::cout << "[PVP State Changed] State: " << currentConfig.State
-		<< ", Duration: " << currentConfig.Duration << "s\n";
+	std::cout << "[PVP State Changed] State: " << _currentPvpState
+		<< ", Duration: " << _currentStateDuration << "s\n";
 
 	// 3. 다음 상태의 인덱스로 미리 변경 
 	CurrentStateIndex = (CurrentStateIndex + 1) % NumPvpStates;
 
 	// 4. 방금 전송한 상태의 지속 시간(초)이 끝난 후에 다시 이 함수가 실행되도록 타이머 등록
-	uint64 delayMs = static_cast<uint64>(currentConfig.Duration) * 1000;
+	uint64 delayMs = static_cast<uint64>(_currentStateDuration) * 1000;
 	DoTimer(delayMs, &Room::UpdatePvpTimer);
 }
 
@@ -309,6 +336,51 @@ void Room::HandleAttack(Protocol::C_AttackPacket pkt, PlayerRef player)
 
 	if (target != nullptr)
 	{
+		const auto& playerPos = player->GetPos();
+		const auto& targetPos = target->GetPos();
+
+		float dist = std::sqrt(
+			std::pow(targetPos.x() - playerPos.x(), 2) +
+			std::pow(targetPos.y() - playerPos.y(), 2) +
+			std::pow(targetPos.z() - playerPos.z(), 2)
+		);
+
+		const float MAX_ATTACK_DISTANCE = 250.f; 
+		if (dist > MAX_ATTACK_DISTANCE)
+		{
+			std::cout << "Attack verification failed: target too far (distance: " << dist << ").\n";
+			return;
+		}
+
+		// 방향 검증
+		const float playerYaw = player->GetRot().yaw();
+		const float PI = 3.1415926535f;
+		float rad = playerYaw * (PI / 180.0f);
+
+		// 플레이어 전방 바라보는 2D 방향 벡터
+		float forwardX = std::cos(rad);
+		float forwardY = std::sin(rad);
+
+		// 플레이어에서 타겟으로 향하는 2D 방향 벡터
+		float dirX = targetPos.x() - playerPos.x();
+		float dirY = targetPos.y() - playerPos.y();
+		float dirDist = std::sqrt(dirX * dirX + dirY * dirY);
+
+		if (dirDist > 0.01f)
+		{
+			float dirXNorm = dirX / dirDist;
+			float dirYNorm = dirY / dirDist;
+
+			float dot = forwardX * dirXNorm + forwardY * dirYNorm;
+
+			const float MIN_ATTACK_DOT = 0.5f;
+			if (dot < MIN_ATTACK_DOT)
+			{
+				std::cout << "Attack verification failed: target not in front cone (dot: " << dot << ").\n";
+				return;
+			}
+		}
+
 		if (target->_isInvulnerable)
 		{
 			std::cout << "Target " << target->GetName() << " is invulnerable.\n";

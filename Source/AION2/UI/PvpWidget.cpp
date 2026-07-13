@@ -44,10 +44,6 @@ void UPvpWidget::RefreshVisuals()
 	int32 Min = CurrentRemainingSeconds / 60;
 	int32 Sec = CurrentRemainingSeconds % 60;
 	FString TimerStr = FString::Printf(TEXT("%02d:%02d"), Min, Sec);
-	if (PvpTimer)
-	{
-		PvpTimer->SetText(FText::FromString(TimerStr));
-	}
 
 	if (CurrentState == 1) // PVP_STATE_WARN_START
 	{
@@ -68,6 +64,10 @@ void UPvpWidget::RefreshVisuals()
 				PvpCountDown->SetVisibility(ESlateVisibility::Collapsed);
 			}
 		}
+		if (PvpTimer)
+		{
+			PvpTimer->SetText(FText::FromString(TimerStr));
+		}
 	}
 	else if (CurrentState == 3) // PVP_STATE_WARN_END
 	{
@@ -87,6 +87,10 @@ void UPvpWidget::RefreshVisuals()
 			{
 				PvpCountDown->SetVisibility(ESlateVisibility::Collapsed);
 			}
+		}
+		if (PvpTimer)
+		{
+			PvpTimer->SetText(FText::FromString(TimerStr));
 		}
 	}
 	else

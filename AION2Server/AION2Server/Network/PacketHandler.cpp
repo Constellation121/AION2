@@ -425,7 +425,6 @@ bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_Du
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	PlayerRef player = gameSession->_player;
-	//GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleCreateDungeon, player);
 
 	int32 dungeonId = pkt.dungeonid();
 	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonStart, player, dungeonId);
@@ -434,17 +433,18 @@ bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_Du
 
 bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_RequestDungeonCompletePacket& pkt)
 {
-	DedicatedSessionRef dediSession = static_pointer_cast<DedicatedSession>(session);
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
+	int32 dungeonId = player->GetDungeonId();
 
-	//GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleCreateDungeon, player);
-	int32 dungeonId = pkt.dungeonid();
+	int32 playerId = pkt.playerid();
 	int32 gold = pkt.gold();
 
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
 	DBBind<2, 1> dbBind(*dbConnect, L"{CALL sp_SetDungeonReward(?, ?)");
 	
 	dbBind.BindCol(0, gold);
-	dbBind.BindCol(1, dungeonId);
+	dbBind.BindCol(1, playerId);
 
 	int resultCode = 0;
 
@@ -461,8 +461,11 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 
 	if (!resultCode) return false;
 
-	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId, gold);
-	dediSession->SetUsing(false);
+	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId);
+	player->SetDungeonId(0);
+	Protocol::S_RequestDungeonCompletePacket endPacket;
+	endPacket.set_gold(gold);
+	SendBufferRef endBuffer = PacketHandler::MakeSendBuffer(endPacket);
 	return false;
 }
 

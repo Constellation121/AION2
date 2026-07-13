@@ -5279,16 +5279,16 @@ class C_RequestDungeonCompletePacket final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kDungeonIdFieldNumber = 1,
+    kPlayerIdFieldNumber = 1,
     kGoldFieldNumber = 2,
   };
-  // int32 dungeonId = 1;
-  void clear_dungeonid();
-  int32_t dungeonid() const;
-  void set_dungeonid(int32_t value);
+  // int32 playerId = 1;
+  void clear_playerid();
+  int32_t playerid() const;
+  void set_playerid(int32_t value);
   private:
-  int32_t _internal_dungeonid() const;
-  void _internal_set_dungeonid(int32_t value);
+  int32_t _internal_playerid() const;
+  void _internal_set_playerid(int32_t value);
   public:
 
   // int32 Gold = 2;
@@ -5308,7 +5308,7 @@ class C_RequestDungeonCompletePacket final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    int32_t dungeonid_;
+    int32_t playerid_;
     int32_t gold_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -11943,24 +11943,24 @@ inline void S_DungeonFailPacket::set_reason(::Protocol::DungeonFailReason value)
 
 // C_RequestDungeonCompletePacket
 
-// int32 dungeonId = 1;
-inline void C_RequestDungeonCompletePacket::clear_dungeonid() {
-  _impl_.dungeonid_ = 0;
+// int32 playerId = 1;
+inline void C_RequestDungeonCompletePacket::clear_playerid() {
+  _impl_.playerid_ = 0;
 }
-inline int32_t C_RequestDungeonCompletePacket::_internal_dungeonid() const {
-  return _impl_.dungeonid_;
+inline int32_t C_RequestDungeonCompletePacket::_internal_playerid() const {
+  return _impl_.playerid_;
 }
-inline int32_t C_RequestDungeonCompletePacket::dungeonid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_RequestDungeonCompletePacket.dungeonId)
-  return _internal_dungeonid();
+inline int32_t C_RequestDungeonCompletePacket::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_RequestDungeonCompletePacket.playerId)
+  return _internal_playerid();
 }
-inline void C_RequestDungeonCompletePacket::_internal_set_dungeonid(int32_t value) {
+inline void C_RequestDungeonCompletePacket::_internal_set_playerid(int32_t value) {
   
-  _impl_.dungeonid_ = value;
+  _impl_.playerid_ = value;
 }
-inline void C_RequestDungeonCompletePacket::set_dungeonid(int32_t value) {
-  _internal_set_dungeonid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_RequestDungeonCompletePacket.dungeonId)
+inline void C_RequestDungeonCompletePacket::set_playerid(int32_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_RequestDungeonCompletePacket.playerId)
 }
 
 // int32 Gold = 2;

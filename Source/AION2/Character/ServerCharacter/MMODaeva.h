@@ -45,6 +45,8 @@ public:
 	// 클라이언트 피격 감지 함수
 	virtual void CheckAttackHit(const FAttackData& AttackData);
 
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
+
 	bool bHasMoveInput = false;
 private:
 	void InputMoveReleased();
@@ -92,7 +94,7 @@ private:
 	int32 DungeonId;
 private:
 	// PvP 상태 변수
-	bool bIsPvpActive = true;
+	bool bIsPvpActive = false;
 	float PvpRemainingTime = 0.0f;
 
 	// LMB 연속 공격 확인

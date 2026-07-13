@@ -148,6 +148,8 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerRequestDungeonComplete();
 
+	void SendDungeonClearRequest();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UDungeonClearWidget> DungeonClearWidgetClass;

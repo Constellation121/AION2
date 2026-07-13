@@ -20,6 +20,8 @@
 #include "UI/DungeonClearWidget.h"
 #include "Components/Widget.h"
 
+#include "AION2.h"
+
 
 TAutoConsoleVariable<int32> CVarDrawAttackTrace(TEXT("ao.Debug.DrawAttackTrace"), 0, TEXT("Draw attack trace debug"), ECVF_Cheat);
 
@@ -296,6 +298,16 @@ void AAOPlayerController::ToggleMailWidget()
 void AAOPlayerController::TestClearDungeon()
 {
 	//ServerTestClearDungeon();
+}
+
+void AAOPlayerController::SendDungeonClearRequest()
+{
+	ADaeva* Owner = this->GetOwner<ADaeva>();
+
+	Protocol::C_RequestDungeonCompletePacket RequestPkt;
+	RequestPkt.set_playerid(Owner->GetMy());
+
+	SEND_PACKET(RequestPkt, PKT_C_DUNGEON_COMPLETE_REQUEST);
 }
 
 void AAOPlayerController::ServerRequestDungeonComplete_Implementation()
