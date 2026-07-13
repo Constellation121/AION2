@@ -107,6 +107,7 @@ bool AAIMonsterControllerBase::RefreshOrReset()
 			pAttributeSet->SetHealth(pAttributeSet->GetMaxHealth());
 			pAttributeSet->SetGroggy(pAttributeSet->GetMaxGroggy());
 			
+
 			if (ControlledMonster->Get_GimmickArray() != nullptr)
 			{
 				TArray<AAOMonsterBase::FGimmickEntry>* ArrayGimmick = ControlledMonster->Get_GimmickArray();
