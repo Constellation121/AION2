@@ -1483,20 +1483,16 @@ void ADaeva::BindOverheadStatusWidget()
 	}
 
 	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
-	if (!AOPlayerState)
+	UAbilitySystemComponent* PlayerStateASC = nullptr;
+	if (AOPlayerState)
 	{
-		if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
-		{
-			GetWorldTimerManager().SetTimerForNextTick(
-				this,
-				&ADaeva::BindOverheadStatusWidget
-			);
-		}
-
-		return;
+		PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
+	}
+	else
+	{
+		PlayerStateASC = GetAbilitySystemComponent();
 	}
 
-	UAbilitySystemComponent* PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
 	if (!PlayerStateASC)
 	{
 		if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
@@ -1539,7 +1535,14 @@ void ADaeva::BindOverheadStatusWidget()
 	BoundOverheadStatusWidget = StatusWidget;
 	PawnASCBindRetryCount = 0;
 
-	StatusWidget->BindToPlayerState(AOPlayerState);
+	if (AOPlayerState)
+	{
+		StatusWidget->BindToPlayerState(AOPlayerState);
+	}
+	else
+	{
+		StatusWidget->BindToAbilitySystemActor(this);
+	}
 	StatusWidget->BroadcastInitialAttributes();
 
 	OverheadStatusWidgetComponent->RequestRedraw();

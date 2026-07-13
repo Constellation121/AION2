@@ -362,7 +362,19 @@ bool PacketHandler::HandleChangeHp(PacketSessionRef& session, Protocol::C_Change
 	GRedisManager.UpdatePlayerHp(name, hp);
 	std::cout << "Player " << player->GetName() << " HP Changed: " << player->GetHp() << " (Redis updated)" << std::endl;
 
-	return false;
+	// 다른 플레이어들에게 체력 변경 정보 브로드캐스트 (S_AttackResultPacket 재활용)
+	Protocol::S_AttackResultPacket resultPkt;
+	resultPkt.set_attackerid(player->GetId());
+	resultPkt.set_targetid(player->GetId());
+	resultPkt.set_damage(0);
+	resultPkt.set_targethp(hp);
+	resultPkt.set_isdead(hp <= 0);
+	resultPkt.set_skillid(0);
+
+	SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(resultPkt);
+	GRoom->DoAsync(&Room::Broadcast, sendBuffer, player->GetId());
+
+	return true;
 }
 
 bool PacketHandler::HandleDedicated(PacketSessionRef& session, Protocol::C_DedicatedPacket& pkt)
@@ -502,7 +514,7 @@ bool PacketHandler::HandleStorePurchase(PacketSessionRef& session, Protocol::C_S
 	{
 		if (dbBind.Fetch())
 		{
-			std::cout << "ResultCode : " << errorCode << std::endl;
+			std::cout << "Store Purchase ResultCode : " << errorCode << std::endl;
 		}
 	}
 	else
@@ -557,7 +569,7 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 	{
 		if (dbBind.Fetch())
 		{
-			std::cout << "ResultCode : " << errorCode << std::endl;
+			std::cout << "Use Item ResultCode : " << errorCode << std::endl;
 		}
 	}
 	else
