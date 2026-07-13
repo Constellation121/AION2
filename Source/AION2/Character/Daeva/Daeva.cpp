@@ -1113,7 +1113,7 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 
 void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
-	
+	SendHp(Data.NewValue);
 	if (Data.NewValue <= 0.0f && !bIsDead)
 	{
 		HandleDeath();
@@ -1322,6 +1322,8 @@ void ADaeva::RestorePlayerInfoFromPlayerState()
 	{
 		return;
 	}
+
+	MyId = AOPlayerState->GetMyId();
 
 	// 1. HP Apply
 	if (HasAuthority())
