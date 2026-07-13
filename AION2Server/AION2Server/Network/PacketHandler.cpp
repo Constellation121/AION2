@@ -445,6 +445,8 @@ bool PacketHandler::HandleDungeonStart(PacketSessionRef& session, Protocol::C_Du
 
 bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_RequestDungeonCompletePacket& pkt)
 {
+	std::cout << "HandleDungeonEnd" << " : " << std::endl;
+
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 	PlayerRef player = gameSession->_player;
 	int32 dungeonId = player->GetDungeonId();

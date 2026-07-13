@@ -35,7 +35,7 @@ int main()
 
 	// DB Connect
 	ASSERT_CRASH(GDBConnectionPool->Connect(5, L"Driver={ODBC Driver 17 for SQL Server}; Server=localhost\\SQLEXPRESS03; Database=AION2_DB; Trusted_Connection=yes;"));
-	//ASSERT_CRASH(GRedisManager.Init(5, "127.0.0.1", 6379)); // Redis 연결 추가
+	ASSERT_CRASH(GRedisManager.Init(5, "127.0.0.1", 6379)); // Redis 연결 추가
 	IocpCoreRef iocpCore = std::make_shared<IocpCore>();
 	IocpCoreRef dediIocpCore = std::make_shared<IocpCore>();
 

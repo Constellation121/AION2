@@ -16,6 +16,8 @@
 #include "AbilitySystemComponent.h"
 #include "Character/AOCharacterMovementComponent.h"
 #include "Physics/Collision.h"
+#include "Manager/AOPlayerManager.h"
+#include "UI/AOPlayerHUDWidget.h"
 
 
 void AMMODaeva::BeginPlay()
@@ -83,6 +85,24 @@ void AMMODaeva::PossessedBy(AController* NewController)
 	{
 		UE_LOG(LogTemp, Log, TEXT(" AMMODaeva::PossessedBy() - SetTimer"));
 		GetWorldTimerManager().SetTimer(SendMoveHandle, this, &AMMODaeva::SendMovePacket, SendMoveTimer, true);
+	}
+}
+
+void AMMODaeva::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	if (GetNetMode() == NM_DedicatedServer)
+	{
+		return;
+	}
+
+	if (UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr)
+	{
+		if (BoundOverheadStatusWidget.IsValid())
+		{
+			BoundOverheadStatusWidget->SetPlayerName(FText::FromString(PlayerManager->GetPlayerNameById(GetMyId())));
+		}
 	}
 }
 
