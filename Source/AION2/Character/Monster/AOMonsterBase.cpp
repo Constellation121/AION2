@@ -235,6 +235,17 @@ void AAOMonsterBase::HandleBossDeath()
 
 	bIsDead = true;
 
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		AIController->StopMovement();
+	}
+
+	if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+	{
+		Movement->StopMovementImmediately();
+		Movement->DisableMovement();
+	}
+
 	// 수연: 아직 시체만 남은 채로 Head-up Display를 Destroy. | 26.07.05
 	if (OverheadStatusWidgetComponent)
 	{
