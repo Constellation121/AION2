@@ -189,4 +189,7 @@ protected:
 
 	TArray<FGimmickEntry> Gimmicks;
 
+private :
+	void BindMonsterHUDToASC();
+
 };
