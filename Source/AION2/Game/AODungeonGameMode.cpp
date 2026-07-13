@@ -9,6 +9,7 @@
 
 #include "Character/Monster/AOMonsterBase.h"
 #include "Player/AOPlayerController.h"
+#include "Game/DungeonGameState.h"
 
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -533,6 +534,12 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 		UE_LOG(LogTemp, Log, TEXT("%s"), *RespawnedPlayer->GetClass()->GetName());
 		RespawnedPlayer->RestorePlayerInfoFromPlayerState();
 		RespawnedPlayer->ResetForDungeonRespawn();
+
+		// 보스 브금 재생 
+		if (auto* GS = GetWorld()->GetGameState<ADungeonGameState>())
+		{
+			GS->SetMusic(EDungeonMusic::Boss);
+		}
 	}
 
 
@@ -735,6 +742,12 @@ void AAODungeonGameMode::RespawnAllDeadPlayersAtBossCheckpoint()
 			RespawnedPlayer->RestorePlayerInfoFromPlayerState();
 			RespawnedPlayer->ResetForDungeonRespawn();
 		}
+	}
+
+	// 보스 브금 재생 
+	if (auto* GS = GetWorld()->GetGameState<ADungeonGameState>())
+	{
+		GS->SetMusic(EDungeonMusic::Boss);
 	}
 
 	DeadPlayerControllers.Empty();
