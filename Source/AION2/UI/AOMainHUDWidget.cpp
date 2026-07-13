@@ -65,3 +65,12 @@ void UAOMainHUDWidget::PlaySkillPressedFeedback(int32 InputId)
 	}
 }
 
+
+void UAOMainHUDWidget::PlaySkillSucceedEffect(int32 InputId)
+{
+	if (PlayerHUDWidget)
+	{
+		PlayerHUDWidget->PlaySkillSucceedEffect(InputId);
+	}
+}
+

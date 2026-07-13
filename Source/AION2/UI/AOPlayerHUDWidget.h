@@ -44,6 +44,7 @@ public:
     // => SkillHUD.
     void PlaySkillPressedFeedback(int32 InputId);
 
+    void PlaySkillSucceedEffect(int32 InputId);
 
     void BroadcastInitialAttributes();
 public:

@@ -73,7 +73,7 @@ public:
 public:
 	// === MainHUD-> PlayerHUD -> SkillHUD/slot of inputID -> SkillSlot ===
 	void PlaySkillPressedFeedback(int32 InputId);
-
+	void PlaySkillSucceedEffect(int32 InputId);
 
 private:
 	bool bShowColliderDebug = false;

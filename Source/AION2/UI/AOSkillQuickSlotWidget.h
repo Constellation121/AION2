@@ -70,6 +70,8 @@ public:
 
 	void PlaySkillPressedFeedback();
 
+	void PlaySkillSucceedEffect();
+
 	// 쿨타임 가진 Skill 발동 시 Effect 표시
 	void StartCooldown(float RemainingTime, float Duration);
 
@@ -109,6 +111,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "SkillSlot")
 	void BP_InitSlot();
 	
+	UFUNCTION(BlueprintImplementableEvent, Category = "SkillSlot")
+	void BP_PlaySkillSucceedEffect();
+
 
 private:
 	// TODO(SuYeon): Init the Icon => HorizontalBox의 Slot을 밀어주는 것으로 바꿀 것.
