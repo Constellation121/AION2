@@ -5,6 +5,8 @@
 #include "GameplayTagContainer.h"
 #include "AOSkillSlotViewData.generated.h"
 
+
+
 /*
 * UI에 불필요한 Data를 분리하기 위해, 새로운 struct 생성
 * Widget 입장에서는 ASC 원본 구조체를 알 필요가 없다.
@@ -35,5 +37,6 @@ struct FAOSkillSlotViewData
 	UPROPERTY(BlueprintReadOnly, Category = "SkillSlotView")
 	float Duration = 0.0f;
 	// === Cool이 돌고 있다면 해당 Slot 정보를 복사해 다른 곳에 생성해줘야 하므로 추가 ===
-
 };
+
+

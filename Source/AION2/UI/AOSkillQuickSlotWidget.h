@@ -29,6 +29,16 @@ class UUserWidget;
  */
 
 
+// 충전형 스킬에 대한 상태.
+UENUM(BlueprintType)
+enum class EChargeSkillUIState : uint8
+{
+	None_Chargable,
+	Empty,
+	Partial,
+	Full
+};
+
 /*
 * TODO(SuYeon): 최종적으로 수정해야할 것.
 * SlotWidget이 자체적으로 ViewData를 갖지 않고, 하위 Widget으로 Skill Icon을 추가해서 돌아가도록 구현
@@ -45,7 +55,13 @@ public:
 
 	// Array에 skill이 하나만 있는 Slot은 한 번만 호출됨.
 	void SetCurrentSkillIndex(int32 InNewIndex);
-	
+
+	// 충전형 스킬에 대한 표시 이벤트.
+	void SetChargeCount(int32 AvailableCharge,
+		int32 MaxCharge,
+		float NextChargeRemaining,
+		float ChargeDuration,
+		EChargeSkillUIState State);
 
 	FORCEINLINE int32 GetCurrentSkillIndex() { return CurrentSkillIndex; }
 	FORCEINLINE int32 GetSlotSkillCount() { return ViewDataByComboIndex.Num(); }
@@ -70,6 +86,7 @@ public:
 public:
 	// Blueprint에서 구현하는 기능이므로, 초록줄이 뜬다고 해서 정의 만들면 빌드 에러남. 
 	// C++ 내에서 호출은 할 수 있다.
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "SkillSlot")
 	void BP_PlayPressedFeedback();
 
@@ -79,6 +96,19 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "SkillSlot")
 	void BP_StopCooldown();
 
+	// 충전형 스킬에 대한 표시 이벤트.
+	UFUNCTION(BlueprintImplementableEvent, Category = "SkillSlot")
+	void BP_UpdateChargeState(
+		int32 AvailableCharge,
+		int32 MaxCharge,
+		float NextChargeRemaining,
+		float ChargeDuration,
+		EChargeSkillUIState State);
+
+	// C++ 내부에 Binding되지 않은 하위 Widget들을 값에 따라 Visibility 바꿔주기 위해 추가.
+	UFUNCTION(BlueprintImplementableEvent, Category = "SkillSlot")
+	void BP_InitSlot();
+	
 
 private:
 	// TODO(SuYeon): Init the Icon => HorizontalBox의 Slot을 밀어주는 것으로 바꿀 것.
@@ -97,6 +127,10 @@ protected:
 	ESlotType slotType = ESlotType::Skill_Quick;
 	
 
+	// === Chargable Skill Data(하드 코딩을 피하기 위함) ===
+	UPROPERTY(BlueprintReadOnly)
+	EChargeSkillUIState ChargableSkillState = EChargeSkillUIState::None_Chargable;
+
 private:
 	// ============= Skill View Data ============
 	UPROPERTY()
@@ -104,4 +138,6 @@ private:
 
 	UPROPERTY()
 	int32 CurrentSkillIndex = 0;
+
+
 };

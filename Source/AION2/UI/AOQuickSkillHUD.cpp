@@ -24,14 +24,14 @@ void UAOQuickSkillHUD::NativeOnInitialized()
     // ============= Initialize SkillSlotByAbilityID ============
 
     // 456
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_1), Skill_R);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_2), Skill_R);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_3), Skill_R);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_1), Skill_LB);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_2), Skill_LB);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::LB_3), Skill_LB);
 
     // 789
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_1), Skill_T);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_2), Skill_T);
-    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_3), Skill_T);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_1), Skill_RB);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_2), Skill_RB);
+    SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::RB_3), Skill_RB);
 
     // 10 11 12 13
     SkillSlotByAbilityID.Add(static_cast<int32>(EAbilityID::Key1), Skill_1);
@@ -52,8 +52,8 @@ void UAOQuickSkillHUD::NativeOnInitialized()
 
     SkillSlotArray.Add(Skill_Q);
     SkillSlotArray.Add(Skill_E);
-    SkillSlotArray.Add(Skill_R);
-    SkillSlotArray.Add(Skill_T);
+    SkillSlotArray.Add(Skill_LB);
+    SkillSlotArray.Add(Skill_RB);
 
 
     // ======= 충전형 스킬 하드코딩 =======
@@ -63,9 +63,14 @@ void UAOQuickSkillHUD::NativeOnInitialized()
     const FGameplayTag ClericKeyQTag =
         FGameplayTag::RequestGameplayTag(TEXT("Cooldown.Cleric.KeyQ"));
 
-    //ChargeSkillMap.Add(AssassinKey3Tag, { AssassinKey3Tag , Skill_3, 2 });
+    ChargeSkillConfigs.Add(AssassinKey3Tag, {
+       EQuickSkillSlotIndex::Key3, 2  }
+    );
 
 
+    ChargeSkillConfigs.Add(ClericKeyQTag, {
+       EQuickSkillSlotIndex::KeyQ, 3 }
+       );
 }
 
 void UAOQuickSkillHUD::BindToASC(UAbilitySystemComponent* InASC)
@@ -311,11 +316,31 @@ void UAOQuickSkillHUD::BindCooldownDelegates()
         // NewOrRemoved => ASC의 CooldownTag count가 생길 때, 사라질 때 호출됨.
         // 해당 Event는 어떤 Slot에 해당 Skill이 있는지 전달해줄 수 없으므로, 
         // Handler에서 Slot을 순회해서 검사해줌.
+        const bool bIsChargeSkill =
+            ChargeSkillConfigs.Contains(CooldownTag);
+
+        // 만약 횟수 충전식 스킬이면 EventType을 다르게 넣어줘야 함.
+        const EGameplayTagEventType::Type EventType =
+            bIsChargeSkill
+            ? EGameplayTagEventType::AnyCountChange
+            : EGameplayTagEventType::NewOrRemoved;
+
         FDelegateHandle Handle =
-            BoundASC->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::NewOrRemoved)
-            .AddUObject(this, &UAOQuickSkillHUD::HandleCooldownTagChanged);
+            BoundASC->RegisterGameplayTagEvent(
+                CooldownTag, EventType)
+            .AddUObject(
+                this,
+                &UAOQuickSkillHUD::HandleCooldownTagChanged);
 
         CooldownTagDelegateHandles.Emplace(CooldownTag, Handle);
+
+        // 이미 쿨다운 중인 상태에서 HUD가 생성될 수도 있으므로, 초기 동기화
+        HandleCooldownTagChanged(
+            CooldownTag,
+            BoundASC->GetTagCount(CooldownTag)
+        );
+
+        SlotWidget->BP_InitSlot();
     }
 }
 
@@ -337,10 +362,15 @@ void UAOQuickSkillHUD::UnbindCooldownDelegates()
             continue;
         }
 
+        const EGameplayTagEventType::Type EventType =
+            ChargeSkillConfigs.Contains(CooldownTag)
+            ? EGameplayTagEventType::AnyCountChange
+            : EGameplayTagEventType::NewOrRemoved;
+
+
         // RegisterGameplayTagEvent는 태그별 delegate list를 반환한다.
         // 등록할 때 받은 handle로 정확히 같은 바인딩만 제거한다.
-        BoundASC->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::NewOrRemoved)
-            .Remove(Handle);
+        BoundASC->UnregisterGameplayTagEvent(Handle, CooldownTag, EventType);
     }
 
     CooldownTagDelegateHandles.Empty();
@@ -348,26 +378,98 @@ void UAOQuickSkillHUD::UnbindCooldownDelegates()
 
 void UAOQuickSkillHUD::HandleCooldownTagChanged(FGameplayTag CooldownTag, int32 NewCount)
 {
-    	UAOSkillQuickSlotWidget* SlotWidget = FindCurrentSlotByCooldownTag(CooldownTag);
+    UAOSkillQuickSlotWidget* SlotWidget = FindCurrentSlotByCooldownTag(CooldownTag);
 	if (!SlotWidget)
 	{
 		return;
 	}
 
-	if (NewCount > 0)
-	{
-		float RemainingTime = 0.0f;
-		float Duration = 0.0f;
+    // === 충전식 스킬 쿨타임 처리 ===
+   // 충전형 Skill Map에 등록된 Tag를 먼저 분기.
+    if (const FChargeSkillConfig* ChargeConfig = ChargeSkillConfigs.Find(CooldownTag))
+    {
+        // Exception Handling.
+        const int32 SlotIndex =
+            static_cast<int32>(ChargeConfig->SlotIndex);
 
-		if (GetCooldownTime(CooldownTag, RemainingTime, Duration))
-		{
-			SlotWidget->StartCooldown(RemainingTime, Duration);
-		}
-	}
-	else
-	{
-		SlotWidget->StopCooldown();
-	}
+        if (!SkillSlotArray.IsValidIndex(SlotIndex))
+        {
+            return;
+        }
+
+        UAOSkillQuickSlotWidget* ChargeSlotWidget =
+            SkillSlotArray[SlotIndex];
+
+        if (!IsValid(ChargeSlotWidget))
+        {
+            return;
+        }
+
+        const int32 AvailableCharge = FMath::Clamp(
+            ChargeConfig->MaxCharge - NewCount,
+            0,
+            ChargeConfig->MaxCharge);
+
+        EChargeSkillUIState State = EChargeSkillUIState::Partial;
+
+        if (AvailableCharge == ChargeConfig->MaxCharge)
+        {
+            State = EChargeSkillUIState::Full;
+        }
+        else if (AvailableCharge == 0)
+        {
+            State = EChargeSkillUIState::Empty;
+        }
+
+        float Remaining = 0.0f;
+        float Duration = 0.0f;
+        if (NewCount > 0)
+        {
+            if (GetCooldownTime(
+                CooldownTag,
+                Remaining,
+                Duration,
+                true))
+            {
+                // 기존 쿨타임 UI 사용
+                ChargeSlotWidget->StartCooldown(
+                    Remaining,
+                    Duration);
+            }
+        }
+        else
+        {
+            ChargeSlotWidget->StopCooldown();
+        }
+
+
+
+        ChargeSlotWidget->SetChargeCount(
+            AvailableCharge,
+            ChargeConfig->MaxCharge,
+            Remaining,
+            Duration,
+            State);
+
+        return; // 일반 StartCooldown/StopCooldown 처리 방지
+    }
+
+
+    // === 일반 쿨타임 처리 ===
+    if (NewCount > 0)
+    {
+        float RemainingTime = 0.0f;
+        float Duration = 0.0f;
+
+        if (GetCooldownTime(CooldownTag, RemainingTime, Duration))
+        {
+            SlotWidget->StartCooldown(RemainingTime, Duration);
+        }
+    }
+    else
+    {
+        SlotWidget->StopCooldown();
+    }
 }
 
 UAOSkillQuickSlotWidget* UAOQuickSkillHUD::FindCurrentSlotByCooldownTag(FGameplayTag CooldownTag) const
@@ -394,7 +496,12 @@ UAOSkillQuickSlotWidget* UAOQuickSkillHUD::FindCurrentSlotByCooldownTag(FGamepla
     return nullptr;
 }
 
-bool UAOQuickSkillHUD::GetCooldownTime(FGameplayTag CooldownTag, float& OutRemainingTime, float& OutDuration) const
+bool UAOQuickSkillHUD::GetCooldownTime(
+    FGameplayTag CooldownTag, 
+    float& OutRemainingTime, 
+    float& OutDuration, 
+    bool bFindShortest
+) const
 {
     OutRemainingTime = 0.0f;
     OutDuration = 0.0f;
@@ -420,20 +527,34 @@ bool UAOQuickSkillHUD::GetCooldownTime(FGameplayTag CooldownTag, float& OutRemai
         return false;
     }
 
-    // 같은 태그로 여러 GE가 잡히는 경우 가장 긴 남은 시간을 UI에 표시한다.
-    for (const TPair<float, float>& TimePair : TimeRemainingAndDurations)
+    bool bFound = false;
+    // 같은 태그로 여러 GE가 잡히는 경우,
+    // bFindShortest가 false면 가장 긴 남은 시간, true면 짧은 시간을 UI에 표시.
+    for (const TPair<float, float>& TimePair
+        : TimeRemainingAndDurations)
     {
         const float RemainingTime = TimePair.Key;
-        const float Duration = TimePair.Value;
 
-        if (RemainingTime > OutRemainingTime)
+        const bool bShouldSelect =
+            !bFound ||
+            (bFindShortest
+                ? RemainingTime < OutRemainingTime
+                : RemainingTime > OutRemainingTime);
+
+        if (bShouldSelect)
         {
             OutRemainingTime = RemainingTime;
-            OutDuration = Duration;
+            OutDuration = TimePair.Value;
+            bFound = true;
         }
     }
 
     return OutRemainingTime > 0.0f && OutDuration > 0.0f;
+}
+
+void UAOQuickSkillHUD::HandleChargableSkill(FGameplayTag CooldownTag, int32 NewCount)
+{
+ 
 }
 
 void UAOQuickSkillHUD::HandleLBComboTagChanged(FGameplayTag Tag, int32 NewCount)
@@ -449,11 +570,11 @@ void UAOQuickSkillHUD::HandleLBComboTagChanged(FGameplayTag Tag, int32 NewCount)
 
     if (NewCount > 0)
     {
-        Skill_R->HandleComboInput();  
+        Skill_LB->HandleComboInput();  
     }
     else
     {
-        Skill_R->ResetComboInput();
+        Skill_LB->ResetComboInput();
     }
 }
 
@@ -469,11 +590,11 @@ void UAOQuickSkillHUD::HandleRBComboTagChanged(FGameplayTag Tag, int32 NewCount)
 
     if (NewCount > 0)
     {
-        Skill_T->HandleComboInput();
+        Skill_RB->HandleComboInput();
     }
     else
     {
-        Skill_T->ResetComboInput();  
+        Skill_RB->ResetComboInput();  
     }
 }
 
