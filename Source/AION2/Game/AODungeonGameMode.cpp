@@ -10,6 +10,7 @@
 #include "Character/Monster/AOMonsterBase.h"
 #include "Player/AOPlayerController.h"
 #include "Game/DungeonGameState.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -111,7 +112,7 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 			AOPlayerState->SetPlayerInfo(
 				FakePlayerId,
 				TEXT("PIE_Dungeon_Player"),
-				static_cast<uint8>(EDaevaClassType::Assassin),
+				static_cast<uint8>(EDaevaClassType::Ranger),
 				100
 			);
 
@@ -311,6 +312,8 @@ void AAODungeonGameMode::ClearDungeon()
 	UE_LOG(LogTemp, Warning, TEXT("[Dungeon] Dungeon Clear"));
 	
 	//GiveDungeonReward();
+	StopAllPlayers();
+
 	CreateDungeonClearWidget();
 	//SendDungeonCompleteRequest();
 }
@@ -1016,5 +1019,45 @@ Protocol::DPlayerInfo* AAODungeonGameMode::ValidateToken(FString Token)
 		return ClientInfo;
 	}
 	return nullptr;
+}
+
+void AAODungeonGameMode::StopAllPlayers()
+{
+	UWorld* World = GetWorld();
+
+	if (!World)
+	{
+		return;
+	}
+
+	for (FConstPlayerControllerIterator It = World->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* PlayerController = It->Get();
+		if (!IsValid(PlayerController))
+		{
+			continue;
+		}
+
+		ADaeva* PlayerCharacter = Cast<ADaeva>(PlayerController->GetPawn());
+
+		if (!IsValid(PlayerCharacter))
+		{
+			continue;
+		}
+
+		UCharacterMovementComponent* Movement = PlayerCharacter->GetCharacterMovement();
+		UAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent();
+
+		if (Movement)
+		{
+			Movement->StopMovementImmediately();
+			Movement->DisableMovement();
+		}
+
+		if (ASC)
+		{
+			ASC->CancelAllAbilities();
+		}
+	}
 }
 
