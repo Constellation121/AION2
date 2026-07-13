@@ -534,12 +534,6 @@ void AAODungeonGameMode::RespawnPlayer(APlayerController* PlayerController)
 		UE_LOG(LogTemp, Log, TEXT("%s"), *RespawnedPlayer->GetClass()->GetName());
 		RespawnedPlayer->RestorePlayerInfoFromPlayerState();
 		RespawnedPlayer->ResetForDungeonRespawn();
-
-		// 보스 브금 재생 
-		if (auto* GS = GetWorld()->GetGameState<ADungeonGameState>())
-		{
-			GS->SetMusic(EDungeonMusic::Boss);
-		}
 	}
 
 
