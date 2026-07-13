@@ -3,20 +3,24 @@
 
 #include "AOPlayerManager.h"
 #include "Game/AOGameInstance.h"
+#include "Game/AODungeonGameMode.h"
+
 #include "Character/Daeva/Daeva.h"
 #include "Character/ServerCharacter/MMODaeva.h"
 #include "Player/AOPlayerController.h"
+
 #include "UI/AOPlayerHUDWidget.h"
 #include "UI/AOMainHUDWidget.h"
 #include "UI/GoldWidget.h"
 #include "UI/AOChattingWidget.h"
-
 #include "UI/AOQuickSlotComponent.h"
+
 #include "Item/AOItemDataBase.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/AttributeSet/AOAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
-#include "Game/AODungeonGameMode.h"
+
+#include "Manager/AOSoundManager.h"
 
 UAOPlayerManager::UAOPlayerManager()
 {
@@ -71,6 +75,7 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString& PlayerN
 {
 	if (!GameInstance)
 		return;
+	UAOSoundManager::Get(this)->PlayBGM(TEXT("VillageBGM"));
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
