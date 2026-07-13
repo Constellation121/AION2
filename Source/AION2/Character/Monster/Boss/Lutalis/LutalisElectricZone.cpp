@@ -229,6 +229,8 @@ void ALutalisElectricZone::FinishAllArcs()
 
 void ALutalisElectricZone::MulticastFinishAllArcs_Implementation()
 {
+	PendingArcIndex = INDEX_NONE;
+
 	for (int32 ArcIndex = 0; ArcIndex < GetArcCount(); ++ArcIndex)
 	{
 		FinishArcInternal(ArcIndex);
