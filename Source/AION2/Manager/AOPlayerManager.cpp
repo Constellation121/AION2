@@ -541,6 +541,15 @@ uint8 UAOPlayerManager::GetPlayerClassType(uint64 PlayerId) const
 	return 0;
 }
 
+FString UAOPlayerManager::GetPlayerNameById(uint64 PlayerId) const
+{
+	if (const FPlayerInfo* Info = PlayerInfos.Find(PlayerId))
+	{
+		return Info->PlayerName;
+	}
+	return FString();
+}
+
 #pragma endregion
 
 void UAOPlayerManager::HandleDash(const uint64 PlayerId, FVector& NewLocation, FRotator& NewRotation, FVector& NewVel)
