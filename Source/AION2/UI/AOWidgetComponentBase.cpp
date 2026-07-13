@@ -107,8 +107,28 @@ void UAOWidgetComponentBase::UpdateDistanceVisibility()
 	}
 
 	const bool bShouldHide = !bShouldShow;
+
 	if (bHiddenInGame != bShouldHide)
 	{
 		SetHiddenInGame(bShouldHide);
+
+		// 멀리 있다가 다시 가까워진 순간
+		if (!bShouldHide)
+		{
+			if (!GetUserWidgetObject())
+			{
+				InitWidget();
+			}
+
+			if (UAOMonsterHUDWidget* MonsterHUD =
+				Cast<UAOMonsterHUDWidget>(GetUserWidgetObject()))
+			{
+				// 현재 ASC 값을 다시 UI에 반영
+				MonsterHUD->BroadcastInitialAttributes();
+			}
+
+			// WidgetComponent의 RenderTarget 갱신
+			RequestRedraw();
+		}
 	}
 }
