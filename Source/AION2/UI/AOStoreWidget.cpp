@@ -13,6 +13,7 @@ void UAOStoreWidget::NativeConstruct()
 	// EnterButton 이벤트 바인딩
 	if (Button_HealPurchase)
 	{
+		Button_HealPurchase->OnClicked.RemoveAll(this);
 		Button_HealPurchase->OnClicked.AddDynamic(this, &UAOStoreWidget::OnHealPurchase);
 	}
 }

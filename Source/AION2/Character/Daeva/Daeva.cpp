@@ -93,7 +93,7 @@ ADaeva::ADaeva(const FObjectInitializer& ObjectInitializer)
 	OverheadStatusWidgetComponent->SetupAttachment(RootComponent);
 	OverheadStatusWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	OverheadStatusWidgetComponent->SetBlendMode(EWidgetBlendMode::Transparent);
-	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(80.0f, 30.0f));
+	OverheadStatusWidgetComponent->SetDrawSize(FVector2D(120.0f, 30.0f));
 	OverheadStatusWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 130.0f));
 	OverheadStatusWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 180.0f));
 	OverheadStatusWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -691,11 +691,13 @@ void ADaeva::GASInputPressed(int32 InputId)
 {
 	if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId))
 	{
+		AAOPlayerController* PC = Cast<AAOPlayerController>(GetController());
+
 		if (LastPressedFeedbackAbilityID != InputId)
 		{
 			LastPressedFeedbackAbilityID = InputId;
 		
-			if (AAOPlayerController* PC = Cast<AAOPlayerController>(GetController()))
+			if (PC)
 			{
 				PC->PlaySkillPressedFeedback(InputId);
 			}
@@ -705,6 +707,12 @@ void ADaeva::GASInputPressed(int32 InputId)
 		if (Spec->IsActive())
 		{
 			ASC->AbilitySpecInputPressed(*Spec);
+			
+			// Skill이 성공했을 때의 Effect.
+			if (PC)
+			{
+				PC->PlaySkillSucceedEffect(InputId);
+			}
 		}
 		else
 		{
@@ -1113,7 +1121,7 @@ void ADaeva::HandleDeath(EDeathReason DeathReason)
 
 void ADaeva::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
-	
+	SendHp(Data.NewValue);
 	if (Data.NewValue <= 0.0f && !bIsDead)
 	{
 		HandleDeath();
@@ -1323,6 +1331,8 @@ void ADaeva::RestorePlayerInfoFromPlayerState()
 		return;
 	}
 
+	MyId = AOPlayerState->GetMyId();
+
 	// 1. HP Apply
 	if (HasAuthority())
 	{
@@ -1482,34 +1492,6 @@ void ADaeva::BindOverheadStatusWidget()
 		return;
 	}
 
-	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
-	if (!AOPlayerState)
-	{
-		if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
-		{
-			GetWorldTimerManager().SetTimerForNextTick(
-				this,
-				&ADaeva::BindOverheadStatusWidget
-			);
-		}
-
-		return;
-	}
-
-	UAbilitySystemComponent* PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
-	if (!PlayerStateASC)
-	{
-		if (++PawnASCBindRetryCount <= PawnASCBindMaxRetryCount)
-		{
-			GetWorldTimerManager().SetTimerForNextTick(
-				this,
-				&ADaeva::BindOverheadStatusWidget
-			);
-		}
-
-		return;
-	}
-
 	UAOPlayerHUDWidget* StatusWidget =
 		Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
 
@@ -1517,7 +1499,7 @@ void ADaeva::BindOverheadStatusWidget()
 	{
 		OverheadStatusWidgetComponent->InitWidget();
 
-		StatusWidget =	Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
+		StatusWidget = Cast<UAOPlayerHUDWidget>(OverheadStatusWidgetComponent->GetUserWidgetObject());
 
 		if (!StatusWidget)
 		{
@@ -1535,17 +1517,53 @@ void ADaeva::BindOverheadStatusWidget()
 
 	// 여기서부터 핵심.
 	// 같은 ASC / 같은 Widget이어도 다시 바인딩하고 현재 Attribute 값을 다시 밀어준다.
-	BoundOverheadStatusASC = PlayerStateASC;
 	BoundOverheadStatusWidget = StatusWidget;
 	PawnASCBindRetryCount = 0;
 
-	StatusWidget->BindToPlayerState(AOPlayerState);
-	StatusWidget->SetPlayerName(FText::FromString(AOPlayerState->GetMyName()));
-	StatusWidget->BroadcastInitialAttributes();
-	
+	// Resolve player name (with PlayerState or fall back to PlayerManager)
+	AAOPlayerState* AOPlayerState = GetPlayerState<AAOPlayerState>();
+	FString PlayerName = FString();
+	if (AOPlayerState)
+	{
+		PlayerName = AOPlayerState->GetMyName();
+	}
+
+	if (PlayerName.IsEmpty())
+	{
+		if (UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr)
+		{
+			PlayerName = PlayerManager->GetPlayerNameById(MyId);
+		}
+	}
+
+	StatusWidget->SetPlayerName(FText::FromString(PlayerName));
+
+	// Bind ASC and PlayerState if available
+	UAbilitySystemComponent* PlayerStateASC = nullptr;
+	if (AOPlayerState)
+	{
+		PlayerStateASC = AOPlayerState->GetAbilitySystemComponent();
+	}
+	else
+	{
+		PlayerStateASC = GetAbilitySystemComponent();
+	}
+
+	if (PlayerStateASC)
+	{
+		BoundOverheadStatusASC = PlayerStateASC;
+		StatusWidget->BindToPlayerState(AOPlayerState);
+		StatusWidget->BroadcastInitialAttributes();
+	}
+
 	OverheadStatusWidgetComponent->RequestRedraw();
 
-	UE_LOG(	LogTemp,Warning,TEXT("[Overhead Bind/Refresh] %s | PS=%s | ASC=%s | Widget=%s"),*GetName(),	*GetNameSafe(AOPlayerState),*GetNameSafe(PlayerStateASC),*GetNameSafe(StatusWidget));
+	UE_LOG(LogTemp, Warning, TEXT("[Overhead Bind/Refresh] %s | PS=%s | ASC=%s | Widget=%s | Name=%s"),
+		*GetName(),
+		*GetNameSafe(AOPlayerState),
+		*GetNameSafe(PlayerStateASC),
+		*GetNameSafe(StatusWidget),
+		*PlayerName);
 }
 
 void ADaeva::NotifyPlayerUIReady()
@@ -1620,12 +1638,31 @@ void ADaeva::SendItem(int32 SlotIndex)
 
 	Protocol::C_UseItemPacket UseItemPkt;
 	UseItemPkt.set_playerid(MyId);
+	UseItemPkt.set_slotindex(SlotIndex);
 	SEND_PACKET(UseItemPkt, PKT_C_USE_ITEM);
 }
 
 void ADaeva::SetItemUse()
 {
 	bCanUseItem = true;
+}
+
+void ADaeva::Server_ApplyItemEffect_Implementation(const FString& EffectType, int32 EffectValue)
+{
+	UAbilitySystemComponent* LocalASC = GetAbilitySystemComponent();
+	if (LocalASC)
+	{
+		if (EffectType == "GE_Health")
+		{
+			float CurrentHealth = LocalASC->GetNumericAttribute(UAOAttributeSet::GetHealthAttribute());
+			float MaxHealth = LocalASC->GetNumericAttribute(UAOAttributeSet::GetMaxHealthAttribute());
+			float NewHealth = FMath::Min(CurrentHealth + EffectValue, MaxHealth);
+
+			LocalASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), NewHealth);
+
+			UE_LOG(LogTemp, Warning, TEXT("[DediServer] Healed %s HP: %.1f -> %.1f"), *GetName(), CurrentHealth, NewHealth);
+		}
+	}
 }
 
 

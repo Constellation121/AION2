@@ -128,12 +128,15 @@ void AAODungeonEntrance::EnterDungeonWaitingRoom()
 	UAODungeonEntranceWidget* DungeonEntranceWidget = Cast<UAODungeonEntranceWidget>(DungeonRoomWidget);
 	if (DungeonEntranceWidget)
 	{
-		UAOSoundManager::Get(this)->StopBGM(1.0f);
-		UAOSoundManager::Get(this)->PlayBGM(TEXT("DungeonEntranceBGM"));
+		if (PC && PC->IsLocalController())
+		{
+			UAOSoundManager::Get(this)->StopBGM(1.0f);
+			UAOSoundManager::Get(this)->PlayBGM(TEXT("DungeonEntranceBGM"));
+		}
 
 		DungeonEntranceWidget->InitializeWaitingRoom();
 
-		// UI Á¾·á(Close Button Å¬¸¯) µ¨¸®°ÔÀÌÆ® ÀÌº¥Æ® ¹ÙÀÎµù
+		// UI ì¢…ë£Œ(Close Button í´ë¦­) ë¸ë¦¬ê²Œì´íŠ¸ ì´ë²¤íŠ¸ ë°”ì¸ë”©
 		DungeonEntranceWidget->OnWidgetClosed.RemoveAll(this);
 		DungeonEntranceWidget->OnWidgetClosed.AddDynamic(this, &AAODungeonEntrance::OnDungeonRoomWidgetClosed);
 	}
@@ -152,8 +155,11 @@ void AAODungeonEntrance::OnDungeonRoomWidgetClosed()
 {
 	if (PC)
 	{
-		UAOSoundManager::Get(this)->StopBGM(0.5f);
-		UAOSoundManager::Get(this)->PlayBGM(TEXT("VillageBGM"));
+		if (PC->IsLocalController())
+		{
+			UAOSoundManager::Get(this)->StopBGM(0.5f);
+			UAOSoundManager::Get(this)->PlayBGM(TEXT("VillageBGM"));
+		}
 		PC->SetShowMouseCursor(false);
 		DungeonWaitingRoomWidget = UIManager->ShowWidget(DungeonWaitingRoomClass, EUILayer::PopUp);
 	}

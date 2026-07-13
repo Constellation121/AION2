@@ -108,6 +108,7 @@ bool PacketHandler::HandleSetNickname(PacketSessionRef& session, Protocol::C_Set
 
 		}
 	}
+	GDBConnectionPool->Push(dbConnect);
 
 	Protocol::S_SetNicknamePacket nicknamePacket;
 	nicknamePacket.set_issucceed(result);
@@ -350,19 +351,31 @@ bool PacketHandler::HandleAttack(PacketSessionRef& session, Protocol::C_AttackPa
 
 bool PacketHandler::HandleChangeHp(PacketSessionRef& session, Protocol::C_ChangeHpPacket& pkt)
 {
-	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-	PlayerRef player = gameSession->_player;
+	//GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	//PlayerRef player = gameSession->_player;
 
-	if (player == nullptr)
-		return false;
+	//if (player == nullptr)
+	//	return false;
 
-	int32 hp = pkt.hp();
-	std::string name = player->GetName();
-	player->SetHp(hp);
-	GRedisManager.UpdatePlayerHp(name, hp);
-	std::cout << "Player " << player->GetName() << " HP Changed: " << player->GetHp() << " (Redis updated)" << std::endl;
+	//int32 hp = pkt.hp();
+	//std::string name = player->GetName();
+	//player->SetHp(hp);
+	//GRedisManager.UpdatePlayerHp(name, hp);
+	//std::cout << "Player " << player->GetName() << " HP Changed: " << player->GetHp() << " (Redis updated)" << std::endl;
 
-	return false;
+	//// 다른 플레이어들에게 체력 변경 정보 브로드캐스트 (S_AttackResultPacket 재활용)
+	//Protocol::S_AttackResultPacket resultPkt;
+	//resultPkt.set_attackerid(player->GetId());
+	//resultPkt.set_targetid(player->GetId());
+	//resultPkt.set_damage(0);
+	//resultPkt.set_targethp(hp);
+	//resultPkt.set_isdead(hp <= 0);
+	//resultPkt.set_skillid(0);
+
+	//SendBufferRef sendBuffer = PacketHandler::MakeSendBuffer(resultPkt);
+	//GRoom->DoAsync(&Room::Broadcast, sendBuffer, player->GetId());
+
+	return true;
 }
 
 bool PacketHandler::HandleDedicated(PacketSessionRef& session, Protocol::C_DedicatedPacket& pkt)
@@ -443,14 +456,14 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 	int32 gold = pkt.gold();
 
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
-	DBBind<2, 1> dbBind(*dbConnect, L"{CALL sp_SetDungeonReward(?, ?)");
+	DBBind<2, 1> dbBind(*dbConnect, L"{CALL sp_SetDungeonReward(?, ?)}");
 	
-	dbBind.BindCol(0, gold);
-	dbBind.BindCol(1, playerId);
+	dbBind.BindParam(0, gold);
+	dbBind.BindParam(1, playerId);
 
 	int resultCode = 0;
 
-	dbBind.BindParam(0, resultCode);
+	dbBind.BindCol(0, resultCode);
 
 	if (!dbBind.Execute())
 	{
@@ -460,8 +473,11 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 	{
 		std::cout << "HandleDungeonEnd - Fetch() Error" << std::endl;
 	}
+	
+	GDBConnectionPool->Push(dbConnect);
 
 	if (!resultCode) return false;
+
 
 	GDungeonWaitingRoom->DoAsync(&DungeonWaitingRoom::HandleDungeonEnd, dungeonId);
 	player->SetDungeonId(0);
@@ -504,7 +520,7 @@ bool PacketHandler::HandleStorePurchase(PacketSessionRef& session, Protocol::C_S
 	{
 		if (dbBind.Fetch())
 		{
-			std::cout << "ResultCode : " << errorCode << std::endl;
+			std::cout << "Store Purchase ResultCode : " << errorCode << std::endl;
 		}
 	}
 	else
@@ -535,7 +551,7 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
 	DBBind<2, 5> dbBind(*dbConnect, L"{CALL sp_UseItem(?, ?)}");
-	int32 characterId = pkt.playerid();
+	int32 characterId = player->GetId();
 	int32 slot = pkt.slotindex();
 
 	dbBind.BindParam(0, characterId);
@@ -554,12 +570,13 @@ bool PacketHandler::HandleUseItem(PacketSessionRef& session, Protocol::C_UseItem
 	dbBind.BindCol(2, itemCount);
 	dbBind.BindCol(3, effectType);
 	dbBind.BindCol(4, effectValue);
+	std::cout << "Use Item  : " << itemCount << std::endl;
 
 	if (dbBind.Execute())
 	{
 		if (dbBind.Fetch())
 		{
-			std::cout << "ResultCode : " << errorCode << std::endl;
+			std::cout << "Use Item slot : " << slot << "Count" << itemCount << std::endl;
 		}
 	}
 	else

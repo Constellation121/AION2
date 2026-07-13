@@ -84,6 +84,16 @@ void UAOSkillQuickSlotWidget::PlaySkillPressedFeedback()
     BP_PlayPressedFeedback();
 }
 
+void UAOSkillQuickSlotWidget::PlaySkillSucceedEffect()
+{
+    if (!SlotButton)
+    {
+        return;
+    }
+
+    BP_PlaySkillSucceedEffect();
+}
+
 void UAOSkillQuickSlotWidget::HandleComboInput()
 {
     if (CurrentSkillIndex + 1  < ViewDataByComboIndex.Num())

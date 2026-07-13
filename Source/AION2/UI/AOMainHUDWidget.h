@@ -42,6 +42,7 @@ public:
 public:
     // === PlayerHUD -> SkillHUD/slot of inputID -> SkillSlot ===
     void PlaySkillPressedFeedback(int32 InputId);
+    void PlaySkillSucceedEffect(int32 InputId);
 
     
 public:

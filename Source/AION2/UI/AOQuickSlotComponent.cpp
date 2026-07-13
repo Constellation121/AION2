@@ -53,6 +53,10 @@ bool UAOQuickSlotComponent::GetItemDataFromSlot(int32 SlotIndex, FAOSlotData& Ou
 	UAOItemDataBase* DataBase = ItemDataBaseAsset.LoadSynchronous();
 	if (!DataBase)
 	{
+		DataBase = Cast<UAOItemDataBase>(StaticLoadObject(UAOItemDataBase::StaticClass(), nullptr, TEXT("/Game/Item/DA_ItemDataBase.DA_ItemDataBase")));
+	}
+	if (!DataBase)
+	{
 		return false;
 	}
 
@@ -68,6 +72,10 @@ bool UAOQuickSlotComponent::GetItemDataFromSlot(int32 SlotIndex, FAOSlotData& Ou
 bool UAOQuickSlotComponent::FindItemTemplateData(int32 ItemTemplateId, FItemData& OutTemplateData)
 {
 	UAOItemDataBase* DataBase = ItemDataBaseAsset.LoadSynchronous();
+	if (!DataBase)
+	{
+		DataBase = Cast<UAOItemDataBase>(StaticLoadObject(UAOItemDataBase::StaticClass(), nullptr, TEXT("/Game/Item/DA_ItemDataBase.DA_ItemDataBase")));
+	}
 	if (DataBase)
 	{
 		return DataBase->FindItemTemplate(ItemTemplateId, OutTemplateData);

@@ -144,6 +144,7 @@ public:
 protected:
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 	virtual void TriggerGimmicks(float Ratio);
+	virtual void OnBossDeathStarted();
 
 
 protected:

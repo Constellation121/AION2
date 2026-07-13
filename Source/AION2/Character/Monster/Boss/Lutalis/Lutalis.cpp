@@ -70,6 +70,24 @@ void ALutalis::EndGroggy()
 	pMonsterController->Set_Phase(PHASE_MONSTER_COMBAT);
 }
 
+void ALutalis::OnBossDeathStarted()
+{
+	Super::OnBossDeathStarted();
+
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	PreparedElectricZoneArcIndex = INDEX_NONE;
+	PreparedElectricZoneTargetYaw = 0.0f;
+
+	if (ResolveElectricZoneActor())
+	{
+		ElectricZoneActor->FinishAllArcs();
+	}
+}
+
 bool ALutalis::BeginElectricRangeWarning(float WarningDuration)
 {
 	if (!HasAuthority())

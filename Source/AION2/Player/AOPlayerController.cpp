@@ -10,8 +10,6 @@
 #include "Game/AODungeonGameMode.h"
 #include "Game/AOGameInstance.h"
 #include "AbilitySystemComponent.h"
-#include "Game/AOGameInstance.h"
-#include "Blueprint/UserWidget.h"
 
 #include "UI/AOMainHUDWidget.h"
 #include "UI/AOPlayerHUDWidget.h"
@@ -293,6 +291,16 @@ void AAOPlayerController::PlaySkillPressedFeedback(int32 InputId)
 	}
 
 	MainHUD->PlaySkillPressedFeedback(InputId);
+}
+
+void AAOPlayerController::PlaySkillSucceedEffect(int32 InputId)
+{
+	if (!IsLocalController() || !MainHUD)
+	{
+		return;
+	}
+
+	MainHUD->PlaySkillSucceedEffect(InputId);
 }
 
 // 07.09

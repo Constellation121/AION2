@@ -111,8 +111,8 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 			// 원하는 직업으로 테스트
 			AOPlayerState->SetPlayerInfo(
 				FakePlayerId,
-				TEXT("쟁득"),
-				static_cast<uint8>(EDaevaClassType::Assassin),
+				TEXT("궁성"),
+				static_cast<uint8>(EDaevaClassType::Ranger),
 				100
 			);
 
@@ -146,7 +146,7 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 	AAOPlayerState* PlayerState = NewPlayer->GetPlayerState<AAOPlayerState>();
 	if (PlayerState)
 	{
-		FString PlayerName = PlayerData.playername().c_str();
+		FString PlayerName = UTF8_TO_TCHAR(PlayerData.playername().c_str());
 		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass(), (float)PlayerData.playerhp());
 		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d, HP: %d"), UniqueId, PlayerData.playerid(), PlayerData.playerhp());
 	}

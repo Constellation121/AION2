@@ -218,6 +218,6 @@ void UAOMonsterHUDWidget::HandleMaxGroggyChanged(const FOnAttributeChangeData& D
 
     const float CurrentGroggy = BoundASC->GetNumericAttribute(UAOAttributeSet::GetGroggyAttribute());
 
-    UpdateHpBar(CurrentGroggy, Data.NewValue);
+    UpdateGroggyBar(CurrentGroggy, Data.NewValue);
 }
 

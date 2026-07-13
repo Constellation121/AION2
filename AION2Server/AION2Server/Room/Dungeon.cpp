@@ -280,7 +280,15 @@ void DungeonWaitingRoom::HandleEnterDungeon(PlayerRef player, int32 inDungeonId)
 
 		Protocol::S_DungeonEnterPacket enterPacket;
 		enterPacket.set_dungeonid(targetDungeon->GetId());
-		if (CheckAlreadyIn(player->GetId(), targetDungeon)) return;
+
+		// 입장한 플레이어 정보 세팅
+		Protocol::DungeonPlayerInfo* enterPlayerProto = enterPacket.mutable_enterplayer();
+		enterPlayerProto->set_memberid(player->GetId());
+		enterPlayerProto->set_membername(player->GetName());
+		enterPlayerProto->set_memberclass(player->GetClass());
+		enterPlayerProto->set_isready(player->GetReady());
+		enterPlayerProto->set_index(static_cast<int32>(targetDungeon->GetMembers().size()));
+
 		enterPacket.mutable_dungeoninfo()->CopyFrom(targetDungeon->ToProto());
 
 		SendBufferRef enterBuffer = PacketHandler::MakeSendBuffer(enterPacket);

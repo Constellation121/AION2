@@ -195,17 +195,60 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString& PlayerN
 
 void UAOPlayerManager::HandleItem(Protocol::S_ItemDataPacket Items)
 {
-	if (Items.playeritems_size() > 0)
+	MyItems.Empty();
+	int32 ItemCount = Items.playeritems_size();
+	for (int i = 0; i < ItemCount; i++)
 	{
-		int32 ItemCount = Items.playeritems_size();
-		if (ItemCount == 0) return;
+		const Protocol::ItemData& Item = Items.playeritems(i);
+		MyItems.Add(Item.iteminstancedid(), Item);
+	}
 
-		if (Items.playeritems_size() > 0)
+	if (IsValid(MyPlayer))
+	{
+		AAOPlayerController* PlayerController = Cast<AAOPlayerController>(MyPlayer->GetController());
+		if (PlayerController)
 		{
-			for (int i = 0; i < ItemCount; i++)
+			UAOQuickSlotComponent* InventoryComp = MyPlayer->FindComponentByClass<UAOQuickSlotComponent>();
+			if (InventoryComp)
 			{
-				const Protocol::ItemData& Item = Items.playeritems(i);
-				MyItems.Add(Item.iteminstancedid(), Item);
+				UAOMainHUDWidget* MainHUD = PlayerController->GetMainHUD();
+				if (MainHUD)
+				{
+					UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
+					if (PlayerHUD)
+					{
+						for (int32 SlotIndex = 0; SlotIndex < InventoryComp->MaxQuickSlots; ++SlotIndex)
+						{
+							InventoryComp->InitializeQuickSlot(SlotIndex, 0, 0, 0);
+							FAOSlotData EmptySlotData;
+							EmptySlotData.SlotIndex = SlotIndex;
+							PlayerHUD->UpdateItemQuickSlot(SlotIndex, EmptySlotData, FItemData());
+						}
+
+						for (const auto& Pair : MyItems)
+						{
+							const Protocol::ItemData& Item = Pair.Value;
+
+							int32 InstanceId = Item.iteminstancedid();
+							int32 TemplateId = Item.itemtemplateid();
+							int32 SlotIndex = Item.slotindex();
+							int32 Count = Item.count();
+
+							FAOSlotData SlotData;
+							SlotData.ItemInstancedId = InstanceId;
+							SlotData.ItemTemplateId = TemplateId;
+							SlotData.SlotIndex = SlotIndex;
+							SlotData.Count = Count;
+							FItemData TemplateData;
+
+							if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
+							{
+								InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
+								PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -275,6 +318,10 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo, int32 Go
 			InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
 			PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
 		}
+
+		// 구입한 아이템을 캐시에 저장/갱신하여 맵 전환 시 복원되도록 합니다.
+		MyItems.Add(InstanceId, ItemInfo);
+
 		MyGold = Gold;
 		UGoldWidget* GoldWidget = MainHUD->GoldWidget;
 		GoldWidget->SetGold(FString::FromInt(MyGold));
@@ -308,7 +355,13 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 		}
 	}
 
-	UAOQuickSlotComponent* QuickSlotComp = MyPlayer->GetQuickSlotComponent();
+	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
+	if (!LocalPC) return;
+
+	ADaeva* PossessedPlayer = Cast<ADaeva>(LocalPC->GetPawn());
+	if (!PossessedPlayer) return;
+
+	UAOQuickSlotComponent* QuickSlotComp = PossessedPlayer->GetQuickSlotComponent();
 	if (QuickSlotComp)
 	{
 		FAOSlotData SlotData;
@@ -331,7 +384,7 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 				QuickSlotComp->InitializeQuickSlot(SlotIndex, SlotData.ItemTemplateId, SlotData.ItemInstancedId, Pkt.count());
 			}
 
-			AAOPlayerController* PC = Cast<AAOPlayerController>(MyPlayer->GetController());
+			AAOPlayerController* PC = Cast<AAOPlayerController>(LocalPC);
 			if (PC)
 			{
 				UAOMainHUDWidget* MainHUD = PC->GetMainHUD();
@@ -347,7 +400,12 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 		}
 	}
 
-	UAbilitySystemComponent* ASC = MyPlayer->GetAbilitySystemComponent();
+	if (PossessedPlayer->HasAuthority() == false)
+	{
+		PossessedPlayer->Server_ApplyItemEffect(UTF8_TO_TCHAR(Pkt.effecttype().c_str()), Pkt.effectvalue());
+	}
+
+	UAbilitySystemComponent* ASC = PossessedPlayer->GetAbilitySystemComponent();
 	if (ASC)
 	{
 		if (Pkt.effecttype() == "GE_Health")
@@ -358,7 +416,7 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 
 			ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), NewHealth);
 
-			UE_LOG(LogTemp, Log, TEXT("[UseItem] Healed %s HP: %.1f -> %.1f"), *MyPlayer->GetName(), CurrentHealth, NewHealth);
+			UE_LOG(LogTemp, Log, TEXT("[UseItem] Healed %s HP: %.1f -> %.1f"), *PossessedPlayer->GetName(), CurrentHealth, NewHealth);
 		}
 	}
 }
