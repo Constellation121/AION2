@@ -111,8 +111,8 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 			// 원하는 직업으로 테스트
 			AOPlayerState->SetPlayerInfo(
 				FakePlayerId,
-				TEXT("쟁득"),
-				static_cast<uint8>(EDaevaClassType::Assassin),
+				TEXT("궁성"),
+				static_cast<uint8>(EDaevaClassType::Ranger),
 				100
 			);
 

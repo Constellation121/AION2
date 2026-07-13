@@ -195,17 +195,60 @@ void UAOPlayerManager::HandleSpawn(const uint64 PlayerId, const FString& PlayerN
 
 void UAOPlayerManager::HandleItem(Protocol::S_ItemDataPacket Items)
 {
-	if (Items.playeritems_size() > 0)
+	MyItems.Empty();
+	int32 ItemCount = Items.playeritems_size();
+	for (int i = 0; i < ItemCount; i++)
 	{
-		int32 ItemCount = Items.playeritems_size();
-		if (ItemCount == 0) return;
+		const Protocol::ItemData& Item = Items.playeritems(i);
+		MyItems.Add(Item.iteminstancedid(), Item);
+	}
 
-		if (Items.playeritems_size() > 0)
+	if (IsValid(MyPlayer))
+	{
+		AAOPlayerController* PlayerController = Cast<AAOPlayerController>(MyPlayer->GetController());
+		if (PlayerController)
 		{
-			for (int i = 0; i < ItemCount; i++)
+			UAOQuickSlotComponent* InventoryComp = MyPlayer->FindComponentByClass<UAOQuickSlotComponent>();
+			if (InventoryComp)
 			{
-				const Protocol::ItemData& Item = Items.playeritems(i);
-				MyItems.Add(Item.iteminstancedid(), Item);
+				UAOMainHUDWidget* MainHUD = PlayerController->GetMainHUD();
+				if (MainHUD)
+				{
+					UAOPlayerHUDWidget* PlayerHUD = MainHUD->GetPlayerHUDWidget();
+					if (PlayerHUD)
+					{
+						for (int32 SlotIndex = 0; SlotIndex < InventoryComp->MaxQuickSlots; ++SlotIndex)
+						{
+							InventoryComp->InitializeQuickSlot(SlotIndex, 0, 0, 0);
+							FAOSlotData EmptySlotData;
+							EmptySlotData.SlotIndex = SlotIndex;
+							PlayerHUD->UpdateItemQuickSlot(SlotIndex, EmptySlotData, FItemData());
+						}
+
+						for (const auto& Pair : MyItems)
+						{
+							const Protocol::ItemData& Item = Pair.Value;
+
+							int32 InstanceId = Item.iteminstancedid();
+							int32 TemplateId = Item.itemtemplateid();
+							int32 SlotIndex = Item.slotindex();
+							int32 Count = Item.count();
+
+							FAOSlotData SlotData;
+							SlotData.ItemInstancedId = InstanceId;
+							SlotData.ItemTemplateId = TemplateId;
+							SlotData.SlotIndex = SlotIndex;
+							SlotData.Count = Count;
+							FItemData TemplateData;
+
+							if (InventoryComp->FindItemTemplateData(TemplateId, TemplateData))
+							{
+								InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
+								PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
