@@ -377,11 +377,7 @@ void AAOPlayerController::ClientCreateDungeonClearWidget_Implementation(int32 Go
 
 	if (!DungeonClearWidget)
 	{
-		DungeonClearWidget =
-			CreateWidget<UDungeonClearWidget>(
-				this,
-				DungeonClearWidgetClass
-			);
+		DungeonClearWidget = CreateWidget<UDungeonClearWidget>(this,DungeonClearWidgetClass);
 
 		if (!DungeonClearWidget)
 		{
@@ -408,9 +404,6 @@ void AAOPlayerController::ClientCreateDungeonClearWidget_Implementation(int32 Go
 
 	SetInputMode(InputMode);
 	bShowMouseCursor = true;
-
-	UE_LOG(LogTemp, Warning,
-		TEXT("[DungeonClearUI] Finished displaying widget"));
 }
 
 void AAOPlayerController::ServerRequestDungeonComplete_Implementation()
