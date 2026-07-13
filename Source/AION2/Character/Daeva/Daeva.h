@@ -111,7 +111,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(
 );
 
 UCLASS()
-class AION2_API ADaeva : public AAOCharacter , public IGenericTeamAgentInterface
+class AION2_API ADaeva : public AAOCharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -129,7 +129,6 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/*
-	*  Suyeon: Local이 아닌 Player는 EndPlay가 제 때 호출되지 않을 수 있으므로, 
 	* UnPossessed에서 해주는 작업을 명시적으로 해줌
 	*/
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -261,6 +260,7 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerStopSprint();
 
+
 	void RequestStartSprint();
 	void RequestStopSprint();
 
@@ -280,12 +280,15 @@ private:
 	void SetWingVisibility(bool NewVisible);
 
 public:
+	UFUNCTION(Server, Reliable)
+	void Server_ApplyItemEffect(const FString& EffectType, int32 EffectValue);
+
 	void SetWingVisibilityOnServer(bool NewVisible);
 	UFUNCTION()
 	void OnRep_WingVisible();
 
 	//H.Y (PlayerState 복원).
-public :
+public:
 	void RestorePlayerInfoFromPlayerState();
 
 	virtual void FellOutOfWorld(const UDamageType& DmgType) override; // 낙사 처리.
@@ -337,7 +340,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	float MaxZoomDistance = 1500.f;
 
-	UPROPERTY(EditDefaultsOnly, Category ="GAS|Mana")
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Mana")
 	float HitManaRegenAmount = 5.f;
 
 	float TargetZoomDistance;
@@ -356,7 +359,7 @@ public:
 	* but leaving it in case someone is using it.
 	*/
 	bool IsPlayerUIReady() const;
-	
+
 	/*
 	* UI: Notify Player UI Ready
 	* Not using anymore in the HUD Logic
@@ -481,7 +484,7 @@ private:
 	TObjectPtr<class UAOQuickSlotComponent> QuickSlotComponent;
 
 protected:
-	
+
 	uint64 MyId = -1;
 
 	// Seonhwan 여기서 데바의 색깔 구슬 카운트 하기  

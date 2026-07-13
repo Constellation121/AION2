@@ -1619,12 +1619,31 @@ void ADaeva::SendItem(int32 SlotIndex)
 
 	Protocol::C_UseItemPacket UseItemPkt;
 	UseItemPkt.set_playerid(MyId);
+	UseItemPkt.set_slotindex(SlotIndex);
 	SEND_PACKET(UseItemPkt, PKT_C_USE_ITEM);
 }
 
 void ADaeva::SetItemUse()
 {
 	bCanUseItem = true;
+}
+
+void ADaeva::Server_ApplyItemEffect_Implementation(const FString& EffectType, int32 EffectValue)
+{
+	UAbilitySystemComponent* LocalASC = GetAbilitySystemComponent();
+	if (LocalASC)
+	{
+		if (EffectType == "GE_Health")
+		{
+			float CurrentHealth = LocalASC->GetNumericAttribute(UAOAttributeSet::GetHealthAttribute());
+			float MaxHealth = LocalASC->GetNumericAttribute(UAOAttributeSet::GetMaxHealthAttribute());
+			float NewHealth = FMath::Min(CurrentHealth + EffectValue, MaxHealth);
+
+			LocalASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), NewHealth);
+
+			UE_LOG(LogTemp, Warning, TEXT("[DediServer] Healed %s HP: %.1f -> %.1f"), *GetName(), CurrentHealth, NewHealth);
+		}
+	}
 }
 
 
