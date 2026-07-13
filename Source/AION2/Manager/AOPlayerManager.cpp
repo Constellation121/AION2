@@ -275,6 +275,10 @@ void UAOPlayerManager::HandleStorePurchase(Protocol::ItemData ItemInfo, int32 Go
 			InventoryComp->InitializeQuickSlot(SlotIndex, TemplateId, InstanceId, Count);
 			PlayerHUD->UpdateItemQuickSlot(SlotIndex, SlotData, TemplateData);
 		}
+
+		// 구입한 아이템을 캐시에 저장/갱신하여 맵 전환 시 복원되도록 합니다.
+		MyItems.Add(InstanceId, ItemInfo);
+
 		MyGold = Gold;
 		UGoldWidget* GoldWidget = MainHUD->GoldWidget;
 		GoldWidget->SetGold(FString::FromInt(MyGold));
@@ -308,7 +312,13 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 		}
 	}
 
-	UAOQuickSlotComponent* QuickSlotComp = MyPlayer->GetQuickSlotComponent();
+	APlayerController* LocalPC = GetWorld()->GetFirstPlayerController();
+	if (!LocalPC) return;
+
+	ADaeva* PossessedPlayer = Cast<ADaeva>(LocalPC->GetPawn());
+	if (!PossessedPlayer) return;
+
+	UAOQuickSlotComponent* QuickSlotComp = PossessedPlayer->GetQuickSlotComponent();
 	if (QuickSlotComp)
 	{
 		FAOSlotData SlotData;
@@ -331,7 +341,7 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 				QuickSlotComp->InitializeQuickSlot(SlotIndex, SlotData.ItemTemplateId, SlotData.ItemInstancedId, Pkt.count());
 			}
 
-			AAOPlayerController* PC = Cast<AAOPlayerController>(MyPlayer->GetController());
+			AAOPlayerController* PC = Cast<AAOPlayerController>(LocalPC);
 			if (PC)
 			{
 				UAOMainHUDWidget* MainHUD = PC->GetMainHUD();
@@ -347,7 +357,12 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 		}
 	}
 
-	UAbilitySystemComponent* ASC = MyPlayer->GetAbilitySystemComponent();
+	if (PossessedPlayer->HasAuthority() == false)
+	{
+		PossessedPlayer->Server_ApplyItemEffect(UTF8_TO_TCHAR(Pkt.effecttype().c_str()), Pkt.effectvalue());
+	}
+
+	UAbilitySystemComponent* ASC = PossessedPlayer->GetAbilitySystemComponent();
 	if (ASC)
 	{
 		if (Pkt.effecttype() == "GE_Health")
@@ -358,7 +373,7 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 
 			ASC->SetNumericAttributeBase(UAOAttributeSet::GetHealthAttribute(), NewHealth);
 
-			UE_LOG(LogTemp, Log, TEXT("[UseItem] Healed %s HP: %.1f -> %.1f"), *MyPlayer->GetName(), CurrentHealth, NewHealth);
+			UE_LOG(LogTemp, Log, TEXT("[UseItem] Healed %s HP: %.1f -> %.1f"), *PossessedPlayer->GetName(), CurrentHealth, NewHealth);
 		}
 	}
 }

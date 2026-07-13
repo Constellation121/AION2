@@ -875,6 +875,9 @@ void AMMODaeva::InputSpacePressed()
 	}
 }
 
+static bool IsBodyMontageConfigured(const ADaeva* Daeva, EMontageID MontageID);
+static bool IsWingMontageConfigured(const ADaeva* Daeva, EMontageID MontageID);
+
 void AMMODaeva::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
@@ -886,6 +889,23 @@ void AMMODaeva::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 Prev
 
 		if (bWasGliding && !bIsGliding)
 		{
+			if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+			{
+				FGameplayTagContainer TargetTags;
+				TargetTags.AddTag(STATE_GLIDING);
+				ASC->CancelAbilities(&TargetTags);
+			}
+
+			if (IsBodyMontageConfigured(this, EMontageID::GlideLand))
+			{
+				PlayAnimMontage(GetMontageByID(EMontageID::GlideLand), 2.0f);
+			}
+
+			if (IsWingMontageConfigured(this, EMontageID::GlideLand))
+			{
+				Multicast_PlayWingMontage(EMontageID::GlideLand, 2.0f);
+			}
+
 			Protocol::C_JumpPacket JumpPacket;
 			JumpPacket.set_playerid(MyId);
 			JumpPacket.set_isgliding(false); // Stopped gliding

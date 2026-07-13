@@ -146,7 +146,7 @@ void AAODungeonGameMode::PostLogin(APlayerController* NewPlayer)
 	AAOPlayerState* PlayerState = NewPlayer->GetPlayerState<AAOPlayerState>();
 	if (PlayerState)
 	{
-		FString PlayerName = PlayerData.playername().c_str();
+		FString PlayerName = UTF8_TO_TCHAR(PlayerData.playername().c_str());
 		PlayerState->SetPlayerInfo(PlayerData.playerid(), PlayerName, (uint8)PlayerData.playerclass(), (float)PlayerData.playerhp());
 		UE_LOG(LogTemp, Log, TEXT("[Dungeon] PostLogin: Success and SetPlayerInfo (Key: %d), PlayerId: %d, HP: %d"), UniqueId, PlayerData.playerid(), PlayerData.playerhp());
 	}

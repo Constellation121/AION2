@@ -18,6 +18,22 @@ class UDA_AbilitySet;
 
 struct FAOSkillSlotViewData;
 
+
+UENUM(BlueprintType)
+enum class EQuickSkillSlotIndex : uint8
+{
+	Invalid = 255,
+	Key1 = 0,
+	Key2,
+	Key3,
+	Key4,
+	KeyQ,
+	KeyE,
+	LB,
+	RB
+};
+
+
 // 충전형 스킬에 대한 정보,
 USTRUCT()
 struct FChargeSkillConfig
@@ -25,7 +41,7 @@ struct FChargeSkillConfig
 	GENERATED_BODY()
 
 	UPROPERTY()
-	int32 SlotIndex = INDEX_NONE;
+	EQuickSkillSlotIndex SlotIndex = EQuickSkillSlotIndex::Invalid;
 
 	UPROPERTY()
 	int32 MaxCharge = 0;
@@ -114,11 +130,21 @@ private:
 
 	// ASC에 이미 적용된 Cooldown GameplayEffect에서 남은 시간과 전체 시간을 조회.
 	// 이 함수는 시간을 새로 세지 않고, GAS가 관리 중인 Active GameplayEffect 정보를 읽기만 함.
-	bool GetCooldownTime(FGameplayTag CooldownTag, float& OutRemainingTime, float& OutDuration) const;
+	// bFindShortest: 현재 남아있는 가장 짧은 남은 시간을 사용할 것인지?
+	bool GetCooldownTime(
+		FGameplayTag CooldownTag, 
+		float& OutRemainingTime, 
+		float& OutDuration,
+		bool bFindShortest = false
+	) const;
 
 
 	// 등록한 Tag와 FDelegateHandle을 먼저 저장해서, 같은 ASC에서 제거 => 중복 바인딩 방지
 	TArray<TPair<FGameplayTag, FDelegateHandle>> CooldownTagDelegateHandles;
+
+
+	void HandleChargableSkill(FGameplayTag CooldownTag, int32 NewCount);
+
 
 protected:
 	// === Skill Slots ===
@@ -141,10 +167,10 @@ protected:
 	TObjectPtr<UAOSkillQuickSlotWidget> Skill_E;
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
-	TObjectPtr<UAOSkillQuickSlotWidget> Skill_R;
+	TObjectPtr<UAOSkillQuickSlotWidget> Skill_LB;
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadOnly)
-	TObjectPtr<UAOSkillQuickSlotWidget> Skill_T;
+	TObjectPtr<UAOSkillQuickSlotWidget> Skill_RB;
 
 	// Binding된 위 Widget들을 편하게 관리하기 위해 Array에 넣음
 	UPROPERTY()

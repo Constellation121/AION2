@@ -8,6 +8,8 @@
 #include "Character/Monster/AOMonsterBase.h"
 #include "Player/AOPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "Manager/AOPlayerManager.h"
+#include "Game/AOGameInstance.h"
 
 
 void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
@@ -18,7 +20,18 @@ void UAOMainHUDWidget::BindToPlayerState(AAOPlayerState* InPlayerState)
 	{
 		PlayerHUDWidget->BindToPlayerState(InPlayerState);
 		PlayerHUDWidget->ChangeClassIcon(InPlayerState->GetMyClass());
-		PlayerHUDWidget->SetPlayerName(FText::FromString(InPlayerState->GetMyName()));
+		
+		FString PlayerName = InPlayerState->GetMyName();
+		if (PlayerName.IsEmpty())
+		{
+			if (UAOPlayerManager* PlayerManager = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAOPlayerManager>() : nullptr)
+			{
+				UAOGameInstance* GameInstance = Cast<UAOGameInstance>(GetGameInstance());
+				uint64 MyPlayerId = GameInstance ? GameInstance->GetMyPlayerId() : 0;
+				PlayerName = PlayerManager->GetPlayerNameById(MyPlayerId);
+			}
+		}
+		PlayerHUDWidget->SetPlayerName(FText::FromString(PlayerName));
 	}
 
 	// TODO(suyeon): 던전 HUD에 각 파티원 Stat 추가
