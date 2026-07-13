@@ -293,6 +293,16 @@ void AAOPlayerController::PlaySkillPressedFeedback(int32 InputId)
 	MainHUD->PlaySkillPressedFeedback(InputId);
 }
 
+void AAOPlayerController::PlaySkillSucceedEffect(int32 InputId)
+{
+	if (!IsLocalController() || !MainHUD)
+	{
+		return;
+	}
+
+	MainHUD->PlaySkillSucceedEffect(InputId);
+}
+
 // 07.09
 void AAOPlayerController::Client_RefreshPlayerHUD_Implementation()
 {

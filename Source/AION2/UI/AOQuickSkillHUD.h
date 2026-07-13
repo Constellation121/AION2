@@ -70,6 +70,8 @@ public:
 	// PlayerController로부터 타고 태려와 InputId에 맞는 slot에 전달할 함수.
 	void PlaySkillPressedFeedback(int32 InputId);
 
+	void PlaySkillSucceedEffect(int32 InputId);
+
 
 private:
 	void InitSkillSlots(const UDA_AbilitySet* InAbilitySet);

@@ -691,11 +691,13 @@ void ADaeva::GASInputPressed(int32 InputId)
 {
 	if (FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(InputId))
 	{
+		AAOPlayerController* PC = Cast<AAOPlayerController>(GetController());
+
 		if (LastPressedFeedbackAbilityID != InputId)
 		{
 			LastPressedFeedbackAbilityID = InputId;
 		
-			if (AAOPlayerController* PC = Cast<AAOPlayerController>(GetController()))
+			if (PC)
 			{
 				PC->PlaySkillPressedFeedback(InputId);
 			}
@@ -705,6 +707,12 @@ void ADaeva::GASInputPressed(int32 InputId)
 		if (Spec->IsActive())
 		{
 			ASC->AbilitySpecInputPressed(*Spec);
+			
+			// Skill이 성공했을 때의 Effect.
+			if (PC)
+			{
+				PC->PlaySkillSucceedEffect(InputId);
+			}
 		}
 		else
 		{

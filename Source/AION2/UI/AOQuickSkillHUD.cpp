@@ -660,8 +660,20 @@ void UAOQuickSkillHUD::PlaySkillPressedFeedback(int32 InputId)
     // GAS Input으로 그냥 받았는데, AbilityID랑 다를 수도 있음. 
     // 지금 Slot은 AbilityID로 Mapping되어있으므로, 확인 차 Log 찍어보기.
     // => 같은 ID로 들어가고 있었으나, 한 번 눌러도 중복 입력이 좀 많이 들어가는 상태.
-    UE_LOG(LogTemp, Warning, TEXT("Input ID: %d"), InputId);
+    //UE_LOG(LogTemp, Warning, TEXT("Input ID: %d"), InputId);
 
     // 해당 Id의 Slot effect 재생하도록 하기.
     SkillSlotByAbilityID[InputId]->PlaySkillPressedFeedback();
+}
+
+void UAOQuickSkillHUD::PlaySkillSucceedEffect(int32 InputId)
+{
+    if (!SkillSlotByAbilityID.Contains(InputId))
+    {
+        // Invalid 입력이 들어옴: return.
+        // Dash, Jump 등의 Non-Skill 입력이 있음!
+        return;
+    }
+
+    SkillSlotByAbilityID[InputId]->PlaySkillSucceedEffect();
 }

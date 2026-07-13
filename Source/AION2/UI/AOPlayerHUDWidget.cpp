@@ -363,3 +363,12 @@ void UAOPlayerHUDWidget::PlaySkillPressedFeedback(int32 InputId)
 		QuickSkillHUD->PlaySkillPressedFeedback(InputId);
 	}
 }
+
+void UAOPlayerHUDWidget::PlaySkillSucceedEffect(int32 InputId)
+{
+	if (QuickSkillHUD)
+	{
+		QuickSkillHUD->PlaySkillSucceedEffect(InputId);
+	}
+}
+
