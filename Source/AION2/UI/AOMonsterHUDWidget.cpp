@@ -104,10 +104,12 @@ void UAOMonsterHUDWidget::HandleGroggyChanged(const FOnAttributeChangeData& Data
 void UAOMonsterHUDWidget::BindASCDelegates()
 {
     // 추가.
-    if (!BoundASC)
-    {
-        return;
-    }
+    //if (!BoundASC)
+    //{
+    //    return;
+    //}
+
+    UnbindASCDelegates();
 
     HealthChangedHandle = BoundASC->GetGameplayAttributeValueChangeDelegate(
         UAOAttributeSet::GetHealthAttribute()
@@ -218,6 +220,6 @@ void UAOMonsterHUDWidget::HandleMaxGroggyChanged(const FOnAttributeChangeData& D
 
     const float CurrentGroggy = BoundASC->GetNumericAttribute(UAOAttributeSet::GetGroggyAttribute());
 
-    UpdateHpBar(CurrentGroggy, Data.NewValue);
+    UpdateGroggyBar(CurrentGroggy, Data.NewValue);
 }
 

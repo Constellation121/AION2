@@ -54,6 +54,8 @@ public:
     // === Set Player Nickname ===
     void SetPlayerName(const FText PlayerName);
 
+    void SetPlayerAsLeader(bool bIsLeader);
+
 protected:
     void HandleHealthChanged(const FOnAttributeChangeData& Data);
     void HandleMaxHealthChanged(const FOnAttributeChangeData& Data);
@@ -105,7 +107,7 @@ protected:
     UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
     TObjectPtr<UTextBlock> TB_HpText;
 
-    UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess = "true"))
+    UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
     TObjectPtr<UProgressBar> Pb_MpBar;
 
     UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
@@ -117,5 +119,8 @@ protected:
     // For PlayerHUD on the MainPanel (Optional for the player head-up status bar, etc.).
     UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional,AllowPrivateAccess = "true"))
     TObjectPtr<UAOQuickSkillHUD> QuickSkillHUD;
+
+    UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional, AllowPrivateAccess = "true"))
+    TObjectPtr<UUserWidget> LeaderImage;
 
 };

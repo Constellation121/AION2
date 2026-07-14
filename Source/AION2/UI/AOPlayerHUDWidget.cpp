@@ -34,7 +34,7 @@ void UAOPlayerHUDWidget::BindToASC(UAbilitySystemComponent* InASC)
 
 	Super::BindToASC(InASC);
 
- //   const bool bASCChanged = BoundASC != InASC;
+	// const bool bASCChanged = BoundASC != InASC;
 
 	//if (bASCChanged)
 	//{
@@ -103,6 +103,21 @@ void UAOPlayerHUDWidget::SetPlayerName(const FText PlayerName)
 	if (TB_PlayerName)
 	{
 		TB_PlayerName->SetText(PlayerName);
+	}
+}
+
+void UAOPlayerHUDWidget::SetPlayerAsLeader(bool bIsLeader)
+{
+	if (LeaderImage)
+	{
+		if (bIsLeader)
+		{
+			LeaderImage->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			LeaderImage->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }
 
