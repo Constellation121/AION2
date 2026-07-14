@@ -889,6 +889,28 @@ void AMMODaeva::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 Prev
 
 		if (bWasGliding && !bIsGliding)
 		{
+			// [로컬] 날개 비활성화 및 망토 활성화
+			if (USkeletalMeshComponent* WingMesh = GetWingMesh())
+			{
+				WingMesh->SetVisibility(false);
+			}
+
+			USkeletalMeshComponent* CapeMesh = nullptr;
+			TArray<USkeletalMeshComponent*> SkeletalMeshes;
+			GetComponents<USkeletalMeshComponent>(SkeletalMeshes);
+			for (USkeletalMeshComponent* MeshComp : SkeletalMeshes)
+			{
+				if (MeshComp && MeshComp->GetName() == TEXT("CapePart"))
+				{
+					CapeMesh = MeshComp;
+					break;
+				}
+			}
+			if (CapeMesh)
+			{
+				CapeMesh->SetVisibility(true);
+			}
+
 			if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 			{
 				FGameplayTagContainer TargetTags;
@@ -911,6 +933,40 @@ void AMMODaeva::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 Prev
 			JumpPacket.set_isgliding(false); // Stopped gliding
 
 			SEND_PACKET(JumpPacket, PKT_C_JUMP);
+		}
+		else if (!bWasGliding && bIsGliding)
+		{
+			// [로컬] 날개 활성화 및 망토 비활성화
+			if (USkeletalMeshComponent* WingMesh = GetWingMesh())
+			{
+				WingMesh->SetVisibility(true);
+			}
+
+			USkeletalMeshComponent* CapeMesh = nullptr;
+			TArray<USkeletalMeshComponent*> SkeletalMeshes;
+			GetComponents<USkeletalMeshComponent>(SkeletalMeshes);
+			for (USkeletalMeshComponent* MeshComp : SkeletalMeshes)
+			{
+				if (MeshComp && MeshComp->GetName() == TEXT("CapePart"))
+				{
+					CapeMesh = MeshComp;
+					break;
+				}
+			}
+			if (CapeMesh)
+			{
+				CapeMesh->SetVisibility(false);
+			}
+
+			if (IsBodyMontageConfigured(this, EMontageID::Glide))
+			{
+				PlayAnimMontage(GetMontageByID(EMontageID::Glide), 1.0f);
+			}
+
+			if (IsWingMontageConfigured(this, EMontageID::Glide))
+			{
+				Multicast_PlayWingMontage(EMontageID::Glide, 1.0f);
+			}
 		}
 	}
 }
