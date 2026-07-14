@@ -311,7 +311,7 @@ void UMainMailWidget::RequestDetailContentFromServer(int64 MailUID)
 
 void UMainMailWidget::ShowErrorMessage(int8 Reason)
 {
-	if (Reason == 0)
+	if (Reason == 0 && Reason == 2)
 	{
 		OnResetClicked();
 		OnTabListClicked();

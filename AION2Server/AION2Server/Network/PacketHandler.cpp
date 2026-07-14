@@ -484,6 +484,7 @@ bool PacketHandler::HandleDungeonEnd(PacketSessionRef& session, Protocol::C_Requ
 	Protocol::S_RequestDungeonCompletePacket endPacket;
 	endPacket.set_gold(gold);
 	SendBufferRef endBuffer = PacketHandler::MakeSendBuffer(endPacket);
+	session->Send(endBuffer);
 	return false;
 }
 
@@ -620,12 +621,14 @@ bool PacketHandler::HandleChat(PacketSessionRef& session, Protocol::C_ChatPacket
 
 bool PacketHandler::HandleMailSend(PacketSessionRef& session, Protocol::C_SendMailPacket& pkt)
 {
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	PlayerRef player = gameSession->_player;
 	DBConnection* dbConnect = GDBConnectionPool->Pop();
 
 	DBBind<8, 0> dbBind(*dbConnect, L"{? = CALL sp_SendMail(?, ?, ?, ?, ?, ?, ?)}");
 
 	int32 returnValue = 0;
-	int32 senderId = static_cast<int32>(pkt.senderid());
+	int32 senderId = player->GetId();
 	int32 gold = pkt.gold();
 	int32 itemId = pkt.itemid();
 	int32 itemCount = pkt.itemcount();
@@ -659,7 +662,7 @@ bool PacketHandler::HandleMailSend(PacketSessionRef& session, Protocol::C_SendMa
 			}
 			else
 			{
-				reason = Protocol::MailFailReason::NONE_GOLD;
+				//reason = Protocol::MailFailReason::NONE_GOLD;
 			}
 		}
 	}

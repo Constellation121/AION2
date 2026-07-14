@@ -394,6 +394,11 @@ void UAOPlayerManager::HandleUseItem(const Protocol::S_UseItemPacket& Pkt)
 					if (PlayerHUD)
 					{
 						PlayerHUD->UpdateItemQuickSlot(Pkt.slotindex(), UpdatedSlotData, FinalTemplateData);
+						
+						if (Pkt.count() > 0)
+						{
+							PlayerHUD->OnItemUsed(Pkt.slotindex(), 5.0f); // 기본 쿨타임 5초 전달
+						}
 					}
 				}
 			}
@@ -437,7 +442,8 @@ void UAOPlayerManager::HandleDungeonSetPlayerInfo(const Protocol::S_DungeonStart
 void UAOPlayerManager::HandleDungeonEnd(int32 Gold)
 {
 	MyGold = Gold;
-	//FSoftObjectPath LevelPath(FString::Printf(TEXT("/Game/Map/Lobby")))
+	UE_LOG(LogTemp, Log, TEXT("빌리지로 이동"));
+	//FSoftObjectPath LevelPath(FString::Printf(TEXT("/Gam;e/Map/Lobby")))
 	UGameplayStatics::OpenLevel(this, TEXT("/Game/Map/Village"));
 }
 
