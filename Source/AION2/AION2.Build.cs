@@ -16,7 +16,13 @@ public class AION2 : ModuleRules
 
         PublicIncludePaths.AddRange(new string[] { "AION2" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });
+        // The original project used a private ProtobufCore module which is not
+        // part of this checkout. Use Unreal Engine's bundled Protobuf runtime.
+        PrivateDependencyModuleNames.Add("Protobuf");
+
+        // UE 5.6's Protobuf 3.18 package is missing these two generated-code
+        // support includes, so keep the compatibility copies local to AION2.
+        PrivateIncludePaths.Add(Path.Combine(ModuleDirectory, "ThirdParty", "ProtobufCompat"));
 
         PublicDependencyModuleNames.AddRange(new string[]
         {
